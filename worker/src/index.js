@@ -24,6 +24,10 @@ const MODE_NOTES = {
 const SERVICES = data.services;
 const IDS = SERVICES.map((s) => s.id);
 const ID_SET = new Set(IDS);
+// Schemes built for a specific circumstance are only shown if the person's own words mention it.
+const MENTION = new Map(
+  SERVICES.filter((s) => Array.isArray(s.requiresMention) && s.requiresMention.length).map((s) => [s.id, new RegExp(s.requiresMention.join('|'), 'i')])
+);
 
 // ---------- global daily counter (holds a date and a number, nothing else) ----------
 export class DailyCap {
@@ -191,12 +195,13 @@ Today's date: ${new Date().toISOString().slice(0, 10)}.` },
     }
 
     const input = block.input;
+    const userText = messages.filter((m) => m.role === 'user').map((m) => m.content).join(' ');
     const seen = new Set();
     const safety = input.safety_concern === true;
     const recommendations = safety
       ? []
       : (Array.isArray(input.recommendations) ? input.recommendations : [])
-          .filter((x) => x && ID_SET.has(x.id) && !seen.has(x.id) && seen.add(x.id))
+          .filter((x) => x && ID_SET.has(x.id) && (!MENTION.has(x.id) || MENTION.get(x.id).test(userText)) && !seen.has(x.id) && seen.add(x.id))
           .slice(0, 4)
           .map((x) => ({ id: x.id, why: String(x.why || '').slice(0, 600) }));
 
