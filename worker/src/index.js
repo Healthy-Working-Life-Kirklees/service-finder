@@ -185,7 +185,13 @@ Today's date: ${new Date().toISOString().slice(0, 10)}.` },
 
     if (!r.ok) {
       const busy = r.status === 429 || r.status === 529 || r.status === 503;
-      return json({ error: busy ? 'The AI service is busy. Please try again in a moment.' : 'Something went wrong on our side. Please try again.' }, busy ? 503 : 502, cors);
+      // Upstream error message (Anthropic's own wording, never the user's text) to help diagnose problems.
+      let detail = '';
+      try {
+        const e = await r.json();
+        detail = String((e.error && e.error.message) || '').slice(0, 300);
+      } catch {}
+      return json({ error: busy ? 'The AI service is busy. Please try again in a moment.' : 'Something went wrong on our side. Please try again.', upstream: r.status, detail }, busy ? 503 : 502, cors);
     }
 
     const out = await r.json();
