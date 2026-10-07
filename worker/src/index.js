@@ -159,7 +159,8 @@ export default {
           text: `SERVICE DATA (JSON). Source: ${data.source}.\n${JSON.stringify(SERVICES)}`,
           cache_control: { type: 'ephemeral' },
         },
-        { type: 'text', text: MODE_NOTES[mode] },
+        { type: 'text', text: `${MODE_NOTES[mode]}
+Today's date: ${new Date().toISOString().slice(0, 10)}.` },
       ],
       tools: [respondTool()],
       tool_choice: { type: 'tool', name: 'respond' },
