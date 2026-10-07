@@ -6,7 +6,7 @@ workers_dev = true
 [vars]
 # The GitHub Pages origin (no path, no trailing slash). Anything else gets a 403.
 ALLOWED_ORIGIN = "https://healthy-working-life-kirklees.github.io"
-ANTHROPIC_MODEL = "claude-haiku-4-5-20251001"
+ANTHROPIC_MODEL = "claude-sonnet-5-5"
 MAX_PER_DAY = "100"
 # ANTHROPIC_API_KEY is a secret: add it in the Cloudflare dashboard
 # (Workers > hwl-service-finder > Settings > Variables and Secrets). Never put it in this file.
