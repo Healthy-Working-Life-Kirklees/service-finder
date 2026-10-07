@@ -1,0 +1,76 @@
+{
+  "note": "Suggested entries for the MVP issues and actions log. The log page offers to add any whose title is not already in the log, using the signed-in person's session. No personal or identifying information in here.",
+  "packs": [
+    {
+      "id": "data-freshness-2026-10-07",
+      "title": "Data freshness: options and recommendation (follows on from #12).",
+      "note": "Options for keeping the scheme data fresh, with a recommendation on each, and the decisions needed.",
+      "appendNote": {
+        "titleContains": "Keep the data fresh automatically",
+        "text": "7 Oct 2026: options, a recommendation for each and the decisions needed are logged as separate 'Data freshness' entries. Recommended: build the weekly link and change watcher (A) and the AI-assisted comparison (B) first, then quarterly scheme confirmations (C). Nothing is applied automatically; a person approves every change."
+      },
+      "items": [
+        {
+          "type": "Action", "area": "Data accuracy", "priority": "High", "owner": "Phil",
+          "title": "Data freshness: agree the plan and build order (recommended: A and B first, then C)",
+          "details": "There are three jobs: (1) is the page still there, (2) does it still say what we say, (3) does the scheme confirm it is right. Automation can do 1 and 2. Only the scheme can do 3, because eligibility, capacity and referral changes are often never published.\n\nRecommended build order:\n- Phase 1: option A, the weekly link and change watcher (about half a day to a day).\n- Phase 2: option B, AI-assisted comparison (1 to 2 days).\n- Phase 3: option C, quarterly scheme confirmations (2 to 3 days plus decisions).\n- Option D is optional.\n\nNothing is ever applied automatically. Findings become proposed changes that a person approves, which keeps the 'curated' promise.\n\nSuggested cadence: link and change checks weekly; AI comparison on pages that changed, plus a full sweep monthly; scheme confirmations quarterly, matching the current review cycle."
+        },
+        {
+          "type": "Question", "area": "Process and governance", "priority": "High", "owner": "Phil",
+          "title": "Data freshness: should alerts to scheme contacts go out automatically, or as drafts Phil approves first?",
+          "details": "This is the decision that shapes the design.\n\nRecommendation: start with drafts that the system prepares and Phil approves and sends. An automatic email to partners on behalf of an NHS-linked programme could land badly, and we don't yet know how partners will react. Once the process is trusted, automate the reminders, but not the first contact."
+        },
+        {
+          "type": "Idea", "area": "Data accuracy", "priority": "High", "owner": "",
+          "title": "Data freshness, option A: weekly link and change watcher",
+          "details": "What: each week, fetch every scheme's web page and referral links, record whether each is fine, moved or dead, and take a fingerprint of the main text so changes can be flagged.\nCatches: dead or moved pages, and changed wording.\nMisses: anything not published online. It can be noisy (cookie banners, dates), so the text needs cleaning first.\nEffort: small, about half a day to a day. Effectively free to run.\n\nRecommendation: build this first. It also gives each scheme a 'last checked automatically' date."
+        },
+        {
+          "type": "Idea", "area": "Data accuracy", "priority": "High", "owner": "",
+          "title": "Data freshness, option B: AI-assisted comparison of pages with our record",
+          "details": "What: Claude reads each scheme page and compares the phone, email, address, referral routes, eligibility and open or closed status with our record. It lists proposed changes with quotes as evidence. Never applied automatically: a person approves each change.\nCatches: changes we would otherwise miss, with the evidence attached.\nMisses: information that isn't on the page, and pages that need JavaScript (for example Eventbrite or forms).\nCost: a rough estimate of 15p to 35p per full run across all 17 schemes.\nEffort: 1 to 2 days.\n\nRecommendation: run it weekly on pages that changed, plus a full sweep monthly. That saves money and cuts noise."
+        },
+        {
+          "type": "Idea", "area": "Data accuracy", "priority": "High", "owner": "",
+          "title": "Data freshness, option C: quarterly scheme confirmation",
+          "details": "What: each scheme contact gets a short summary of what we hold, with a simple 'all correct / needs changing' reply, plus reminders and escalation.\nCatches: the authoritative answer, including things never published online.\nMisses: nothing if they reply. The risk is people not replying.\nEffort: 2 to 3 days, plus decisions on who sends it and from where.\n\nRecommendation: do this after A and B, quarterly to match the current review cycle.\n\nSuggested escalation ladder: change detected, then a digest to Phil, then Phil approves a drafted email to the contact, a reminder after 7 days, and after 14 days the card shows an 'unverified' warning (already built for old entries) and it is logged here."
+        },
+        {
+          "type": "Idea", "area": "Data accuracy", "priority": "Low", "owner": "",
+          "title": "Data freshness, option D: provider register checks (optional)",
+          "details": "What: check Charity Commission and Companies House records to spot a provider closing, merging or changing name.\nCatches: the provider disappearing.\nMisses: everything about the scheme itself.\nEffort: small.\n\nRecommendation: optional, and low value on its own. Consider it once A to C are working."
+        },
+        {
+          "type": "Idea", "area": "Process and governance", "priority": "Medium", "owner": "",
+          "title": "Data freshness: don't automate social media monitoring",
+          "details": "Scraping Facebook or Instagram breaks their terms and gets blocked, and the official APIs only cover pages you own.\n\nRecommendation: leave social media out of the automation and ask scheme contacts to confirm changes instead (option C). If a scheme publishes news on its own website or an RSS feed, option A can watch that."
+        },
+        {
+          "type": "Action", "area": "Process and governance", "priority": "Medium", "owner": "Phil",
+          "title": "Data freshness: set up a private register of scheme contacts",
+          "details": "The repo is public, so the list of who to alert can't live there. It needs a private home, for example the team log's store or a SharePoint list.\n\nMost schemes only have a generic mailbox in the data, and some have none (Employment Kirklees and REAL list only a phone number or web page). We need a named contact or mailbox for each scheme, and agreement from the scheme that we can use it."
+        },
+        {
+          "type": "Action", "area": "Process and governance", "priority": "Medium", "owner": "Phil",
+          "title": "Data freshness: decide how emails are sent",
+          "details": "Cloudflare's built-in email sending can only reach verified addresses and needs a domain we have onboarded, so it doesn't suit emailing partners.\n\nRealistic choices: send from a programme mailbox (with drafts prepared by the system), or use a transactional email service (free tiers exist). Use a sender identity that isn't a personal address.\n\nRecommendation: programme mailbox, with drafts first."
+        },
+        {
+          "type": "Action", "area": "Process and governance", "priority": "Medium", "owner": "Phil",
+          "title": "Data freshness: check the approach with the information governance lead",
+          "details": "Emailing scheme contacts is operational contact with partner organisations, but run the approach past your IG lead, especially if named individuals' email addresses are involved. Also note that in option B, fetched web pages and our scheme records are sent to the AI service."
+        },
+        {
+          "type": "Idea", "area": "Technical", "priority": "Medium", "owner": "",
+          "title": "Data freshness: make the weekly schedule reliable",
+          "details": "GitHub's scheduled workflows can be delayed under heavy load, and they are switched off in repositories with no activity for 60 days.\n\nRecommendation: add a heartbeat so we know each run happened, and optionally have a Cloudflare timer trigger the run. Keep a manual 'Run workflow' button as a backup."
+        },
+        {
+          "type": "Idea", "area": "Wording and content", "priority": "Medium", "owner": "",
+          "title": "Data freshness: show 'last checked automatically' separately from 'confirmed by the scheme'",
+          "details": "Cards currently show one 'last checked' date, taken from the source document. Once automatic checks run, show two dates and be clear about which is which, so people aren't misled by an automatic check that couldn't see eligibility changes."
+        }
+      ]
+    }
+  ]
+}

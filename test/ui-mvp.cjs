@@ -125,7 +125,7 @@ async function worker(route) {
   await page.fill('#by', 'TB');
   await page.selectOption('#flt-status', 'all');
   await page.selectOption('#st-2', 'In progress');
-  await page.waitForFunction(() => document.querySelector('#st-2').value === 'In progress');
+  for (let i = 0; i < 50 && (await page.inputValue('#st-2')) !== 'In progress'; i++) await page.waitForTimeout(100);
   check('log: status change saved', (await page.inputValue('#st-2')) === 'In progress');
   await page.click('#list .entry:has(#nt-2) summary');
   await page.fill('#nt-2', 'Emailed the provider');
@@ -159,6 +159,21 @@ async function worker(route) {
   await page.reload();
   await page.waitForSelector('#app:not([hidden])');
   check('log: stays unlocked on reload (this tab only)', await page.locator('#list .entry').count() > 0);
+  // suggested entries: offered, added in one go, note appended to #12, not offered again
+  await page.waitForSelector('#suggested:not([hidden])');
+  check('log: suggested entries are offered', (await page.textContent('#suggested')).includes('Data freshness') && (await page.textContent('#suggested')).includes('12 new entries'), await page.textContent('#suggested'));
+  await page.selectOption('#flt-status', 'all');
+  const before = await page.locator('#list .entry').count();
+  await page.click('#suggested button');
+  await page.locator('#suggested').waitFor({ state: 'hidden' });
+  for (let i = 0; i < 50 && (await page.locator('#list .entry').count()) !== before + 12; i++) await page.waitForTimeout(200);
+  check('log: 12 suggested entries added', (await page.locator('#list .entry').count()) === before + 12);
+  check('log: freshness entries have their details', (await page.locator('#list .entry', { hasText: 'option B: AI-assisted' }).locator('.details').textContent()).includes('15p to 35p'));
+  check('log: note appended to the existing "keep the data fresh" entry', (await page.locator('#list .entry', { hasText: 'Keep the data fresh automatically' }).locator('summary').textContent()).includes('(1)'));
+  await page.reload();
+  await page.waitForSelector('#list .entry');
+  check('log: suggestions are not offered twice', !(await page.locator('#suggested').isVisible()));
+
   await page.click('#lock');
   check('log: lock returns to the gate', await page.locator('#gate').isVisible());
   await page.reload();

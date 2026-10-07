@@ -20,6 +20,7 @@
 
   let pass = store.get(PASS_KEY);
   let items = [];
+  let suggestions = []; // packs of suggested entries from suggested-entries.json
   const openIds = new Set(); // which entries have their notes expanded
 
   // ---------- helpers ----------
@@ -95,6 +96,7 @@
     $('#gate').hidden = true;
     $('#app').hidden = false;
     $('#pass').value = '';
+    suggestions = await loadSuggestions();
     await load();
   }
 
@@ -212,6 +214,61 @@
     const rows = filtered();
     $('#list').replaceChildren(...rows.map(entry));
     $('#empty-filter').hidden = !(items.length > 0 && rows.length === 0);
+    renderSuggestions();
+  }
+
+  // ---------- suggested entries (from the build) ----------
+  async function loadSuggestions() {
+    try {
+      const r = await fetch('suggested-entries.json', { cache: 'no-store' });
+      if (!r.ok) return [];
+      const d = await r.json();
+      return Array.isArray(d.packs) ? d.packs : [];
+    } catch {
+      return [];
+    }
+  }
+
+  // Entries whose title is not already in the log (matched case-insensitively).
+  function pendingPacks() {
+    const have = new Set(items.map((x) => x.title.trim().toLowerCase()));
+    return suggestions
+      .map((p) => ({ ...p, todo: (p.items || []).filter((i) => !have.has(String(i.title).trim().toLowerCase())) }))
+      .filter((p) => p.todo.length > 0);
+  }
+
+  function renderSuggestions() {
+    const box = $('#suggested');
+    // On an empty log the starter list is offered first; suggestions follow once it has entries.
+    const packs = items.length ? pendingPacks() : [];
+    box.replaceChildren();
+    box.hidden = packs.length === 0;
+    for (const p of packs) {
+      box.append(el('div', {},
+        el('p', { class: 'mb-sm' }, el('strong', { text: p.title }), ' ' + (p.note || '') + ' (' + p.todo.length + ' new ' + (p.todo.length === 1 ? 'entry' : 'entries') + ')'),
+        el('button', { type: 'button', class: 'btn primary small', text: 'Add these ' + p.todo.length + ' entries', onclick: (e) => addPack(p, e.currentTarget) })
+      ));
+    }
+  }
+
+  async function addPack(p, btn) {
+    btn.disabled = true;
+    let added = 0;
+    try {
+      for (const i of p.todo) {
+        await api('POST', '/log/items', { type: i.type, area: i.area, priority: i.priority, title: i.title, details: i.details, owner: i.owner || '' });
+        added += 1;
+      }
+      if (p.appendNote) {
+        const target = items.find((x) => x.title.toLowerCase().includes(String(p.appendNote.titleContains).toLowerCase()));
+        if (target) await api('PATCH', '/log/items/' + target.id, { update: p.appendNote.text, by: by() });
+      }
+      await load();
+      say('Added ' + added + ' entries.', 'ok');
+    } catch (e) {
+      await load();
+      say((added ? 'Added ' + added + ' entries, then it stopped: ' : '') + e.message, 'err');
+    }
   }
 
   // ---------- CSV ----------
