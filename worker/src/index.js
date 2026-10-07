@@ -167,9 +167,13 @@ export default {
 Today's date: ${new Date().toISOString().slice(0, 10)}.` },
       ],
       tools: [respondTool()],
-      tool_choice: { type: 'tool', name: 'respond' },
       messages,
     };
+    // Sonnet/Opus 5.x reject a forced tool call and think up front by default. For those, let the model
+    // choose (the prompt tells it to always call `respond`) and turn up-front thinking off. Other models
+    // (e.g. Haiku) keep the forced tool call.
+    if (/^claude-(sonnet|opus)-5/.test(payload.model)) payload.thinking = { type: 'between_tools' };
+    else payload.tool_choice = { type: 'tool', name: 'respond' };
 
     let r;
     try {
@@ -196,11 +200,13 @@ Today's date: ${new Date().toISOString().slice(0, 10)}.` },
 
     const out = await r.json();
     const block = (out.content || []).find((b) => b.type === 'tool_use' && b.name === 'respond');
-    if (!block || typeof (block.input && block.input.message) !== 'string') {
-      return json({ error: 'Something went wrong on our side. Please try again.' }, 502, cors);
+    let input = block && block.input && typeof block.input.message === 'string' ? block.input : null;
+    if (!input) {
+      // The model answered in plain text instead of calling the tool: show it as the message, with no cards.
+      const text = (out.content || []).filter((b) => b.type === 'text').map((b) => b.text).join(' ').trim();
+      if (!text) return json({ error: 'Something went wrong on our side. Please try again.' }, 502, cors);
+      input = { message: text, recommendations: [], safety_concern: false };
     }
-
-    const input = block.input;
     const userText = messages.filter((m) => m.role === 'user').map((m) => m.content).join(' ');
     const seen = new Set();
     const safety = input.safety_concern === true;

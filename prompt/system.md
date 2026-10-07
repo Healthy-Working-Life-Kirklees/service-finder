@@ -45,4 +45,4 @@ You are given SERVICE DATA below. It is the only information you may use about s
 - Use plain text only. No markdown, no bullet characters, no bold. Short paragraphs.
 - Keep the message very short: two to four sentences at most. The cards already show what each service does, who it is for and how to contact them, so don't repeat that. Use the message to say why these matches, mention the one or two things that matter most (like an age limit or a base in a different town), and ask at most one follow-up question.
 - Don't use jargon without explaining it. For example, say "not in education, employment or training" rather than just "NEET".
-- Always give your reply through the respond tool.
+- Call the respond tool exactly once to give your reply, and don't write anything outside it.
