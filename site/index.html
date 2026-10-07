@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.workers.dev; base-uri 'none'; form-action 'none'">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Kirklees Healthy Working Life Service Finder (prototype)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#message">Skip to the message box</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <h1>Kirklees Healthy Working Life<br><span>Service Finder</span></h1>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <p class="notice" role="note">
+      <strong>Prototype for testing.</strong> The service details come from the Healthy Working Life scheme pathways document and may be out of date. Always check with the service before referring.
+    </p>
+
+    <fieldset class="mode">
+      <legend>Who is this for?</legend>
+      <label><input type="radio" name="mode" value="public" checked> <span>I'm looking for support for myself</span></label>
+      <label><input type="radio" name="mode" value="staff"> <span>I'm helping someone else (staff or partner)</span></label>
+    </fieldset>
+
+    <section id="log" class="log" aria-live="polite" aria-label="Conversation"></section>
+
+    <div id="chips" class="chips" aria-label="Example questions"></div>
+
+    <form id="form" class="form" autocomplete="off">
+      <label for="message">Tell me what you're looking for</label>
+      <textarea id="message" rows="3" maxlength="1500" placeholder="For example: I've been off work with anxiety and I'm nearest to Dewsbury" autocomplete="off"></textarea>
+      <div class="actions">
+        <button type="submit" id="send" class="btn primary">Find services</button>
+        <button type="button" id="reset" class="btn secondary">Start again</button>
+      </div>
+    </form>
+
+    <p class="privacy">
+      Please don't type names, addresses, dates of birth or NHS numbers. Your messages are passed through a Cloudflare service to Claude, an AI service from Anthropic, to find matches. This prototype does not save them, and the conversation is gone when you close or refresh the page.
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><strong>In an emergency call 999.</strong> For urgent mental health support in Kirklees, call the 24-hour Single Point of Access team on <a href="tel:01924316830">01924 316830</a> or call NHS 111.</p>
+    </div>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="app.js" defer></script>
+</body>
+</html>

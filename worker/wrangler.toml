@@ -1,0 +1,39 @@
+name = "hwl-service-finder"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+workers_dev = true
+
+[vars]
+# The GitHub Pages origin (no path, no trailing slash). Anything else gets a 403.
+ALLOWED_ORIGIN = "https://healthy-working-life-kirklees.github.io"
+ANTHROPIC_MODEL = "claude-haiku-4-5-20251001"
+MAX_PER_DAY = "100"
+# ANTHROPIC_API_KEY is a secret: add it in the Cloudflare dashboard
+# (Workers > hwl-service-finder > Settings > Variables and Secrets). Never put it in this file.
+
+# No Workers Logs: nothing about a conversation should be kept anywhere.
+[observability]
+enabled = false
+
+# Let wrangler import the Markdown prompt as text.
+[[rules]]
+type = "Text"
+globs = ["**/*.md"]
+fallthrough = true
+
+# Per-IP burst limit (per Cloudflare location; not strict abuse protection on its own).
+[[ratelimits]]
+name = "IP_LIMITER"
+namespace_id = "7301"
+[ratelimits.simple]
+limit = 10
+period = 60
+
+# Global daily counter. SQLite-backed, which is the kind the free plan allows.
+[[durable_objects.bindings]]
+name = "CAP_COUNTER"
+class_name = "DailyCap"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["DailyCap"]

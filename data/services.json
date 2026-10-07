@@ -1,0 +1,563 @@
+{
+  "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026)",
+  "converted": "2026-10-07",
+  "notes": "Converted by hand from the scheme pathways document. Edit this file to update the finder; it is re-read automatically. 'open' is false for schemes that are not live yet. 'audience' says who the scheme is for: individual, employer or organisation. Dates are YYYY-MM-DD.",
+  "services": [
+    {
+      "id": "elevate",
+      "name": "elevate",
+      "organisation": "Fresh Futures",
+      "status": "Live - open to referrals",
+      "open": true,
+      "audience": ["individual"],
+      "whoFor": "Young adults aged 18-26 in Kirklees who are not in education, employment or training and have health concerns.",
+      "age": "18-26",
+      "webpage": "https://freshfutures.org.uk/events/elevate/",
+      "email": "elevate@freshfutures.org.uk",
+      "phone": "07354 903 165",
+      "social": ["https://www.instagram.com/freshfutures_charity/", "https://www.facebook.com/FreshFutures"],
+      "locations": [
+        "Brian Jackson House, 2 New North Parade, Huddersfield, HD1 5JP (elevate connect, Wednesdays 1-3.30pm)",
+        "Jo Cox House, Batley (elevate connect, Tuesdays 1-3pm)"
+      ],
+      "areas": ["Huddersfield", "Batley"],
+      "eligibility": ["Aged 18 to 26", "Not in education, employment or training (NEET) with health concerns"],
+      "exclusions": [],
+      "referralRoutes": ["Email", "Phone", "Social media", "In person - via events"],
+      "selfReferral": { "allowed": "yes", "note": "Yes, via any route" },
+      "activities": [
+        { "name": "Community programme", "summary": "Weekly group session plus weekly drop-in to build friendships, confidence, life skills and wellbeing. Activities co-designed with young people, such as yoga and gardening, arts and crafts, outings and volunteering.", "duration": "Weekly group session, plus weekly drop-in" },
+        { "name": "Employability programme", "summary": "One-week programmes for young people at risk of becoming NEET or unsure about career options. Mornings cover CV writing, interview preparation and job searching; afternoons have workshops and guest speakers. Breakfast, lunch and travel support provided. Key worker support and a 10 day work placement.", "duration": "One-week programmes, running multiple times a year" }
+      ],
+      "workExperience": "10 day work placement",
+      "lastUpdated": "2025-10-16",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "employment-kirklees",
+      "name": "Employment Kirklees",
+      "organisation": "Paddock Community Trust, in partnership with Kirklees Council",
+      "status": "Live - open to referrals",
+      "open": true,
+      "audience": ["individual"],
+      "whoFor": "Anyone living in Kirklees, in or out of work, looking for employment support close to home.",
+      "age": "Adults",
+      "webpage": "https://www.paddocktrust.org.uk/employmentkirklees/",
+      "email": null,
+      "phone": null,
+      "social": [],
+      "locations": [
+        "Paddock Trust bases in Huddersfield and Batley",
+        "Community settings across Kirklees - libraries, community and faith centres, schools and other accessible public venues"
+      ],
+      "areas": ["Huddersfield", "Batley", "Kirklees-wide"],
+      "eligibility": [
+        "Lives in Kirklees, whether employed or unemployed",
+        "Looking for support into work, apprenticeships, in-work progression or self-employment, or looking for new skills, learning or training"
+      ],
+      "exclusions": [],
+      "referralRoutes": ["Online enquiry via the Paddock Trust website", "Phone", "In person - via community venues and drop-ins", "Partner referral, including Kirklees Council Employment & Skills Service"],
+      "selfReferral": { "allowed": "yes", "note": "Yes, via any route" },
+      "activities": [
+        { "name": "One-to-one employment support", "summary": "Starts with an assessment of the person's situation, skills and goals. Covers strengths and transferable skills, CVs, job applications and interviews, benefits and financial advice, and volunteering, training and education opportunities. Helps with barriers such as childcare, low confidence or lack of skills.", "duration": "Flexible and open-ended, at the person's own pace" },
+        { "name": "Group workshops", "summary": "Course-based workshops in community settings on personal development, wellbeing, goal setting, CV writing, job searching and interview techniques, alongside 1-to-1 guidance.", "duration": "Course-based" },
+        { "name": "Connecting to local opportunities and services", "summary": "Links people to local employers, vacancies, training providers and wider community support, including digital inclusion, information and advice, and wellbeing services delivered by Paddock Trust.", "duration": "Ongoing" }
+      ],
+      "workExperience": "Volunteering and work-related opportunities identified as part of the plan",
+      "lastUpdated": "2026-08-03",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "fitness-for-work",
+      "name": "Fitness for Work",
+      "organisation": "Kirklees Active Leisure",
+      "status": "Live - open to referrals",
+      "open": true,
+      "audience": ["individual"],
+      "whoFor": "Kirklees adults aged 18 and over who are out of work, off sick or at risk of falling out of work through a health condition, and are ready to use physical activity to manage it.",
+      "age": "18+",
+      "webpage": "https://kal.org.uk/health-wellbeing/fitness-for-work/",
+      "email": "referral.admin@kal.org.uk",
+      "phone": "01484 234000",
+      "social": ["kal_fitnessuk (Instagram)", "KAL Fitness (Facebook)"],
+      "locations": ["Huddersfield Leisure Centre", "Batley Sports and Tennis Centre", "Colne Valley Leisure Centre", "Spen Valley Leisure Centre"],
+      "areas": ["Huddersfield", "Batley", "Colne Valley", "Spen Valley"],
+      "eligibility": [
+        "Aged 18 or over",
+        "Committed to making a long term lifestyle change",
+        "Clinically stable and compliant with their medication",
+        "AND one of: out of work due to ill health and unable to look for work as a result; had sickness from work due to ill health for more than 7 days in the last 6 months; at risk of falling out of work due to ill health"
+      ],
+      "exclusions": [
+        "Resting tachycardia over 100bpm",
+        "Systolic blood pressure over 180mmHg and/or diastolic over 100mmHg",
+        "New or uncontrolled arrhythmias",
+        "Unstable diabetes",
+        "Unstable angina",
+        "Unstable mental health status",
+        "Unstable or acute heart failure",
+        "Symptomatic hypotension",
+        "Febrile illness",
+        "Any other condition which may be exacerbated by exercise"
+      ],
+      "referralRoutes": [
+        "Online - practitioner referral: https://secure.refer-all.net/referrals/KirkleesActiveLeisure/ReferKirklessActiveLeisureHealthProfessional?id=6040&name=Fitness%20for%20Work",
+        "Online self referral: https://secure.refer-all.net/referrals/Kirklees/ReferKirklees?id=6040&name=Fitness%20for%20Work",
+        "Internal rerouting of Fitness for Health referrals who meet the eligibility criteria",
+        "Workplace liaison, health days and direct engagement with key local employers"
+      ],
+      "selfReferral": { "allowed": "yes", "note": "Yes, via the online form", "url": "https://secure.refer-all.net/referrals/Kirklees/ReferKirklees?id=6040&name=Fitness%20for%20Work" },
+      "activities": [
+        { "name": "Fitness for Work", "summary": "A structured 12-week physical activity programme with one weekly exercise-specialist-led session (studio class, water-based class or gym session) plus full KAL membership for the duration. Aimed at people with mental health or musculoskeletal conditions. Individual support from a Specialist Exercise Co-ordinator and Exercise Referral Specialists.", "duration": "12 weeks" },
+        { "name": "Post 12 week programme", "summary": "Access to KAL's active movers membership (full access), recommendations of suitable classes and groups, graduation events and gym floor support.", "duration": "Ongoing" }
+      ],
+      "workExperience": "No",
+      "lastUpdated": "2026-08-21",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "flippin-pain",
+      "name": "Flippin' Pain (incl. Why We Hurt)",
+      "organisation": "Cora Health (formerly Connect Health)",
+      "status": "Live - open to referrals",
+      "open": true,
+      "audience": ["individual"],
+      "whoFor": "Anyone in Kirklees living with persistent pain lasting more than three months, and the professionals who support them.",
+      "age": "Adults",
+      "webpage": "https://www.flippinpain.co.uk/",
+      "email": "info@flippinpain.co.uk",
+      "phone": null,
+      "social": [],
+      "locations": ["Digital/online - accessible to Kirklees residents from any location"],
+      "areas": ["Online"],
+      "eligibility": [
+        "Kirklees resident living with persistent (chronic) musculoskeletal (MSK) pain of more than 3 months who can benefit from a digital patient activation programme",
+        "Professionals across the integrated care system (healthcare, local authority, physical activity and leisure) who want the competence and confidence to support people with chronic pain"
+      ],
+      "exclusions": [],
+      "referralRoutes": ["Via a referring professional - email invitation to the hosting platform", "Link to the programme information web page, then opt in"],
+      "selfReferral": { "allowed": "partly", "note": "Yes, where a link has been shared by a referring professional or through campaign activity" },
+      "activities": [
+        { "name": "Why We Hurt - digital patient activation programme", "summary": "Seven short (about 5 minute) videos with transcripts, interactive exercises, a library of information and a peer discussion forum, helping people understand pain and manage it, including staying physically, socially and economically active. Endorsed by the British Pain Society and the European Pain Federation. Optional health coach moderation.", "duration": "Unlimited access for up to 12 months from sign-up" },
+        { "name": "Targeted workforce development", "summary": "Education on modern pain science for professionals working across the integrated care system.", "duration": "" }
+      ],
+      "workExperience": "No",
+      "notes": "1,000 Why We Hurt licences funded by NHS West Yorkshire ICB. DPIA completed; Cora Health is data controller.",
+      "lastUpdated": "2026-08-03",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "get-set-goal",
+      "name": "Get Set Goal",
+      "organisation": "University of Huddersfield",
+      "status": "Live - open to referrals",
+      "open": true,
+      "audience": ["individual", "employer"],
+      "whoFor": "Employers and self-employed people in Kirklees - primarily SMEs and sole traders - whose staff are experiencing ill health and at risk of falling out of work.",
+      "age": "18+",
+      "webpage": "https://www.hud.ac.uk/gsg/",
+      "email": "GetSetGoal@hud.ac.uk",
+      "phone": "01484 472201",
+      "social": [],
+      "locations": ["University of Huddersfield campus", "Onsite at business premises and other event venues", "Online"],
+      "areas": ["Huddersfield", "Kirklees-wide", "Online"],
+      "eligibility": [
+        "Employees (including in SMEs, independent care sector, VCSE and healthcare organisations) and self-employed people experiencing ill health. Focus for 2026-27 is SMEs and sole traders, but larger employers are still supported",
+        "At risk of falling out of work due to ill health",
+        "Committed to making a long term lifestyle change"
+      ],
+      "exclusions": ["Under 18"],
+      "referralRoutes": [
+        "Online self referral: https://forms.office.com/pages/responsepage.aspx?id=2p8utZEGhUW9_FzK4c4YkKgnxFOY-bxNpu8du5KE9JtUQUpPN1ZMSzZEUlc5SU1KMVExNDBPMDQ4NSQlQCN0PWcu&route=shorturl",
+        "Online - organisation referral: https://forms.office.com/pages/responsepage.aspx?id=2p8utZEGhUW9_FzK4c4YkKgnxFOY-bxNpu8du5KE9JtUNkVLMlFTSkhZSlBEMzhDUjFLMThBMDg3NyQlQCN0PWcu&route=shorturl"
+      ],
+      "selfReferral": { "allowed": "yes", "note": "Yes, via the online form", "url": "https://forms.office.com/pages/responsepage.aspx?id=2p8utZEGhUW9_FzK4c4YkKgnxFOY-bxNpu8du5KE9JtUQUpPN1ZMSzZEUlc5SU1KMVExNDBPMDQ4NSQlQCN0PWcu&route=shorturl" },
+      "activities": [
+        { "name": "One-to-one wellbeing coaching", "summary": "Tailored light-touch wellbeing support using goal setting to improve lifestyle choices and manage conditions, with signposting to other Healthy Working Life services. Wellbeing coaching only - it is not a counselling service. Delivered by University of Huddersfield healthcare students under clinical supervision.", "duration": "Up to 6 weekly sessions, Monday to Friday 9am-4pm excluding bank holidays" },
+        { "name": "Events in businesses or the community", "summary": "Awareness raising, initial health checks and the chance to book one-to-one sessions.", "duration": "One-off or regular" },
+        { "name": "Wellbeing workshops", "summary": "Interactive workshops tailored to the business or organisation, for example managing stress, improving sleep and mental wellbeing.", "duration": "Usually 20-30 minutes" },
+        { "name": "Health checks", "summary": "Basic checks of blood pressure, oxygen level, pulse and respiration rate. Around 7% of people checked between April 2025 and March 2026 were signposted to their GP.", "duration": "5-8 minutes per person" }
+      ],
+      "workExperience": "No",
+      "lastUpdated": "2026-08-03",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "health-wellbeing-hub",
+      "name": "Health & Wellbeing Hub",
+      "organisation": "Kirklees College",
+      "status": "Live - open to referrals",
+      "open": true,
+      "audience": ["individual"],
+      "whoFor": "Kirklees College students - mainly 16-19 year olds, plus adult and apprentice learners - needing wellbeing and employability support.",
+      "age": "16+ (College students)",
+      "webpage": "https://www.kirkleescollege.ac.uk/supporting-you/",
+      "email": "support@kirkleescollege.ac.uk",
+      "phone": "01484 437000",
+      "social": [],
+      "locations": ["Kirklees College campuses - five sites in Huddersfield and two in Dewsbury, with delivery across North and South Kirklees"],
+      "areas": ["Huddersfield", "Dewsbury"],
+      "eligibility": [
+        "Is a Kirklees College student (including adult learners and apprentices)",
+        "At risk of falling out of education or training due to ill health, or health or wellbeing is affecting participation, progress or sustained employment"
+      ],
+      "exclusions": ["Not a student at Kirklees College"],
+      "referralRoutes": ["Online self referral", "Via in-house teams"],
+      "selfReferral": { "allowed": "yes", "note": "Yes, via any route" },
+      "activities": [
+        { "name": "Health and Wellbeing Coaching", "summary": "Early, holistic, work-focused support from the Student Service Hub: one-to-one coaching, on-campus health services (health checks, BACP-accredited counselling plus TAC Access online counselling, screenings), group activities and workshops, and supported inclusive work opportunities. Employment support through the on-site Job Shop with the DWP Jobs and Careers Service, including a Disability Employment Advisor.", "duration": "" },
+        { "name": "Embedding health and wellbeing across the college", "summary": "Health programmes in the personal development curriculum, staff training including mental health first aid, student mental health ambassadors, and a school nurse pilot.", "duration": "" }
+      ],
+      "workExperience": "Yes",
+      "lastUpdated": "2026-08-24",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "ips-cgl",
+      "name": "Individual Placement and Support for Change Grow Live service users",
+      "organisation": "Change Grow Live (CGL)",
+      "status": "Live - open to referrals",
+      "open": true,
+      "audience": ["individual"],
+      "whoFor": "Change Grow Live service users in Kirklees aged 18 and over who want to move into paid work.",
+      "age": "18+",
+      "webpage": "https://www.changegrowlive.org/service/kirklees-drug-alcohol/huddersfield#employment",
+      "email": "KirkleesIPS@cgl.org.uk",
+      "phone": "07721 969722 or 01484 353333",
+      "social": [],
+      "locations": ["20 Manchester Road, Huddersfield HD1 3HJ", "3 Wellington Street, Dewsbury WF13 1LY"],
+      "areas": ["Huddersfield", "Dewsbury"],
+      "eligibility": [
+        "Aged 18 or over and in treatment at Change Grow Live",
+        "Out of work, or in work but at risk of losing their job because of substance use and/or ill health",
+        "Consents to receive input from the IPS service and has a GP registered within Kirklees"
+      ],
+      "exclusions": ["Only wants to look at voluntary work or education"],
+      "referralRoutes": ["Email", "Phone", "Via in-house teams", "In person"],
+      "selfReferral": { "allowed": "yes", "note": "Yes, via any route" },
+      "activities": [
+        { "name": "Individual Placement and Support", "summary": "A 'place then train' approach matching people in recovery with paid work they want to do. An Employment Specialist builds a vocational profile, engages employers, supports CVs and interviews and agrees reasonable adjustments, then supports the person and their employer once in work.", "duration": "Job coaching/placement up to 9 months; follow-along support for the first 4 months in work" }
+      ],
+      "workExperience": "Yes",
+      "lastUpdated": "2025-11-25",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "ips-smi",
+      "name": "Individual Placement and Support for Severe Mental Illness (SMI)",
+      "organisation": "South West Yorkshire Partnership NHS Foundation Trust",
+      "status": "Live - open to referrals",
+      "open": true,
+      "audience": ["individual"],
+      "whoFor": "Adults in Kirklees with severe and complex mental health needs, under secondary care, who want to find or keep paid work.",
+      "age": "Adults",
+      "webpage": "https://www.southwestyorkshire.nhs.uk/services/kirklees-individual-placement-and-support-ips-employment-service/",
+      "email": "kirkleesipsservice@swyt.nhs.uk",
+      "phone": null,
+      "social": [],
+      "locations": ["Folly Hall Mills, St Thomas Road, Huddersfield, HD1 3LT", "Beckside Court, 286 Bradford Road, Batley, WF17 5PW"],
+      "areas": ["Huddersfield", "Batley"],
+      "eligibility": [
+        "Currently receiving support from secondary care mental health services (Core, Enhanced or Early Intervention in Psychosis teams)",
+        "Committed to remaining in or entering paid employment",
+        "In work and struggling, off sick, or in work and seeking a different role to improve wellbeing - or looking for work"
+      ],
+      "exclusions": [
+        "Mild to moderate mental health conditions",
+        "Solely physical health conditions",
+        "Only wants to look at voluntary work or education",
+        "Not currently under the care of secondary care mental health services"
+      ],
+      "referralRoutes": ["Via in-house teams", "Email", "Online self referral - electronic 'expression of interest' form under 'Referrals' on the service webpage"],
+      "selfReferral": { "allowed": "yes", "note": "Yes, via the online expression of interest form" },
+      "activities": [
+        { "name": "Work retention support using the principles of IPS", "summary": "Employment specialists work with community mental health services to explore interests, skills and goals, build an employment plan and address barriers. Rapid, intensive support from referral, support for both the person and their employer, help with disclosure and reasonable adjustments, and information about workplace rights.", "duration": "Time-unlimited follow-along support for as long as the person wishes" }
+      ],
+      "workExperience": "Yes",
+      "lastUpdated": "2025-12-08",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "kirklees-employment-service",
+      "name": "Kirklees Employment Service",
+      "organisation": "Waythrough (formerly Richmond Fellowship)",
+      "status": "Live - open to referrals",
+      "open": true,
+      "audience": ["individual", "employer"],
+      "whoFor": "Kirklees adults aged 18 and over with experience of mental ill health - including autism and other neurodivergent conditions, hidden disabilities, a learning disability where mental health support is the primary need, or dementia in a community setting - who want paid work. Also advises employers.",
+      "age": "18+",
+      "webpage": "https://www.waythrough.org.uk/find-support-near-me/kirklees-employment-service/",
+      "email": "Info.KirkleesES@RichmondFellowship.org.uk",
+      "phone": "01484 434866",
+      "social": [],
+      "locations": ["Huddersfield base", "Dewsbury base", "Community venues across Kirklees", "Remote - telephone, Teams and email"],
+      "areas": ["Huddersfield", "Dewsbury", "Kirklees-wide", "Online"],
+      "eligibility": [
+        "Aged 18 or over and living in Kirklees",
+        "Currently or previously experiencing mental ill health, from low-level stress and anxiety to enduring severe problems - a medical diagnosis is not required; or has autism or a hidden disability",
+        "Has a goal of moving towards employment, education, training, volunteering or a placement, and is committed to working on agreed actions between sessions",
+        "Employers in Kirklees seeking advice on supporting employees' mental health are also eligible"
+      ],
+      "exclusions": [
+        "Under 18",
+        "Not ordinarily resident in Kirklees - people funded by a statutory body outside Kirklees are not eligible unless that agency spot purchases a place"
+      ],
+      "referralRoutes": ["Online referral form", "Phone", "Email", "Practitioner referral - community psychiatric nurses, psychologists, consultant psychiatrists, occupational therapists, Job Centre Plus and other partner agencies"],
+      "selfReferral": { "allowed": "yes", "note": "Yes, via any route" },
+      "activities": [
+        { "name": "One-to-one adviser support", "summary": "Support from a named adviser, face to face, by phone, over Teams or email. An Employment Support Plan is agreed and reviewed at least every six months. Includes benefits guidance, careers information and supported job search, plus peer support workshops.", "duration": "Contact within 3 working days of referral, initial meeting within 10 working days; typically a 6-month timeframe" },
+        { "name": "Job retention and job change support", "summary": "Helps people experiencing mental ill health at work to stay in their job or move to a more suitable role, including agreeing adjustments and in-work support when starting a new job.", "duration": "Tailored to need" },
+        { "name": "Peer support workshops and groups", "summary": "For people not yet ready for one-to-one support, or who prefer groups: assertiveness, self-esteem, resilience, confidence to work and ways to wellbeing. Online and in person.", "duration": "Rolling programme" },
+        { "name": "Volunteering and Peer Champion opportunities", "summary": "Roles where people draw on their own experience to support others and build skills and confidence.", "duration": "" },
+        { "name": "Employer advice", "summary": "Advice for employers on supporting employees with mental ill health: awareness and first aid training, reasonable adjustments, mental health champions, and specialist advice on employing people with autism, neurodivergent conditions, dementia or hidden disabilities.", "duration": "On request" }
+      ],
+      "workExperience": "Yes - including volunteering and placements",
+      "lastUpdated": "2026-09-03",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "talking-therapies-employment",
+      "name": "Kirklees Talking Therapies Employment Advice",
+      "organisation": "South West Yorkshire Partnership NHS Foundation Trust (NHS Kirklees Talking Therapies)",
+      "status": "Live - open to referrals",
+      "open": true,
+      "audience": ["individual"],
+      "whoFor": "Kirklees Talking Therapies service users with common mental health conditions who want to find, keep or return to work.",
+      "age": "17+",
+      "webpage": "https://kirklees-talkingtherapies.nhs.uk/how-can-we-help-you/employment-advice/",
+      "email": "Kirklees.talkingtherapies@swyt.nhs.uk",
+      "phone": "01484 343700 (Monday to Friday, 8.30am-4.20pm)",
+      "social": ["https://www.facebook.com/Kirklees.TalkingTherapies/"],
+      "locations": ["Across Kirklees, via Kirklees Talking Therapies venues and remote appointments"],
+      "areas": ["Kirklees-wide", "Online"],
+      "eligibility": [
+        "Aged 17 or over, receiving or referred for Kirklees Talking Therapies treatment for a common mental health condition",
+        "Employment or career goals are part of their recovery - for example off work and anxious about returning, planning a phased return, at risk of losing work, looking for a first job, or wanting to change role"
+      ],
+      "exclusions": [
+        "Not a Kirklees Talking Therapies service user",
+        "Needs urgent mental health support - contact the Kirklees 24-hour Single Point of Access team on 01924 316830"
+      ],
+      "referralRoutes": ["Online self referral via the Talking Therapies assessment route", "Phone", "Via in-house teams - the therapist may invite the person to an employment advisor appointment", "Practitioner referral - health professionals via the information for professionals route"],
+      "selfReferral": { "allowed": "yes", "note": "Yes - self-refer to Talking Therapies by phone or online, then access employment advice through the service" },
+      "activities": [
+        { "name": "Integrated employment advice alongside therapy", "summary": "Employment advisors work jointly with therapists. One-to-one, client-led support on goals, CVs, gaps in employment, disclosure, applications and interviews, training needs, and an agreed action plan. Free and confidential. In person, by phone, video or the SilverCloud platform.", "duration": "Usually around six appointments, extended where needed" },
+        { "name": "Job retention and workplace support", "summary": "Helps people stay in work while managing mental health: reasonable adjustments, relationships at work, re-establishing contact with the workplace and phased returns.", "duration": "" }
+      ],
+      "workExperience": "No",
+      "lastUpdated": "2026-09-03",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "my-way-forward",
+      "name": "My Way Forward",
+      "organisation": "C+K Careers Ltd",
+      "status": "Live - open to referrals",
+      "open": true,
+      "audience": ["individual"],
+      "whoFor": "Young people in Kirklees aged 16-25 who need help moving towards education, training or work.",
+      "age": "16-25",
+      "webpage": "https://www.ckcareers.co.uk/services-for-adults/adult-contracts",
+      "email": "healthyworkinglife@ckcareers.org.uk",
+      "phone": "01484 213858",
+      "social": ["https://www.facebook.com/CKCareers", "https://www.instagram.com/ckcareers"],
+      "locations": ["Brian Jackson House, Huddersfield", "Community settings, e.g. Batley and Dewsbury Libraries"],
+      "areas": ["Huddersfield", "Batley", "Dewsbury"],
+      "eligibility": ["Aged 16 to 25", "Not in education, employment or training (NEET) with health concerns, including mental health"],
+      "exclusions": ["Claiming Universal Credit with a requirement to actively look for work"],
+      "referralRoutes": ["Email", "Phone", "Online form: https://www.ckcareers.co.uk/adult-team-contact-form"],
+      "selfReferral": { "allowed": "yes", "note": "Yes, via any route" },
+      "activities": [
+        { "name": "My Way Forward", "summary": "1:1 coaching on career opportunities, barriers and benefits; peer group sessions including social hubs and job clubs (online and in person); confidence and resilience activities; support to access health and wellbeing services; basic skills and job-specific training; volunteering and work experience; peer mentoring; and for some, job search, CV and interview help.", "duration": "Open-ended, depending on need" }
+      ],
+      "workExperience": "Yes",
+      "lastUpdated": "2025-11-13",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "p2p-proper-job",
+      "name": "Pathways to Possibilities (Proper Job Theatre Company)",
+      "organisation": "Proper Job Theatre Company Ltd",
+      "status": "Live - open to referrals",
+      "open": true,
+      "audience": ["individual"],
+      "whoFor": "Economically inactive Kirklees residents aged 18+, particularly people with health conditions or disabilities, who want to build skills and confidence and take a next step into learning, volunteering or work.",
+      "age": "18+",
+      "webpage": null,
+      "email": "engagement@properjob.org.uk",
+      "phone": "01484 514687 or 07716 639494",
+      "social": [],
+      "locations": ["Proper Job Theatre Company Ltd, 46/47 Byram Arcade, Westgate, Huddersfield HD1 1ND", "Community settings across Kirklees", "Remote support (a mix of face-to-face and remote)"],
+      "areas": ["Huddersfield", "Kirklees-wide", "Online"],
+      "eligibility": ["Lives in Kirklees", "Has the right to live and work in the UK", "Economically inactive (of working age), particularly with health conditions or disabilities"],
+      "exclusions": ["None specified - if the Trailblazer element is not suitable, the person will be supported via the most appropriate alternative option"],
+      "referralRoutes": ["Email P2P@kirklees.gov.uk", "Email the delivery partner programme address (to be confirmed)", "Phone"],
+      "selfReferral": { "allowed": "tbc", "note": "To be confirmed" },
+      "activities": [
+        { "name": "Pathways to Possibilities", "summary": "Three strands: health and wellbeing (confidence, resilience, social connections); engaging and building confidence for learning; and preparation for employment. Connects people to volunteering, learning and employment opportunities. 50 places available.", "duration": "Programme starts 1 September 2026; referrals close 1 March 2027. No fixed duration - flexible and person-centred" }
+      ],
+      "workExperience": "Yes - volunteering and work experience opportunities",
+      "notes": "Webpage and self-referral route still to be confirmed in the source document.",
+      "lastUpdated": "2026-09-02",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "p2p-fusion-housing",
+      "name": "Pathways to Possibilities (Fusion Housing)",
+      "organisation": "Fusion Housing",
+      "status": "Live - open to referrals",
+      "open": true,
+      "audience": ["individual"],
+      "whoFor": "Economically inactive Kirklees residents aged 18+, particularly people with health conditions or disabilities, who want to build skills and confidence and take a next step into learning, volunteering or work.",
+      "age": "18+",
+      "webpage": null,
+      "email": "diversion@fusionhousing.org.uk",
+      "phone": "01924 454770",
+      "social": [],
+      "locations": ["Fusion Housing Dewsbury Hub, Empire House, Wakefield Old Road, Dewsbury WF12 8DJ", "Community settings across Kirklees", "Remote support (a mix of face-to-face and remote)"],
+      "areas": ["Dewsbury", "Kirklees-wide", "Online"],
+      "eligibility": ["Lives in Kirklees", "Has the right to live and work in the UK", "Economically inactive (of working age), particularly with health conditions or disabilities"],
+      "exclusions": ["None specified - if the Trailblazer element is not suitable, the person will be supported via the most appropriate alternative option"],
+      "referralRoutes": ["Email P2P@kirklees.gov.uk", "Email the delivery partner programme address (to be confirmed)", "Phone"],
+      "selfReferral": { "allowed": "tbc", "note": "To be confirmed" },
+      "activities": [
+        { "name": "Pathways to Possibilities", "summary": "Three strands: health and wellbeing (confidence, resilience, social connections); engaging and building confidence for learning; and preparation for employment. Connects people to volunteering, learning and employment opportunities. 50 places available.", "duration": "Programme starts 1 September 2026; referrals close 1 March 2027. No fixed duration - flexible and person-centred" }
+      ],
+      "workExperience": "Yes - volunteering and work experience opportunities",
+      "notes": "Webpage and self-referral route still to be confirmed in the source document.",
+      "lastUpdated": "2026-09-02",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "real-employment",
+      "name": "REAL Employment",
+      "organisation": "Kirklees Council",
+      "status": "Live - open to referrals",
+      "open": true,
+      "audience": ["individual", "employer"],
+      "whoFor": "Kirklees adults aged 18 and over with learning disabilities, autism or additional needs seeking paid, sustainable employment.",
+      "age": "18+ (transitional support can start before 18th birthday)",
+      "webpage": "https://www.kirklees.gov.uk/beta/real-employment/index.aspx",
+      "email": null,
+      "phone": "01484 221581 (Monday to Friday, 8.30am-4.30pm)",
+      "social": [],
+      "locations": ["Civic Centre 3, High Street, Huddersfield, HD1 2TG", "Dewsbury Town Hall, Wakefield Old Road, Dewsbury, WF12 8DG"],
+      "areas": ["Huddersfield", "Dewsbury"],
+      "eligibility": [
+        "Lives in Kirklees and is aged 18 or over",
+        "Has a learning disability, is autistic, or has associated additional needs with a substantial adverse effect on day-to-day activities, lasting or expected to last 12 months or more",
+        "A formal medical diagnosis is not required"
+      ],
+      "exclusions": [
+        "Zero rejection policy - where REAL cannot meet a person's needs they signpost to appropriate services",
+        "Work experience placements are not offered as a standalone service"
+      ],
+      "referralRoutes": [
+        "Online self referral - simple form, around 5 minutes (a valid personal email address is needed): https://my.kirklees.gov.uk/service/Jobs___Contact_REAL_Employment",
+        "Referral by a family member, carer or professional using the same online form",
+        "Phone - speak to an advisor"
+      ],
+      "selfReferral": { "allowed": "yes", "note": "Yes, via the online form", "url": "https://my.kirklees.gov.uk/service/Jobs___Contact_REAL_Employment" },
+      "activities": [
+        { "name": "Supported employment and job matching", "summary": "Job Coach support to match interests and skills to a job the person wants, including job searching, applications and interview techniques. Training can be part of the journey.", "duration": "" },
+        { "name": "Employer support", "summary": "Works with employers who have vacancies to match candidates to the role and support the placement.", "duration": "" }
+      ],
+      "workExperience": "No - not offered as a standalone service",
+      "lastUpdated": "2026-08-03",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "supporting-working-carers",
+      "name": "Supporting Working Carers",
+      "organisation": "Carers Count Kirklees (delivered by Cloverleaf Advocacy)",
+      "status": "Live - open to referrals",
+      "open": true,
+      "audience": ["employer"],
+      "whoFor": "Kirklees employers supporting staff who have unpaid caring responsibilities, and working carers themselves (supported through their employer).",
+      "age": "Adults",
+      "webpage": "https://carerscountkirklees.org.uk/how-can-we-help/support-and-training/#employer-support",
+      "email": null,
+      "phone": "0300 012 0231",
+      "social": [],
+      "locations": ["Online - 30-minute awareness sessions and one-to-one Teams calls", "In person - employer forums (e.g. The Zone, Huddersfield) and employer drop-ins", "On site at employer premises by arrangement"],
+      "areas": ["Huddersfield", "Kirklees-wide", "Online"],
+      "eligibility": [
+        "Employers and organisations in Kirklees - managers, HR teams, mental health first aiders and anyone supporting staff wellbeing - who want to identify, engage, support and retain unpaid carers",
+        "Employees with unpaid caring responsibilities at risk of reducing hours or leaving work are supported indirectly through their employer"
+      ],
+      "exclusions": [],
+      "referralRoutes": ["Employer registration form (downloadable PDF)", "Email", "Online booking for awareness sessions, training and forums (Eventbrite)", "In person - via employer drop-ins"],
+      "selfReferral": { "allowed": "yes", "note": "Yes - employers can register directly via any route" },
+      "activities": [
+        { "name": "Employer awareness training", "summary": "A 30-minute online session on supporting employees who care, and to meet the team.", "duration": "30 minutes, repeating dates through the year" },
+        { "name": "One-to-one employer support", "summary": "A one-to-one Teams call, then tailored support to identify carers in the workforce and put practical policies and culture in place.", "duration": "Ongoing, tailored" },
+        { "name": "Employer forums", "summary": "Quarterly forums for peer learning and awareness raising.", "duration": "Quarterly, 1.5 to 2 hours" },
+        { "name": "Employer training session", "summary": "Free online training on legal duties and carers' rights, recognising and supporting carers, reducing discrimination risk and managing flexible working.", "duration": "90 minutes, repeating dates through the year" }
+      ],
+      "workExperience": "No",
+      "notes": "The source document lists named individuals' email addresses for this scheme; they are left out here until it is decided whether they should be public.",
+      "lastUpdated": "2026-08-03",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "wellness-to-work",
+      "name": "Wellness to Work",
+      "organisation": "Locala Community Partnerships CIC",
+      "status": "Live - open to referrals",
+      "open": true,
+      "audience": ["individual", "employer"],
+      "whoFor": "Kirklees residents aged 18 and over with a health condition or disability affecting their ability to get or keep a job.",
+      "age": "18+",
+      "webpage": "https://www.locala.org.uk/services/wellness-to-work",
+      "email": "wellnesstowork@locala.org.uk",
+      "phone": "07763 566360",
+      "social": [],
+      "locations": [
+        "Princess Royal Health Centre, Greenhead Rd, Huddersfield HD1 4EW",
+        "Batley Health Centre, 130 Upper Commercial St, Batley WF17 5ED",
+        "Dewsbury Health Centre, Wellington Road, Dewsbury WF13 1HN"
+      ],
+      "areas": ["Huddersfield", "Batley", "Dewsbury"],
+      "eligibility": [
+        "Aged 18 or over, living in Kirklees, with a health condition or disability affecting ability to get or keep a job",
+        "Out of work due to ill health, OR in work but at risk of falling out of work due to ill health (including musculoskeletal conditions and/or vocational rehabilitation needs)",
+        "Committed to remaining in or entering paid employment"
+      ],
+      "exclusions": [],
+      "referralRoutes": ["Online self referral: https://www.locala.org.uk/services/wellness-to-work", "Online - practitioner or employer referral", "In person - via events", "Via in-house teams"],
+      "selfReferral": { "allowed": "yes", "note": "Yes, via any route", "url": "https://www.locala.org.uk/services/wellness-to-work" },
+      "activities": [
+        { "name": "Wellness to Work", "summary": "A personalised holistic assessment of barriers (health, confidence, skills, general wellbeing), clinical triage where needed, and a dedicated Employment Navigator and health professional who build an action plan. Includes MSK fast-track physiotherapy and occupational therapy vocational rehabilitation. Connects people to partners such as Get Set Goal, Kirklees Active Leisure, Kirklees College and Third Sector Leaders.", "duration": "3-6 months, with coordination for up to 3 months afterwards, plus in-work support for people who get a job" }
+      ],
+      "workExperience": "No",
+      "lastUpdated": "2026-09-08",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "hwl-community-grants",
+      "name": "Healthy Working Life Community Grants Programme",
+      "organisation": "Kirklees Council Employment & Skills Service",
+      "status": "Future - not yet open to referrals. Grants awarded; no information on individual grant-funded schemes until awards are confirmed",
+      "open": false,
+      "audience": ["organisation"],
+      "whoFor": "Economically inactive Kirklees residents, reached through voluntary and community organisations funded by the programme. Grants go to VCSE and grassroots organisations, not individuals.",
+      "age": "Adults",
+      "webpage": null,
+      "email": "Trailblazer@kirklees.gov.uk",
+      "phone": null,
+      "social": [],
+      "locations": ["Community settings across Kirklees - hyperlocal delivery by VCSE and grassroots organisations"],
+      "areas": ["Kirklees-wide"],
+      "eligibility": ["Economically inactive residents, particularly those with health conditions or disabilities, and other priority groups"],
+      "exclusions": ["People who are in work or actively seeking work"],
+      "referralRoutes": ["Delivery is by funded VCSE and grassroots organisations; participant access routes will be confirmed once grants are awarded"],
+      "selfReferral": { "allowed": "tbc", "note": "To be confirmed following grant awards" },
+      "activities": [
+        { "name": "Community grants to VCSE and grassroots organisations", "summary": "Grants of 3,000 to 10,000 pounds for single organisations and up to 20,000 pounds for joint applications, funding community-based pre-employment and wellbeing activity. Organisations must be registered on the Kirklees Grant Access Point.", "duration": "Projects start by 1 October 2026 at the latest" }
+      ],
+      "workExperience": "Yes - where offered by funded projects",
+      "lastUpdated": "2026-08-03",
+      "reviewCycle": "Quarterly"
+    }
+  ]
+}
