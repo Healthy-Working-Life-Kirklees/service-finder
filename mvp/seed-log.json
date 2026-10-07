@@ -1,0 +1,85 @@
+{
+  "note": "Starter entries for the MVP issues and actions log. The log page offers to load these when the log is empty. No personal or identifying information in here.",
+  "items": [
+    {
+      "type": "Action", "area": "Data accuracy", "priority": "High", "owner": "Phil", "status": "Open",
+      "title": "Confirm partners are happy for their scheme details to be public",
+      "details": "The GitHub repo and the Pages site are public, and every card shows the scheme's contact details. The source (Kirklees HWL Pathways Aug 26 v2.1) is marked as a draft dated 15 Sept 2026. Check with the HWL team and delivery partners before sharing the link widely."
+    },
+    {
+      "type": "Action", "area": "Data accuracy", "priority": "High", "owner": "Phil", "status": "Open",
+      "title": "Review the four overdue scheme entries",
+      "details": "On a quarterly review cycle, but last updated: elevate 16 Oct 2025, My Way Forward 13 Nov 2025, CGL IPS 25 Nov 2025, SMI IPS 8 Dec 2025. Their cards show a 'check with the service first' warning. When confirmed, update lastUpdated in data/services.json."
+    },
+    {
+      "type": "Action", "area": "Safety", "priority": "High", "owner": "Phil", "status": "Open",
+      "title": "Confirm the urgent mental health number is still correct",
+      "details": "01924 316830 (Kirklees 24-hour Single Point of Access) comes from the Talking Therapies entry. It is shown in the footer of every page and in the crisis message. Please check it, and check the wording is right for your service."
+    },
+    {
+      "type": "Action", "area": "Process and governance", "priority": "High", "owner": "Phil", "status": "Open",
+      "title": "Get information governance advice before using this beyond the proof of concept",
+      "details": "Messages pass through Cloudflare to Anthropic's Claude API. The finder itself stores nothing, but both are third-party processors. Check retention terms and whether a DPIA is needed before real people use it."
+    },
+    {
+      "type": "Action", "area": "Data accuracy", "priority": "Medium", "owner": "Phil", "status": "Open",
+      "title": "Check Wellness Works was left out of v2.1 on purpose",
+      "details": "It appeared in the Dec 2025 pathways but is not in Aug 26 v2.1. The finder only knows what is in v2.1."
+    },
+    {
+      "type": "Action", "area": "Data accuracy", "priority": "Medium", "owner": "Phil", "status": "Open",
+      "title": "Decide whether the Supporting Working Carers contact emails can be public",
+      "details": "The source lists named individuals' email addresses. They are left out for now, so the card shows the phone number and web page only."
+    },
+    {
+      "type": "Issue", "area": "Data accuracy", "priority": "Medium", "owner": "", "status": "Open",
+      "title": "Pathways to Possibilities entries have gaps",
+      "details": "For both Proper Job and Fusion Housing the web page and the self-referral route are 'to be confirmed' in the source. The card says so honestly. Fill in once known."
+    },
+    {
+      "type": "Question", "area": "Matching quality", "priority": "Medium", "owner": "", "status": "Open",
+      "title": "Is it OK for the tool to ask about Universal Credit?",
+      "details": "My Way Forward does not take people on Universal Credit who must look for work, so the tool sometimes asks whether the person is claiming it. Is that appropriate to ask in a chat, or should it only flag the exclusion and let the person check with the service?"
+    },
+    {
+      "type": "Issue", "area": "Matching quality", "priority": "Medium", "owner": "", "status": "Open",
+      "title": "Keep testing awkward cases on Sonnet 5.5",
+      "details": "Switched to Claude Sonnet 5.5 on 7 Oct 2026 after Haiku slipped (invented a distance, mentioned schemes the person did not qualify for, muddled dates). Sonnet was much better in testing. Keep trying: under-18s, Universal Credit, crisis wording, mild versus severe mental health, employers, and people who give very little information."
+    },
+    {
+      "type": "Issue", "area": "Wording and content", "priority": "Low", "owner": "", "status": "Open",
+      "title": "Replies can be long and repeat what the cards show",
+      "details": "The prompt asks for two to four sentences, but some replies run longer and restate card content. Tighten prompt/system.md if testers find it tiring."
+    },
+    {
+      "type": "Idea", "area": "Matching quality", "priority": "Low", "owner": "", "status": "Open",
+      "title": "Area matching is town-level only",
+      "details": "It uses the nearest listed base (Huddersfield, Dewsbury, Batley, Colne Valley, Spen Valley). No postcode lookup, deliberately, for privacy. Revisit if testers find it too coarse."
+    },
+    {
+      "type": "Idea", "area": "Data accuracy", "priority": "Medium", "owner": "", "status": "Open",
+      "title": "Keep the data fresh automatically (phase 2)",
+      "details": "The vision includes monitoring service web pages. Not built yet. Idea: a scheduled check flags pages that have changed, for a human to review, rather than updating anything automatically."
+    },
+    {
+      "type": "Action", "area": "Technical", "priority": "Medium", "owner": "Phil", "status": "Open",
+      "title": "Watch Sonnet costs for a week",
+      "details": "Sonnet 5.5 costs about twice as much as Haiku. Safety nets: 100 chat requests a day across the whole tool, 10 a minute per person, and the spend limit on the Anthropic key. Check Console usage after a week of testing."
+    },
+    {
+      "type": "Action", "area": "Technical", "priority": "Low", "owner": "", "status": "Open",
+      "title": "Remove the error detail from failed chat responses",
+      "details": "The Worker adds Anthropic's error message to failed responses, to help diagnose problems. It never includes anything a user typed, but it is not needed once things are stable."
+    },
+    {
+      "type": "Action", "area": "Process and governance", "priority": "Medium", "owner": "Phil", "status": "Open",
+      "title": "Take the help page and this log out of the wider test version",
+      "details": "Set the repository variable MVP_TOOLS to false (or delete it), re-run the Pages deploy, and delete the TEAM_PASSCODE secret on the Worker. The pages and the team links then disappear."
+    },
+    {
+      "type": "Action", "area": "Technical", "priority": "High", "owner": "Phil", "status": "Done",
+      "title": "Set a monthly spend limit on the Anthropic key",
+      "details": "Done on 7 Oct 2026."
+    }
+  ]
+}

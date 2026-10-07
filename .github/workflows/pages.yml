@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "site/**"
+      - "mvp/**"
       - "data/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
@@ -30,12 +31,21 @@ jobs:
       - name: Assemble the site
         env:
           WORKER_URL: ${{ vars.WORKER_URL }}
+          MVP_TOOLS: ${{ vars.MVP_TOOLS }}
         run: |
           mkdir _site
           cp -r site/. _site/
           cp data/services.json _site/services.json
-          # Tell the page where the Worker is (repository variable WORKER_URL).
-          printf 'window.FINDER_CONFIG = { apiBase: %s };\n' "$(jq -Rn --arg v "$WORKER_URL" '$v')" > _site/config.js
+          # The help page and issues log are for the MVP team only. They are included only when the
+          # repository variable MVP_TOOLS is exactly "true". Leave it unset or "false" for the wider test.
+          MVP=false
+          if [ "$MVP_TOOLS" = "true" ]; then
+            MVP=true
+            cp -r mvp _site/mvp
+            rm -f _site/mvp/README.md
+          fi
+          # Tell the page where the Worker is and whether the MVP tools are on.
+          printf 'window.FINDER_CONFIG = %s;' "$(jq -cn --arg api "$WORKER_URL" --argjson mvp "$MVP" '{apiBase: $api, mvpTools: $mvp}')" > _site/config.js
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

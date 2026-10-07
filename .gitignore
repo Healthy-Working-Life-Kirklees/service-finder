@@ -4,3 +4,4 @@ node_modules/
 .env
 *.log
 _site/
+worker/src/.under-test.mjs

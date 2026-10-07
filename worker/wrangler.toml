@@ -34,6 +34,23 @@ period = 60
 name = "CAP_COUNTER"
 class_name = "DailyCap"
 
+# MVP-team issues log (only active if the TEAM_PASSCODE secret is set).
+[[durable_objects.bindings]]
+name = "LOG_STORE"
+class_name = "LogStore"
+
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["DailyCap"]
+
+[[migrations]]
+tag = "v2"
+new_sqlite_classes = ["LogStore"]
+
+# Rate limit for the team log routes.
+[[ratelimits]]
+name = "LOG_LIMITER"
+namespace_id = "7302"
+[ratelimits.simple]
+limit = 60
+period = 60

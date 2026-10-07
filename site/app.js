@@ -245,5 +245,11 @@
     .then((d) => { services = new Map(d.services.map((s) => [s.id, s])); })
     .catch(() => bubble('error', 'Could not load the service information. Please refresh the page.'));
 
+  // MVP team links: only present when the deploy switched the MVP tools on.
+  if (window.FINDER_CONFIG && window.FINDER_CONFIG.mvpTools) {
+    document.body.prepend(el('nav', { class: 'teambar', 'aria-label': 'MVP team' },
+      el('div', { class: 'wrap' }, el('strong', { text: 'MVP team only' }), el('a', { href: 'mvp/help.html', text: 'Help' }), el('a', { href: 'mvp/log.html', text: 'Issues and actions log' }))));
+  }
+
   welcome();
 })();

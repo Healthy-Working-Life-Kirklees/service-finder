@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.workers.dev; base-uri 'none'; form-action 'none'">
+  <title>Issues and actions log | Kirklees HWL Service Finder</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="mvp.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to the content</a>
+
+  <nav class="teambar" aria-label="MVP team">
+    <div class="wrap">
+      <strong>MVP team only</strong>
+      <a href="../">Service Finder</a>
+      <a href="help.html">Help</a>
+      <a href="log.html" aria-current="page">Issues and actions log</a>
+    </div>
+  </nav>
+
+  <header class="site-header">
+    <div class="wrap">
+      <h1>Issues and actions log<br><span>Kirklees Healthy Working Life Service Finder</span></h1>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <p class="mvp-banner"><strong>For the MVP team only.</strong> Please keep entries free of personal or identifying information. Made-up test wording is fine. <a href="help.html#report">How to write a good entry</a>.</p>
+
+    <!-- passcode gate -->
+    <section id="gate" class="gate">
+      <h2 class="mt0">Enter the team passcode</h2>
+      <div class="field">
+        <label for="pass">Passcode</label>
+        <input id="pass" type="password" autocomplete="off">
+      </div>
+      <button id="unlock" class="btn primary" type="button">Open the log</button>
+      <p id="gate-msg" class="msg err" role="alert" hidden></p>
+      <p>Don't have it? Ask Phil. It's kept in your browser tab only until you close it.</p>
+    </section>
+
+    <!-- the log -->
+    <section id="app" hidden>
+      <div class="toolbar">
+        <button id="new" class="btn primary small" type="button">Add an entry</button>
+        <button id="refresh" class="btn secondary small" type="button">Refresh</button>
+        <button id="export" class="btn secondary small" type="button">Download as CSV</button>
+        <button id="lock" class="btn secondary small" type="button">Lock</button>
+      </div>
+
+      <p id="status-msg" class="msg" role="status" hidden></p>
+
+      <form id="form" class="entry" hidden>
+        <h2 class="mt0">New entry</h2>
+        <div class="field row">
+          <div>
+            <label for="f-type">Type</label>
+            <select id="f-type"></select>
+          </div>
+          <div>
+            <label for="f-area">Area</label>
+            <select id="f-area"></select>
+          </div>
+          <div>
+            <label for="f-priority">Priority</label>
+            <select id="f-priority"></select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-title">Title</label>
+          <input id="f-title" class="w100" type="text" maxlength="120" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="f-details">Details</label>
+          <textarea id="f-details" rows="6" maxlength="4000" placeholder="What you typed (made-up), what you expected, what you got."></textarea>
+        </div>
+        <div class="field">
+          <label for="f-owner">Owner (optional, first name or initials)</label>
+          <input id="f-owner" type="text" maxlength="40" autocomplete="off">
+        </div>
+        <div class="toolbar">
+          <button class="btn primary small" type="submit">Save entry</button>
+          <button id="cancel" class="btn secondary small" type="button">Cancel</button>
+        </div>
+      </form>
+
+      <div id="starter" class="msg info" hidden>
+        <p class="mb-sm">The log is empty. Load the starter list of open questions and actions from the build so far? You can edit or close any of them.</p>
+        <button id="load-starter" class="btn primary small" type="button">Load the starter list</button>
+      </div>
+
+      <div id="summary" class="summary" aria-live="polite"></div>
+
+      <div class="filters">
+        <div><label for="flt-status">Show</label>
+          <select id="flt-status">
+            <option value="active">Open and in progress</option>
+            <option value="all">Everything</option>
+            <option value="closed">Done and won't do</option>
+          </select></div>
+        <div><label for="flt-type">Type</label><select id="flt-type"><option value="">All</option></select></div>
+        <div><label for="flt-area">Area</label><select id="flt-area"><option value="">All</option></select></div>
+        <div><label for="flt-priority">Priority</label><select id="flt-priority"><option value="">All</option></select></div>
+        <div><label for="flt-q">Search</label><input id="flt-q" type="search" autocomplete="off"></div>
+      </div>
+
+      <div id="list" class="entries"></div>
+      <p id="empty-filter" class="msg info" hidden>Nothing matches those filters.</p>
+
+      <div class="field mt-lg">
+        <label for="by">Your initials (added to your notes and changes)</label>
+        <input id="by" type="text" maxlength="40" autocomplete="off">
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><strong>In an emergency call 999.</strong> For urgent mental health support in Kirklees, call the 24-hour Single Point of Access team on <a href="tel:01924316830">01924 316830</a> or call NHS 111.</p>
+    </div>
+  </footer>
+
+  <script src="../config.js"></script>
+  <script src="log.js" defer></script>
+</body>
+</html>

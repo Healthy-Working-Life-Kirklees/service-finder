@@ -48,3 +48,30 @@ Edit `data/services.json` or `prompt/system.md` and push to `main`. Both workflo
     bash test/smoke.sh
 
 The mock stands in for the Anthropic API, so no real key or spend is involved.
+
+## MVP team tools (help page and issues log)
+
+For the initial MVP team only, not for the wider test.
+
+- `mvp/help.html` is a help page for testers: how to use the finder, scenarios to try, what good looks like, known limits, and a table of the scheme data with overdue entries flagged.
+- `mvp/log.html` is a shared issues and actions log. Entries are stored on the Worker (one Durable Object), not in the repo, and are protected by a shared passcode. Add, filter, search, change status and priority, set an owner, add notes, and download everything as CSV. If the log is empty it offers to load the starter list in `mvp/seed-log.json`.
+- Both pages are deployed only when the repository variable `MVP_TOOLS` is exactly `true`. When it is, the main page also shows a small "MVP team only" bar linking to them.
+
+**Switch on:**
+1. Cloudflare dashboard > Workers & Pages > hwl-service-finder > Settings > Variables and Secrets: add a **secret** called `TEAM_PASSCODE` (a long passphrase, 16+ characters). Share it with the team directly, not by chat or email to people outside the team.
+2. GitHub repo > Settings > Secrets and variables > Actions > Variables: add `MVP_TOOLS` = `true`.
+3. Re-run "Deploy site to GitHub Pages".
+
+**Switch off (for the wider test):**
+1. Set `MVP_TOOLS` to `false` (or delete it) and re-run the Pages deploy. The pages and the links disappear.
+2. Delete the `TEAM_PASSCODE` secret. The log routes then return 404.
+3. Export the log first if you want to keep it (Download as CSV on the log page).
+
+The log must never hold personal or identifying information.
+
+## Tests
+
+    node worker/test/logic.mjs     # Worker logic, offline (model handling, guards, crisis backstop, team log)
+    bash test/run-ui.sh            # headless-browser test of the pages, with MVP tools on and off (needs Docker)
+    python3 worker/test/live_chat.py   # real conversations against the live Worker (spends a few pence)
+

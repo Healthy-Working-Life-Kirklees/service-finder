@@ -1,7 +1,6 @@
 // Local logic test for the Worker (no network, no Cloudflare). Run: node worker/test/logic.mjs
 import fs from 'node:fs';
 import path from 'node:path';
-import os from 'node:os';
 import { pathToFileURL } from 'node:url';
 
 const root = path.resolve(new URL('../..', import.meta.url).pathname);
@@ -10,9 +9,11 @@ let src = fs.readFileSync(path.join(root, 'worker/src/index.js'), 'utf8');
 src = src
   .replace("import data from '../../data/services.json';", `const data = JSON.parse(${JSON.stringify(fs.readFileSync(path.join(root, 'data/services.json'), 'utf8'))});`)
   .replace("import SYSTEM_PROMPT from '../../prompt/system.md';", `const SYSTEM_PROMPT = ${JSON.stringify(fs.readFileSync(path.join(root, 'prompt/system.md'), 'utf8'))};`);
-const tmp = path.join(os.tmpdir(), 'worker-under-test.mjs');
+const tmp = path.join(root, 'worker/src/.under-test.mjs'); // inside src/ so './teamlog.js' resolves; git-ignored
 fs.writeFileSync(tmp, src);
-const worker = (await import(pathToFileURL(tmp).href)).default;
+const mod = await import(pathToFileURL(tmp).href);
+const worker = mod.default;
+process.on('exit', () => fs.rmSync(tmp, { force: true }));
 
 const O = 'https://healthy-working-life-kirklees.github.io';
 let sent = null;
@@ -82,6 +83,71 @@ r = await call('claude-sonnet-5-5', { messages: [{ role: 'user', content: 'I can
 check('crisis backstop: curly apostrophe also caught', r.body.safety_concern === true);
 r = await call('claude-sonnet-5-5', { messages: [{ role: 'user', content: 'I want help with my CV and interviews' }] });
 check('crisis backstop: ordinary message not flagged', r.body.safety_concern === false && r.body.recommendations.length > 0, JSON.stringify(r.body));
+
+// ----- Team issues log -----
+const mkStore = () => {
+  const mem = new Map();
+  const storage = {
+    get: async (k) => mem.get(k),
+    put: async (k, v) => { mem.set(k, v); },
+    list: async ({ prefix }) => new Map([...mem.entries()].filter(([k]) => k.startsWith(prefix)).sort(([a], [b]) => a.localeCompare(b))),
+  };
+  return new mod.LogStore({ storage });
+};
+let store = mkStore();
+const PASS = 'correct horse battery';
+const logEnv = (extra = {}) => ({
+  ...env('claude-sonnet-5-5'),
+  TEAM_PASSCODE: PASS,
+  LOG_STORE: { idFromName: () => 'x', get: () => ({ fetch: (u, init) => store.fetch(new Request(u, init)) }) },
+  ...extra,
+});
+const logCall = async (method, p, body, { pass = PASS, e = logEnv(), origin = O } = {}) => {
+  const headers = { 'content-type': 'application/json' };
+  if (origin) headers.Origin = origin;
+  if (pass !== null) headers['x-team-passcode'] = pass;
+  const res = await worker.fetch(new Request('https://w' + p, { method, headers, body: body ? JSON.stringify(body) : undefined }), e);
+  return { status: res.status, body: await res.json() };
+};
+
+r = await logCall('GET', '/log/items', null, { e: { ...logEnv(), TEAM_PASSCODE: undefined } });
+check('log: feature off when no TEAM_PASSCODE secret (404)', r.status === 404);
+r = await logCall('GET', '/log/items', null, { pass: 'nope' });
+check('log: wrong passcode -> 401', r.status === 401);
+r = await logCall('GET', '/log/items', null, { pass: null });
+check('log: missing passcode -> 401', r.status === 401);
+r = await logCall('GET', '/log/items', null, { origin: null });
+check('log: wrong/missing Origin -> 403', r.status === 403);
+r = await logCall('GET', '/log/items');
+check('log: empty list', r.status === 200 && r.body.items.length === 0);
+
+r = await logCall('POST', '/log/items', { type: 'Bogus', title: 'Elevate card shows wrong phone', details: 'Seen on test #1', area: 'Data accuracy', priority: 'High', owner: 'Phil' });
+check('log: create -> 201, id 1, status Open, bad type falls back to Issue', r.status === 201 && r.body.item.id === 1 && r.body.item.status === 'Open' && r.body.item.type === 'Issue', JSON.stringify(r.body));
+r = await logCall('POST', '/log/items', { title: 'ab' });
+check('log: too-short title -> 400', r.status === 400);
+r = await logCall('POST', '/log/items', { type: 'Action', title: 'Check the overdue entries' });
+check('log: second item gets id 2, default area/priority', r.body.item.id === 2 && r.body.item.area === 'Other' && r.body.item.priority === 'Medium');
+
+r = await logCall('PATCH', '/log/items/1', { status: 'Done', update: 'Fixed in the data file', by: 'PL' });
+check('log: patch status + update note', r.status === 200 && r.body.item.status === 'Done' && r.body.item.updates.length === 2 && r.body.item.updates[0].text.includes('Open to Done'), JSON.stringify(r.body));
+r = await logCall('PATCH', '/log/items/1', { status: 'Whatever' });
+check('log: unknown status -> 400', r.status === 400);
+r = await logCall('PATCH', '/log/items/99', { status: 'Done' });
+check('log: unknown id -> 404', r.status === 404);
+r = await logCall('GET', '/log/items');
+check('log: list returns both, in id order', r.body.items.map((x) => x.id).join() === '1,2');
+
+r = await logCall('POST', '/log/import', { items: [{ title: 'Starter one' }] });
+check('log: import refused when log not empty', r.body.imported === 0);
+store = mkStore();
+r = await logCall('POST', '/log/import', { items: [{ title: 'Starter one', type: 'Action', status: 'Done' }, { title: 'x' }, { title: 'Starter two', area: 'Safety' }] });
+check('log: import into empty log keeps valid entries only', r.body.imported === 2, JSON.stringify(r.body));
+r = await logCall('GET', '/log/items');
+check('log: imported statuses/areas kept', r.body.items[0].status === 'Done' && r.body.items[1].area === 'Safety');
+
+// preflight allows the passcode header and PATCH
+const pre = await worker.fetch(new Request('https://w/log/items', { method: 'OPTIONS', headers: { Origin: O } }), logEnv());
+check('log: preflight allows x-team-passcode and PATCH', pre.status === 204 && pre.headers.get('Access-Control-Allow-Headers').includes('x-team-passcode') && pre.headers.get('Access-Control-Allow-Methods').includes('PATCH'));
 
 console.log(`passed=${pass} failed=${fail}`);
 process.exit(fail ? 1 : 0);

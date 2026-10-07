@@ -13,6 +13,10 @@
 
 import data from '../../data/services.json';
 import SYSTEM_PROMPT from '../../prompt/system.md';
+import { handleLog } from './teamlog.js';
+
+// The team issues log lives in its own Durable Object class (see teamlog.js).
+export { LogStore } from './teamlog.js';
 
 const MODE_NOTES = {
   public:
@@ -116,15 +120,17 @@ export default {
     const cors = originOk
       ? {
           'Access-Control-Allow-Origin': origin,
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'content-type',
+          'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
+          'Access-Control-Allow-Headers': 'content-type, x-team-passcode',
           'Access-Control-Max-Age': '600',
           Vary: 'Origin',
         }
       : { Vary: 'Origin' };
 
     if (request.method === 'OPTIONS') return new Response(null, { status: originOk ? 204 : 403, headers: cors });
-    if (url.pathname === '/health') return json({ ok: true, aiConfigured: Boolean(env.ANTHROPIC_API_KEY) }, 200, cors);
+    if (url.pathname === '/health') return json({ ok: true, aiConfigured: Boolean(env.ANTHROPIC_API_KEY), teamLog: Boolean(env.TEAM_PASSCODE) }, 200, cors);
+    // MVP-team issues log: off unless the TEAM_PASSCODE secret is set.
+    if (url.pathname.startsWith('/log/')) return originOk ? handleLog(request, env, url, cors) : json({ error: 'Not allowed.' }, 403, cors);
     if (url.pathname !== '/chat' || request.method !== 'POST') return json({ error: 'Not found.' }, 404, cors);
     if (!originOk) return json({ error: 'Not allowed.' }, 403, cors);
     if (!env.ANTHROPIC_API_KEY) return json({ error: 'The AI service is not configured yet.' }, 503, cors);

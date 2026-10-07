@@ -1,1 +1,1 @@
-window.FINDER_CONFIG = { apiBase: "" };
+window.FINDER_CONFIG = { apiBase: "", mvpTools: false };
