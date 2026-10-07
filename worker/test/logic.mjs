@@ -74,5 +74,14 @@ check('guard: ips-cgl dropped when not mentioned', r.body.recommendations.map((x
 r = await call('claude-sonnet-5-5', { messages: [{ role: 'user', content: 'My client is in treatment with CGL for alcohol use' }] });
 check('guard: ips-cgl kept when mentioned', r.body.recommendations.map((x) => x.id).join() === 'ips-cgl,wellness-to-work', JSON.stringify(r.body.recommendations));
 
+// Crisis backstop: flag set by wording even if the model forgets
+reply = tool({ message: 'I am sorry you feel this way.', recommendations: [{ id: 'wellness-to-work', why: 'x' }], safety_concern: false });
+r = await call('claude-sonnet-5-5', { messages: [{ role: 'user', content: "I can't see the point anymore and I don't want to be here." }] });
+check('crisis backstop: flag true, no cards', r.body.safety_concern === true && r.body.recommendations.length === 0, JSON.stringify(r.body));
+r = await call('claude-sonnet-5-5', { messages: [{ role: 'user', content: 'I can' + String.fromCharCode(8217) + 't see the point of my CV' }] });
+check('crisis backstop: curly apostrophe also caught', r.body.safety_concern === true);
+r = await call('claude-sonnet-5-5', { messages: [{ role: 'user', content: 'I want help with my CV and interviews' }] });
+check('crisis backstop: ordinary message not flagged', r.body.safety_concern === false && r.body.recommendations.length > 0, JSON.stringify(r.body));
+
 console.log(`passed=${pass} failed=${fail}`);
 process.exit(fail ? 1 : 0);

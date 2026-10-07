@@ -21,6 +21,9 @@ const MODE_NOTES = {
     'MODE: The person is a frontline worker or partner helping someone else. Be concise and practical. In "why", flag the key eligibility or exclusion points the referrer should check, and mention the best referral route.',
 };
 
+// Backstop for the most obvious crisis wording, so the crisis panel never depends on the model alone.
+const CRISIS_RE = /suicid|kill myself|killing myself|end my life|take my own life|want to die|wanna die|self[- ]harm|hurt myself|harm myself|better off dead|better off without me|can't see the point|cant see the point|don't want to be here|dont want to be here|no point (in )?(going on|living|anymore|any more)/i;
+
 const SERVICES = data.services;
 const IDS = SERVICES.map((s) => s.id);
 const ID_SET = new Set(IDS);
@@ -209,7 +212,8 @@ Today's date: ${new Date().toISOString().slice(0, 10)}.` },
     }
     const userText = messages.filter((m) => m.role === 'user').map((m) => m.content).join(' ');
     const seen = new Set();
-    const safety = input.safety_concern === true;
+    const lastUser = String(messages[messages.length - 1].content).split(String.fromCharCode(8217)).join("'");
+    const safety = input.safety_concern === true || CRISIS_RE.test(lastUser);
     const recommendations = safety
       ? []
       : (Array.isArray(input.recommendations) ? input.recommendations : [])
