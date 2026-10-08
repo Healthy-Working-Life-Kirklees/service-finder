@@ -71,6 +71,23 @@
           "details": "Cards currently show one 'last checked' date, taken from the source document. Once automatic checks run, show two dates and be clear about which is which, so people aren't misled by an automatic check that couldn't see eligibility changes."
         }
       ]
+    },
+    {
+      "id": "urgent-support-2026-10-08",
+      "title": "Urgent support: contacts for each kind of urgent support.",
+      "note": "The finder now recognises medical, mental health crisis, domestic abuse, child safeguarding and adult safeguarding. Only the first two have specific contacts.",
+      "items": [
+        {
+          "type": "Action", "area": "Safety", "priority": "High", "owner": "Phil",
+          "title": "Add checked support contacts for domestic abuse, child safeguarding and adult safeguarding",
+          "details": "When the finder spots one of these, it shows 999 and NHS 111 only, because no specific helplines have been checked yet. They are not to be taken from a general web search.\n\nNeeded: for each of the three, the right Kirklees (or national) service, its phone number and opening hours, checked from an official source such as the council or the service itself, and agreed with whoever signs off safeguarding for the programme. Then add each one as a whole sentence to URGENT_CONTACTS in site/app.js. Until then the panel is safe but generic."
+        },
+        {
+          "type": "Question", "area": "Safety", "priority": "Medium", "owner": "Phil",
+          "title": "Urgent replies show no scheme cards: is that right for domestic abuse and safeguarding?",
+          "details": "Decision so far: whenever the finder spots urgent support, it shows no scheme cards and asks no questions, whatever the kind. That is the cautious choice. A person facing domestic abuse who has also lost their job might still want to see employment support, so this could be loosened for some kinds later. Needs a view from whoever signs off safeguarding."
+        }
+      ]
     }
   ]
 }

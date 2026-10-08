@@ -32,6 +32,14 @@ TESTS = [
      "Tell me about the community grants programme, can I apply for one?"),
     ("public", "adult, out of work, health condition, Dewsbury (no substance use / age mentioned)",
      "Is there anything for adults who are out of work with a health condition in Dewsbury? What's new?"),
+    ("public", "domestic abuse (urgent: no cards, no questions)",
+     "My partner hurts me when he's angry and I'm scared to go home. I've lost my job too."),
+    ("public", "college student (gate: Kirklees College hub should appear)",
+     "I'm a student at Kirklees College and my anxiety is making it hard to keep up. I'm in Huddersfield."),
+    ("public", "vague (should ask a follow-up question and return no cards)",
+     "I need some help."),
+    ("public", "Talking Therapies gate unclear (should be 'possible' with something to check)",
+     "I'm off work with low mood and I'd like some help getting back to work. I'm in Batley."),
 ]
 
 picked = [int(a) for a in sys.argv[1:]] or list(range(1, len(TESTS) + 1))
@@ -53,7 +61,11 @@ for n in picked:
             print("ERROR:", r)
         else:
             print("A:", r["message"])
-            print("safety:", r["safety_concern"])
+            print("status:", r.get("status"), "| urgent:", r["safety_concern"], r.get("urgent_types"), "| pii:", r.get("pii_detected"))
+            if r.get("understood_needs"):
+                print("understood:", "; ".join(r["understood_needs"]))
+            for q in r.get("follow_up_questions", []):
+                print("  ? ", q)
             for x in r["recommendations"]:
-                print("  ->", x["id"], "|", x["why"])
+                print("  ->", x["id"], f'[{x.get("fit")}]', "|", x["why"], "| check first:", x.get("check_first") or "-")
         time.sleep(3)

@@ -49,6 +49,9 @@ fieldset.mode input { width: 1.4rem; height: 1.4rem; margin-top: .15rem; accent-
 
 .crisis { background: var(--crisis-bg); border-left: 6px solid #d5281b; color: var(--crisis); padding: .75rem 1rem; margin: .75rem 0 0; font-weight: 700; }
 .crisis a { color: var(--crisis); }
+.crisis p { margin: 0 0 .5rem; }
+.crisis p:last-child { margin-bottom: 0; }
+.bubble p.understood, .bubble p.pii-note { font-size: .95rem; color: var(--grey); }
 
 .cards { display: flex; flex-direction: column; gap: 1rem; margin-top: .9rem; }
 .card { background: #fff; border: 1px solid var(--border); border-top: 4px solid var(--blue); border-radius: 4px; padding: 1rem; color: var(--text); }
@@ -59,7 +62,10 @@ fieldset.mode input { width: 1.4rem; height: 1.4rem; margin-top: .15rem; accent-
 .badge.live { background: #d9efe2; color: #00562a; }
 .badge.notopen { background: var(--warn-bg); color: var(--warn); }
 .badge.self { background: #dbe9f7; color: var(--dark-blue); }
+.badge.fit-strong { background: var(--dark-blue); color: #fff; }
+.badge.fit-possible { background: #fff; color: var(--text); border: 1px solid var(--grey); }
 .card .why { margin: 0 0 .6rem; font-weight: 700; }
+.card .check { margin: 0 0 .6rem; }
 .card .whofor { margin: 0 0 .75rem; }
 .card h4 { margin: .8rem 0 .25rem; font-size: 1rem; }
 .card ul { margin: 0; padding-left: 1.2rem; }

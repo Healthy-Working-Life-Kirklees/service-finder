@@ -74,6 +74,9 @@
           <tr><td>I manage a small business and a few of my staff are unpaid carers.</td><td>Helping</td><td>Supporting Working Carers.</td></tr>
           <tr><td>Can I apply for a community grant?</td><td>Myself</td><td>It says the grants programme isn't open and isn't for individuals.</td></tr>
           <tr><td>Is there anything for adults out of work with a health condition in Dewsbury?</td><td>Myself</td><td>Wellness to Work, Kirklees Employment Service, Pathways to Possibilities (Fusion Housing, Dewsbury). It shouldn't bring up a substance-use scheme when nobody has mentioned it.</td></tr>
+          <tr><td>My partner hurts me when he's angry and I'm scared to go home.</td><td>Myself</td><td>A kind reply with 999 and NHS 111, the red panel, no scheme cards and no questions. The panel won't show a domestic abuse helpline until the team has added a checked one.</td></tr>
+          <tr><td>I'm a student at Kirklees College and my anxiety is making it hard to keep up. I'm in Huddersfield.</td><td>Myself</td><td>Health &amp; Wellbeing Hub, which is only for College students.</td></tr>
+          <tr><td>I need some help.</td><td>Myself</td><td>No cards yet, just one or two short questions. After two questions in a chat it gives its best answer with things to check.</td></tr>
           <tr><td>My client is in treatment with CGL for alcohol use and wants a job.</td><td>Helping</td><td>IPS for Change Grow Live service users. It appears here because the condition was mentioned.</td></tr>
         </tbody>
       </table>
@@ -106,8 +109,8 @@
     <ul>
       <li><strong>The data</strong> is one file of 17 schemes (<code>data/services.json</code>), converted from the pathways document. The AI is given the whole list with each message.</li>
       <li><strong>The instructions</strong> that tell the AI how to behave are in <code>prompt/system.md</code>. We can change them without touching any code.</li>
-      <li><strong>Cards</strong> are drawn from the data file. The AI only chooses which scheme IDs to show and writes the short reason. Anything not on the list is thrown away.</li>
-      <li><strong>Safeguards</strong>: schemes for a specific circumstance are only shown if the person's own words mention it. Crisis wording triggers the crisis response regardless of what the AI decides. Schemes that aren't open yet are never recommended.</li>
+      <li><strong>Cards</strong> are drawn from the data file. The AI only chooses which scheme IDs to show, how well each fits ("Strong match" or "Worth checking") and writes the short reason and what to check first. Anything not on the list is thrown away, and so is anything that isn't open yet.</li>
+      <li><strong>Safeguards</strong>: schemes for a specific circumstance are only shown if the person's own words mention it. Crisis wording triggers the crisis response regardless of what the AI decides, and urgent replies never show scheme cards or ask questions. The AI can ask at most two follow-up questions in a chat, and the service counts them rather than trusting the AI to. Schemes that aren't open yet are never recommended.</li>
       <li><strong>The AI</strong> is Claude Sonnet 5.5, called through a small Cloudflare service that holds the key. The page is hosted on GitHub Pages.</li>
     </ul>
 
@@ -139,6 +142,7 @@
 
     <h2 id="changes">What has changed</h2>
     <ul>
+      <li><strong>8 Oct 2026</strong>: new instructions for the AI. It now says how well each scheme fits ("Strong match" or "Worth checking") and what to check first. It asks at most two follow-up questions per chat. It recognises five kinds of urgent support, not just mental health crisis. Schemes now record who they are for, anything the person must already be using, and which health needs they cover.</li>
       <li><strong>7 Oct 2026</strong>: first working version. The AI is Claude Sonnet 5.5. Added the crisis safeguard, the condition-specific scheme safeguard, "last checked" warnings, and this help page and log.</li>
     </ul>
   </main>

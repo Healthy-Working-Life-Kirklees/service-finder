@@ -22,7 +22,7 @@ const MODE_NOTES = {
   public:
     'MODE: The person is looking for support for themselves or a family member. Use plain, friendly language (reading age around 11) and explain any jargon. Lead with how they can refer themselves.',
   staff:
-    'MODE: The person is a frontline worker or partner helping someone else. Be concise and practical. In "why", flag the key eligibility or exclusion points the referrer should check, and mention the best referral route.',
+    'MODE: The person is a frontline worker or partner helping someone else. Be concise and practical. In "reason" and "check_first", flag the key eligibility or exclusion points the referrer should check, and mention the best referral route.',
 };
 
 // Backstop for the most obvious crisis wording, so the crisis panel never depends on the model alone.
@@ -31,10 +31,25 @@ const CRISIS_RE = /suicid|kill myself|killing myself|end my life|take my own lif
 const SERVICES = data.services;
 const IDS = SERVICES.map((s) => s.id);
 const ID_SET = new Set(IDS);
+// Only schemes that are open to referrals can ever be shown as cards.
+const OPEN_SET = new Set(SERVICES.filter((s) => s.open === true).map((s) => s.id));
 // Schemes built for a specific circumstance are only shown if the person's own words mention it.
 const MENTION = new Map(
   SERVICES.filter((s) => Array.isArray(s.requiresMention) && s.requiresMention.length).map((s) => [s.id, new RegExp(s.requiresMention.join('|'), 'i')])
 );
+
+// The model may ask at most this many follow-up questions across a whole conversation. The page writes
+// "(Follow-up questions asked: N)" into the history after a reply that asked questions, and the Worker
+// counts those, so the limit does not depend on the model keeping count.
+const MAX_QUESTIONS = 2;
+const ASKED_RE = /\(Follow-up questions asked: (\d+)\)/g;
+const URGENT_TYPES = ['medical', 'mental_health_crisis', 'domestic_abuse', 'child_safeguarding', 'adult_safeguarding'];
+
+function questionsAsked(messages) {
+  let n = 0;
+  for (const m of messages) if (m.role === 'assistant') for (const x of m.content.matchAll(ASKED_RE)) n += Number(x[1]) || 0;
+  return Math.min(n, MAX_QUESTIONS);
+}
 
 // ---------- global daily counter (holds a date and a number, nothing else) ----------
 export class DailyCap {
@@ -79,34 +94,43 @@ function validateMessages(messages) {
   return out;
 }
 
-function respondTool() {
+function respondTool(questionsLeft) {
+  const properties = {
+    status: {
+      type: 'string',
+      enum: questionsLeft > 0 ? ['results', 'needs_more_info'] : ['results'],
+      description: 'results = you are giving your answer (matches may be empty). needs_more_info = you are asking a follow-up question and returning no matches.',
+    },
+    message: { type: 'string', description: 'Your reply to the person in plain text (no markdown). Short. If you are asking a question, it goes here too.' },
+    urgent_support: { type: 'boolean', description: 'True only if the text suggests a medical emergency, suicidal thoughts, self-harm, abuse, domestic violence, or anyone at risk of serious harm.' },
+    urgent_types: { type: 'array', items: { type: 'string', enum: URGENT_TYPES }, description: 'The kinds of urgent support. Empty unless urgent_support is true.' },
+    pii_detected: { type: 'boolean', description: 'True if the text contains a name, address, phone number, date of birth or NHS number.' },
+    understood_needs: { type: 'array', maxItems: 5, items: { type: 'string' }, description: 'Two to five short phrases on what you took from the conversation. No identifying details.' },
+    matches: {
+      type: 'array',
+      maxItems: 5,
+      description: 'Services to show as cards, best fit first (specialist before general). Empty if none fit, if you are asking a question, or if urgent_support is true.',
+      items: {
+        type: 'object',
+        properties: {
+          service_id: { type: 'string', enum: IDS },
+          fit: { type: 'string', enum: ['strong', 'possible'] },
+          reason: { type: 'string', description: 'Plain English, under 30 words, neutral wording.' },
+          check_first: { type: 'string', description: 'What to check before relying on this match. Empty for a strong match with nothing to check.' },
+        },
+        required: ['service_id', 'fit', 'reason', 'check_first'],
+      },
+    },
+  };
+  const required = ['status', 'message', 'urgent_support', 'urgent_types', 'pii_detected', 'understood_needs', 'matches'];
+  if (questionsLeft > 0) {
+    properties.follow_up_questions = { type: 'array', maxItems: questionsLeft, items: { type: 'string' }, description: 'The question or questions you are asking. Empty when you are giving results.' };
+    required.push('follow_up_questions');
+  }
   return {
     name: 'respond',
     description: 'Give your reply to the person. Always answer by calling this tool.',
-    input_schema: {
-      type: 'object',
-      properties: {
-        message: { type: 'string', description: 'Your reply in plain text (no markdown). Short.' },
-        recommendations: {
-          type: 'array',
-          maxItems: 4,
-          description: 'Services to show as cards, best fit first. Empty if none fit or you need more information first.',
-          items: {
-            type: 'object',
-            properties: {
-              id: { type: 'string', enum: IDS },
-              why: { type: 'string', description: 'One or two plain sentences on why this fits and what to check.' },
-            },
-            required: ['id', 'why'],
-          },
-        },
-        safety_concern: {
-          type: 'boolean',
-          description: 'True only if the person describes an emergency, risk to life, suicide, self-harm or risk to others.',
-        },
-      },
-      required: ['message', 'recommendations', 'safety_concern'],
-    },
+    input_schema: { type: 'object', properties, required },
   };
 }
 
@@ -162,9 +186,10 @@ export default {
     const cap = await (await stub.fetch('https://cap/hit', { method: 'POST', body: JSON.stringify({ max }) })).json();
     if (!cap.allowed) return json({ error: 'The prototype has reached its daily limit. Please try again tomorrow.' }, 503, cors);
 
+    const questionsLeft = MAX_QUESTIONS - questionsAsked(messages);
     const payload = {
       model: env.ANTHROPIC_MODEL || 'claude-haiku-4-5-20251001',
-      max_tokens: 1200,
+      max_tokens: 1500,
       system: [
         { type: 'text', text: SYSTEM_PROMPT.trim() },
         {
@@ -173,9 +198,10 @@ export default {
           cache_control: { type: 'ephemeral' },
         },
         { type: 'text', text: `${MODE_NOTES[mode]}
-Today's date: ${new Date().toISOString().slice(0, 10)}.` },
+Today's date: ${new Date().toISOString().slice(0, 10)}.
+FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole conversation).` },
       ],
-      tools: [respondTool()],
+      tools: [respondTool(questionsLeft)],
       messages,
     };
     // Sonnet/Opus 5.x reject a forced tool call and think up front by default. For those, let the model
@@ -214,19 +240,47 @@ Today's date: ${new Date().toISOString().slice(0, 10)}.` },
       // The model answered in plain text instead of calling the tool: show it as the message, with no cards.
       const text = (out.content || []).filter((b) => b.type === 'text').map((b) => b.text).join(' ').trim();
       if (!text) return json({ error: 'Something went wrong on our side. Please try again.' }, 502, cors);
-      input = { message: text, recommendations: [], safety_concern: false };
+      input = { status: 'results', message: text, urgent_support: false, matches: [] };
     }
+    const clean = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
+    const list = (v) => (Array.isArray(v) ? v : []);
     const userText = messages.filter((m) => m.role === 'user').map((m) => m.content).join(' ');
-    const seen = new Set();
     const lastUser = String(messages[messages.length - 1].content).split(String.fromCharCode(8217)).join("'");
-    const safety = input.safety_concern === true || CRISIS_RE.test(lastUser);
-    const recommendations = safety
-      ? []
-      : (Array.isArray(input.recommendations) ? input.recommendations : [])
-          .filter((x) => x && ID_SET.has(x.id) && (!MENTION.has(x.id) || MENTION.get(x.id).test(userText)) && !seen.has(x.id) && seen.add(x.id))
-          .slice(0, 4)
-          .map((x) => ({ id: x.id, why: String(x.why || '').slice(0, 600) }));
 
-    return json({ message: input.message.slice(0, 3000), recommendations, safety_concern: safety }, 200, cors);
+    // Urgent support: the model's flag, or the crisis wording backstop. Either way no cards and no questions.
+    const crisisWords = CRISIS_RE.test(lastUser);
+    const urgent = input.urgent_support === true || crisisWords;
+    const urgentTypes = list(input.urgent_types).filter((t, i, a) => URGENT_TYPES.includes(t) && a.indexOf(t) === i);
+    if (crisisWords && !urgentTypes.includes('mental_health_crisis')) urgentTypes.push('mental_health_crisis');
+
+    // Follow-up questions: at most the number left, and only when the model is really asking.
+    let questions = list(input.follow_up_questions).map((q) => clean(q, 300)).filter(Boolean).slice(0, Math.max(questionsLeft, 0));
+    let status = input.status === 'needs_more_info' && questions.length && !urgent ? 'needs_more_info' : 'results';
+    if (status === 'results') questions = [];
+
+    // Cards: only real, open schemes; condition-specific schemes only if the person mentioned the circumstance.
+    const seen = new Set();
+    const recommendations =
+      urgent || status === 'needs_more_info'
+        ? []
+        : list(input.matches)
+            .filter((x) => x && ID_SET.has(x.service_id) && OPEN_SET.has(x.service_id) && (!MENTION.has(x.service_id) || MENTION.get(x.service_id).test(userText)) && !seen.has(x.service_id) && seen.add(x.service_id))
+            .slice(0, 5)
+            .map((x) => ({ id: x.service_id, why: clean(x.reason, 600), fit: x.fit === 'strong' ? 'strong' : 'possible', check_first: clean(x.check_first, 400) }));
+
+    return json(
+      {
+        status,
+        message: input.message.slice(0, 3000),
+        recommendations,
+        safety_concern: urgent,
+        urgent_types: urgent ? urgentTypes : [],
+        pii_detected: input.pii_detected === true,
+        understood_needs: urgent ? [] : list(input.understood_needs).map((x) => clean(x, 100)).filter(Boolean).slice(0, 5),
+        follow_up_questions: questions,
+      },
+      200,
+      cors
+    );
   },
 };

@@ -80,6 +80,8 @@
     if (!s) return null;
 
     const badges = el('div', { class: 'badges' },
+      rec.fit === 'strong' ? el('span', { class: 'badge fit-strong', text: 'Strong match' }) : null,
+      rec.fit === 'possible' ? el('span', { class: 'badge fit-possible', text: 'Worth checking' }) : null,
       s.open ? el('span', { class: 'badge live', text: 'Open to referrals' }) : el('span', { class: 'badge notopen', text: 'Not open yet' }),
       s.selfReferral && s.selfReferral.allowed === 'yes' ? el('span', { class: 'badge self', text: 'You can refer yourself' }) : null,
       s.selfReferral && s.selfReferral.allowed === 'partly' ? el('span', { class: 'badge self', text: 'Self-referral with a link from a professional' }) : null,
@@ -101,6 +103,7 @@
       el('p', { class: 'org', text: s.organisation }),
       badges,
       rec.why ? el('p', { class: 'why', text: rec.why }) : null,
+      rec.check_first ? el('p', { class: 'check', text: 'Check first: ' + rec.check_first }) : null,
       el('p', { class: 'whofor', text: s.whoFor }),
       el('h4', { text: 'Contact' }),
       contact,
@@ -153,12 +156,33 @@
     return b;
   }
 
-  function crisisPanel() {
-    return el('div', { class: 'crisis', role: 'alert' },
-      'If you or someone else is in immediate danger, call 999. For urgent mental health support in Kirklees, call the 24-hour Single Point of Access team on ',
-      el('a', { href: 'tel:01924316830', text: '01924 316830' }),
-      ' or call NHS 111.'
-    );
+  // Support details shown for the kinds of urgent support below. Each one is written as a whole sentence, for example
+  // 'For domestic abuse support, call <name> on <number>.' Leave a value as '' until the programme team has checked it
+  // from an official source. Do not fill these in from a general web search. While a value is empty, the panel shows
+  // only 999 and NHS 111.
+  const URGENT_CONTACTS = {
+    domestic_abuse: '',
+    child_safeguarding: '',
+    adult_safeguarding: '',
+  };
+
+  function crisisPanel(types) {
+    const t = Array.isArray(types) && types.length ? types : ['mental_health_crisis'];
+    const lines = [];
+    if (t.includes('mental_health_crisis')) {
+      lines.push([
+        'If you or someone else is in immediate danger, call 999. For urgent mental health support in Kirklees, call the 24-hour Single Point of Access team on ',
+        el('a', { href: 'tel:01924316830', text: '01924 316830' }),
+        ' or call NHS 111.',
+      ]);
+    }
+    if (t.includes('medical')) lines.push(['If this is a medical emergency, call 999. If it is urgent but not an emergency, call NHS 111.']);
+    const others = ['domestic_abuse', 'child_safeguarding', 'adult_safeguarding'].filter((k) => t.includes(k));
+    if (others.length) {
+      lines.push(['If someone is in immediate danger, call 999. If it is not an emergency, speak to your GP or call NHS 111 for help finding the right support.']);
+      for (const k of others) if (URGENT_CONTACTS[k]) lines.push(phoneNodes(URGENT_CONTACTS[k]));
+    }
+    return el('div', { class: 'crisis', role: 'alert' }, lines.map((nodes) => el('p', {}, ...nodes)));
   }
 
   function welcome() {
@@ -206,13 +230,18 @@
       }
 
       const b = bubble('assistant', data.message);
-      if (data.safety_concern) b.append(crisisPanel());
+      if (data.safety_concern) b.append(crisisPanel(data.urgent_types));
+      const needs = Array.isArray(data.understood_needs) ? data.understood_needs : [];
+      if (needs.length && !data.safety_concern) b.append(el('p', { class: 'understood', text: 'What I have understood so far: ' + needs.join('; ') + '.' }));
+      if (data.pii_detected) b.append(el('p', { class: 'pii-note', text: "Please don't type names, addresses, dates of birth or NHS numbers. You don't need to share them to get matches." }));
       const recs = (data.recommendations || []).map(card).filter(Boolean);
       if (recs.length) b.append(el('div', { class: 'cards' }, recs));
 
       // Remember which services were shown so follow-up questions make sense.
       const shown = (data.recommendations || []).map((x) => x.id).join(', ');
-      history.push({ role: 'assistant', content: data.message + (shown ? '\n\n(Services shown: ' + shown + ')' : '') });
+      // The Worker counts the "(Follow-up questions asked: N)" marker to keep to its limit on questions.
+      const asked = Array.isArray(data.follow_up_questions) ? data.follow_up_questions.length : 0;
+      history.push({ role: 'assistant', content: data.message + (shown ? '\n\n(Services shown: ' + shown + ')' : '') + (asked ? '\n\n(Follow-up questions asked: ' + asked + ')' : '') });
     } catch {
       thinking.remove();
       history.pop();

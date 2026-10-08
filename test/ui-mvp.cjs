@@ -15,6 +15,7 @@ const check = (name, cond, extra = '') => {
 // ---- in-memory stand-in for the Worker ----
 let seq = 0;
 let log = [];
+let lastChat = null;
 const mk = (f, status) => {
   const t = new Date().toISOString();
   const it = { id: ++seq, type: f.type || 'Issue', title: f.title, details: f.details || '', area: f.area || 'Other', priority: f.priority || 'Medium', owner: f.owner || '', status: status || 'Open', created: t, updated: t, updates: [] };
@@ -32,8 +33,12 @@ async function worker(route) {
   if (url.pathname === '/chat') {
     const body = JSON.parse(req.postData());
     const last = body.messages[body.messages.length - 1].content;
-    if (/crisis/i.test(last)) return json({ message: 'I am sorry you feel like this.', recommendations: [], safety_concern: true });
-    return json({ message: 'Here is a match.', recommendations: [{ id: 'my-way-forward', why: 'Fits your age and situation.' }], safety_concern: false });
+    lastChat = body;
+    if (/crisis/i.test(last)) return json({ status: 'results', message: 'I am sorry you feel like this.', recommendations: [], safety_concern: true, urgent_types: ['mental_health_crisis'], pii_detected: false, understood_needs: [], follow_up_questions: [] });
+    if (/abuse/i.test(last)) return json({ status: 'results', message: 'I am so sorry. You deserve to be safe.', recommendations: [], safety_concern: true, urgent_types: ['domestic_abuse'], pii_detected: false, understood_needs: [], follow_up_questions: [] });
+    if (/unsure/i.test(last)) return json({ status: 'needs_more_info', message: 'Which town are you nearest to?', recommendations: [], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: ['needs support'], follow_up_questions: ['Which town are you nearest to?'] });
+    if (/Jane Smith/.test(last)) return json({ status: 'results', message: 'Here is a match.', recommendations: [], safety_concern: false, urgent_types: [], pii_detected: true, understood_needs: [], follow_up_questions: [] });
+    return json({ status: 'results', message: 'Here is a match.', recommendations: [{ id: 'my-way-forward', why: 'Fits your age and situation.', fit: 'possible', check_first: 'Check they are not claiming Universal Credit with a job-search requirement.' }], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: ['aged 20', 'anxious'], follow_up_questions: [] });
   }
 
   if (url.pathname.startsWith('/log/')) {
@@ -84,6 +89,25 @@ async function worker(route) {
   await page.click('#send');
   await page.waitForSelector('.crisis');
   check('main: crisis panel shown when flagged', (await page.locator('.crisis').count()) === 1);
+  check('main: card shows the fit badge and the check-first line', (await page.locator('.card .badge.fit-possible').first().textContent()) === 'Worth checking' && (await page.locator('.card .check').first().textContent()).startsWith('Check first:'));
+  check('main: "what I have understood" line shown', (await page.locator('.bubble .understood').first().textContent()).includes('aged 20; anxious'));
+  check('main: mental health crisis panel has the Single Point of Access number', (await page.locator('.crisis').first().textContent()).includes('01924 316830'));
+  await page.fill('#message', 'there is abuse at home');
+  await page.click('#send');
+  await page.waitForFunction(() => document.querySelectorAll('.crisis').length === 2);
+  const abuse = await page.locator('.crisis').nth(1).textContent();
+  check('main: domestic abuse panel has 999 and NHS 111, and no mental health number', abuse.includes('999') && abuse.includes('NHS 111') && !abuse.includes('01924'), abuse);
+  await page.fill('#message', 'I am unsure what I need');
+  await page.click('#send');
+  await page.waitForFunction(() => document.body.textContent.includes('Which town are you nearest to?'));
+  await page.fill('#message', 'Dewsbury');
+  await page.click('#send');
+  await page.waitForFunction(() => document.querySelectorAll('.bubble.assistant').length >= 6 && !document.querySelector('#send').disabled);
+  check('main: follow-up questions asked are recorded in the history sent back', lastChat.messages.some((m) => m.role === 'assistant' && m.content.includes('(Follow-up questions asked: 1)')), JSON.stringify(lastChat.messages));
+  await page.fill('#message', 'My name is Jane Smith and I need work');
+  await page.click('#send');
+  await page.waitForSelector('.pii-note');
+  check('main: reminder about identifying details shown when flagged', (await page.locator('.pii-note').textContent()).includes("Please don't type names"));
 
   // ---------- help page ----------
   await page.goto(ON + '/mvp/help.html');
@@ -164,10 +188,15 @@ async function worker(route) {
   check('log: suggested entries are offered', (await page.textContent('#suggested')).includes('Data freshness') && (await page.textContent('#suggested')).includes('12 new entries'), await page.textContent('#suggested'));
   await page.selectOption('#flt-status', 'all');
   const before = await page.locator('#list .entry').count();
-  await page.click('#suggested button');
-  await page.locator('#suggested').waitFor({ state: 'hidden' });
+  await page.locator('#suggested button').first().click();
   for (let i = 0; i < 50 && (await page.locator('#list .entry').count()) !== before + 12; i++) await page.waitForTimeout(200);
   check('log: 12 suggested entries added', (await page.locator('#list .entry').count()) === before + 12);
+  await page.waitForSelector('#suggested:not([hidden])');
+  check('log: the urgent-support pack is still offered', (await page.textContent('#suggested')).includes('Urgent support') && (await page.textContent('#suggested')).includes('2 new entries'), await page.textContent('#suggested'));
+  await page.click('#suggested button');
+  await page.locator('#suggested').waitFor({ state: 'hidden' });
+  for (let i = 0; i < 50 && (await page.locator('#list .entry').count()) !== before + 14; i++) await page.waitForTimeout(200);
+  check('log: 2 urgent-support entries added', (await page.locator('#list .entry').count()) === before + 14);
   check('log: freshness entries have their details', (await page.locator('#list .entry', { hasText: 'option B: AI-assisted' }).locator('.details').textContent()).includes('15p to 35p'));
   check('log: note appended to the existing "keep the data fresh" entry', (await page.locator('#list .entry', { hasText: 'Keep the data fresh automatically' }).locator('summary').textContent()).includes('(1)'));
   await page.reload();

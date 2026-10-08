@@ -12,7 +12,7 @@ A proof of concept: a chat page that matches people to Healthy Working Life sche
 - `site/` is the page. GitHub Pages serves it. It is public.
 - `data/services.json` is the scheme data (17 schemes). It is copied into the site on deploy and bundled into the Worker.
 - `prompt/system.md` is the instructions Claude follows. Bundled into the Worker.
-- `worker/` is a small Cloudflare Worker. It holds the Anthropic API key, sends the scheme data and the conversation to Claude, and returns a short message plus a list of scheme ids. The page draws the cards from `services.json`, so contact details are never written by the AI, and unknown ids are dropped.
+- `worker/` is a small Cloudflare Worker. It holds the Anthropic API key, sends the scheme data and the conversation to Claude, and returns a short message, a list of matches (scheme id, how well it fits, a short reason and what to check first) and flags for urgent support and identifying details. The page draws the cards from `services.json`, so contact details are never written by the AI, and unknown or closed schemes are dropped.
 - Nothing about a conversation is stored or logged. Workers Logs are switched off.
 
 ## Spend and abuse protection
@@ -38,6 +38,20 @@ If the repo name or organisation changes, update `ALLOWED_ORIGIN` in `worker/wra
 ## Updating the data or prompt
 
 Edit `data/services.json` or `prompt/system.md` and push to `main`. Both workflows redeploy. Keep `lastUpdated` honest: the page flags entries older than about 4.5 months. Entries with `"open": false` are never recommended.
+
+Each scheme also has `audience` (individual, employer, organisation or student), `gate` (something the person must already be, or be using, such as a Kirklees College student) and `healthFocus` (which health needs it is for). The field guide is in the `notes` line at the top of `data/services.json`.
+
+### What the Worker sends back to the page
+
+`{ status, message, recommendations: [{ id, why, fit, check_first }], safety_concern, urgent_types, pii_detected, understood_needs, follow_up_questions }`
+
+- `status` is `results` or `needs_more_info`. A reply that asks questions has no cards.
+- At most two follow-up questions are asked in a whole chat. The page adds `(Follow-up questions asked: N)` to the history after a reply that asked questions, and the Worker counts it.
+- When `safety_concern` is true there are never cards or questions. The crisis wording backstop in the Worker sets it even if the model doesn't.
+
+### Urgent support contacts
+
+The red panel always shows 999 and NHS 111, and the Single Point of Access number for mental health. For domestic abuse, child safeguarding and adult safeguarding there are no specific helplines yet. Add them to `URGENT_CONTACTS` at the top of the crisis panel code in `site/app.js` (one whole sentence each) once the programme team has checked them from an official source. Don't copy them from a general web search.
 
 ## Local test of the Worker
 

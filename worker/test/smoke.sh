@@ -25,6 +25,10 @@ check "CORS header on success"          "$O" "$(curl -s -D - -o /dev/null -X POS
 
 R=$(curl -s -X POST $B/chat -H "Origin: $O" -H "$J" -d '{"messages":[{"role":"user","content":"I am in crisis"}]}')
 check "crisis: flag set, no cards"      "True,0" "$(echo "$R" | python3 -c 'import sys,json;d=json.load(sys.stdin);print(str(d["safety_concern"])+","+str(len(d["recommendations"])))')"
+check "crisis: type reported"           "mental_health_crisis" "$(echo "$R" | python3 -c 'import sys,json;print(",".join(json.load(sys.stdin)["urgent_types"]))')"
+
+R=$(curl -s -X POST $B/chat -H "Origin: $O" -H "$J" -d '{"mode":"staff","messages":[{"role":"user","content":"I support someone anxious in Dewsbury"}]}')
+check "fit and check_first passed on"   "strong,possible,Check the health criteria." "$(echo "$R" | python3 -c 'import sys,json;r=json.load(sys.stdin)["recommendations"];print(r[0]["fit"]+","+r[1]["fit"]+","+r[1]["check_first"])')"
 
 if [ -f /tmp/last-request.json ]; then echo "upstream request seen by mock: $(cat /tmp/last-request.json)"; fi
 echo "passed=$ok failed=$bad"; [ $bad -eq 0 ]

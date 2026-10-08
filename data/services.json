@@ -1,7 +1,7 @@
 {
   "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026)",
   "converted": "2026-10-07",
-  "notes": "Converted by hand from the scheme pathways document. Edit this file to update the finder; it is re-read automatically. 'open' is false for schemes that are not live yet. 'audience' says who the scheme is for: individual, employer or organisation. Dates are YYYY-MM-DD. 'requiresMention' (optional) is a list of words/regular expressions: the finder only shows that scheme if the person's own messages match one of them, so condition-specific schemes are never suggested unprompted.",
+  "notes": "Converted by hand from the scheme pathways document. Edit this file to update the finder; it is re-read automatically. 'open' is false for schemes that are not live yet. 'audience' says who the scheme is for: individual, employer or organisation. Dates are YYYY-MM-DD. 'requiresMention' (optional) is a list of words/regular expressions: the finder only shows that scheme if the person's own messages match one of them, so condition-specific schemes are never suggested unprompted. 'gate' lists things a person must already be or be using to use the scheme (for example a Kirklees College student, or in treatment with Change Grow Live); empty means none. 'healthFocus' says which health needs the scheme is for: empty means no health requirement, 'any' means any health condition or disability, otherwise one or more of mental-health, severe-mental-illness, musculoskeletal-pain, substance-use, learning-disability-autism, unpaid-caring. 'audience' can be individual, employer, organisation or student; a scheme only open to one group (for example students) does not list 'individual'.",
   "services": [
     {
       "id": "elevate",
@@ -34,6 +34,10 @@
         "Not in education, employment or training (NEET) with health concerns"
       ],
       "exclusions": [],
+      "gate": [],
+      "healthFocus": [
+        "any"
+      ],
       "referralRoutes": [
         "Email",
         "Phone",
@@ -89,6 +93,8 @@
         "Looking for support into work, apprenticeships, in-work progression or self-employment, or looking for new skills, learning or training"
       ],
       "exclusions": [],
+      "gate": [],
+      "healthFocus": [],
       "referralRoutes": [
         "Online enquiry via the Paddock Trust website",
         "Phone",
@@ -168,6 +174,11 @@
         "Febrile illness",
         "Any other condition which may be exacerbated by exercise"
       ],
+      "gate": [],
+      "healthFocus": [
+        "mental-health",
+        "musculoskeletal-pain"
+      ],
       "referralRoutes": [
         "Online - practitioner referral: https://secure.refer-all.net/referrals/KirkleesActiveLeisure/ReferKirklessActiveLeisureHealthProfessional?id=6040&name=Fitness%20for%20Work",
         "Online self referral: https://secure.refer-all.net/referrals/Kirklees/ReferKirklees?id=6040&name=Fitness%20for%20Work",
@@ -221,6 +232,10 @@
         "Professionals across the integrated care system (healthcare, local authority, physical activity and leisure) who want the competence and confidence to support people with chronic pain"
       ],
       "exclusions": [],
+      "gate": [],
+      "healthFocus": [
+        "musculoskeletal-pain"
+      ],
       "referralRoutes": [
         "Via a referring professional - email invitation to the hosting platform",
         "Link to the programme information web page, then opt in"
@@ -280,6 +295,10 @@
       "exclusions": [
         "Under 18"
       ],
+      "gate": [],
+      "healthFocus": [
+        "any"
+      ],
       "referralRoutes": [
         "Online self referral: https://forms.office.com/pages/responsepage.aspx?id=2p8utZEGhUW9_FzK4c4YkKgnxFOY-bxNpu8du5KE9JtUQUpPN1ZMSzZEUlc5SU1KMVExNDBPMDQ4NSQlQCN0PWcu&route=shorturl",
         "Online - organisation referral: https://forms.office.com/pages/responsepage.aspx?id=2p8utZEGhUW9_FzK4c4YkKgnxFOY-bxNpu8du5KE9JtUNkVLMlFTSkhZSlBEMzhDUjFLMThBMDg3NyQlQCN0PWcu&route=shorturl"
@@ -322,7 +341,7 @@
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
-        "individual"
+        "student"
       ],
       "whoFor": "Kirklees College students - mainly 16-19 year olds, plus adult and apprentice learners - needing wellbeing and employability support.",
       "age": "16+ (College students)",
@@ -343,6 +362,12 @@
       ],
       "exclusions": [
         "Not a student at Kirklees College"
+      ],
+      "gate": [
+        "Is a Kirklees College student (including adult learners and apprentices)"
+      ],
+      "healthFocus": [
+        "any"
       ],
       "referralRoutes": [
         "Online self referral",
@@ -398,6 +423,12 @@
       ],
       "exclusions": [
         "Only wants to look at voluntary work or education"
+      ],
+      "gate": [
+        "Is in treatment with Change Grow Live"
+      ],
+      "healthFocus": [
+        "substance-use"
       ],
       "referralRoutes": [
         "Email",
@@ -463,6 +494,12 @@
         "Solely physical health conditions",
         "Only wants to look at voluntary work or education",
         "Not currently under the care of secondary care mental health services"
+      ],
+      "gate": [
+        "Is receiving support from secondary care mental health services"
+      ],
+      "healthFocus": [
+        "severe-mental-illness"
       ],
       "referralRoutes": [
         "Via in-house teams",
@@ -534,6 +571,11 @@
       "exclusions": [
         "Under 18",
         "Not ordinarily resident in Kirklees - people funded by a statutory body outside Kirklees are not eligible unless that agency spot purchases a place"
+      ],
+      "gate": [],
+      "healthFocus": [
+        "mental-health",
+        "learning-disability-autism"
       ],
       "referralRoutes": [
         "Online referral form",
@@ -608,6 +650,12 @@
         "Not a Kirklees Talking Therapies service user",
         "Needs urgent mental health support - contact the Kirklees 24-hour Single Point of Access team on 01924 316830"
       ],
+      "gate": [
+        "Is receiving, or has been referred for, Kirklees Talking Therapies"
+      ],
+      "healthFocus": [
+        "mental-health"
+      ],
       "referralRoutes": [
         "Online self referral via the Talking Therapies assessment route",
         "Phone",
@@ -668,6 +716,10 @@
       "exclusions": [
         "Claiming Universal Credit with a requirement to actively look for work"
       ],
+      "gate": [],
+      "healthFocus": [
+        "any"
+      ],
       "referralRoutes": [
         "Email",
         "Phone",
@@ -720,6 +772,10 @@
       ],
       "exclusions": [
         "None specified - if the Trailblazer element is not suitable, the person will be supported via the most appropriate alternative option"
+      ],
+      "gate": [],
+      "healthFocus": [
+        "any"
       ],
       "referralRoutes": [
         "Email P2P@kirklees.gov.uk",
@@ -775,6 +831,10 @@
       "exclusions": [
         "None specified - if the Trailblazer element is not suitable, the person will be supported via the most appropriate alternative option"
       ],
+      "gate": [],
+      "healthFocus": [
+        "any"
+      ],
       "referralRoutes": [
         "Email P2P@kirklees.gov.uk",
         "Email the delivery partner programme address (to be confirmed)",
@@ -828,6 +888,10 @@
       "exclusions": [
         "Zero rejection policy - where REAL cannot meet a person's needs they signpost to appropriate services",
         "Work experience placements are not offered as a standalone service"
+      ],
+      "gate": [],
+      "healthFocus": [
+        "learning-disability-autism"
       ],
       "referralRoutes": [
         "Online self referral - simple form, around 5 minutes (a valid personal email address is needed): https://my.kirklees.gov.uk/service/Jobs___Contact_REAL_Employment",
@@ -894,6 +958,10 @@
         "Employees with unpaid caring responsibilities at risk of reducing hours or leaving work are supported indirectly through their employer"
       ],
       "exclusions": [],
+      "gate": [],
+      "healthFocus": [
+        "unpaid-caring"
+      ],
       "referralRoutes": [
         "Employer registration form (downloadable PDF)",
         "Email",
@@ -963,6 +1031,10 @@
         "Committed to remaining in or entering paid employment"
       ],
       "exclusions": [],
+      "gate": [],
+      "healthFocus": [
+        "any"
+      ],
       "referralRoutes": [
         "Online self referral: https://www.locala.org.uk/services/wellness-to-work",
         "Online - practitioner or employer referral",
@@ -1011,6 +1083,10 @@
       ],
       "exclusions": [
         "People who are in work or actively seeking work"
+      ],
+      "gate": [],
+      "healthFocus": [
+        "any"
       ],
       "referralRoutes": [
         "Delivery is by funded VCSE and grassroots organisations; participant access routes will be confirmed once grants are awarded"
