@@ -11,6 +11,8 @@
   const input = $('#message');
   const sendBtn = $('#send');
   const chipsEl = $('#chips');
+  const peopleEl = $('#people');
+  const sendLabel = $('#send-label');
 
   // Everything lives in memory only. Nothing is written to storage.
   let services = new Map();
@@ -75,6 +77,14 @@
   }
 
   // ---------- cards ----------
+  // Decorative gradient on each card, picked from the service id so a service always gets the same one.
+  const THUMBS = 5;
+  function thumbIndex(id) {
+    let h = 0;
+    for (const ch of String(id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    return h % THUMBS;
+  }
+
   function card(rec) {
     const s = services.get(rec.id);
     if (!s) return null;
@@ -99,9 +109,12 @@
     const staff = mode() === 'staff';
 
     const node = el('article', { class: 'card' },
-      el('h3', { text: s.name }),
-      el('p', { class: 'org', text: s.organisation }),
-      badges,
+      el('div', { class: 'card-head' },
+        el('div', { class: 'thumb thumb-' + thumbIndex(s.id), 'aria-hidden': 'true' }),
+        el('div', { class: 'card-title' },
+          el('h3', { text: s.name }),
+          el('p', { class: 'org', text: s.organisation }),
+          badges)),
       rec.why ? el('p', { class: 'why', text: rec.why }) : null,
       rec.check_first ? el('p', { class: 'check', text: 'Check first: ' + rec.check_first }) : null,
       el('p', { class: 'whofor', text: s.whoFor }),
@@ -185,16 +198,30 @@
     return el('div', { class: 'crisis', role: 'alert' }, lines.map((nodes) => el('p', {}, ...nodes)));
   }
 
+  // Illustrations for the landing page. Four are picked at random each time the page loads or is reset.
+  // To add more, drop the image into site/img/ and add its file name here.
+  const PEOPLE = ['person-1.png', 'person-2.png', 'person-3.png', 'person-4.png', 'person-5.png', 'person-6.png', 'person-7.png'];
+  const PEOPLE_SHOWN = 4;
+
+  function showPeople() {
+    const pool = PEOPLE.slice();
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    peopleEl.replaceChildren(...pool.slice(0, PEOPLE_SHOWN).map((f) => el('div', { class: 'person' }, el('img', { src: 'img/' + f, alt: '' }))));
+  }
+
   function welcome() {
-    bubble('assistant',
-      "Hi, I can help you find work and health support in Kirklees.\n\nTell me a bit about what you're looking for. It helps to know roughly how old the person is, whether they're working, the health issue getting in the way, and which part of Kirklees they're nearest to. You don't need to give any names or addresses.");
+    document.body.classList.remove('chatting');
+    showPeople();
     chipsEl.hidden = false;
   }
 
   function setBusy(v) {
     busy = v;
     sendBtn.disabled = v;
-    sendBtn.textContent = v ? 'Looking...' : 'Find services';
+    sendLabel.textContent = v ? 'Looking...' : 'Find support';
   }
 
   async function send(text) {
@@ -202,6 +229,7 @@
     if (!text || busy) return;
     setBusy(true);
     chipsEl.hidden = true;
+    document.body.classList.add('chatting');
     bubble('user', text);
     input.value = '';
     history.push({ role: 'user', content: text });
@@ -234,8 +262,13 @@
       const needs = Array.isArray(data.understood_needs) ? data.understood_needs : [];
       if (needs.length && !data.safety_concern) b.append(el('p', { class: 'understood', text: 'What I have understood so far: ' + needs.join('; ') + '.' }));
       if (data.pii_detected) b.append(el('p', { class: 'pii-note', text: "Please don't type names, addresses, dates of birth or NHS numbers. You don't need to share them to get matches." }));
+      // The chat message comes first, with the scheme cards underneath it.
       const recs = (data.recommendations || []).map(card).filter(Boolean);
-      if (recs.length) b.append(el('div', { class: 'cards' }, recs));
+      if (recs.length) {
+        const cardsEl = el('div', { class: 'cards' }, recs);
+        logEl.append(cardsEl);
+        cardsEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
 
       // Remember which services were shown so follow-up questions make sense.
       const shown = (data.recommendations || []).map((x) => x.id).join(', ');

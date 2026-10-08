@@ -102,7 +102,7 @@ async function worker(route) {
   await page.waitForFunction(() => document.body.textContent.includes('Which town are you nearest to?'));
   await page.fill('#message', 'Dewsbury');
   await page.click('#send');
-  await page.waitForFunction(() => document.querySelectorAll('.bubble.assistant').length >= 6 && !document.querySelector('#send').disabled);
+  await page.waitForFunction(() => document.querySelectorAll('.bubble.assistant').length >= 5 && !document.querySelector('#send').disabled);
   check('main: follow-up questions asked are recorded in the history sent back', lastChat.messages.some((m) => m.role === 'assistant' && m.content.includes('(Follow-up questions asked: 1)')), JSON.stringify(lastChat.messages));
   await page.fill('#message', 'My name is Jane Smith and I need work');
   await page.click('#send');

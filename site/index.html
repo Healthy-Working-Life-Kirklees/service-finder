@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.workers.dev; base-uri 'none'; form-action 'none'">
   <meta name="robots" content="noindex, nofollow">
-  <title>Kirklees Healthy Working Life Service Finder (prototype)</title>
+  <title>Healthy Working Life Support Finder (prototype)</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,14 +13,28 @@
 
   <header class="site-header">
     <div class="wrap">
-      <h1>Kirklees Healthy Working Life<br><span>Service Finder</span></h1>
+      <svg class="logo" width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 19h5v9H2z"/><path d="M7 21c3-1 6 0 8 0h5c2 0 2 3 0 3h-6"/><path d="M13 24l11-1c2-.2 4-1.6 6-3.6"/><path d="M20 12.5c-2-1.5-4-3.2-4-5.2A3 3 0 0 1 20 5.7a3 3 0 0 1 4 1.6c0 2-2 3.7-4 5.2z"/></svg>
+      <h1>Healthy Working Life Support Finder</h1>
     </div>
   </header>
 
   <main class="wrap">
+    <div class="intro">
+      <p class="eyebrow">Welcome to Healthy Working Life Support Finder</p>
+      <h2>Describe a person’s situation to find relevant employment and health support services.</h2>
+    </div>
+
     <p class="notice" role="note">
       <strong>Prototype for testing.</strong> The service details come from the Healthy Working Life scheme pathways document and may be out of date. Always check with the service before referring.
     </p>
+
+    <section id="hero" class="hero">
+      <div id="people" class="people" aria-hidden="true"></div>
+      <h2 class="hero-title">How can we help this person?</h2>
+      <p class="hero-text">Please describe the person's situation: approximate age, location, employment situation, health or wellbeing needs, and what they hope to achieve. Please do not include names or any personally identifiable information.</p>
+    </section>
+
+    <section id="log" class="log" aria-live="polite" aria-label="Conversation"></section>
 
     <fieldset class="mode">
       <legend>Who is this for?</legend>
@@ -28,18 +42,19 @@
       <label><input type="radio" name="mode" value="staff"> <span>I'm helping someone else (staff or partner)</span></label>
     </fieldset>
 
-    <section id="log" class="log" aria-live="polite" aria-label="Conversation"></section>
-
-    <div id="chips" class="chips" aria-label="Example questions"></div>
-
     <form id="form" class="form" autocomplete="off">
-      <label for="message">Tell me what you're looking for</label>
-      <textarea id="message" rows="3" maxlength="1500" placeholder="For example: I've been off work with anxiety and I'm nearest to Dewsbury" autocomplete="off"></textarea>
+      <label for="message">Describe the person's situation</label>
+      <textarea id="message" rows="5" maxlength="1500" placeholder="Example: A 45-year-old in Kirklees, currently unemployed, struggling with low mood and looking for local support groups or activities to help improve their wellbeing..." autocomplete="off"></textarea>
       <div class="actions">
-        <button type="submit" id="send" class="btn primary">Find services</button>
+        <button type="submit" id="send" class="btn primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+          <span id="send-label">Find support</span>
+        </button>
         <button type="button" id="reset" class="btn secondary">Start again</button>
       </div>
     </form>
+
+    <div id="chips" class="chips" aria-label="Example questions"></div>
 
     <p class="privacy">
       Please don't type names, addresses, dates of birth or NHS numbers. Your messages are passed through a Cloudflare service to Claude, an AI service from Anthropic, to find matches. This prototype does not save them, and the conversation is gone when you close or refresh the page.
