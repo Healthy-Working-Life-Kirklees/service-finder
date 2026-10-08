@@ -39,7 +39,7 @@ If the repo name or organisation changes, update `ALLOWED_ORIGIN` in `worker/wra
 
 Edit `data/services.json` or `prompt/system.md` and push to `main`. Both workflows redeploy. Keep `lastUpdated` honest: the page flags entries older than about 4.5 months. Entries with `"open": false` are never recommended.
 
-Each scheme also has `audience` (individual, employer, organisation or student), `gate` (something the person must already be, or be using, such as a Kirklees College student) and `healthFocus` (which health needs it is for). The field guide is in the `notes` line at the top of `data/services.json`.
+Each scheme also has `audience` (individual, employer, organisation or student), `gate` (something the person must already be, or be using, such as a Kirklees College student) and `healthFocus` (which health needs it is for). The full field-by-field guide is in [`docs/data-dictionary.md`](docs/data-dictionary.md).
 
 ### What the Worker sends back to the page
 
