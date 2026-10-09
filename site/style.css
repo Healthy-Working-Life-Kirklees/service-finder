@@ -177,13 +177,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .teambar a { color: #fff; }
 .teambar a[aria-current="page"] { font-weight: 700; text-decoration: none; }
 
-/* Language switcher, in the header. Each language is named in its own language. */
-.lang-switch { display: flex; flex-wrap: wrap; gap: .25rem; }
-.lang-switch button { font: 500 .95rem/1.2 var(--heading-font); color: var(--dark-blue); background: transparent; border: 1px solid transparent; border-radius: 8px; padding: .35rem .7rem; min-height: 2.5rem; cursor: pointer; }
-.lang-switch button:hover { background: var(--light); }
-.lang-switch button[aria-pressed="true"] { background: #fff; border-color: var(--blue); font-weight: 700; }
-.lang-switch button:lang(ur) { font-family: "Noto Nastaliq Urdu", var(--heading-font); font-size: 1.05rem; line-height: 1; }
-.lang-switch button:focus-visible { outline: 3px solid var(--focus); outline-offset: 0; box-shadow: 0 0 0 5px #000; }
+/* Language switcher, in the header: a globe and a drop-down. Each language is named in its own language. */
+.lang-switch { display: flex; align-items: center; gap: .35rem; color: var(--dark-blue); }
+.lang-switch label { display: flex; cursor: pointer; }
+.lang-switch select { font: 500 .95rem/1.2 var(--heading-font); color: var(--dark-blue); background: #fff; border: 1px solid var(--blue); border-radius: 8px; padding: .35rem .6rem; min-height: 2.5rem; cursor: pointer; }
+.lang-switch select:hover { background: var(--light); }
+.lang-switch select:focus-visible { outline: 3px solid var(--focus); outline-offset: 0; box-shadow: 0 0 0 5px #000; }
+.lang-switch option:lang(ur) { font-family: "Noto Nastaliq Urdu", var(--heading-font); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 @media (max-width: 600px) {
   .site-header .wrap { flex-wrap: wrap; padding-top: .5rem; padding-bottom: .5rem; }
   .site-header h1 { flex-basis: calc(100% - 3rem); }

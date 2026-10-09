@@ -264,7 +264,8 @@
     for (const n of document.querySelectorAll('[data-i18n]')) n.textContent = t(n.dataset.i18n);
     for (const n of document.querySelectorAll('[data-i18n-placeholder]')) n.placeholder = t(n.dataset.i18nPlaceholder);
     for (const n of document.querySelectorAll('[data-i18n-label]')) n.setAttribute('aria-label', t(n.dataset.i18nLabel));
-    for (const b of document.querySelectorAll('.lang-switch button')) b.setAttribute('aria-pressed', String(b.dataset.lang === current));
+    const select = document.getElementById('lang-select');
+    if (select) select.value = current;
   }
 
   function set(lang) {
@@ -279,18 +280,17 @@
   }
 
   function buildSwitcher() {
-    const nav = document.querySelector('.lang-switch');
-    if (!nav) return;
+    const select = document.getElementById('lang-select');
+    if (!select) return;
     for (const [code, info] of Object.entries(LANGS)) {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.lang = code;
-      b.dir = info.dir;
-      b.dataset.lang = code;
-      b.textContent = info.label;
-      b.addEventListener('click', () => set(code));
-      nav.append(b);
+      const o = document.createElement('option');
+      o.value = code;
+      o.lang = code;
+      o.dir = info.dir;
+      o.textContent = info.label;
+      select.append(o);
     }
+    select.addEventListener('change', () => set(select.value));
   }
 
   window.I18N = {
