@@ -1,10 +1,19 @@
 /* Healthy Working Life branding: cream background, teal, DM Sans headings, Noto Sans body.
-   Fonts are served from this site (see fonts/) because the page's security policy blocks outside hosts. */
-@font-face { font-family: "DM Sans"; font-weight: 500; font-style: normal; font-display: swap; src: url("fonts/dm-sans-latin-500-normal.woff2") format("woff2"); }
-@font-face { font-family: "DM Sans"; font-weight: 700; font-style: normal; font-display: swap; src: url("fonts/dm-sans-latin-700-normal.woff2") format("woff2"); }
-@font-face { font-family: "Noto Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/noto-sans-latin-400-normal.woff2") format("woff2"); }
-@font-face { font-family: "Noto Sans"; font-weight: 600; font-style: normal; font-display: swap; src: url("fonts/noto-sans-latin-600-normal.woff2") format("woff2"); }
-@font-face { font-family: "Noto Sans"; font-weight: 700; font-style: normal; font-display: swap; src: url("fonts/noto-sans-latin-700-normal.woff2") format("woff2"); }
+   Fonts are served from this site (see fonts/) because the page's security policy blocks outside hosts.
+   Each font is split by character range, so a browser only downloads the extra Polish letters (latin-ext)
+   or the Urdu font when the page actually shows those characters. Fonts are from Fontsource (SIL Open Font Licence). */
+@font-face { font-family: "DM Sans"; font-weight: 500; font-style: normal; font-display: swap; src: url("fonts/dm-sans-latin-500-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "DM Sans"; font-weight: 500; font-style: normal; font-display: swap; src: url("fonts/dm-sans-latin-ext-500-normal.woff2") format("woff2"); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: "DM Sans"; font-weight: 700; font-style: normal; font-display: swap; src: url("fonts/dm-sans-latin-700-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "DM Sans"; font-weight: 700; font-style: normal; font-display: swap; src: url("fonts/dm-sans-latin-ext-700-normal.woff2") format("woff2"); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: "Noto Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/noto-sans-latin-400-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Noto Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/noto-sans-latin-ext-400-normal.woff2") format("woff2"); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: "Noto Sans"; font-weight: 600; font-style: normal; font-display: swap; src: url("fonts/noto-sans-latin-600-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Noto Sans"; font-weight: 600; font-style: normal; font-display: swap; src: url("fonts/noto-sans-latin-ext-600-normal.woff2") format("woff2"); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: "Noto Sans"; font-weight: 700; font-style: normal; font-display: swap; src: url("fonts/noto-sans-latin-700-normal.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Noto Sans"; font-weight: 700; font-style: normal; font-display: swap; src: url("fonts/noto-sans-latin-ext-700-normal.woff2") format("woff2"); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: "Noto Nastaliq Urdu"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/noto-nastaliq-urdu-arabic-400-normal.woff2") format("woff2"); unicode-range: U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC; }
+@font-face { font-family: "Noto Nastaliq Urdu"; font-weight: 700; font-style: normal; font-display: swap; src: url("fonts/noto-nastaliq-urdu-arabic-700-normal.woff2") format("woff2"); unicode-range: U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC; }
 
 :root {
   /* The colour names below are kept from the earlier version so the MVP pages pick up the new colours too. */
@@ -37,18 +46,19 @@ body {
 }
 h1, h2, h3, h4, .btn, .chip, summary { font-family: var(--heading-font); }
 .wrap { max-width: 62rem; margin: 0 auto; padding: 0 1.5rem; }
-.skip { position: absolute; left: -999px; top: 0; background: var(--focus); color: #000; padding: .5rem 1rem; z-index: 10; }
-.skip:focus { left: 0; }
+.skip { position: absolute; inset-inline-start: 0; top: 0; transform: translateY(-110%); background: var(--focus); color: #000; padding: .5rem 1rem; z-index: 10; }
+.skip:focus { transform: none; }
 
 .site-header { background: var(--mint); color: var(--text); border-bottom: 1px solid #e3efec; }
 .site-header .wrap { display: flex; align-items: center; gap: .75rem; min-height: 4.4rem; }
 .site-header .logo { flex: none; color: #2e9c9c; }
 .site-header h1 { margin: 0; font-size: 1.25rem; line-height: 1.25; font-weight: 700; }
+.site-header h1 { flex: 1; }
 .site-header h1 span { display: block; font-weight: 500; font-size: 1rem; color: var(--grey); }
 
 main { padding-top: 2rem; padding-bottom: 3rem; }
 
-.intro { border-left: 4px solid var(--accent); padding: .25rem 0 .25rem 1.5rem; margin: 0 0 1.5rem; }
+.intro { border-inline-start: 4px solid var(--accent); padding-block: .25rem; padding-inline: 1.5rem 0; margin: 0 0 1.5rem; }
 .eyebrow { margin: 0 0 .25rem; font-family: var(--heading-font); font-weight: 500; font-size: 1.1rem; color: #1b7c7e; }
 .intro h2 { margin: 0; font-size: clamp(1.5rem, 2.6vw, 2rem); line-height: 1.25; color: var(--dark-blue); }
 
@@ -74,15 +84,15 @@ fieldset.mode input { width: 1.4rem; height: 1.4rem; margin-top: .15rem; accent-
 
 .log { display: flex; flex-direction: column; gap: 1rem; margin: 0 auto 1.5rem; max-width: 52rem; }
 .log:empty { display: none; margin: 0; }
-.bubble { max-width: 100%; padding: .9rem 1.25rem; border-radius: 16px 16px 16px 4px; }
+.bubble { max-width: 100%; padding: .9rem 1.25rem; border-radius: 16px; border-end-start-radius: 4px; }
 .bubble p { margin: 0 0 .6rem; white-space: pre-wrap; }
 .bubble p:last-child { margin-bottom: 0; }
-.bubble.user { background: #fff; border: 1px solid var(--border); border-radius: 16px 16px 4px 16px; align-self: flex-end; max-width: 85%; }
+.bubble.user { background: #fff; border: 1px solid var(--border); border-radius: 16px; border-end-end-radius: 4px; align-self: flex-end; max-width: 85%; }
 .bubble.assistant { background: var(--light); border: 1px solid #c5e3df; }
-.bubble.thinking { color: var(--grey); font-style: italic; background: transparent; padding-left: 0; }
+.bubble.thinking { color: var(--grey); font-style: italic; background: transparent; padding-inline-start: 0; }
 .bubble.error { background: var(--crisis-bg); color: var(--crisis); }
 
-.crisis { background: var(--crisis-bg); border-left: 6px solid #d5281b; border-radius: 4px 10px 10px 4px; color: var(--crisis); padding: .75rem 1rem; margin: .75rem 0 0; font-weight: 700; }
+.crisis { background: var(--crisis-bg); border-inline-start: 6px solid #d5281b; border-radius: 10px; border-start-start-radius: 4px; border-end-start-radius: 4px; color: var(--crisis); padding: .75rem 1rem; margin: .75rem 0 0; font-weight: 700; }
 .crisis a { color: var(--crisis); }
 .crisis p { margin: 0 0 .5rem; }
 .crisis p:last-child { margin-bottom: 0; }
@@ -111,7 +121,7 @@ fieldset.mode input { width: 1.4rem; height: 1.4rem; margin-top: .15rem; accent-
 .card .check { margin: 0 0 .6rem; }
 .card .whofor { margin: 0 0 .75rem; }
 .card h4 { margin: .8rem 0 .25rem; font-size: 1rem; }
-.card ul { margin: 0; padding-left: 1.2rem; }
+.card ul { margin: 0; padding-inline-start: 1.2rem; }
 .card li { margin: .15rem 0; overflow-wrap: anywhere; }
 .contact { list-style: none; padding: 0 !important; }
 .contact li { margin: .25rem 0; }
@@ -124,7 +134,7 @@ fieldset.mode input { width: 1.4rem; height: 1.4rem; margin-top: .15rem; accent-
 
 .chips[hidden] { display: none; }
 .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; margin: 1.25rem auto 0; max-width: 52rem; }
-.chip { font-size: .95rem; font-weight: 500; background: #fff; color: var(--blue); border: 1px solid var(--blue); border-radius: 999px; padding: .4rem 1rem; cursor: pointer; text-align: left; }
+.chip { font-size: .95rem; font-weight: 500; background: #fff; color: var(--blue); border: 1px solid var(--blue); border-radius: 999px; padding: .4rem 1rem; cursor: pointer; text-align: start; }
 .chip:hover { background: var(--light); }
 
 .form { max-width: 52rem; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
@@ -166,3 +176,30 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .teambar .wrap { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; align-items: center; padding-top: .4rem; padding-bottom: .4rem; }
 .teambar a { color: #fff; }
 .teambar a[aria-current="page"] { font-weight: 700; text-decoration: none; }
+
+/* Language switcher, in the header. Each language is named in its own language. */
+.lang-switch { display: flex; flex-wrap: wrap; gap: .25rem; }
+.lang-switch button { font: 500 .95rem/1.2 var(--heading-font); color: var(--dark-blue); background: transparent; border: 1px solid transparent; border-radius: 8px; padding: .35rem .7rem; min-height: 2.5rem; cursor: pointer; }
+.lang-switch button:hover { background: var(--light); }
+.lang-switch button[aria-pressed="true"] { background: #fff; border-color: var(--blue); font-weight: 700; }
+.lang-switch button:lang(ur) { font-family: "Noto Nastaliq Urdu", var(--heading-font); font-size: 1.05rem; line-height: 1; }
+.lang-switch button:focus-visible { outline: 3px solid var(--focus); outline-offset: 0; box-shadow: 0 0 0 5px #000; }
+@media (max-width: 600px) {
+  .site-header .wrap { flex-wrap: wrap; padding-top: .5rem; padding-bottom: .5rem; }
+  .site-header h1 { flex-basis: calc(100% - 3rem); }
+}
+
+/* Phone numbers and email addresses always read left to right, even inside Urdu text. */
+a[href^="tel:"], a[href^="mailto:"] { unicode-bidi: isolate; direction: ltr; }
+
+/* Urdu is set in Nastaliq, which needs much more line height than Latin text. Service details stay in
+   English, so they fall back to Noto Sans. */
+html:lang(ur) body { font-family: "Noto Nastaliq Urdu", "Noto Sans", "Segoe UI", Arial, sans-serif; line-height: 2.1; }
+html:lang(ur) { --heading-font: "Noto Nastaliq Urdu", "DM Sans", "Segoe UI", Arial, sans-serif; }
+html:lang(ur) h1, html:lang(ur) h2, html:lang(ur) h3, html:lang(ur) h4 { line-height: 2.2; }
+html:lang(ur) .intro h2 { font-size: clamp(1.4rem, 2.4vw, 1.8rem); }
+html:lang(ur) .eyebrow { margin-bottom: .6rem; line-height: 2; }
+html:lang(ur) .hero-title { font-size: clamp(1.9rem, 4.2vw, 2.9rem); line-height: 1.8; }
+html:lang(ur) .bubble.thinking { font-style: normal; }
+html:lang(ur) .btn { padding-block: .4rem .6rem; }
+html:lang(ur) [lang="en"] { line-height: 1.55; }

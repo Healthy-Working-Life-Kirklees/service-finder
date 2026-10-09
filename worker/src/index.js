@@ -25,8 +25,28 @@ const MODE_NOTES = {
     'MODE: The person is a frontline worker or partner helping someone else. Be concise and practical. In "reason" and "check_first", flag the key eligibility or exclusion points the referrer should check, and mention the best referral route.',
 };
 
+// The page can be shown in English, Polish or Urdu. For Polish and Urdu the model is told to reply in that
+// language. Service names, organisation names and the scheme data stay in English.
+const LANG_NOTES = {
+  pl: 'LANGUAGE: The page is shown in Polish. Write "message", "reason", "check_first", "understood_needs" and "follow_up_questions" in clear, plain Polish, using the informal "Ty" form in public mode. This replaces the instruction to write in UK English. If the person is clearly writing in a different language, reply in their language instead. Keep service names, organisation names and place names exactly as they appear in the information you have. All the other rules, including the phone number rules, still apply.',
+  ur: 'LANGUAGE: The page is shown in Urdu. Write "message", "reason", "check_first", "understood_needs" and "follow_up_questions" in clear, plain Urdu in Urdu script (not Roman Urdu), using the respectful "aap" form. This replaces the instruction to write in UK English. If the person is clearly writing in a different language, reply in their language instead. Keep service names, organisation names and place names exactly as they appear in the information you have, in English letters. All the other rules, including the phone number rules, still apply.',
+};
+
 // Backstop for the most obvious crisis wording, so the crisis panel never depends on the model alone.
-const CRISIS_RE = /suicid|kill myself|killing myself|end my life|take my own life|want to die|wanna die|self[- ]harm|hurt myself|harm myself|better off dead|better off without me|can't see the point|cant see the point|don't want to be here|dont want to be here|no point (in )?(going on|living|anymore|any more)/i;
+// English first, then Polish (with and without accents, as people often type without them), then Urdu in
+// Urdu script and Roman Urdu. The Polish and Urdu phrases are a first draft: have them checked by a
+// translator, and add to them, before the wider test.
+const CRISIS_RE = new RegExp(
+  [
+    // English
+    "suicid|kill myself|killing myself|end my life|take my own life|want to die|wanna die|self[- ]harm|hurt myself|harm myself|better off dead|better off without me|can't see the point|cant see the point|don't want to be here|dont want to be here|no point (in )?(going on|living|anymore|any more)",
+    // Polish
+    'samob[oó]j|zabi(ć|c|ję|je) si[eę]|odebra(ć|c) sobie (ż|z)ycie|sko(ń|n)czy(ć|c) ze sob(ą|a)|nie chc(ę|e) (ju(ż|z) )?(ż|z)y(ć|c)|chc(ę|e) umrze(ć|c)|samookalecz|(robi(ę|e)|zrobi(ć|c|ę|e)) sobie krzywd',
+    // Urdu script and Roman Urdu
+    'خودکشی|خود کشی|مرنا چاہت|جینا نہیں چاہت|اپنی جان لے|خود کو نقصان|اپنے آپ کو نقصان|خود کو مار|اپنے آپ کو مار|khud ?kushi|marna chaht|jeena nahi chaht',
+  ].join('|'),
+  'iu'
+);
 
 const SERVICES = data.services;
 const IDS = SERVICES.map((s) => s.id);
@@ -177,6 +197,7 @@ export default {
       return json({ error: 'That request could not be read.' }, 400, cors);
     }
     const mode = body.mode === 'staff' ? 'staff' : 'public';
+    const lang = Object.hasOwn(LANG_NOTES, body.lang) ? body.lang : 'en';
     const messages = validateMessages(body.messages);
     if (!messages) return json({ error: 'That message was empty, too long, or in the wrong order.' }, 400, cors);
 
@@ -197,7 +218,7 @@ export default {
           text: `SERVICE DATA (JSON). Source: ${data.source}.\n${JSON.stringify(SERVICES)}`,
           cache_control: { type: 'ephemeral' },
         },
-        { type: 'text', text: `${MODE_NOTES[mode]}
+        { type: 'text', text: `${MODE_NOTES[mode]}${lang === 'en' ? '' : '\n' + LANG_NOTES[lang]}
 Today's date: ${new Date().toISOString().slice(0, 10)}.
 FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole conversation).` },
       ],

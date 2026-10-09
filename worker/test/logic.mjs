@@ -154,6 +154,37 @@ reply = tool(reply0());
 r = await call('claude-sonnet-5-5', { messages: [U('I want help with my CV and interviews')] });
 check('crisis backstop: ordinary message not flagged', r.body.safety_concern === false && r.body.recommendations.length > 0, JSON.stringify(r.body));
 
+// ----- Languages -----
+reply = tool(reply0());
+await call('claude-sonnet-5-5', { lang: 'pl', messages: [U('Szukam pracy w Dewsbury')] });
+check('language: Polish note added to the last system block', /LANGUAGE: The page is shown in Polish/.test(sent.system[2].text));
+await call('claude-sonnet-5-5', { lang: 'ur', messages: [U('مجھے نوکری چاہیے')] });
+check('language: Urdu note added to the last system block', /LANGUAGE: The page is shown in Urdu/.test(sent.system[2].text));
+await call('claude-sonnet-5-5', { lang: 'fr', messages: [U('I want help with my CV')] });
+check('language: unknown language ignored (English, no note)', !/LANGUAGE:/.test(sent.system[2].text));
+await call('claude-sonnet-5-5', { lang: 'toString', messages: [U('I want help with my CV')] });
+check('language: odd values ignored', !/LANGUAGE:/.test(sent.system[2].text));
+for (const [name, text] of [
+  ['Polish', 'Nie chcę już żyć'],
+  ['Polish without accents', 'mysle o samobojstwie'],
+  ['Polish self-harm', 'Robię sobie krzywdę'],
+  ['Urdu', 'میں خودکشی کے بارے میں سوچ رہا ہوں'],
+  ['Urdu (want to die)', 'میں مرنا چاہتی ہوں'],
+  ['Roman Urdu', 'khudkushi ke khayal aate hain'],
+]) {
+  reply = tool(reply0());
+  r = await call('claude-sonnet-5-5', { lang: 'pl', messages: [U(text)] });
+  check('crisis backstop: ' + name + ' wording caught', r.body.safety_concern === true && r.body.recommendations.length === 0, JSON.stringify(r.body));
+}
+reply = tool(reply0());
+r = await call('claude-sonnet-5-5', { lang: 'pl', messages: [U('Chcę wrócić do pracy po zwolnieniu lekarskim')] });
+check('crisis backstop: ordinary Polish message not flagged', r.body.safety_concern === false && r.body.recommendations.length > 0, JSON.stringify(r.body));
+reply = tool(reply0({ matches: [m('ips-cgl'), m('wellness-to-work')] }));
+r = await call('claude-sonnet-5-5', { lang: 'pl', messages: [U('Jestem w trakcie leczenia uzależnienia od alkoholu')] });
+check('guard: ips-cgl kept when mentioned in Polish', ids(r.body) === 'ips-cgl,wellness-to-work', ids(r.body));
+r = await call('claude-sonnet-5-5', { lang: 'ur', messages: [U('میں منشیات چھوڑنے کی کوشش کر رہا ہوں')] });
+check('guard: ips-cgl kept when mentioned in Urdu', ids(r.body) === 'ips-cgl,wellness-to-work', ids(r.body));
+
 // ----- Team issues log -----
 const mkStore = () => {
   const mem = new Map();

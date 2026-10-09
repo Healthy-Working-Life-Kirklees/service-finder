@@ -19,12 +19,11 @@
   let history = [];
   let busy = false;
 
-  const CHIPS = [
-    "I've been off sick with back pain and want to get back to work",
-    "I'm 20, not in work or education, and struggling with anxiety",
-    "I support a client with a learning disability who wants a job",
-    "I manage a small team and some of them are carers",
-  ];
+  // Page text comes from i18n.js. The example questions are in there too.
+  const t = (key, vars) => window.I18N.t(key, vars);
+  // Service details come from services.json and are in English. They are marked as English so screen
+  // readers say them correctly, and dir="auto" lays them out properly on the Urdu (right-to-left) page.
+  const EN = { lang: 'en', dir: 'auto' };
 
   // ---------- small DOM helper (text only, never innerHTML) ----------
   function el(tag, props = {}, ...kids) {
@@ -62,7 +61,7 @@
 
   function fmtDate(iso) {
     const d = new Date(iso + 'T00:00:00');
-    return isNaN(d) ? iso : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    return isNaN(d) ? iso : d.toLocaleDateString(window.I18N.locale, { day: 'numeric', month: 'long', year: 'numeric' });
   }
   const ageInDays = (iso) => (Date.now() - Date.parse(iso)) / 86400000;
 
@@ -70,10 +69,10 @@
   function routeNode(route) {
     const m = route.match(/^(.*?):?\s*(https?:\/\/\S+)$/);
     if (m) {
-      const label = m[1].trim() || 'Online form';
-      return el('li', {}, link(m[2], label));
+      const label = m[1].trim();
+      return el('li', label ? EN : {}, link(m[2], label || t('onlineForm')));
     }
-    return el('li', { text: route });
+    return el('li', { ...EN, text: route });
   }
 
   // ---------- cards ----------
@@ -90,20 +89,20 @@
     if (!s) return null;
 
     const badges = el('div', { class: 'badges' },
-      rec.fit === 'strong' ? el('span', { class: 'badge fit-strong', text: 'Strong match' }) : null,
-      rec.fit === 'possible' ? el('span', { class: 'badge fit-possible', text: 'Worth checking' }) : null,
-      s.open ? el('span', { class: 'badge live', text: 'Open to referrals' }) : el('span', { class: 'badge notopen', text: 'Not open yet' }),
-      s.selfReferral && s.selfReferral.allowed === 'yes' ? el('span', { class: 'badge self', text: 'You can refer yourself' }) : null,
-      s.selfReferral && s.selfReferral.allowed === 'partly' ? el('span', { class: 'badge self', text: 'Self-referral with a link from a professional' }) : null,
-      s.selfReferral && s.selfReferral.allowed === 'tbc' ? el('span', { class: 'badge', text: 'Self-referral: to be confirmed' }) : null,
-      s.age ? el('span', { class: 'badge', text: 'Age: ' + s.age }) : null
+      rec.fit === 'strong' ? el('span', { class: 'badge fit-strong', text: t('fitStrong') }) : null,
+      rec.fit === 'possible' ? el('span', { class: 'badge fit-possible', text: t('fitPossible') }) : null,
+      s.open ? el('span', { class: 'badge live', text: t('open') }) : el('span', { class: 'badge notopen', text: t('notOpen') }),
+      s.selfReferral && s.selfReferral.allowed === 'yes' ? el('span', { class: 'badge self', text: t('selfYes') }) : null,
+      s.selfReferral && s.selfReferral.allowed === 'partly' ? el('span', { class: 'badge self', text: t('selfPartly') }) : null,
+      s.selfReferral && s.selfReferral.allowed === 'tbc' ? el('span', { class: 'badge', text: t('selfTbc') }) : null,
+      s.age ? el('span', { class: 'badge' }, t('age'), el('span', { ...EN, text: s.age })) : null
     );
 
     const contact = el('ul', { class: 'contact' });
-    if (s.phone) contact.append(el('li', {}, 'Phone: ', ...phoneNodes(s.phone)));
-    if (s.email) contact.append(el('li', {}, 'Email: ', el('a', { href: 'mailto:' + s.email, text: s.email })));
-    if (s.webpage) contact.append(el('li', {}, 'Website: ', link(s.webpage, 'service web page')));
-    if (!contact.children.length) contact.append(el('li', { text: 'No contact details are listed yet. Please check with the Healthy Working Life team.' }));
+    if (s.phone) contact.append(el('li', {}, t('phone'), el('span', EN, ...phoneNodes(s.phone))));
+    if (s.email) contact.append(el('li', {}, t('email'), el('a', { href: 'mailto:' + s.email, dir: 'ltr', text: s.email })));
+    if (s.webpage) contact.append(el('li', {}, t('website'), link(s.webpage, t('webpageLink'))));
+    if (!contact.children.length) contact.append(el('li', { text: t('noContact') }));
 
     const stale = ageInDays(s.lastUpdated) > STALE_DAYS;
     const staff = mode() === 'staff';
@@ -112,40 +111,40 @@
       el('div', { class: 'card-head' },
         el('div', { class: 'thumb thumb-' + thumbIndex(s.id), 'aria-hidden': 'true' }),
         el('div', { class: 'card-title' },
-          el('h3', { text: s.name }),
-          el('p', { class: 'org', text: s.organisation }),
+          el('h3', { ...EN, text: s.name }),
+          el('p', { ...EN, class: 'org', text: s.organisation }),
           badges)),
-      rec.why ? el('p', { class: 'why', text: rec.why }) : null,
-      rec.check_first ? el('p', { class: 'check', text: 'Check first: ' + rec.check_first }) : null,
-      el('p', { class: 'whofor', text: s.whoFor }),
-      el('h4', { text: 'Contact' }),
+      rec.why ? el('p', { class: 'why', dir: 'auto', text: rec.why }) : null,
+      rec.check_first ? el('p', { class: 'check' }, t('checkFirst'), el('span', { dir: 'auto', text: rec.check_first })) : null,
+      el('p', { ...EN, class: 'whofor', text: s.whoFor }),
+      el('h4', { text: t('contact') }),
       contact,
-      el('h4', { text: 'How to get in' }),
+      el('h4', { text: t('howIn') }),
       el('ul', {}, (s.referralRoutes || []).map(routeNode)),
-      el('details', { open: staff }, el('summary', { text: 'Who can join' }),
-        el('ul', {}, (s.eligibility || []).map((t) => el('li', { text: t }))),
-        s.exclusions && s.exclusions.length ? el('h4', { text: 'Who it is not for' }) : null,
-        s.exclusions && s.exclusions.length ? el('ul', {}, s.exclusions.map((t) => el('li', { text: t }))) : null
+      el('details', { open: staff }, el('summary', { text: t('whoJoin') }),
+        el('ul', {}, (s.eligibility || []).map((x) => el('li', { ...EN, text: x }))),
+        s.exclusions && s.exclusions.length ? el('h4', { text: t('whoNot') }) : null,
+        s.exclusions && s.exclusions.length ? el('ul', {}, s.exclusions.map((x) => el('li', { ...EN, text: x }))) : null
       ),
-      el('details', {}, el('summary', { text: 'What happens and where' }),
-        el('ul', {}, (s.activities || []).map((a) => el('li', { text: a.name + ': ' + a.summary + (a.duration ? ' (' + a.duration + ')' : '') }))),
-        el('h4', { text: 'Where' }),
-        el('ul', {}, (s.locations || []).map((t) => el('li', { text: t })))
+      el('details', {}, el('summary', { text: t('whatWhere') }),
+        el('ul', {}, (s.activities || []).map((a) => el('li', { ...EN, text: a.name + ': ' + a.summary + (a.duration ? ' (' + a.duration + ')' : '') }))),
+        el('h4', { text: t('where') }),
+        el('ul', {}, (s.locations || []).map((x) => el('li', { ...EN, text: x })))
       ),
-      el('p', { class: 'meta', text: 'Information last checked: ' + fmtDate(s.lastUpdated) + '.' }),
-      stale ? el('p', { class: 'stale', text: 'This entry is overdue a check, so please confirm the details with the service first.' }) : null,
-      el('div', { class: 'tools' }, el('button', { type: 'button', class: 'btn secondary small', text: 'Copy details', onclick: (e) => copyDetails(s, e.currentTarget) }))
+      el('p', { class: 'meta', text: t('lastChecked', { date: fmtDate(s.lastUpdated) }) }),
+      stale ? el('p', { class: 'stale', text: t('stale') }) : null,
+      el('div', { class: 'tools' }, el('button', { type: 'button', class: 'btn secondary small', text: t('copy'), onclick: (e) => copyDetails(s, e.currentTarget) }))
     );
     return node;
   }
 
   function copyText(s) {
     const lines = [s.name + ' - ' + s.organisation, s.whoFor];
-    if (s.phone) lines.push('Phone: ' + s.phone);
-    if (s.email) lines.push('Email: ' + s.email);
-    if (s.webpage) lines.push('Website: ' + s.webpage);
-    if (s.referralRoutes && s.referralRoutes.length) lines.push('How to get in: ' + s.referralRoutes.join('; '));
-    lines.push('Information last checked: ' + fmtDate(s.lastUpdated) + '. Please confirm with the service before referring.');
+    if (s.phone) lines.push(t('phone') + s.phone);
+    if (s.email) lines.push(t('email') + s.email);
+    if (s.webpage) lines.push(t('website') + s.webpage);
+    if (s.referralRoutes && s.referralRoutes.length) lines.push(t('howIn') + ': ' + s.referralRoutes.join('; '));
+    lines.push(t('lastChecked', { date: fmtDate(s.lastUpdated) }) + ' ' + t('copyConfirm'));
     return lines.join('\n');
   }
 
@@ -153,9 +152,9 @@
     const old = btn.textContent;
     try {
       await navigator.clipboard.writeText(copyText(s));
-      btn.textContent = 'Copied';
+      btn.textContent = t('copied');
     } catch {
-      btn.textContent = "Couldn't copy";
+      btn.textContent = t('copyFailed');
     }
     setTimeout(() => (btn.textContent = old), 2000);
   }
@@ -163,7 +162,7 @@
   // ---------- conversation ----------
   function bubble(kind, text) {
     const b = el('div', { class: 'bubble ' + kind });
-    for (const para of String(text).split(/\n{2,}/)) b.append(el('p', { text: para.trim() }));
+    for (const para of String(text).split(/\n{2,}/)) b.append(el('p', { dir: 'auto', text: para.trim() }));
     logEl.append(b);
     b.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     return b;
@@ -180,19 +179,15 @@
   };
 
   function crisisPanel(types) {
-    const t = Array.isArray(types) && types.length ? types : ['mental_health_crisis'];
+    const kinds = Array.isArray(types) && types.length ? types : ['mental_health_crisis'];
     const lines = [];
-    if (t.includes('mental_health_crisis')) {
-      lines.push([
-        'If you or someone else is in immediate danger, call 999. For urgent mental health support in Kirklees, call the 24-hour Single Point of Access team on ',
-        el('a', { href: 'tel:01924316830', text: '01924 316830' }),
-        ' or call NHS 111.',
-      ]);
+    if (kinds.includes('mental_health_crisis')) {
+      lines.push([t('crisisMhA'), el('a', { href: 'tel:01924316830', text: '01924 316830' }), t('crisisMhB')]);
     }
-    if (t.includes('medical')) lines.push(['If this is a medical emergency, call 999. If it is urgent but not an emergency, call NHS 111.']);
-    const others = ['domestic_abuse', 'child_safeguarding', 'adult_safeguarding'].filter((k) => t.includes(k));
+    if (kinds.includes('medical')) lines.push([t('crisisMedical')]);
+    const others = ['domestic_abuse', 'child_safeguarding', 'adult_safeguarding'].filter((k) => kinds.includes(k));
     if (others.length) {
-      lines.push(['If someone is in immediate danger, call 999. If it is not an emergency, speak to your GP or call NHS 111 for help finding the right support.']);
+      lines.push([t('crisisOther')]);
       for (const k of others) if (URGENT_CONTACTS[k]) lines.push(phoneNodes(URGENT_CONTACTS[k]));
     }
     return el('div', { class: 'crisis', role: 'alert' }, lines.map((nodes) => el('p', {}, ...nodes)));
@@ -221,7 +216,7 @@
   function setBusy(v) {
     busy = v;
     sendBtn.disabled = v;
-    sendLabel.textContent = v ? 'Looking...' : 'Find support';
+    sendLabel.textContent = v ? t('sending') : t('send');
   }
 
   async function send(text) {
@@ -233,35 +228,37 @@
     bubble('user', text);
     input.value = '';
     history.push({ role: 'user', content: text });
-    const thinking = bubble('thinking', 'Looking through the services...');
+    const thinking = bubble('thinking', t('thinking'));
 
     try {
       if (!API) {
         thinking.remove();
         history.pop();
         input.value = text;
-        bubble('error', 'The AI service has not been connected to this page yet.');
+        bubble('error', t('notConnected'));
         return;
       }
       const r = await fetch(API + '/chat', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ mode: mode(), messages: history }),
+        body: JSON.stringify({ mode: mode(), lang: window.I18N.lang, messages: history }),
       });
       const data = await r.json().catch(() => ({}));
       thinking.remove();
       if (!r.ok) {
         history.pop();
         input.value = text;
-        bubble('error', data.error || 'Something went wrong. Please try again.');
+        // The Worker's error wording is English, so other languages get the page's own wording for the same problem.
+        const own = r.status === 429 ? t('rateLimited') : r.status === 503 ? t('busy') : t('generic');
+        bubble('error', window.I18N.lang === 'en' ? data.error || t('generic') : own);
         return;
       }
 
       const b = bubble('assistant', data.message);
       if (data.safety_concern) b.append(crisisPanel(data.urgent_types));
       const needs = Array.isArray(data.understood_needs) ? data.understood_needs : [];
-      if (needs.length && !data.safety_concern) b.append(el('p', { class: 'understood', text: 'What I have understood so far: ' + needs.join('; ') + '.' }));
-      if (data.pii_detected) b.append(el('p', { class: 'pii-note', text: "Please don't type names, addresses, dates of birth or NHS numbers. You don't need to share them to get matches." }));
+      if (needs.length && !data.safety_concern) b.append(el('p', { class: 'understood', dir: 'auto', text: t('understood') + needs.join(t('listSep')) + t('end') }));
+      if (data.pii_detected) b.append(el('p', { class: 'pii-note', text: t('pii') }));
       // The chat message comes first, with the scheme cards underneath it.
       const recs = (data.recommendations || []).map(card).filter(Boolean);
       if (recs.length) {
@@ -279,7 +276,7 @@
       thinking.remove();
       history.pop();
       input.value = text;
-      bubble('error', 'Could not reach the service. Please check your connection and try again.');
+      bubble('error', t('network'));
     } finally {
       setBusy(false);
       input.focus();
@@ -295,7 +292,16 @@
   }
 
   // ---------- wiring ----------
-  CHIPS.forEach((t) => chipsEl.append(el('button', { type: 'button', class: 'chip', text: t, onclick: () => send(t) })));
+  function showChips() {
+    chipsEl.replaceChildren(...t('chips').map((q) => el('button', { type: 'button', class: 'chip', text: q, onclick: () => send(q) })));
+  }
+  showChips();
+  // Switching language changes the fixed text (i18n.js does that) and the example questions. Messages and
+  // cards already on screen stay as they are; new replies come back in the new language.
+  window.I18N.onChange(() => {
+    showChips();
+    if (!busy) sendLabel.textContent = t('send');
+  });
   form.addEventListener('submit', (e) => { e.preventDefault(); send(input.value); });
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(input.value); }
@@ -305,7 +311,7 @@
   fetch('services.json')
     .then((r) => r.json())
     .then((d) => { services = new Map(d.services.map((s) => [s.id, s])); })
-    .catch(() => bubble('error', 'Could not load the service information. Please refresh the page.'));
+    .catch(() => bubble('error', t('loadFailed')));
 
   // MVP team links: only present when the deploy switched the MVP tools on.
   if (window.FINDER_CONFIG && window.FINDER_CONFIG.mvpTools) {

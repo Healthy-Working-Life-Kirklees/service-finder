@@ -458,7 +458,19 @@
         "rehab",
         "addict",
         "\\bCGL\\b",
-        "change grow live"
+        "change grow live",
+        "narkoty",
+        "alkohol",
+        "uzależni",
+        "odwyk",
+        "terapi[aęi] uzależnień",
+        "منشیات",
+        "نشہ",
+        "نشے",
+        "شراب",
+        "الکحل",
+        "منشیات کی عادت",
+        "nasha"
       ]
     },
     {
@@ -531,7 +543,15 @@
         "\\bCMHT\\b",
         "early intervention",
         "\\bSMI\\b",
-        "complex mental"
+        "complex mental",
+        "psychoz",
+        "psychotyczn",
+        "schizofren",
+        "dwubiegunow",
+        "سائیکوسس",
+        "شیزوفرینیا",
+        "بائی پولر",
+        "بائیپولر"
       ]
     },
     {
@@ -925,7 +945,21 @@
         "asperger",
         "additional needs",
         "neurodiver",
-        "\\bASD\\b"
+        "\\bASD\\b",
+        "niepełnosprawnoś[cć]i? intelektualn",
+        "niepelnosprawnos[cć]i? intelektualn",
+        "trudności w uczeniu",
+        "trudnosci w uczeniu",
+        "autyzm",
+        "autyst",
+        "spektrum autyzmu",
+        "neuroatyp",
+        "لرننگ ڈس ایبلٹی",
+        "سیکھنے میں معذوری",
+        "سیکھنے کی معذوری",
+        "ذہنی معذوری",
+        "آٹزم",
+        "آٹسٹک"
       ]
     },
     {

@@ -53,6 +53,20 @@ Each scheme also has `audience` (individual, employer, organisation or student),
 
 The red panel always shows 999 and NHS 111, and the Single Point of Access number for mental health. For domestic abuse, child safeguarding and adult safeguarding there are no specific helplines yet. Add them to `URGENT_CONTACTS` at the top of the crisis panel code in `site/app.js` (one whole sentence each) once the programme team has checked them from an official source. Don't copy them from a general web search.
 
+## Languages (English, Polish, Urdu)
+
+The page has a language switcher in the header: English, Polski and اردو (Urdu). Urdu switches the page to right-to-left.
+
+- All the page's own wording is in `site/i18n.js`, one block per language. To change a translation, edit it there and keep the keys the same in every language.
+- **The Polish and Urdu text is a first draft. Have a qualified translator check it before the wider test**, especially the urgent support wording (the `crisis...` and `footer...` lines).
+- The chosen language goes in the address (`?lang=pl` or `?lang=ur`), not in browser storage, so the page still stores nothing. A link ending `?lang=ur` opens the page in Urdu, which is handy for posters or leaflets.
+- The page sends the language to the Worker, and the Worker tells Claude to reply in that language (`LANG_NOTES` in `worker/src/index.js`).
+- Scheme details on the cards (names, who it is for, eligibility, routes) come from `services.json` and stay in English. They are marked as English so screen readers read them correctly.
+- The crisis wording backstop (`CRISIS_RE`) and the `requiresMention` words in `services.json` include Polish and Urdu phrases, so the safety panel and the condition-specific schemes still work when someone writes in those languages. These lists are also a first draft for a translator to check and add to.
+- Fonts for Polish letters and for Urdu (Noto Nastaliq Urdu) are in `site/fonts/`. A browser only downloads them when the page shows those characters.
+- Switching language part-way through a chat leaves earlier messages and cards as they were. New replies come back in the new language.
+- The MVP help page and issues log are English only.
+
 ## Local test of the Worker
 
     cd worker && npm install
