@@ -1,9 +1,9 @@
 // Local logic test for the Worker (no network, no Cloudflare). Run: node worker/test/logic.mjs
 import fs from 'node:fs';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const root = path.resolve(new URL('../..', import.meta.url).pathname);
+const root = fileURLToPath(new URL('../..', import.meta.url));
 let src = fs.readFileSync(path.join(root, 'worker/src/index.js'), 'utf8');
 // Swap the two bundler-style imports for plain file reads so Node can load the module.
 src = src
