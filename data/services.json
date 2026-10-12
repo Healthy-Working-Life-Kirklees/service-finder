@@ -1,5 +1,5 @@
 {
-  "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026)",
+  "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
   "converted": "2026-10-07",
   "notes": "Converted by hand from the scheme pathways document. Edit this file to update the finder; it is re-read automatically. 'open' is false for schemes that are not live yet. 'audience' says who the scheme is for: individual, employer or organisation. Dates are YYYY-MM-DD. 'requiresMention' (optional) is a list of words/regular expressions: the finder only shows that scheme if the person's own messages match one of them, so condition-specific schemes are never suggested unprompted. 'gate' lists things a person must already be or be using to use the scheme (for example a Kirklees College student, or in treatment with Change Grow Live); empty means none. 'healthFocus' says which health needs the scheme is for: empty means no health requirement, 'any' means any health condition or disability, otherwise one or more of mental-health, severe-mental-illness, musculoskeletal-pain, substance-use, learning-disability-autism, unpaid-caring. 'audience' can be individual, employer, organisation or student; a scheme only open to one group (for example students) does not list 'individual'.",
   "services": [
@@ -1138,6 +1138,679 @@
       ],
       "workExperience": "Yes - where offered by funded projects",
       "lastUpdated": "2026-08-03",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "tcd-healthy-futures",
+      "name": "TCD Healthy Futures",
+      "organisation": "TCD",
+      "status": "Live - grant-funded project (status not stated in the pathways document)",
+      "open": true,
+      "audience": [
+        "individual"
+      ],
+      "whoFor": "Adults across Kirklees who want to improve wellbeing, build confidence, reduce isolation and take positive steps towards volunteering, learning and employment.",
+      "age": "18+",
+      "webpage": "https://www.tcd-charity.co.uk",
+      "email": "charitytcd@gmail.com",
+      "phone": "07950 325836",
+      "social": [],
+      "locations": [
+        "Jo Cox House, 90 Commercial Street, Batley, WF17 5DS"
+      ],
+      "areas": [
+        "Batley",
+        "Kirklees-wide"
+      ],
+      "eligibility": [
+        "Adult (18+) living in Kirklees"
+      ],
+      "exclusions": [],
+      "gate": [],
+      "healthFocus": [],
+      "referralRoutes": [
+        "Google form (link not yet given in the pathways document)"
+      ],
+      "selfReferral": {
+        "allowed": "tbc",
+        "note": "Referral is by Google form; the pathways document does not say whether people can refer themselves"
+      },
+      "activities": [
+        {
+          "name": "Healthy Futures Programme",
+          "summary": "Peer support, physical and creative activities, volunteering and one-to-one support. Participants connect with others, develop new skills and get access to employment, training and wider support services, in a safe, welcoming space.",
+          "duration": "Weekly programme"
+        }
+      ],
+      "workExperience": "Volunteering opportunities as part of the programme",
+      "lastUpdated": "2026-10-12",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "edens-forest-woodland-pathways",
+      "name": "Woodland Pathways' Programme of Woodland Sessions",
+      "organisation": "Eden's Forest CIC",
+      "status": "Live - grant-funded project (status not stated in the pathways document)",
+      "open": true,
+      "audience": [
+        "individual"
+      ],
+      "whoFor": "Adults in Kirklees who want to improve wellbeing, build confidence, reconnect with others and take small steps towards future opportunities. Particularly helpful for people with low confidence, anxiety, health conditions, caring responsibilities, or who feel stuck or unsure of next steps.",
+      "age": "Adults",
+      "webpage": null,
+      "email": "info@edensforestcic.org",
+      "phone": "07734 898650 / 07934 450806",
+      "social": [],
+      "locations": [
+        "Eden's Forest CIC, Hey Wood, Hall Ing, Honley, HD9 - near Honley train station"
+      ],
+      "areas": [
+        "Holme Valley",
+        "Huddersfield"
+      ],
+      "eligibility": [
+        "Adult living in Kirklees"
+      ],
+      "exclusions": [],
+      "gate": [],
+      "healthFocus": [],
+      "referralRoutes": [
+        "Email info@edensforestcic.org"
+      ],
+      "selfReferral": {
+        "allowed": "yes",
+        "note": "Yes, by email"
+      },
+      "activities": [
+        {
+          "name": "Woodland Pathways Programme",
+          "summary": "A gentle, creative outdoor programme with shared food around the campfire and hands-on activities such as willow weaving, greenwood work, seasonal crafts and small woodland maintenance tasks. People join in as much or as little as they like. The team includes an Occupational Therapist who gives guidance on wellbeing, confidence and next steps. Suited to people who don't feel comfortable in formal settings.",
+          "duration": "5 weekly sessions of 4 hours per cohort (3 cohorts, 15 sessions in total)"
+        }
+      ],
+      "workExperience": "No",
+      "lastUpdated": "2026-10-12",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "happymoments-pathway-to-employment",
+      "name": "HappyMOMents Pathway to Employment: Wellbeing, Skills & Work Experience Programme for Vulnerable Women",
+      "organisation": "HappyMOMents CIO",
+      "status": "Referrals via the organisation's website, expected from early October 2026",
+      "open": true,
+      "audience": [
+        "individual"
+      ],
+      "whoFor": "Women from vulnerable backgrounds who want to develop skills, build confidence and take first steps towards work in education (early years) or retail.",
+      "age": "Adults",
+      "webpage": "https://www.happymoments.org.uk",
+      "email": "sumayya@happymoments.org.uk",
+      "phone": "07792 131367",
+      "social": [],
+      "locations": [
+        "Saviletown Children's Centre, Pentland I&N School, Pentland Road, Dewsbury, WF12 9JR"
+      ],
+      "areas": [
+        "Dewsbury"
+      ],
+      "eligibility": [
+        "Women",
+        "Keen to take steps towards development and employment",
+        "Visa eligibility in line with course providers",
+        "Benefits eligibility in line with the funder's criteria"
+      ],
+      "exclusions": [],
+      "gate": [],
+      "healthFocus": [],
+      "referralRoutes": [
+        "Through the HappyMOMents website (referral page due early October 2026)"
+      ],
+      "selfReferral": {
+        "allowed": "tbc",
+        "note": "Via the organisation's website once the referral page is live"
+      },
+      "activities": [
+        {
+          "name": "Pathway to Employment: Wellbeing, Skills & Work Experience Programme",
+          "summary": "Introduction to Early Years, paediatric first aid, mental health courses, hands-on experience working with children and families, and face-to-face professional development courses. Childcare and transport support is provided.",
+          "duration": "Two to three half-days a week for 15 weeks"
+        }
+      ],
+      "workExperience": "Yes - hands-on experience working with children and families",
+      "lastUpdated": "2026-09-14",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "growing-together-volunteering",
+      "name": "Growing Together - Volunteering Pathways",
+      "organisation": "LS2Y and Dalton Together",
+      "status": "Live - grant-funded project (status not stated in the pathways document)",
+      "open": true,
+      "audience": [
+        "individual"
+      ],
+      "whoFor": "Parents, carers and anyone with health-related or personal barriers to work who is not currently working or looking for work.",
+      "age": "18+",
+      "webpage": null,
+      "email": "lisanewbold@ls2y.co.uk",
+      "phone": "01484 516444",
+      "social": [],
+      "locations": [
+        "The Chestnut Centre, 2A Chestnut Street, Huddersfield, HD2 1HJ"
+      ],
+      "areas": [
+        "Huddersfield"
+      ],
+      "eligibility": [
+        "Aged 18+",
+        "Economically inactive (not working and not looking for work)"
+      ],
+      "exclusions": [],
+      "gate": [],
+      "healthFocus": [],
+      "referralRoutes": [
+        "Contact Lisa Newbold by email or phone"
+      ],
+      "selfReferral": {
+        "allowed": "yes",
+        "note": "Get in touch directly with Lisa Newbold"
+      },
+      "activities": [
+        {
+          "name": "Growing Together - Volunteering Pathways",
+          "summary": "One-to-one mentoring, employability and CV support, safeguarding and early years training, wellbeing activities, and supported volunteering placements in Stay & Play sessions and other community settings, leading to next steps in training, education or work.",
+          "duration": "Ongoing support"
+        }
+      ],
+      "workExperience": "Yes - supported volunteering placements in Stay & Play sessions and community settings",
+      "lastUpdated": "2026-09-14",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "sound-steps-2",
+      "name": "Sound Steps 2",
+      "organisation": "Yorkshire Youth & Music and Umbrella Yoga",
+      "status": "Live - grant-funded project (status not stated in the pathways document)",
+      "open": true,
+      "audience": [
+        "individual"
+      ],
+      "whoFor": "Young people aged 18 to 24 who want to build creative music skills while looking after their wellbeing.",
+      "age": "18-24",
+      "webpage": "https://www.yym.org.uk",
+      "email": "becky@yym.org.uk",
+      "phone": "07977 223679",
+      "social": [],
+      "locations": [
+        "LG31 The Media Centre, 7 Northumberland Street, Huddersfield, HD1 1RL"
+      ],
+      "areas": [
+        "Huddersfield"
+      ],
+      "eligibility": [
+        "Aged 18 to 24"
+      ],
+      "exclusions": [],
+      "gate": [],
+      "healthFocus": [],
+      "referralRoutes": [
+        "Sign up online at https://www.yym.org.uk/sound-steps"
+      ],
+      "selfReferral": {
+        "allowed": "yes",
+        "note": "Yes, using the sign-up link on the website",
+        "url": "https://www.yym.org.uk/sound-steps"
+      },
+      "activities": [
+        {
+          "name": "Sound Steps 2",
+          "summary": "Weekly sessions in songwriting, beat-making, recording, music production and DJing, led by experienced professional music leaders, supporting wellbeing, teamwork and personal development.",
+          "duration": "23 weeks"
+        }
+      ],
+      "workExperience": "No",
+      "lastUpdated": "2026-09-21",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "raise-your-game",
+      "name": "Raise Your Game Programme",
+      "organisation": "Huddersfield Town Foundation",
+      "status": "Live - grant-funded project (status not stated in the pathways document)",
+      "open": true,
+      "audience": [
+        "individual"
+      ],
+      "whoFor": "Economically inactive residents aged 18 to 24, or aged 50 and over, who want the skills, confidence and knowledge to move towards work.",
+      "age": "18-24 or 50+",
+      "webpage": null,
+      "email": "matthew.crookes@htafcfoundation.com",
+      "phone": "07741 671595",
+      "social": [],
+      "locations": [
+        "Leeds Road Sports Complex, Leeds Road, Huddersfield, HD2 1YY"
+      ],
+      "areas": [
+        "Huddersfield"
+      ],
+      "eligibility": [
+        "Economically inactive (not working and not looking for work)",
+        "Aged 18 to 24 (cohort 1) or aged 50+ (cohort 2)"
+      ],
+      "exclusions": [],
+      "gate": [],
+      "healthFocus": [],
+      "referralRoutes": [
+        "Referral or self-referral by emailing help@htafcfoundation.com"
+      ],
+      "selfReferral": {
+        "allowed": "yes",
+        "note": "Yes, by emailing help@htafcfoundation.com"
+      },
+      "activities": [
+        {
+          "name": "Raise Your Game Programme",
+          "summary": "Group sessions mixing classroom learning and physical activity, aiming to engage, educate and inspire participants to move towards being economically active.",
+          "duration": "10 weekly two-hour group sessions per cohort"
+        }
+      ],
+      "workExperience": "No",
+      "lastUpdated": "2026-10-12",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "empowerher-imws",
+      "name": "EmpowerHer: Steps to Wellbeing and Work Project",
+      "organisation": "IMWS",
+      "status": "Live - grant-funded project (status not stated in the pathways document)",
+      "open": true,
+      "audience": [
+        "individual"
+      ],
+      "whoFor": "Women aged 19 and over who are not working or looking for work and want to improve wellbeing, build confidence and learn new skills.",
+      "age": "19+",
+      "webpage": null,
+      "email": "shamim.ali@imws.org.uk",
+      "phone": "01924 500555",
+      "social": [],
+      "locations": [
+        "Al Hikmah Centre, 28 Track Road, Batley, WF17 7AA"
+      ],
+      "areas": [
+        "Batley"
+      ],
+      "eligibility": [
+        "Women aged 19 and over",
+        "Economically inactive (not working and not looking for work)"
+      ],
+      "exclusions": [],
+      "gate": [],
+      "healthFocus": [],
+      "referralRoutes": [
+        "Phone the Centre on 01924 500555"
+      ],
+      "selfReferral": {
+        "allowed": "yes",
+        "note": "Phone the Centre directly"
+      },
+      "activities": [
+        {
+          "name": "EmpowerHer: Steps to Wellbeing and Work Project",
+          "summary": "Beginner ESOL (English) classes, digital skills classes, wellbeing activities, confidence building and one-to-one mentoring.",
+          "duration": "One day a week"
+        }
+      ],
+      "workExperience": "No",
+      "lastUpdated": "2026-09-30",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "lbt-future-creative",
+      "name": "Future Creative: Inclusive Volunteering",
+      "organisation": "Lawrence Batley Theatre",
+      "status": "Live - grant-funded project (status not stated in the pathways document)",
+      "open": true,
+      "audience": [
+        "individual"
+      ],
+      "whoFor": "People aged 18 and over who want to build skills and confidence by volunteering in arts and cultural activities.",
+      "age": "18+",
+      "webpage": "https://www.thelbt.org/get-involved/volunteer/",
+      "email": "dom@thelbt.org",
+      "phone": "01484 430528",
+      "social": [],
+      "locations": [
+        "Lawrence Batley Theatre, Queen Street, Huddersfield, HD1 2SP"
+      ],
+      "areas": [
+        "Huddersfield"
+      ],
+      "eligibility": [
+        "Aged 18 and over"
+      ],
+      "exclusions": [],
+      "gate": [],
+      "healthFocus": [],
+      "referralRoutes": [
+        "Via the Lawrence Batley Theatre website (preferred)",
+        "Phone 01484 430528 for support"
+      ],
+      "selfReferral": {
+        "allowed": "yes",
+        "note": "Apply through the theatre's website, or phone for help"
+      },
+      "activities": [
+        {
+          "name": "Future Creative: Inclusive Volunteering",
+          "summary": "Formal and informal training and meaningful involvement in arts and cultural activities, to develop new skills and build confidence.",
+          "duration": "Ongoing programme"
+        }
+      ],
+      "workExperience": "Yes - volunteering at the theatre",
+      "lastUpdated": "2026-10-01",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "wellness-navigators",
+      "name": "Wellness Navigators",
+      "organisation": "Ravensthorpe Community Centre (RCC) and Taleem Centre",
+      "status": "Live - grant-funded project (status not stated in the pathways document)",
+      "open": true,
+      "audience": [
+        "individual"
+      ],
+      "whoFor": "Economically inactive adults in Dewsbury, Ravensthorpe and nearby who face health, disability, confidence, language, digital or isolation barriers.",
+      "age": "Adults",
+      "webpage": null,
+      "email": "shokran.sharaf@rccl.org",
+      "phone": "07786 061121",
+      "social": [],
+      "locations": [
+        "Ravensthorpe Community Centre, 24 Garden Street, Ravensthorpe, Dewsbury, WF13 3AR",
+        "Taleem Centre, 36 Orchard Street, Savile Town, Dewsbury, WF12 9LT"
+      ],
+      "areas": [
+        "Dewsbury"
+      ],
+      "eligibility": [
+        "Economically inactive (not working and not looking for work)",
+        "Lives in Kirklees, in a high-deprivation ward",
+        "Has a health condition - physical, mental health or learning difficulties"
+      ],
+      "exclusions": [
+        "People who have been in contact with employment services in the past six months"
+      ],
+      "gate": [],
+      "healthFocus": [
+        "any"
+      ],
+      "referralRoutes": [
+        "Contact RCC on 01924 510030",
+        "Contact Taleem Centre on 01924 325147",
+        "Drop-in sessions, community groups, QR code and application form",
+        "Referrals from other providers and support organisations"
+      ],
+      "selfReferral": {
+        "allowed": "no",
+        "note": "Not at the moment, according to the pathways document"
+      },
+      "activities": [
+        {
+          "name": "Wellness Navigators: Pathways to a Healthy Working Life",
+          "summary": "Weekly wellbeing and employability workshops, fortnightly one-to-one keyworker support, peer support, bilingual guidance and practical 'Taste of Work' activities. Links people on to Employment Kirklees, REAL Employment, Kirklees Adult Learning, supported volunteering and suitable jobs.",
+          "duration": "Six months, with weekly provision over two to three days"
+        }
+      ],
+      "workExperience": "Yes - 'Taste of Work' activities and supported volunteering",
+      "lastUpdated": "2026-10-01",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "audio-boost",
+      "name": "Audio Boost",
+      "organisation": "Yorkshire Sound Women Network",
+      "status": "Live - applications via the Yorkshire Sound Women Network website and social media; sessions start week commencing 4 January 2027",
+      "open": true,
+      "audience": [
+        "individual"
+      ],
+      "whoFor": "Women (cis and trans) and gender-diverse people in Kirklees who are not in work or claiming Universal Credit and are living with a health condition, who want skills and confidence for work in the audio sector.",
+      "age": "Adults",
+      "webpage": "https://yorkshiresoundwomen.com/",
+      "email": "info@yorkshiresoundwomen.com",
+      "phone": "07946 531169",
+      "social": [],
+      "locations": [
+        "Various locations in Huddersfield (to be confirmed), with online support"
+      ],
+      "areas": [
+        "Huddersfield",
+        "Online"
+      ],
+      "eligibility": [
+        "Women (cis and trans) and gender-diverse people",
+        "Lives in Kirklees",
+        "Not in work or claiming Universal Credit",
+        "Living with a health condition"
+      ],
+      "exclusions": [],
+      "gate": [],
+      "healthFocus": [
+        "any"
+      ],
+      "referralRoutes": [
+        "Application details will be shared on the Yorkshire Sound Women Network website and social media later in autumn 2026"
+      ],
+      "selfReferral": {
+        "allowed": "tbc",
+        "note": "Applications open later in autumn 2026"
+      },
+      "activities": [
+        {
+          "name": "Audio Boost",
+          "summary": "Hands-on workshops, talks and one-to-one support covering music technology roles such as producing tracks, DJing, engineering live events and making podcasts and radio shows, plus practical advice on finding work, in a friendly, supportive environment.",
+          "duration": "Six one-day workshops with online support throughout, starting week commencing 4 January 2027"
+        }
+      ],
+      "workExperience": "No",
+      "lastUpdated": "2026-10-12",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "pathways-to-potential-2",
+      "name": "Pathways to Potential 2",
+      "organisation": "Batley Sporting Foundation",
+      "status": "Live - grant-funded project (status not stated in the pathways document)",
+      "open": true,
+      "audience": [
+        "individual"
+      ],
+      "whoFor": "People who are not in education, employment or training (NEET), or at risk of becoming NEET, who want skills and experience to prepare for volunteering and paid work.",
+      "age": "Not stated",
+      "webpage": null,
+      "email": "jade@batleysportingfoundation.org",
+      "phone": "07584 569117",
+      "social": [],
+      "locations": [
+        "Batley Sporting Foundation Community Gym, Heritage Road, Batley, WF17 7NZ"
+      ],
+      "areas": [
+        "Batley"
+      ],
+      "eligibility": [
+        "Not in education, employment or training (NEET), or at risk of becoming NEET"
+      ],
+      "exclusions": [],
+      "gate": [],
+      "healthFocus": [],
+      "referralRoutes": [
+        "Application form from Batley Sporting Foundation or online (contact Jade Wardell)"
+      ],
+      "selfReferral": {
+        "allowed": "yes",
+        "note": "Apply using the application form"
+      },
+      "activities": [
+        {
+          "name": "Pathways to Potential 2",
+          "summary": "Gives economically inactive people the skills, tools and experience to prepare for volunteering and paid work.",
+          "duration": "Weekly provision"
+        }
+      ],
+      "workExperience": "No",
+      "lastUpdated": "2026-10-01",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "proper-progress",
+      "name": "Proper Progress",
+      "organisation": "Proper Job Theatre Company, with KLTV and Thread Republic",
+      "status": "Live - grant-funded project (status not stated in the pathways document)",
+      "open": true,
+      "audience": [
+        "individual"
+      ],
+      "whoFor": "Adults who are not working or looking for work because of barriers such as poor physical or mental health, isolation, caring responsibilities, low confidence, disability or language barriers.",
+      "age": "Adults",
+      "webpage": null,
+      "email": "mollie@properjob.org.uk",
+      "phone": "01484 514687 / 07716 639494",
+      "social": [],
+      "locations": [
+        "46/47 Byram Arcade, Westgate, Huddersfield, HD1 1ND"
+      ],
+      "areas": [
+        "Huddersfield"
+      ],
+      "eligibility": [
+        "Economically inactive adult (not working and not looking for work)"
+      ],
+      "exclusions": [],
+      "gate": [],
+      "healthFocus": [],
+      "referralRoutes": [
+        "Email engagement@properjob.org.uk",
+        "Phone 01484 514687 or 07716 639494 (contact: Mollie Wood)"
+      ],
+      "selfReferral": {
+        "allowed": "yes",
+        "note": "Call or email directly"
+      },
+      "activities": [
+        {
+          "name": "Personalised information, advice and guidance",
+          "summary": "Outreach, assessment, goal setting, an individual learning plan and one-to-one progression support.",
+          "duration": "One-to-one sessions as needed"
+        },
+        {
+          "name": "Creative Learning with Proper Job",
+          "summary": "Creative drama, storytelling, role play and group activities to build confidence, communication, teamwork, resilience and wellbeing.",
+          "duration": "18 guided learning hours"
+        },
+        {
+          "name": "Digital Content Creation with KLTV",
+          "summary": "Making digital content and short films to develop communication, digital and presentation skills.",
+          "duration": "6 guided learning hours"
+        },
+        {
+          "name": "Sustainability, Upcycling and Personal Presentation with Thread Republic",
+          "summary": "Practical upcycling and personal presentation skills to build confidence and self-esteem.",
+          "duration": "6 guided learning hours"
+        }
+      ],
+      "workExperience": "Prepares people for volunteering, learning and work; no placement stated",
+      "lastUpdated": "2026-10-01",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "pathways-to-potential",
+      "name": "Pathways to Potential",
+      "organisation": "Community Platform Together CIC and The Branch",
+      "status": "Live - grant-funded project (status not stated in the pathways document)",
+      "open": true,
+      "audience": [
+        "individual"
+      ],
+      "whoFor": "Economically inactive people who want to improve wellbeing, build confidence and move closer to volunteering, training or work, including people facing long-term health conditions, disability, mental health challenges, caring, addiction, debt, risk of homelessness, the criminal justice system or isolation.",
+      "age": "Adults",
+      "webpage": null,
+      "email": "dave@communityplatform.org.uk",
+      "phone": "07557 916 390",
+      "social": [],
+      "locations": [
+        "The Branch, Jubilee Centre, Huddersfield, HD1 4SH - a welcoming, accessible community space"
+      ],
+      "areas": [
+        "Huddersfield"
+      ],
+      "eligibility": [
+        "Economically inactive (not working and not looking for work)"
+      ],
+      "exclusions": [],
+      "gate": [],
+      "healthFocus": [],
+      "referralRoutes": [
+        "Self-referral (contact David Ennis)",
+        "Referral through partner organisations in the community"
+      ],
+      "selfReferral": {
+        "allowed": "yes",
+        "note": "Yes"
+      },
+      "activities": [
+        {
+          "name": "Pathways to Potential Programme",
+          "summary": "Group workshops and one-to-one guidance covering wellbeing and mindfulness, digital confidence and basic IT skills (including AI), CVs, job searching and interviews, and volunteering and community connections.",
+          "duration": "10 sessions over eight weeks (three cohorts, 30 places in total)"
+        }
+      ],
+      "workExperience": "Volunteering opportunities",
+      "lastUpdated": "2026-10-01",
+      "reviewCycle": "Quarterly"
+    },
+    {
+      "id": "shaping-healthy-working-life",
+      "name": "Shaping Healthy Working Life",
+      "organisation": "Shaping Care in Kirklees CIC",
+      "status": "Live - grant-funded project (status not stated in the pathways document)",
+      "open": true,
+      "audience": [
+        "individual"
+      ],
+      "whoFor": "Economically inactive people, particularly those with health issues (though it is not limited to them), who want to rebuild routines and confidence and prepare for volunteering, work or study.",
+      "age": "Adults",
+      "webpage": null,
+      "email": "info@shapingcarekirklees.org",
+      "phone": "07597 122074",
+      "social": [],
+      "locations": [
+        "Gledholt Methodist Church, 30 Edgerton Grove Road, Marsh, Huddersfield, HD1 5QX"
+      ],
+      "areas": [
+        "Huddersfield"
+      ],
+      "eligibility": [
+        "Economically inactive (not working and not looking for work)"
+      ],
+      "exclusions": [],
+      "gate": [],
+      "healthFocus": [],
+      "referralRoutes": [
+        "Email info@shapingcarekirklees.org or phone 07597 122074 (contact: Griffith Gay)"
+      ],
+      "selfReferral": {
+        "allowed": "yes",
+        "note": "Email or phone directly"
+      },
+      "activities": [
+        {
+          "name": "Shaping Healthy Working Life",
+          "summary": "Practical support to overcome challenges, rebuild daily routines and boost confidence, connecting people with local providers, voluntary groups and activities to prepare for volunteering, work or study.",
+          "duration": "Regular sessions, weekly or fortnightly"
+        }
+      ],
+      "workExperience": "Volunteering and training opportunities",
+      "lastUpdated": "2026-10-01",
       "reviewCycle": "Quarterly"
     }
   ]
