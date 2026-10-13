@@ -67,6 +67,14 @@ The page has a language switcher in the header: English, Polski and اردو (Ur
 - Switching language part-way through a chat leaves earlier messages and cards as they were. New replies come back in the new language.
 - The MVP help page and issues log are English only.
 
+## Accessibility options (text size, high contrast, read aloud)
+
+A bar under the header lets people choose a larger text size (A, A+, A++) and switch on high contrast. The code is in `site/access.js`, the styles at the end of `site/style.css`, and the wording in `site/i18n.js` (`textSize`, `sizeNormal`, `sizeLarge`, `sizeLarger`, `contrast`, `listen`, `stop`, `listenTo`).
+
+- The choices go in the address (`?size=2`, `?size=3`, `?contrast=high`), like the language, not in browser storage, so the page still stores nothing. A link such as `?size=3&contrast=high` opens the page that way.
+- Each AI reply and each scheme card has a **Listen** button that reads it aloud using the voices built into the person's own device (the browser's speech synthesis). There is no extra service or cost. Device voices are preferred; some browsers (for example Chrome on a desktop) also offer online voices, which send the text to the browser maker to be spoken, and are only used when the device has no voice of its own for that language.
+- Replies are read in the page's language and cards in English. If a device has no voice for a language (Urdu voices are often missing), the Listen buttons for that language are hidden.
+
 ## Local test of the Worker
 
     cd worker && npm install
