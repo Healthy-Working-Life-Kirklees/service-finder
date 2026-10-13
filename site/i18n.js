@@ -17,6 +17,14 @@
 
   const STRINGS = {
     en: {
+      textSize: 'Text size',
+      sizeNormal: 'Standard text size',
+      sizeLarge: 'Large text',
+      sizeLarger: 'Largest text',
+      contrast: 'High contrast',
+      listen: 'Listen',
+      stop: 'Stop',
+      listenTo: 'Listen to details of {name}',
       pageTitle: 'Healthy Working Life Support Finder (prototype)',
       skip: 'Skip to the message box',
       langNav: 'Language',
@@ -93,6 +101,14 @@
     },
 
     pl: {
+      textSize: 'Rozmiar tekstu',
+      sizeNormal: 'Standardowy rozmiar tekstu',
+      sizeLarge: 'Duży tekst',
+      sizeLarger: 'Największy tekst',
+      contrast: 'Wysoki kontrast',
+      listen: 'Posłuchaj',
+      stop: 'Zatrzymaj',
+      listenTo: 'Posłuchaj informacji o: {name}',
       pageTitle: 'Healthy Working Life – wyszukiwarka wsparcia (wersja testowa)',
       skip: 'Przejdź do pola wiadomości',
       langNav: 'Język',
@@ -169,6 +185,14 @@
     },
 
     ur: {
+      textSize: 'متن کا سائز',
+      sizeNormal: 'معیاری متن',
+      sizeLarge: 'بڑا متن',
+      sizeLarger: 'سب سے بڑا متن',
+      contrast: 'زیادہ کنٹراسٹ',
+      listen: 'سنیں',
+      stop: 'روکیں',
+      listenTo: '{name} کی تفصیلات سنیں',
       pageTitle: 'ہیلدی ورکنگ لائف – مدد کی تلاش (آزمائشی ورژن)',
       skip: 'پیغام کے خانے پر جائیں',
       langNav: 'زبان',

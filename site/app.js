@@ -145,9 +145,21 @@
       ),
       el('p', { class: 'meta', text: t('lastChecked', { date: fmtDate(s.lastUpdated) }) }),
       stale ? el('p', { class: 'stale', text: t('stale') }) : null,
-      el('div', { class: 'tools' }, el('button', { type: 'button', class: 'btn secondary small', text: t('copy'), onclick: (e) => copyDetails(s, e.currentTarget) }))
+      el('div', { class: 'tools' },
+        el('button', { type: 'button', class: 'btn secondary small', text: t('copy'), onclick: (e) => copyDetails(s, e.currentTarget) }),
+        window.ACCESS ? window.ACCESS.listenButton(() => spokenText(s), 'en-GB', t('listenTo', { name: s.name })) : null)
     );
     return node;
+  }
+
+  // What the Listen button on a card reads out. Scheme details are in English, so they are read in English.
+  function spokenText(s) {
+    const parts = [s.name + '. ' + s.organisation + '.'];
+    if (s.whoFor) parts.push(s.whoFor);
+    if (s.phone) parts.push('Phone: ' + s.phone + '.');
+    if (s.email) parts.push('Email: ' + s.email + '.');
+    if (s.referralRoutes && s.referralRoutes.length) parts.push('How to get in: ' + s.referralRoutes.join('. ') + '.');
+    return parts.join(' ');
   }
 
   function copyText(s) {
@@ -271,6 +283,11 @@
       const needs = Array.isArray(data.understood_needs) ? data.understood_needs : [];
       if (needs.length && !data.safety_concern) b.append(el('p', { class: 'understood', dir: 'auto', text: t('understood') + needs.join(t('listSep')) + t('end') }));
       if (data.pii_detected) b.append(el('p', { class: 'pii-note', text: t('pii') }));
+      // Listen button: reads the whole reply, including any urgent support panel, in the page's language.
+      if (window.ACCESS) {
+        const reply = b;
+        b.append(el('div', { class: 'bubble-tools' }, window.ACCESS.listenButton(() => [...reply.querySelectorAll('p')].map((p) => p.textContent).join(' '), window.I18N.locale)));
+      }
       // The chat message comes first, with the scheme cards underneath it.
       const recs = (data.recommendations || []).map(card).filter(Boolean);
       if (recs.length) {
@@ -296,6 +313,7 @@
   }
 
   function reset() {
+    if (window.ACCESS) window.ACCESS.stop();
     history = [];
     logEl.replaceChildren();
     input.value = '';

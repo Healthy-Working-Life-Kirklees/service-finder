@@ -23,6 +23,20 @@
         <select id="lang-select"></select>
       </div>
     </div>
+    <div class="a11y-bar">
+      <div class="wrap">
+        <div class="a11y-group" role="group" aria-labelledby="size-label">
+          <span id="size-label" data-i18n="textSize">Text size</span>
+          <button type="button" class="size-btn" data-size="1" aria-pressed="true"><span aria-hidden="true">A</span><span class="visually-hidden" data-i18n="sizeNormal">Standard</span></button>
+          <button type="button" class="size-btn" data-size="2" aria-pressed="false"><span aria-hidden="true">A+</span><span class="visually-hidden" data-i18n="sizeLarge">Large</span></button>
+          <button type="button" class="size-btn" data-size="3" aria-pressed="false"><span aria-hidden="true">A++</span><span class="visually-hidden" data-i18n="sizeLarger">Largest</span></button>
+        </div>
+        <button type="button" id="contrast-toggle" class="contrast-btn" aria-pressed="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
+          <span data-i18n="contrast">High contrast</span>
+        </button>
+      </div>
+    </div>
   </header>
 
   <main class="wrap">
@@ -76,6 +90,7 @@
 
   <script src="config.js"></script>
   <script src="i18n.js"></script>
+  <script src="access.js"></script>
   <script src="app.js" defer></script>
 </body>
 </html>

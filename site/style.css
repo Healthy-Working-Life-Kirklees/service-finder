@@ -206,3 +206,82 @@ html:lang(ur) .hero-title { font-size: clamp(1.9rem, 4.2vw, 2.9rem); line-height
 html:lang(ur) .bubble.thinking { font-style: normal; }
 html:lang(ur) .btn { padding-block: .4rem .6rem; }
 html:lang(ur) [lang="en"] { line-height: 1.55; }
+
+/* ---------- Accessibility options (access.js) ---------- */
+/* The bar under the header: text size and high contrast. */
+.a11y-bar { background: #fff; border-top: 1px solid #e3efec; font-size: .95rem; }
+.a11y-bar .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .5rem 1.25rem; padding-top: .4rem; padding-bottom: .4rem; }
+.a11y-group { display: flex; align-items: center; gap: .35rem; }
+.a11y-group > span { font-weight: 600; margin-inline-end: .25rem; }
+.size-btn, .contrast-btn { font: 700 1rem/1 var(--heading-font); color: var(--dark-blue); background: #fff; border: 1px solid var(--blue); border-radius: 8px; min-height: 2.5rem; min-width: 2.75rem; padding: .3rem .6rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: .4rem; }
+.size-btn[data-size="2"] { font-size: 1.15rem; }
+.size-btn[data-size="3"] { font-size: 1.3rem; }
+.size-btn:hover, .contrast-btn:hover { background: var(--light); }
+.size-btn[aria-pressed="true"], .contrast-btn[aria-pressed="true"] { background: var(--dark-blue); color: #fff; border-color: var(--dark-blue); }
+.size-btn:focus-visible, .contrast-btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 0; box-shadow: 0 0 0 5px #000; }
+.a11y-group > span { white-space: nowrap; }
+@media (max-width: 600px) {
+  .a11y-bar .wrap { justify-content: flex-start; }
+  /* With bigger text on a phone, put the logo above the scheme name so the name gets the full width. */
+  html.text-large .card-head, html.text-larger .card-head { flex-direction: column; align-items: flex-start; gap: .6rem; }
+}
+
+/* Text size. Everything on the page is sized in rem, so changing the root size scales it all together. */
+html.text-large { font-size: 125%; }
+html.text-larger { font-size: 150%; }
+
+/* Listen buttons on replies and cards. */
+.bubble-tools { margin-top: .6rem; }
+.card .tools { display: flex; flex-wrap: wrap; gap: .5rem; }
+.listen[hidden] { display: none; }
+.listen.playing { background: var(--dark-blue); color: #fff; border-color: var(--dark-blue); }
+
+/* High contrast: black text on white, dark borders, underlined links, no tinted panels. */
+html.high-contrast {
+  --blue: #003d3d;
+  --dark-blue: #002b2b;
+  --green: #003d3d;
+  --text: #000;
+  --grey: #1a1a1a;
+  --light: #e6f2f2;
+  --border: #000;
+  --warn-bg: #fff;
+  --warn: #4d3800;
+  --crisis-bg: #fff;
+  --crisis: #6b0000;
+  --cream: #fff;
+  --mint: #fff;
+  --accent: #000;
+}
+html.high-contrast .site-header,
+html.high-contrast .a11y-bar { border-color: #000; }
+html.high-contrast .site-header { border-bottom: 2px solid #000; }
+html.high-contrast .site-header .logo,
+html.high-contrast .eyebrow,
+html.high-contrast .card .org { color: #000; }
+html.high-contrast .notice,
+html.high-contrast .bubble,
+html.high-contrast .card,
+html.high-contrast .crisis,
+html.high-contrast .card .stale { border: 2px solid #000; box-shadow: none; }
+html.high-contrast .bubble.assistant { background: #fff; }
+html.high-contrast .bubble.thinking { border: 0; color: #000; }
+html.high-contrast .crisis { border-inline-start-width: 8px; }
+html.high-contrast .form textarea { border-color: #000; }
+html.high-contrast .form textarea::placeholder { color: #333; }
+html.high-contrast .badge { background: #fff; border: 1px solid #000; color: #000; }
+html.high-contrast .badge.fit-strong,
+html.high-contrast .badge.live { background: #000; color: #fff; }
+html.high-contrast .btn.primary { background: #000; box-shadow: none; }
+html.high-contrast .btn.primary:hover { background: #333; }
+html.high-contrast .btn.secondary,
+html.high-contrast .chip,
+html.high-contrast .size-btn,
+html.high-contrast .contrast-btn,
+html.high-contrast .lang-switch select { border: 2px solid #000; color: #000; background: #fff; }
+html.high-contrast .size-btn[aria-pressed="true"],
+html.high-contrast .contrast-btn[aria-pressed="true"],
+html.high-contrast .listen.playing { background: #000; color: #fff; }
+html.high-contrast a { text-decoration: underline; text-decoration-thickness: 2px; }
+html.high-contrast .thumb:not(.logo) { background: #fff; border: 2px solid #000; }
+html.high-contrast .site-footer { border-top-color: #000; }
