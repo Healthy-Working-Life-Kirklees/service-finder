@@ -7,6 +7,7 @@
       "id": "elevate",
       "name": "elevate",
       "organisation": "Fresh Futures",
+      "logo": "fresh-futures.webp",
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
@@ -68,6 +69,7 @@
       "id": "employment-kirklees",
       "name": "Employment Kirklees",
       "organisation": "Paddock Community Trust, in partnership with Kirklees Council",
+      "logo": "paddock-trust.webp",
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
@@ -130,6 +132,7 @@
       "id": "fitness-for-work",
       "name": "Fitness for Work",
       "organisation": "Kirklees Active Leisure",
+      "logo": "kirklees-active-leisure.webp",
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
@@ -210,6 +213,7 @@
       "id": "flippin-pain",
       "name": "Flippin' Pain (incl. Why We Hurt)",
       "organisation": "Cora Health (formerly Connect Health)",
+      "logo": "cora-health.webp",
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
@@ -265,6 +269,7 @@
       "id": "get-set-goal",
       "name": "Get Set Goal",
       "organisation": "University of Huddersfield",
+      "logo": "university-of-huddersfield.webp",
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
@@ -338,6 +343,7 @@
       "id": "health-wellbeing-hub",
       "name": "Health & Wellbeing Hub",
       "organisation": "Kirklees College",
+      "logo": "kirklees-college.webp",
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
@@ -397,6 +403,7 @@
       "id": "ips-cgl",
       "name": "Individual Placement and Support for Change Grow Live service users",
       "organisation": "Change Grow Live (CGL)",
+      "logo": "change-grow-live.webp",
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
@@ -477,6 +484,7 @@
       "id": "ips-smi",
       "name": "Individual Placement and Support for Severe Mental Illness (SMI)",
       "organisation": "South West Yorkshire Partnership NHS Foundation Trust",
+      "logo": "swypft.webp",
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
@@ -558,6 +566,7 @@
       "id": "kirklees-employment-service",
       "name": "Kirklees Employment Service",
       "organisation": "Waythrough (formerly Richmond Fellowship)",
+      "logo": "waythrough.webp",
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
@@ -642,6 +651,7 @@
       "id": "talking-therapies-employment",
       "name": "Kirklees Talking Therapies Employment Advice",
       "organisation": "South West Yorkshire Partnership NHS Foundation Trust (NHS Kirklees Talking Therapies)",
+      "logo": "swypft.webp",
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
@@ -706,6 +716,7 @@
       "id": "my-way-forward",
       "name": "My Way Forward",
       "organisation": "C+K Careers Ltd",
+      "logo": "c-k-careers.webp",
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
@@ -764,6 +775,7 @@
       "id": "p2p-proper-job",
       "name": "Pathways to Possibilities (Proper Job Theatre Company)",
       "organisation": "Proper Job Theatre Company Ltd",
+      "logo": "proper-job.webp",
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
@@ -822,6 +834,7 @@
       "id": "p2p-fusion-housing",
       "name": "Pathways to Possibilities (Fusion Housing)",
       "organisation": "Fusion Housing",
+      "logo": "fusion-housing.webp",
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
@@ -880,6 +893,7 @@
       "id": "real-employment",
       "name": "REAL Employment",
       "organisation": "Kirklees Council",
+      "logo": "kirklees-council.webp",
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
@@ -966,6 +980,7 @@
       "id": "supporting-working-carers",
       "name": "Supporting Working Carers",
       "organisation": "Carers Count Kirklees (delivered by Cloverleaf Advocacy)",
+      "logo": "carers-count.webp",
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
@@ -1037,6 +1052,7 @@
       "id": "wellness-to-work",
       "name": "Wellness to Work",
       "organisation": "Locala Community Partnerships CIC",
+      "logo": "locala.webp",
       "status": "Live - open to referrals",
       "open": true,
       "audience": [
@@ -1095,6 +1111,7 @@
       "id": "hwl-community-grants",
       "name": "Healthy Working Life Community Grants Programme",
       "organisation": "Kirklees Council Employment & Skills Service",
+      "logo": "kirklees-council.webp",
       "status": "Future - not yet open to referrals. Grants awarded; no information on individual grant-funded schemes until awards are confirmed",
       "open": false,
       "audience": [
@@ -1144,6 +1161,7 @@
       "id": "tcd-healthy-futures",
       "name": "TCD Healthy Futures",
       "organisation": "TCD",
+      "logo": "tcd.webp",
       "status": "Live - grant-funded project (status not stated in the pathways document)",
       "open": true,
       "audience": [
@@ -1190,6 +1208,7 @@
       "id": "edens-forest-woodland-pathways",
       "name": "Woodland Pathways' Programme of Woodland Sessions",
       "organisation": "Eden's Forest CIC",
+      "logo": "edens-forest.webp",
       "status": "Live - grant-funded project (status not stated in the pathways document)",
       "open": true,
       "audience": [
@@ -1236,6 +1255,7 @@
       "id": "happymoments-pathway-to-employment",
       "name": "HappyMOMents Pathway to Employment: Wellbeing, Skills & Work Experience Programme for Vulnerable Women",
       "organisation": "HappyMOMents CIO",
+      "logo": "happymoments.webp",
       "status": "Referrals via the organisation's website, expected from early October 2026",
       "open": true,
       "audience": [
@@ -1284,6 +1304,7 @@
       "id": "growing-together-volunteering",
       "name": "Growing Together - Volunteering Pathways",
       "organisation": "LS2Y and Dalton Together",
+      "logo": "ls2y.webp",
       "status": "Live - grant-funded project (status not stated in the pathways document)",
       "open": true,
       "audience": [
@@ -1330,6 +1351,7 @@
       "id": "sound-steps-2",
       "name": "Sound Steps 2",
       "organisation": "Yorkshire Youth & Music and Umbrella Yoga",
+      "logo": "yorkshire-youth-music.webp",
       "status": "Live - grant-funded project (status not stated in the pathways document)",
       "open": true,
       "audience": [
@@ -1376,6 +1398,7 @@
       "id": "raise-your-game",
       "name": "Raise Your Game Programme",
       "organisation": "Huddersfield Town Foundation",
+      "logo": "huddersfield-town-foundation.webp",
       "status": "Live - grant-funded project (status not stated in the pathways document)",
       "open": true,
       "audience": [
@@ -1422,6 +1445,7 @@
       "id": "empowerher-imws",
       "name": "EmpowerHer: Steps to Wellbeing and Work Project",
       "organisation": "IMWS",
+      "logo": "imws.webp",
       "status": "Live - grant-funded project (status not stated in the pathways document)",
       "open": true,
       "audience": [
@@ -1468,6 +1492,7 @@
       "id": "lbt-future-creative",
       "name": "Future Creative: Inclusive Volunteering",
       "organisation": "Lawrence Batley Theatre",
+      "logo": "lawrence-batley-theatre.webp",
       "status": "Live - grant-funded project (status not stated in the pathways document)",
       "open": true,
       "audience": [
@@ -1514,6 +1539,7 @@
       "id": "wellness-navigators",
       "name": "Wellness Navigators",
       "organisation": "Ravensthorpe Community Centre (RCC) and Taleem Centre",
+      "logo": "rccl.webp",
       "status": "Live - grant-funded project (status not stated in the pathways document)",
       "open": true,
       "audience": [
@@ -1569,6 +1595,7 @@
       "id": "audio-boost",
       "name": "Audio Boost",
       "organisation": "Yorkshire Sound Women Network",
+      "logo": "yswn.webp",
       "status": "Live - applications via the Yorkshire Sound Women Network website and social media; sessions start week commencing 4 January 2027",
       "open": true,
       "audience": [
@@ -1620,6 +1647,7 @@
       "id": "pathways-to-potential-2",
       "name": "Pathways to Potential 2",
       "organisation": "Batley Sporting Foundation",
+      "logo": "batley-sporting-foundation.webp",
       "status": "Live - grant-funded project (status not stated in the pathways document)",
       "open": true,
       "audience": [
@@ -1665,6 +1693,7 @@
       "id": "proper-progress",
       "name": "Proper Progress",
       "organisation": "Proper Job Theatre Company, with KLTV and Thread Republic",
+      "logo": "proper-job.webp",
       "status": "Live - grant-funded project (status not stated in the pathways document)",
       "open": true,
       "audience": [
@@ -1726,6 +1755,7 @@
       "id": "pathways-to-potential",
       "name": "Pathways to Potential",
       "organisation": "Community Platform Together CIC and The Branch",
+      "logo": "community-platform.webp",
       "status": "Live - grant-funded project (status not stated in the pathways document)",
       "open": true,
       "audience": [
@@ -1772,6 +1802,7 @@
       "id": "shaping-healthy-working-life",
       "name": "Shaping Healthy Working Life",
       "organisation": "Shaping Care in Kirklees CIC",
+      "logo": "shaping-care-kirklees.webp",
       "status": "Live - grant-funded project (status not stated in the pathways document)",
       "open": true,
       "audience": [

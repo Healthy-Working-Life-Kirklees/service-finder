@@ -84,6 +84,18 @@
     return h % THUMBS;
   }
 
+  // The picture at the top left of a card: the organisation's logo when services.json names one (the file
+  // lives in site/img/logos/), otherwise a coloured block. If a logo file is missing, it falls back to the block.
+  // The organisation's name is written next to it, so the logo is decorative for screen readers.
+  function thumb(s) {
+    const box = el('div', { class: 'thumb thumb-' + thumbIndex(s.id), 'aria-hidden': 'true' });
+    if (typeof s.logo === 'string' && /^[\w.-]+\.(png|jpe?g|webp|svg)$/i.test(s.logo)) {
+      box.classList.add('logo');
+      box.append(el('img', { src: 'img/logos/' + s.logo, alt: '', loading: 'lazy', onerror: () => { box.classList.remove('logo'); box.replaceChildren(); } }));
+    }
+    return box;
+  }
+
   function card(rec) {
     const s = services.get(rec.id);
     if (!s) return null;
@@ -109,7 +121,7 @@
 
     const node = el('article', { class: 'card' },
       el('div', { class: 'card-head' },
-        el('div', { class: 'thumb thumb-' + thumbIndex(s.id), 'aria-hidden': 'true' }),
+        thumb(s),
         el('div', { class: 'card-title' },
           el('h3', { ...EN, text: s.name }),
           el('p', { ...EN, class: 'org', text: s.organisation }),
