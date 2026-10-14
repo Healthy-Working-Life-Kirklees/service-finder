@@ -100,6 +100,7 @@ fieldset.mode input { width: 1.4rem; height: 1.4rem; margin-top: .15rem; accent-
 .crisis p:last-child { margin-bottom: 0; }
 .bubble ol.questions { margin: 0 0 .75rem; padding-inline-start: 1.5rem; font-weight: 600; }
 .bubble ol.questions li { margin: 0 0 .35rem; }
+.bubble.assistant { scroll-margin-top: 1rem; }
 .bubble p.understood, .bubble p.pii-note { font-size: .95rem; color: var(--grey); }
 
 .cards { display: flex; flex-direction: column; gap: 1rem; }
@@ -142,6 +143,7 @@ fieldset.mode input { width: 1.4rem; height: 1.4rem; margin-top: .15rem; accent-
 .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; margin: 1.25rem auto 0; max-width: 52rem; }
 .chip { font-size: .95rem; font-weight: 500; background: #fff; color: var(--blue); border: 1px solid var(--blue); border-radius: 999px; padding: .4rem 1rem; cursor: pointer; text-align: start; }
 .chip:hover { background: var(--light); }
+.more-options { display: flex; justify-content: flex-start; margin: .75rem 0 0; }
 
 .form { max-width: 52rem; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
 .form label { align-self: flex-start; font-weight: 700; margin-bottom: .35rem; font-family: var(--heading-font); }

@@ -76,7 +76,8 @@ check('cache_control on the data block', !!sent.system[1].cache_control);
 
 // ----- new reply shape: what the Worker sends to the model -----
 const props = sent.tools[0].input_schema.properties;
-check('schema: matches carry service_id enum of all 17 schemes, max 5', props.matches.maxItems === 5 && props.matches.items.properties.service_id.enum.length === 17);
+const schemeCount = JSON.parse(fs.readFileSync(path.join(root, 'data/services.json'), 'utf8')).services.length;
+check(`schema: matches carry service_id enum of all ${schemeCount} schemes, max 5`, props.matches.maxItems === 5 && props.matches.items.properties.service_id.enum.length === schemeCount);
 check('schema: fit is strong/possible', props.matches.items.properties.fit.enum.join() === 'strong,possible');
 check('schema: urgent_types enum has the five kinds', props.urgent_types.items.enum.length === 5);
 check('schema: all 2 follow-up questions left at the start', props.follow_up_questions.maxItems === 2 && /FOLLOW-UP QUESTIONS LEFT: 2/.test(sent.system[2].text));
