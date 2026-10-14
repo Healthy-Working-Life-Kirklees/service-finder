@@ -63,6 +63,8 @@
       footerA: 'For urgent mental health support in Kirklees, call the 24-hour Single Point of Access team on ',
       footerB: ' or call NHS 111.',
 
+      otherOptionsSelf: "I'm not sure that's right for me. Are there other options?",
+      otherOptionsStaff: "I'm not sure that's right for them. Are there other options?",
       fitStrong: 'Strong match',
       fitPossible: 'Worth checking',
       open: 'Open to referrals',
@@ -154,6 +156,8 @@
       footerA: 'Aby uzyskać pilne wsparcie w zakresie zdrowia psychicznego w Kirklees, zadzwoń do całodobowego zespołu Single Point of Access pod numer ',
       footerB: ' lub pod numer NHS 111.',
 
+      otherOptionsSelf: 'Nie wiem, czy to dla mnie. Czy są inne możliwości?',
+      otherOptionsStaff: 'Nie wiem, czy to odpowiednie dla tej osoby. Czy są inne możliwości?',
       fitStrong: 'Dobre dopasowanie',
       fitPossible: 'Warto sprawdzić',
       open: 'Przyjmuje skierowania',
@@ -245,6 +249,8 @@
       footerA: 'کرکلیز میں ذہنی صحت کی فوری مدد کے لیے 24 گھنٹے کام کرنے والی Single Point of Access ٹیم کو ',
       footerB: ' پر کال کریں، یا NHS 111 پر کال کریں۔',
 
+      otherOptionsSelf: 'مجھے یقین نہیں کہ یہ میرے لیے صحیح ہے۔ کیا کوئی اور آپشنز ہیں؟',
+      otherOptionsStaff: 'مجھے یقین نہیں کہ یہ ان کے لیے صحیح ہے۔ کیا کوئی اور آپشنز ہیں؟',
       fitStrong: 'اچھا میچ',
       fitPossible: 'دیکھنے کے قابل',
       open: 'ریفرل قبول کر رہی ہے',

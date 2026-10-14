@@ -254,6 +254,8 @@
     if (!text || busy) return;
     setBusy(true);
     chipsEl.hidden = true;
+    // Only the latest reply offers "other options".
+    for (const n of logEl.querySelectorAll('.more-options')) n.remove();
     document.body.classList.add('chatting');
     updatePlaceholder();
     bubble('user', text);
@@ -306,6 +308,11 @@
       if (recs.length) {
         const cardsEl = el('div', { class: 'cards' }, recs);
         logEl.append(cardsEl);
+        // When only one service comes back, offer a quick way to ask for others.
+        if (recs.length === 1 && !data.safety_concern) {
+          const ask = t(mode() === 'staff' ? 'otherOptionsStaff' : 'otherOptionsSelf');
+          logEl.append(el('div', { class: 'more-options' }, el('button', { type: 'button', class: 'chip', text: ask, onclick: () => send(ask) })));
+        }
         cardsEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       }
 
