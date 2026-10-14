@@ -313,8 +313,9 @@
           const ask = t(mode() === 'staff' ? 'otherOptionsStaff' : 'otherOptionsSelf');
           logEl.append(el('div', { class: 'more-options' }, el('button', { type: 'button', class: 'chip', text: ask, onclick: () => send(ask) })));
         }
-        cardsEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       }
+      // Keep the reader at the start of the reply, with the cards below it, rather than at the end of the cards.
+      b.scrollIntoView({ block: 'start', behavior: 'smooth' });
 
       // Remember which services were shown so follow-up questions make sense.
       const shown = (data.recommendations || []).map((x) => x.id).join(', ');
@@ -328,7 +329,8 @@
       bubble('error', t('network'));
     } finally {
       setBusy(false);
-      input.focus();
+      // Put the cursor back in the message box without scrolling down to it.
+      input.focus({ preventScroll: true });
     }
   }
 
