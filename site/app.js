@@ -287,13 +287,19 @@
 
       const b = bubble('assistant', data.message);
       if (data.safety_concern) b.append(crisisPanel(data.urgent_types));
+      // Follow-up questions. The AI is asked to put them in its message too, but it sometimes only says it has
+      // questions, so any question that isn't already in the message is listed under it.
+      const questions = Array.isArray(data.follow_up_questions) ? data.follow_up_questions.filter((q) => typeof q === 'string' && q.trim()) : [];
+      const squash = (x) => x.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
+      const missing = questions.filter((q) => !squash(data.message).includes(squash(q)));
+      if (missing.length) b.append(el('ol', { class: 'questions', dir: 'auto' }, missing.map((q) => el('li', { text: q.trim() }))));
       const needs = Array.isArray(data.understood_needs) ? data.understood_needs : [];
       if (needs.length && !data.safety_concern) b.append(el('p', { class: 'understood', dir: 'auto', text: t('understood') + needs.join(t('listSep')) + t('end') }));
       if (data.pii_detected) b.append(el('p', { class: 'pii-note', text: t('pii') }));
       // Listen button: reads the whole reply, including any urgent support panel, in the page's language.
       if (window.ACCESS) {
         const reply = b;
-        b.append(el('div', { class: 'bubble-tools' }, window.ACCESS.listenButton(() => [...reply.querySelectorAll('p')].map((p) => p.textContent).join(' '), window.I18N.locale)));
+        b.append(el('div', { class: 'bubble-tools' }, window.ACCESS.listenButton(() => [...reply.querySelectorAll('p, li')].map((p) => p.textContent).join(' '), window.I18N.locale)));
       }
       // The chat message comes first, with the scheme cards underneath it.
       const recs = (data.recommendations || []).map(card).filter(Boolean);
@@ -306,8 +312,8 @@
       // Remember which services were shown so follow-up questions make sense.
       const shown = (data.recommendations || []).map((x) => x.id).join(', ');
       // The Worker counts the "(Follow-up questions asked: N)" marker to keep to its limit on questions.
-      const asked = Array.isArray(data.follow_up_questions) ? data.follow_up_questions.length : 0;
-      history.push({ role: 'assistant', content: data.message + (shown ? '\n\n(Services shown: ' + shown + ')' : '') + (asked ? '\n\n(Follow-up questions asked: ' + asked + ')' : '') });
+      const asked = questions.length;
+      history.push({ role: 'assistant', content: data.message + (missing.length ? '\n\n' + missing.join('\n') : '') + (shown ? '\n\n(Services shown: ' + shown + ')' : '') + (asked ? '\n\n(Follow-up questions asked: ' + asked + ')' : '') });
     } catch {
       thinking.remove();
       history.pop();
