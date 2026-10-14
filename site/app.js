@@ -235,6 +235,12 @@
     document.body.classList.remove('chatting');
     showPeople();
     chipsEl.hidden = false;
+    updatePlaceholder();
+  }
+
+  // The example text in the message box is only shown before the chat starts.
+  function updatePlaceholder() {
+    input.placeholder = document.body.classList.contains('chatting') ? '' : t('placeholder');
   }
 
   function setBusy(v) {
@@ -249,6 +255,7 @@
     setBusy(true);
     chipsEl.hidden = true;
     document.body.classList.add('chatting');
+    updatePlaceholder();
     bubble('user', text);
     input.value = '';
     history.push({ role: 'user', content: text });
@@ -330,6 +337,7 @@
   // cards already on screen stay as they are; new replies come back in the new language.
   window.I18N.onChange(() => {
     showChips();
+    updatePlaceholder();
     if (!busy) sendLabel.textContent = t('send');
   });
   form.addEventListener('submit', (e) => { e.preventDefault(); send(input.value); });
