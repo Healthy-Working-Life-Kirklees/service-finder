@@ -79,6 +79,8 @@ main { padding-top: 2rem; padding-bottom: 3rem; }
 
 fieldset.mode { border: 0; padding: 0; margin: 0 auto 1rem; max-width: 52rem; display: flex; flex-wrap: wrap; gap: .25rem 1.5rem; }
 fieldset.mode legend { font-weight: 700; padding: 0; margin-bottom: .25rem; font-family: var(--heading-font); }
+/* Once the chat has started the choice is kept but no longer shown; Start again brings it back. */
+.chatting fieldset.mode { display: none; }
 fieldset.mode label { display: flex; gap: .6rem; align-items: flex-start; padding: .3rem 0; cursor: pointer; }
 fieldset.mode input { width: 1.4rem; height: 1.4rem; margin-top: .15rem; accent-color: var(--blue); }
 
