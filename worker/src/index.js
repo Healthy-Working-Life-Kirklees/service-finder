@@ -65,6 +65,20 @@ const MAX_QUESTIONS = 2;
 const ASKED_RE = /\(Follow-up questions asked: (\d+)\)/g;
 const URGENT_TYPES = ['medical', 'mental_health_crisis', 'domestic_abuse', 'child_safeguarding', 'adult_safeguarding'];
 
+// True when a reply says it is asking questions but none are written: status needs_more_info with an empty list,
+// or no cards, no questions and a message that talks about questions without asking any (no question mark).
+// Covers English, Polish and Urdu wording.
+const QUESTION_WORD_RE = /question|pytani|pytań|سوال/i;
+const QUESTION_MARK_RE = /[?؟]/;
+function promisesMissingQuestions(input) {
+  const qs = Array.isArray(input.follow_up_questions) ? input.follow_up_questions.filter((q) => typeof q === 'string' && q.trim()) : [];
+  if (qs.length || input.urgent_support === true) return false;
+  if (input.status === 'needs_more_info') return true;
+  const msg = String(input.message || '');
+  const hasCards = Array.isArray(input.matches) && input.matches.length > 0;
+  return !hasCards && QUESTION_WORD_RE.test(msg) && !QUESTION_MARK_RE.test(msg);
+}
+
 function questionsAsked(messages) {
   let n = 0;
   for (const m of messages) if (m.role === 'assistant') for (const x of m.content.matchAll(ASKED_RE)) n += Number(x[1]) || 0;
@@ -121,7 +135,7 @@ function respondTool(questionsLeft) {
       enum: questionsLeft > 0 ? ['results', 'needs_more_info'] : ['results'],
       description: 'results = you are giving your answer (matches may be empty). needs_more_info = you are asking a follow-up question and returning no matches.',
     },
-    message: { type: 'string', description: 'Your reply to the person in plain text (no markdown). Short. If you are asking a question, it goes here too.' },
+    message: { type: 'string', description: 'Your reply to the person in plain text (no markdown). Short. If you are asking questions, write each one out in full here. Never say you have questions without writing them.' },
     urgent_support: { type: 'boolean', description: 'True only if the text suggests a medical emergency, suicidal thoughts, self-harm, abuse, domestic violence, or anyone at risk of serious harm.' },
     urgent_types: { type: 'array', items: { type: 'string', enum: URGENT_TYPES }, description: 'The kinds of urgent support. Empty unless urgent_support is true.' },
     pii_detected: { type: 'boolean', description: 'True if the text contains a name, address, phone number, date of birth or NHS number.' },
@@ -144,7 +158,7 @@ function respondTool(questionsLeft) {
   };
   const required = ['status', 'message', 'urgent_support', 'urgent_types', 'pii_detected', 'understood_needs', 'matches'];
   if (questionsLeft > 0) {
-    properties.follow_up_questions = { type: 'array', maxItems: questionsLeft, items: { type: 'string' }, description: 'The question or questions you are asking. Empty when you are giving results.' };
+    properties.follow_up_questions = { type: 'array', maxItems: questionsLeft, items: { type: 'string' }, description: 'Each question you are asking, written out in full (the same wording as in message). Required whenever status is needs_more_info. Empty when you are giving results.' };
     required.push('follow_up_questions');
   }
   return {
@@ -254,8 +268,33 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
       return json({ error: busy ? 'The AI service is busy. Please try again in a moment.' : 'Something went wrong on our side. Please try again.', upstream: r.status, detail }, busy ? 503 : 502, cors);
     }
 
-    const out = await r.json();
-    const block = (out.content || []).find((b) => b.type === 'tool_use' && b.name === 'respond');
+    let out = await r.json();
+    let block = (out.content || []).find((b) => b.type === 'tool_use' && b.name === 'respond');
+
+    // The model sometimes says it has questions ("Two quick questions...") without writing them anywhere. When that
+    // happens, ask it once more to write them out. This costs a second call only in that case.
+    if (block && block.input && questionsLeft > 0 && promisesMissingQuestions(block.input)) {
+      try {
+        const retry = await fetch(`${env.ANTHROPIC_API_URL || 'https://api.anthropic.com'}/v1/messages`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'x-api-key': env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
+          body: JSON.stringify({
+            ...payload,
+            messages: [
+              ...messages,
+              { role: 'assistant', content: out.content },
+              { role: 'user', content: [{ type: 'tool_result', tool_use_id: block.id, is_error: true, content: 'Your reply says you have questions but does not include them. Call respond again. If you are asking, write each question out in full in "message" and list them in "follow_up_questions", with status "needs_more_info". If you do not need to ask, give your results instead and do not mention questions.' }] },
+            ],
+          }),
+          signal: AbortSignal.timeout(40_000),
+        });
+        if (retry.ok) {
+          const out2 = await retry.json();
+          const block2 = (out2.content || []).find((b) => b.type === 'tool_use' && b.name === 'respond');
+          if (block2 && block2.input && typeof block2.input.message === 'string') { out = out2; block = block2; }
+        }
+      } catch {}
+    }
     let input = block && block.input && typeof block.input.message === 'string' ? block.input : null;
     if (!input) {
       // The model answered in plain text instead of calling the tool: show it as the message, with no cards.
@@ -275,8 +314,10 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
     if (crisisWords && !urgentTypes.includes('mental_health_crisis')) urgentTypes.push('mental_health_crisis');
 
     // Follow-up questions: at most the number left, and only when the model is really asking.
+    // A reply with questions and no cards is a question reply, even if the model labelled it "results".
     let questions = list(input.follow_up_questions).map((q) => clean(q, 300)).filter(Boolean).slice(0, Math.max(questionsLeft, 0));
-    let status = input.status === 'needs_more_info' && questions.length && !urgent ? 'needs_more_info' : 'results';
+    const asking = input.status === 'needs_more_info' || !list(input.matches).some((x) => x && OPEN_SET.has(x.service_id));
+    let status = asking && questions.length && !urgent ? 'needs_more_info' : 'results';
     if (status === 'results') questions = [];
 
     // Cards: only real, open schemes; condition-specific schemes only if the person mentioned the circumstance.

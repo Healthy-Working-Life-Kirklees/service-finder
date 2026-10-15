@@ -137,6 +137,67 @@ reply = tool(reply0({ status: 'results', follow_up_questions: ['Stray question?'
 r = await call('claude-sonnet-5-5');
 check('questions: stray question dropped from a results reply', r.body.status === 'results' && r.body.follow_up_questions.length === 0 && r.body.recommendations.length === 1);
 
+// ----- questions promised but missing (the "Two quick questions..." bug) -----
+// A sequence of replies, one per call to the model; counts the calls.
+let calls = 0;
+const seq = (...inputs) => () => { const i = inputs[Math.min(calls++, inputs.length - 1)]; return ok([{ type: 'tool_use', id: 'tu' + calls, name: 'respond', input: i }])(); };
+const Q2 = ['Which language do you feel most comfortable speaking?', 'Are you looking for paid work, or volunteering first?'];
+
+calls = 0;
+reply = seq(reply0({ status: 'results', message: 'Two quick questions so I can find the best fit.', follow_up_questions: Q2, matches: [] }));
+r = await call('claude-sonnet-5-5');
+check('missing questions: questions labelled "results" with no cards are kept as a question reply', r.body.status === 'needs_more_info' && r.body.follow_up_questions.length === 2 && calls === 1, JSON.stringify(r.body));
+
+calls = 0;
+reply = seq(
+  reply0({ status: 'needs_more_info', message: 'Thanks. Two quick questions so I can find the best fit for you.', follow_up_questions: [], matches: [] }),
+  reply0({ status: 'needs_more_info', message: 'Thanks. ' + Q2.join(' '), follow_up_questions: Q2, matches: [] }),
+);
+r = await call('claude-sonnet-5-5');
+const retryMsgs = sent.messages;
+check('missing questions: needs_more_info with none written -> asks the model once more', calls === 2 && retryMsgs.length === 3 && retryMsgs[1].role === 'assistant' && retryMsgs[2].content[0].type === 'tool_result' && retryMsgs[2].content[0].tool_use_id === 'tu1', JSON.stringify(retryMsgs.slice(1)).slice(0, 300));
+check('missing questions: the retried questions reach the page', r.body.status === 'needs_more_info' && r.body.follow_up_questions.join('|') === Q2.join('|'), JSON.stringify(r.body));
+
+calls = 0;
+reply = seq(
+  reply0({ status: 'results', message: 'I can help near Dewsbury. Two quick questions so I can find the best fit for you.', follow_up_questions: [], matches: [] }),
+  reply0({ status: 'needs_more_info', message: Q2.join(' '), follow_up_questions: Q2, matches: [] }),
+);
+r = await call('claude-sonnet-5-5');
+check('missing questions: "results" that talks about questions but asks none -> retried', calls === 2 && r.body.follow_up_questions.length === 2, JSON.stringify(r.body));
+
+calls = 0;
+reply = seq(reply0({ status: 'results', message: 'Mam dwa szybkie pytania, żeby znaleźć najlepsze wsparcie.', follow_up_questions: [], matches: [] }), reply0({ status: 'needs_more_info', message: 'Jaki język? Praca czy wolontariat?', follow_up_questions: ['Jaki język?', 'Praca czy wolontariat?'], matches: [] }));
+r = await call('claude-sonnet-5-5');
+check('missing questions: Polish wording also retried', calls === 2 && r.body.follow_up_questions.length === 2);
+
+calls = 0;
+reply = seq(reply0({ status: 'needs_more_info', message: 'Two quick questions.', follow_up_questions: [], matches: [] }), reply0({ status: 'needs_more_info', message: 'Still none.', follow_up_questions: [], matches: [] }));
+r = await call('claude-sonnet-5-5');
+check('missing questions: retried only once, then falls back to results', calls === 2 && r.body.status === 'results', JSON.stringify(r.body));
+
+calls = 0;
+reply = seq(reply0({ status: 'results', message: 'Nothing in the information I have fits well, sorry.', follow_up_questions: [], matches: [] }));
+r = await call('claude-sonnet-5-5');
+check('missing questions: an honest "nothing fits" reply is not retried', calls === 1 && r.body.status === 'results');
+
+calls = 0;
+reply = seq(reply0({ status: 'results', message: 'Is that a question about benefits? This tool only covers work and health support.', follow_up_questions: [], matches: [] }));
+r = await call('claude-sonnet-5-5');
+check('missing questions: a message that already asks something is not retried', calls === 1);
+
+calls = 0;
+reply = seq(reply0({ status: 'needs_more_info', message: 'Two questions.', follow_up_questions: [], matches: [] }));
+r = await call('claude-sonnet-5-5', { messages: [U('hello'), asked(1), U('still unsure'), asked(1), U('and more')] });
+check('missing questions: no retry once both questions are used up', calls === 1 && r.body.status === 'results');
+
+calls = 0;
+reply = seq(reply0({ status: 'needs_more_info', message: 'Two quick questions.', follow_up_questions: [], matches: [] }));
+globalThis.fetch = (() => { const real = globalThis.fetch; let n = 0; return async (u, i) => (n++ === 0 ? real(u, i) : new Response('{}', { status: 529 })); })();
+r = await call('claude-sonnet-5-5');
+check('missing questions: if the retry fails, the first reply is still returned', r.status === 200 && r.body.status === 'results', JSON.stringify(r));
+globalThis.fetch = async (url, init) => { sent = JSON.parse(init.body); return reply(); };
+
 // ----- urgent support: no cards, no questions, whatever else the model sent -----
 reply = tool(reply0({ urgent_support: true, urgent_types: ['domestic_abuse', 'bogus', 'domestic_abuse'], status: 'needs_more_info', follow_up_questions: ['Where do you live?'], matches: [m('wellness-to-work')] }));
 r = await call('claude-sonnet-5-5');
