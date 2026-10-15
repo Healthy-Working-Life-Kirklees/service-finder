@@ -88,6 +88,189 @@
           "details": "Decision so far: whenever the finder spots urgent support, it shows no scheme cards and asks no questions, whatever the kind. That is the cautious choice. A person facing domestic abuse who has also lost their job might still want to see employment support, so this could be loosened for some kinds later. Needs a view from whoever signs off safeguarding."
         }
       ]
+    },
+    {
+      "id": "import-review-2026-10-15",
+      "title": "Checks after the October 2026 import (137 new services).",
+      "note": "Things to check or decide after adding 137 services from the additional services spreadsheet. Details are in docs/import-review-2026-10.md.",
+      "items": [
+        {
+          "type": "Action",
+          "area": "Matching quality",
+          "priority": "High",
+          "owner": "",
+          "title": "Import: test matching with all 168 schemes before the wider test",
+          "details": "The finder grew from 31 to 168 schemes on 15 Oct 2026. Picking the right 2 or 3 from 168 is harder than from 31.\n\nWrite a set of test scenarios with the expected answers (including the ones on the help page), run them, and check:\n- HWL schemes still come first when the fit is similar\n- national helplines don't crowd out local schemes\n- money, debt and housing questions now get sensible matches\n- condition-specific services only appear when mentioned.\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Issue",
+          "area": "Data accuracy",
+          "priority": "High",
+          "owner": "",
+          "title": "Import: Kirklees Wellness Service has two phone numbers and two ages in the spreadsheet",
+          "details": "kirklees-wellness-service (rows 26 and 148). Row 26 was kept.\n- Phone: 01484 234095 (kept) or 01484 234096?\n- Age: 16+ (kept) or 18+?\n- Run by Kirklees Council alone (kept), or with Locala Health & Wellbeing?\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Issue",
+          "area": "Data accuracy",
+          "priority": "High",
+          "owner": "",
+          "title": "Import: Carers Count – which address, and does it overlap with Supporting Working Carers?",
+          "details": "carers-count (rows 44 and 150). Row 44 was kept.\n- Address: Empire House, Dewsbury (provider site, kept) or Brian Jackson House (directory)?\n- Row 150 adds working-carer support for carers aged 18+. If that's right, it overlaps with the existing Supporting Working Carers scheme.\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Issue",
+          "area": "Data accuracy",
+          "priority": "Medium",
+          "owner": "",
+          "title": "Import: CFO Evolution – who it's for, and contacts missing from the later row",
+          "details": "cfo-evolution-huddersfield (rows 68 and 147). Row 68 was kept: people in prison or on probation in Yorkshire and the Humber, phone 01942 423444, email given.\nRow 147 widens it to anyone in the justice system and has no phone or email.\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Issue",
+          "area": "Data accuracy",
+          "priority": "Medium",
+          "owner": "",
+          "title": "Import: Suicide Bereavement Service – Kirklees only, or anyone in West Yorkshire?",
+          "details": "wy-suicide-bereavement (rows 74 and 149). Row 74 was kept: people of any age in Kirklees, with phone and email.\nRow 149 says anyone in West Yorkshire, including employers, and has no contact details.\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Question",
+          "area": "Data accuracy",
+          "priority": "Medium",
+          "owner": "",
+          "title": "Import: keep or remove entries that are guidance, websites or funding rather than services?",
+          "details": "These may not be services someone can be referred to. Delete a file to remove one.\n- Guidance: hse-disabled-workers-guidance, fit-note-guidance, dwp-employee-health-disability, acas-managing-disability\n- Funding stream: adult-skills-fund (may overlap with the Kirklees College and adult learning entries)\n- Websites or forms: every-mind-matters, find-a-job-dwp, health-adjustment-passport\n- Recruitment for council jobs: veterans-guaranteed-interview\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Issue",
+          "area": "Data accuracy",
+          "priority": "High",
+          "owner": "",
+          "title": "Import: Local Welfare Provision wording still mentions schemes that ended in March 2026",
+          "details": "local-welfare-provision (row 27). The Household Support Fund and Discretionary Housing Payments ended on 31 March 2026. The wording should describe the Crisis Resilience Fund.\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Issue",
+          "area": "Data accuracy",
+          "priority": "High",
+          "owner": "",
+          "title": "Import: Kirklees Citizens Advice – is the AdviceLine number still answered?",
+          "details": "citizens-advice-kirklees (row 20). KCALC says the AdviceLine isn't answered from 1 June, but the council page still lists 0808 278 7896.\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Issue",
+          "area": "Data accuracy",
+          "priority": "High",
+          "owner": "",
+          "title": "Import: Nacro has no phone number on its card",
+          "details": "nacro-criminal-record-support (row 130). The phone number was cut off in the spreadsheet, so it was left out. Add it once confirmed from Nacro's own site.\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Issue",
+          "area": "Data accuracy",
+          "priority": "Medium",
+          "owner": "",
+          "title": "Import: National Careers Service moved into DWP in October 2026 – check name and phone",
+          "details": "national-careers-service (row 131).\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Issue",
+          "area": "Data accuracy",
+          "priority": "Medium",
+          "owner": "",
+          "title": "Import: check whether these services are still running",
+          "details": "Little or no sign of activity in 2026, closures listed, or no confirmed next intake:\n- mind-helplines (provider lists 2026 closures)\n- pers-employment-support (site shows 2024, no current projects)\n- kirklees-in-recovery (newest content 2021)\n- better-in-kirklees (nothing confirms it's running in 2026)\n- rural-veterans-hubs-kirklees (events calendar shows 2025)\n- kirklees-success-centre and project-search-supported-internship (no confirmed next intake)\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Issue",
+          "area": "Data accuracy",
+          "priority": "Low",
+          "owner": "",
+          "title": "Import: entries with older evidence or links likely to change",
+          "details": "- jobcentre-plus-work-coach: source page still mentions old programmes\n- metrorover-jobseeker-permit: Weaver Network rebrand coming, link may change\n- ck-careers-adult-guidance, kirklees-employer-support, acas-managing-disability: latest evidence 2024 to 2025\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Issue",
+          "area": "Data accuracy",
+          "priority": "Medium",
+          "owner": "",
+          "title": "Import: confirm contacts for Op NOVA, Op COURAGE, TAP and Snacko's",
+          "details": "- op-nova: MECC Link gives a different phone and email from the provider page\n- op-courage-veterans: the email is a CNTW address, but the service is listed under Leeds and York PFT\n- together-against-pain: the only contact is an individual's email address; ask for a service mailbox\n- snackos-training-cafe: the only contact is Facebook\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Question",
+          "area": "Matching quality",
+          "priority": "Medium",
+          "owner": "",
+          "title": "Import: can Kirklees residents really use these services based outside Kirklees?",
+          "details": "Matched as Kirklees-wide where phone or online support is offered:\n- calderdale-credit-union and age-uk-information-advice (Halifax offices)\n- northern-college (Barnsley campus, some online courses)\n- smart-works-yorkshire (Leeds only, or online appointments)\n- get-started-kings-trust-fire (next course in Leeds, no remote option)\n- wea-adult-learning ('West Yorkshire' venues)\n- op-restore (London NHS trust; where appointments happen isn't stated)\n- timpson-interview-dry-cleaning (no Kirklees shops named)\n- cap-money-coaching (no confirmed Kirklees course)\n- andys-man-club-huddersfield (only Ainley Top on the official list)\n\nAlso cap-huddersfield-debt-centre takes HD postcodes only, so it's matched to Huddersfield, Colne Valley, Holme Valley and Kirkburton, not Dewsbury, Batley, Mirfield or Spen Valley.\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Question",
+          "area": "Matching quality",
+          "priority": "Medium",
+          "owner": "",
+          "title": "Import: do the council and WYCA employment services overlap with the HWL employment schemes?",
+          "details": "employment-skills-service-kirklees (row 14) and wyca-finding-a-job (row 82) may overlap with Employment Kirklees and Kirklees Employment Service. Decide whether to keep all of them, and if so how the AI should tell them apart.\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Question",
+          "area": "Matching quality",
+          "priority": "Low",
+          "owner": "",
+          "title": "Import: confirm eligibility for Changes, Families Together, Here For You and Steps Ahead",
+          "details": "- changes-inspire-north: the spreadsheet says both 'offended in the last 12 months' and 'offended or at risk of offending'. The gate currently allows either.\n- families-together: mainly a children and families service, so it may not suit working-age adults.\n- here-for-you-touchstone: sources disagree on age (16+ or 18+) and opening hours.\n- steps-ahead-mentoring: the 18 to 30 age limit may apply only to jobseekers.\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Question",
+          "area": "Matching quality",
+          "priority": "Low",
+          "owner": "",
+          "title": "Import: confirm self-referral for seven services",
+          "details": "The self-referral badge may be wrong for:\n- better-in-kirklees, kirklees-hips (marked 'to be confirmed')\n- howarth-foundation, cfo-evolution-huddersfield, smart-works-yorkshire, social-prescribing-kirklees (marked 'partly')\n- connect-housing-young-people (marked 'yes', but may need a referral)\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Question",
+          "area": "Safety",
+          "priority": "Medium",
+          "owner": "",
+          "title": "Agree: gambling, conviction and bereavement services only show if the person mentions it",
+          "details": "Like the existing substance use, severe mental illness and learning disability schemes, these new services only appear when the person's own words mention the circumstance:\n- gambling: northern-gambling-service, national-gambling-helpline, gamstop\n- convictions: changes-inspire-north, cfo-evolution-huddersfield, op-nova, nacro-criminal-record-support, unlock-helpline, working-chance\n- bereavement: wy-suicide-bereavement\n\nThe trigger words include first-draft Polish and Urdu. Confirm the team is happy with this approach.\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Question",
+          "area": "Safety",
+          "priority": "Medium",
+          "owner": "",
+          "title": "The Suicide Bereavement Service never shows when someone writes 'suicide'",
+          "details": "Any message with the word 'suicide' shows the crisis panel and no cards, by design. So someone bereaved by suicide who uses the word won't see wy-suicide-bereavement in that conversation.\n\nOptions: accept this (the crisis response is the safer default), or have the crisis panel mention bereavement support when appropriate. Needs a decision with the safeguarding lead before changing anything.\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Question",
+          "area": "Matching quality",
+          "priority": "Low",
+          "owner": "",
+          "title": "Add 'cancer' and 'dementia' health focus values?",
+          "details": "macmillan-at-work, macmillan-help-with-work and alzheimers-dementia-support-line use health focus 'any', because there's no cancer or dementia value. The AI can still see from their eligibility that they're condition-specific. Adding values would mean changing data/schema.json, the data dictionary, the Worker tests and the prompt.\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Action",
+          "area": "Wording and content",
+          "priority": "Medium",
+          "owner": "",
+          "title": "Translator: check the new Polish and Urdu card labels and trigger words",
+          "details": "Added 15 Oct 2026 as a first draft:\n- card labels in site/i18n.js: selfNo, levelRegional, levelNational, cost, languages\n- trigger words for convictions, bereavement and gambling in the scheme files' requiresMention lists.\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        },
+        {
+          "type": "Action",
+          "area": "Process and governance",
+          "priority": "Medium",
+          "owner": "Phil",
+          "title": "Protect main: require a pull request and the Checks workflow to pass",
+          "details": "GitHub > Settings > Branches > add a rule for main: require a pull request before merging, and require the 'Checks' status check to pass.\n\nThis stops broken scheme data, or unchecked edits by a future maintenance agent, going live.\n\nFull list: docs/import-review-2026-10.md. Each scheme's file is data/services/<id>.json; its provenance gives the spreadsheet row."
+        }
+      ]
     }
   ]
 }
