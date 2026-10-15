@@ -17,6 +17,9 @@
 
   const STRINGS = {
     en: {
+      resultsHeading: 'Suggested services',
+      servicesOne: '1 service is suggested below.',
+      servicesMany: '{n} services are suggested below.',
       textSize: 'Text size',
       sizeNormal: 'Standard text size',
       sizeLarge: 'Large text',
@@ -113,6 +116,9 @@
     },
 
     pl: {
+      resultsHeading: 'Proponowane usługi',
+      servicesOne: 'Poniżej proponujemy 1 usługę.',
+      servicesMany: 'Liczba proponowanych usług poniżej: {n}.',
       textSize: 'Rozmiar tekstu',
       sizeNormal: 'Standardowy rozmiar tekstu',
       sizeLarge: 'Duży tekst',
@@ -209,6 +215,9 @@
     },
 
     ur: {
+      resultsHeading: 'تجویز کردہ سروسز',
+      servicesOne: 'نیچے 1 سروس تجویز کی گئی ہے۔',
+      servicesMany: 'نیچے {n} سروسز تجویز کی گئی ہیں۔',
       textSize: 'متن کا سائز',
       sizeNormal: 'معیاری متن',
       sizeLarge: 'بڑا متن',

@@ -55,7 +55,9 @@
       <p class="hero-text" data-i18n="heroText">Please describe the person's situation: approximate age, location, employment situation, health or wellbeing needs, and what they hope to achieve. Please do not include names or any personally identifiable information.</p>
     </section>
 
-    <section id="log" class="log" aria-live="polite" aria-label="Conversation" data-i18n-label="logLabel"></section>
+    <section id="log" class="log" aria-label="Conversation" data-i18n-label="logLabel"></section>
+    <!-- Screen reader announcements: a short version of each reply, not the whole conversation (see announce() in app.js). -->
+    <div id="sr-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
 
     <fieldset class="mode">
       <legend data-i18n="modeLegend">Who is this for?</legend>

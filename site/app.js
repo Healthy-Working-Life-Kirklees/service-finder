@@ -184,6 +184,18 @@
   }
 
   // ---------- conversation ----------
+  // Screen readers: the conversation area is not announced as a whole (that would read every card in full).
+  // Instead a short summary of each reply goes into a hidden status message. Clearing it first makes a
+  // screen reader announce it again even if the wording is the same as last time.
+  const statusEl = $('#sr-status');
+  let announceTimer = null;
+  function announce(text) {
+    if (!statusEl) return;
+    clearTimeout(announceTimer);
+    statusEl.textContent = '';
+    announceTimer = setTimeout(() => { statusEl.textContent = text; }, 150);
+  }
+
   function bubble(kind, text) {
     const b = el('div', { class: 'bubble ' + kind });
     for (const para of String(text).split(/\n{2,}/)) b.append(el('p', { dir: 'auto', text: para.trim() }));
@@ -262,13 +274,14 @@
     input.value = '';
     history.push({ role: 'user', content: text });
     const thinking = bubble('thinking', t('thinking'));
+    announce(t('thinking'));
 
     try {
       if (!API) {
         thinking.remove();
         history.pop();
         input.value = text;
-        bubble('error', t('notConnected'));
+        announce(bubble('error', t('notConnected')).textContent);
         return;
       }
       const r = await fetch(API + '/chat', {
@@ -283,7 +296,7 @@
         input.value = text;
         // The Worker's error wording is English, so other languages get the page's own wording for the same problem.
         const own = r.status === 429 ? t('rateLimited') : r.status === 503 ? t('busy') : t('generic');
-        bubble('error', window.I18N.lang === 'en' ? data.error || t('generic') : own);
+        announce(bubble('error', window.I18N.lang === 'en' ? data.error || t('generic') : own).textContent);
         return;
       }
 
@@ -306,6 +319,8 @@
       // The chat message comes first, with the scheme cards underneath it.
       const recs = (data.recommendations || []).map(card).filter(Boolean);
       if (recs.length) {
+        // A heading screen reader users can jump to; hidden on screen, where the cards speak for themselves.
+        logEl.append(el('h2', { class: 'visually-hidden', text: t('resultsHeading') }));
         const cardsEl = el('div', { class: 'cards' }, recs);
         logEl.append(cardsEl);
         // When only one service comes back, offer a quick way to ask for others.
@@ -314,6 +329,11 @@
           logEl.append(el('div', { class: 'more-options' }, el('button', { type: 'button', class: 'chip', text: ask, onclick: () => send(ask) })));
         }
       }
+      // Screen readers hear the reply (and any questions) and how many services
+      // were suggested, but not the cards themselves; they can move through those with their heading keys.
+      // The urgent support panel is left out here because it announces itself (role=alert).
+      const replyText = [...b.querySelectorAll('p, li')].filter((n) => !n.closest('.bubble-tools, .crisis')).map((n) => n.textContent.trim()).join(' ');
+      announce(replyText + (recs.length ? ' ' + (recs.length === 1 ? t('servicesOne') : t('servicesMany', { n: recs.length })) : ''));
       // Keep the reader at the start of the reply, with the cards below it, rather than at the end of the cards.
       b.scrollIntoView({ block: 'start', behavior: 'smooth' });
 
@@ -326,7 +346,7 @@
       thinking.remove();
       history.pop();
       input.value = text;
-      bubble('error', t('network'));
+      announce(bubble('error', t('network')).textContent);
     } finally {
       setBusy(false);
       // Put the cursor back in the message box without scrolling down to it.
