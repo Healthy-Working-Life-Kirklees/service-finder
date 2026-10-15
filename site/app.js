@@ -409,7 +409,7 @@
   // MVP team links: only present when the deploy switched the MVP tools on.
   if (window.FINDER_CONFIG && window.FINDER_CONFIG.mvpTools) {
     document.body.prepend(el('nav', { class: 'teambar', 'aria-label': 'MVP team' },
-      el('div', { class: 'wrap' }, el('strong', { text: 'MVP team only' }), el('a', { href: 'mvp/help.html', text: 'Help' }), el('a', { href: 'mvp/log.html', text: 'Issues and actions log' }))));
+      el('div', { class: 'wrap' }, el('strong', { text: 'MVP team only' }), el('a', { href: 'mvp/help.html', text: 'Help' }), el('a', { href: 'mvp/services.html', text: 'All services' }), el('a', { href: 'mvp/log.html', text: 'Issues and actions log' }))));
   }
 
   welcome();
