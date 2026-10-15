@@ -1,0 +1,61 @@
+{
+  "id": "jobcentre-plus-work-coach",
+  "name": "Jobcentre Plus work coach and disability employment support",
+  "organisation": "DWP",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Disability & neurodiversity"
+  ],
+  "whoFor": "Anyone looking for work.",
+  "age": null,
+  "webpage": "https://www.gov.uk/looking-for-work-if-disabled",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Local Jobcentres"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Dewsbury",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Anyone looking for work"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Ask at Huddersfield or Dewsbury Jobcentre"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Ask at your local Jobcentre"
+  },
+  "activities": [
+    {
+      "name": "Jobcentre work coach support",
+      "summary": "Work coaches help with job search and skills and can refer to a work psychologist or specialist help.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 127",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.gov.uk/looking-for-work-if-disabled",
+    "evidence": "Page updated Sep 2026, but still mentions old programmes.",
+    "confidence": "medium"
+  }
+}

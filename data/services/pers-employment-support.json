@@ -1,0 +1,63 @@
+{
+  "id": "pers-employment-support",
+  "name": "Employment support (PERS)",
+  "organisation": "Pay & Employment Rights Service Yorkshire",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Skills",
+    "Carers"
+  ],
+  "whoFor": "Residents facing poverty or disadvantage, including carers.",
+  "age": null,
+  "webpage": "https://pers.org.uk",
+  "email": "info@pers.org.uk",
+  "phone": "01924 428033",
+  "social": [],
+  "locations": [
+    "Taleem Community Centre, Savile Town, Dewsbury WF12 9LT"
+  ],
+  "areas": [
+    "Dewsbury"
+  ],
+  "eligibility": [
+    "Residents facing poverty or disadvantage",
+    "Includes carers"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Email",
+    "WhatsApp"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself by phone, email or WhatsApp."
+  },
+  "activities": [
+    {
+      "name": "Employment support",
+      "summary": "Local charity helping people get ready for, find and keep work, including confidence, training and starting a business.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 49",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationdetails.aspx?orgid=8831",
+    "evidence": "Directory updated Jan 2026; own website shows © 2024 and no current projects.",
+    "confidence": "medium"
+  }
+}

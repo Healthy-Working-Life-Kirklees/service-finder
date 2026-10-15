@@ -1,0 +1,62 @@
+{
+  "id": "disability-confident",
+  "name": "Disability Confident employer scheme",
+  "organisation": "DWP",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "employer"
+  ],
+  "categories": [
+    "Employers",
+    "Disability & neurodiversity"
+  ],
+  "whoFor": "Employers.",
+  "age": null,
+  "webpage": "https://www.gov.uk/government/collections/disability-confident-campaign",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Employers"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Sign up online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Sign up online"
+  },
+  "activities": [
+    {
+      "name": "Disability-inclusive employer scheme",
+      "summary": "Government scheme helping employers hire and keep disabled staff and staff with health conditions.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 97",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.gov.uk/government/collections/disability-confident-campaign",
+    "evidence": "Guidance updated July–Aug 2026.",
+    "confidence": "high"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "id": "my-way-forward",
+  "name": "My Way Forward",
+  "organisation": "C+K Careers Ltd",
+  "logo": "c-k-careers.webp",
+  "status": "Live - open to referrals",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Young people",
+    "Finding work",
+    "Skills",
+    "Mental health",
+    "Volunteering"
+  ],
+  "whoFor": "Young people in Kirklees aged 16-25 who need help moving towards education, training or work.",
+  "age": "16-25",
+  "webpage": "https://www.ckcareers.co.uk/services-for-adults/adult-contracts",
+  "email": "healthyworkinglife@ckcareers.org.uk",
+  "phone": "01484 213858",
+  "social": [
+    "https://www.facebook.com/CKCareers",
+    "https://www.instagram.com/ckcareers"
+  ],
+  "locations": [
+    "Brian Jackson House, Huddersfield",
+    "Community settings, e.g. Batley and Dewsbury Libraries"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Batley",
+    "Dewsbury"
+  ],
+  "eligibility": [
+    "Aged 16 to 25",
+    "Not in education, employment or training (NEET) with health concerns, including mental health"
+  ],
+  "exclusions": [
+    "Claiming Universal Credit with a requirement to actively look for work"
+  ],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Email",
+    "Phone",
+    "Online form: https://www.ckcareers.co.uk/adult-team-contact-form"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Yes, via any route"
+  },
+  "activities": [
+    {
+      "name": "My Way Forward",
+      "summary": "1:1 coaching on career opportunities, barriers and benefits; peer group sessions including social hubs and job clubs (online and in person); confidence and resilience activities; support to access health and wellbeing services; basic skills and job-specific training; volunteering and work experience; peer mentoring; and for some, job search, CV and interview help.",
+      "duration": "Open-ended, depending on need"
+    }
+  ],
+  "workExperience": "Yes",
+  "lastUpdated": "2025-11-13",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

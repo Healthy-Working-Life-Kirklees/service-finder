@@ -1,0 +1,61 @@
+{
+  "id": "advice-support-huddersfield-mission",
+  "name": "Advice and Support service",
+  "organisation": "Huddersfield Mission",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Benefits and money",
+    "Housing"
+  ],
+  "whoFor": "Anyone, especially with multiple or complex needs.",
+  "age": null,
+  "webpage": "https://huddersfieldmission.org.uk/pages/16-advice-support",
+  "email": null,
+  "phone": "01484 421461",
+  "social": [],
+  "locations": [
+    "3-13 Lord Street, Huddersfield HD1 1QA"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Anyone",
+    "Especially people with multiple or complex needs"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Drop in, weekday mornings",
+    "Afternoon appointments"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Drop in on a weekday morning, or come to an afternoon appointment."
+  },
+  "activities": [
+    {
+      "name": "Benefits and housing help",
+      "summary": "Help with benefit claims and forms, finding or keeping a home and emergency food, for people with complex needs.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 39",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://huddersfieldmission.org.uk/pages/16-advice-support",
+    "evidence": "Page undated; homepage news June 2026.",
+    "confidence": "medium"
+  }
+}

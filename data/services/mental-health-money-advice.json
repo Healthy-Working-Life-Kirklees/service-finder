@@ -1,0 +1,64 @@
+{
+  "id": "mental-health-money-advice",
+  "name": "Mental Health & Money Advice",
+  "organisation": "Mental Health UK",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Debt",
+    "Benefits and money"
+  ],
+  "whoFor": "People whose mental health and money problems affect each other.",
+  "age": null,
+  "webpage": "https://www.mentalhealthandmoneyadvice.org/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "People whose mental health and money problems affect each other"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Website"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Use the website"
+  },
+  "activities": [
+    {
+      "name": "Mental health and money advice",
+      "summary": "Website with advice on benefits, money and mental health, including a budget planner.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "languages": "Welsh version",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 129",
+    "foundVia": "District Provision Tool",
+    "checkedUrl": "https://www.mentalhealthandmoneyadvice.org/",
+    "evidence": "Updated Oct 2025.",
+    "confidence": "medium"
+  }
+}

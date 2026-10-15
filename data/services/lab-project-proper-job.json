@@ -1,0 +1,62 @@
+{
+  "id": "lab-project-proper-job",
+  "name": "The LAB Project (confidence and employability)",
+  "organisation": "Proper Job Theatre Company",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Volunteering"
+  ],
+  "whoFor": "Unemployed adults 19+.",
+  "age": "19+",
+  "webpage": "https://www.properjob.org.uk/the-lab-project",
+  "email": "engagement@properjob.org.uk",
+  "phone": "01484 514687",
+  "social": [],
+  "locations": [
+    "Kirklees"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Unemployed",
+    "Aged 19 or over"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Is unemployed"
+  ],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Contact the engagement team"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Contact the engagement team"
+  },
+  "activities": [
+    {
+      "name": "Confidence and employability course",
+      "summary": "Free two-week course building confidence and teamwork, helping run a school drama workshop; Level 1 qualification and follow-up support.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Yes - volunteering",
+  "cost": "Free (LAB Life pays training allowance)",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 34",
+    "foundVia": "District Provision Tool",
+    "checkedUrl": "https://www.properjob.org.uk/lab-dates-quick-look",
+    "evidence": "Kirklees 2026/27 dates published. Separate from HWL schemes.",
+    "confidence": "high"
+  }
+}

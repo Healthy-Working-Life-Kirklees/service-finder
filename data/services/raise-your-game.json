@@ -1,0 +1,58 @@
+{
+  "id": "raise-your-game",
+  "name": "Raise Your Game Programme",
+  "organisation": "Huddersfield Town Foundation",
+  "logo": "huddersfield-town-foundation.webp",
+  "status": "Live - grant-funded project (status not stated in the pathways document)",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Young people",
+    "Older workers",
+    "Skills"
+  ],
+  "whoFor": "Economically inactive residents aged 18 to 24, or aged 50 and over, who want the skills, confidence and knowledge to move towards work.",
+  "age": "18-24 or 50+",
+  "webpage": null,
+  "email": "matthew.crookes@htafcfoundation.com",
+  "phone": "07741 671595",
+  "social": [],
+  "locations": [
+    "Leeds Road Sports Complex, Leeds Road, Huddersfield, HD2 1YY"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Economically inactive (not working and not looking for work)",
+    "Aged 18 to 24 (cohort 1) or aged 50+ (cohort 2)"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Referral or self-referral by emailing help@htafcfoundation.com"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Yes, by emailing help@htafcfoundation.com"
+  },
+  "activities": [
+    {
+      "name": "Raise Your Game Programme",
+      "summary": "Group sessions mixing classroom learning and physical activity, aiming to engage, educate and inspire participants to move towards being economically active.",
+      "duration": "10 weekly two-hour group sessions per cohort"
+    }
+  ],
+  "workExperience": "No",
+  "lastUpdated": "2026-10-12",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

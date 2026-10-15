@@ -1,0 +1,61 @@
+{
+  "id": "better-off-kirklees",
+  "name": "Better Off Kirklees",
+  "organisation": "Kirklees Council",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Benefits and money",
+    "Finding work",
+    "Digital skills"
+  ],
+  "whoFor": "Kirklees residents.",
+  "age": null,
+  "webpage": "https://www.betteroffkirklees.org.uk/#/home",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Kirklees residents"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Use the website: https://www.betteroffkirklees.org.uk/#/home"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Use the website yourself."
+  },
+  "activities": [
+    {
+      "name": "Benefits and jobs website",
+      "summary": "Website that works out benefits you might get, helps you apply or appeal, lists jobs and volunteering and tracks your job search.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 41",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=8624",
+    "evidence": "Directory updated 11 Aug 2026; site itself couldn't be read.",
+    "confidence": "medium"
+  }
+}

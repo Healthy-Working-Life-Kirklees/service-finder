@@ -1,0 +1,62 @@
+{
+  "id": "shelter-housing-helpline",
+  "name": "Shelter emergency housing helpline",
+  "organisation": "Shelter",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Housing"
+  ],
+  "whoFor": "People in England with urgent housing problems.",
+  "age": null,
+  "webpage": "https://england.shelter.org.uk/get_help/helpline",
+  "email": null,
+  "phone": "0808 800 4444",
+  "social": [],
+  "locations": [
+    "Phone and webchat"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Lives in England",
+    "Has an urgent housing problem, is homeless or might lose their home soon"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Webchat"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone or use webchat"
+  },
+  "activities": [
+    {
+      "name": "Emergency housing advice",
+      "summary": "Expert housing advice if you're homeless or might lose your home soon.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "languages": "Relay UK",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 115",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://england.shelter.org.uk/get_help/helpline",
+    "evidence": "© 2026.",
+    "confidence": "high"
+  }
+}

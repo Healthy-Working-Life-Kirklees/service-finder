@@ -1,0 +1,67 @@
+{
+  "id": "wellness-navigators",
+  "name": "Wellness Navigators",
+  "organisation": "Ravensthorpe Community Centre (RCC) and Taleem Centre",
+  "logo": "rccl.webp",
+  "status": "Live - grant-funded project (status not stated in the pathways document)",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Wellbeing",
+    "Finding work",
+    "Health linked to work",
+    "Volunteering"
+  ],
+  "whoFor": "Economically inactive adults in Dewsbury, Ravensthorpe and nearby who face health, disability, confidence, language, digital or isolation barriers.",
+  "age": "Adults",
+  "webpage": null,
+  "email": "shokran.sharaf@rccl.org",
+  "phone": "07786 061121",
+  "social": [],
+  "locations": [
+    "Ravensthorpe Community Centre, 24 Garden Street, Ravensthorpe, Dewsbury, WF13 3AR",
+    "Taleem Centre, 36 Orchard Street, Savile Town, Dewsbury, WF12 9LT"
+  ],
+  "areas": [
+    "Dewsbury"
+  ],
+  "eligibility": [
+    "Economically inactive (not working and not looking for work)",
+    "Lives in Kirklees, in a high-deprivation ward",
+    "Has a health condition - physical, mental health or learning difficulties"
+  ],
+  "exclusions": [
+    "People who have been in contact with employment services in the past six months"
+  ],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Contact RCC on 01924 510030",
+    "Contact Taleem Centre on 01924 325147",
+    "Drop-in sessions, community groups, QR code and application form",
+    "Referrals from other providers and support organisations"
+  ],
+  "selfReferral": {
+    "allowed": "no",
+    "note": "Not at the moment, according to the pathways document"
+  },
+  "activities": [
+    {
+      "name": "Wellness Navigators: Pathways to a Healthy Working Life",
+      "summary": "Weekly wellbeing and employability workshops, fortnightly one-to-one keyworker support, peer support, bilingual guidance and practical 'Taste of Work' activities. Links people on to Employment Kirklees, REAL Employment, Kirklees Adult Learning, supported volunteering and suitable jobs.",
+      "duration": "Six months, with weekly provision over two to three days"
+    }
+  ],
+  "workExperience": "Yes - 'Taste of Work' activities and supported volunteering",
+  "lastUpdated": "2026-10-01",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

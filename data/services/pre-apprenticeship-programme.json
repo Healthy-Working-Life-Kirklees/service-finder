@@ -1,0 +1,61 @@
+{
+  "id": "pre-apprenticeship-programme",
+  "name": "Pre-Apprenticeship Programme 2026/27 (construction and trades)",
+  "organisation": "Kirklees Council (Homes & Neighbourhoods)",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Young people",
+    "Apprenticeships",
+    "Skills"
+  ],
+  "whoFor": "Young people aged 16–18 interested in construction. Page doesn't say whether tenancy is required.",
+  "age": "16-18",
+  "webpage": "https://www.kirklees.gov.uk/employment-support",
+  "email": null,
+  "phone": "01484 221028",
+  "social": [],
+  "locations": [
+    "Kirklees"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Aged 16 to 18",
+    "Interested in construction"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Register interest via the online form on the tenants' employment support page"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Register interest using the online form on the tenants' employment support page"
+  },
+  "activities": [
+    {
+      "name": "Construction pre-apprenticeship course",
+      "summary": "Free hands-on course in joinery, plumbing, electrics and bricklaying with work experience, a Level 2 Multi-Skills qualification and help into an apprenticeship.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Yes - work experience",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 30",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.kirklees.gov.uk/employment-support",
+    "evidence": "Labelled 2026/27; page changed March 2026.",
+    "confidence": "high"
+  }
+}

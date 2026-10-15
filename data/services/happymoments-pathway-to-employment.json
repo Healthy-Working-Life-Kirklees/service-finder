@@ -1,0 +1,60 @@
+{
+  "id": "happymoments-pathway-to-employment",
+  "name": "HappyMOMents Pathway to Employment: Wellbeing, Skills & Work Experience Programme for Vulnerable Women",
+  "organisation": "HappyMOMents CIO",
+  "logo": "happymoments.webp",
+  "status": "Referrals via the organisation's website, expected from early October 2026",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Women",
+    "Finding work",
+    "Skills",
+    "Wellbeing"
+  ],
+  "whoFor": "Women from vulnerable backgrounds who want to develop skills, build confidence and take first steps towards work in education (early years) or retail.",
+  "age": "Adults",
+  "webpage": "https://www.happymoments.org.uk",
+  "email": "sumayya@happymoments.org.uk",
+  "phone": "07792 131367",
+  "social": [],
+  "locations": [
+    "Saviletown Children's Centre, Pentland I&N School, Pentland Road, Dewsbury, WF12 9JR"
+  ],
+  "areas": [
+    "Dewsbury"
+  ],
+  "eligibility": [
+    "Women",
+    "Keen to take steps towards development and employment",
+    "Visa eligibility in line with course providers",
+    "Benefits eligibility in line with the funder's criteria"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Through the HappyMOMents website (referral page due early October 2026)"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "Via the organisation's website once the referral page is live"
+  },
+  "activities": [
+    {
+      "name": "Pathway to Employment: Wellbeing, Skills & Work Experience Programme",
+      "summary": "Introduction to Early Years, paediatric first aid, mental health courses, hands-on experience working with children and families, and face-to-face professional development courses. Childcare and transport support is provided.",
+      "duration": "Two to three half-days a week for 15 weeks"
+    }
+  ],
+  "workExperience": "Yes - hands-on experience working with children and families",
+  "lastUpdated": "2026-09-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

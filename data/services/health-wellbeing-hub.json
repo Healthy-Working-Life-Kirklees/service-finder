@@ -1,0 +1,71 @@
+{
+  "id": "health-wellbeing-hub",
+  "name": "Health & Wellbeing Hub",
+  "organisation": "Kirklees College",
+  "logo": "kirklees-college.webp",
+  "status": "Live - open to referrals",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "student"
+  ],
+  "categories": [
+    "Wellbeing",
+    "Mental health",
+    "Health linked to work",
+    "Finding work"
+  ],
+  "whoFor": "Kirklees College students - mainly 16-19 year olds, plus adult and apprentice learners - needing wellbeing and employability support.",
+  "age": "16+ (College students)",
+  "webpage": "https://www.kirkleescollege.ac.uk/supporting-you/",
+  "email": "support@kirkleescollege.ac.uk",
+  "phone": "01484 437000",
+  "social": [],
+  "locations": [
+    "Kirklees College campuses - five sites in Huddersfield and two in Dewsbury, with delivery across North and South Kirklees"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Dewsbury"
+  ],
+  "eligibility": [
+    "Is a Kirklees College student (including adult learners and apprentices)",
+    "At risk of falling out of education or training due to ill health, or health or wellbeing is affecting participation, progress or sustained employment"
+  ],
+  "exclusions": [
+    "Not a student at Kirklees College"
+  ],
+  "gate": [
+    "Is a Kirklees College student (including adult learners and apprentices)"
+  ],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Online self referral",
+    "Via in-house teams"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Yes, via any route"
+  },
+  "activities": [
+    {
+      "name": "Health and Wellbeing Coaching",
+      "summary": "Early, holistic, work-focused support from the Student Service Hub: one-to-one coaching, on-campus health services (health checks, BACP-accredited counselling plus TAC Access online counselling, screenings), group activities and workshops, and supported inclusive work opportunities. Employment support through the on-site Job Shop with the DWP Jobs and Careers Service, including a Disability Employment Advisor.",
+      "duration": ""
+    },
+    {
+      "name": "Embedding health and wellbeing across the college",
+      "summary": "Health programmes in the personal development curriculum, staff training including mental health first aid, student mental health ambassadors, and a school nurse pilot.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Yes",
+  "lastUpdated": "2026-08-24",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

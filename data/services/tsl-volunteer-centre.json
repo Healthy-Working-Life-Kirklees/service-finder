@@ -1,0 +1,66 @@
+{
+  "id": "tsl-volunteer-centre",
+  "name": "TSL Kirklees Volunteering (Volunteer Centre)",
+  "organisation": "Third Sector Leaders Kirklees",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Volunteering",
+    "Finding work"
+  ],
+  "whoFor": "Anyone in Kirklees; some roles for 14–18s.",
+  "age": null,
+  "webpage": "https://tslkirklees.org.uk/volunteering-home/",
+  "email": "volunteer@tslkirklees.org.uk",
+  "phone": "01484 519053 (text/WhatsApp 07776 588691)",
+  "social": [],
+  "locations": [
+    "Brian Jackson House, Huddersfield HD1 5JP (by appointment)"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Anyone in Kirklees",
+    "Some roles for 14 to 18 year olds"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Online",
+    "Phone",
+    "Text or WhatsApp",
+    "Email",
+    "Appointment at Brian Jackson House, Huddersfield"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Get in touch online, by phone, text or WhatsApp, or email"
+  },
+  "activities": [
+    {
+      "name": "Volunteering support",
+      "summary": "Official volunteer centre for Kirklees. Search roles, or get one-to-one help to choose, apply for and start a role.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Yes - volunteering",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 32",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://tslkirklees.org.uk/volunteering-home/",
+    "evidence": "Role listings from Oct 2026; directory updated May 2026.",
+    "confidence": "high"
+  }
+}

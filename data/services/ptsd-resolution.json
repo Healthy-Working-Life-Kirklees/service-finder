@@ -1,0 +1,68 @@
+{
+  "id": "ptsd-resolution",
+  "name": "PTSD Resolution therapy",
+  "organisation": "PTSD Resolution",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Veterans",
+    "Mental health"
+  ],
+  "whoFor": "Former UK Armed Forces, Reservists and families.",
+  "age": null,
+  "webpage": "https://ptsdresolution.org/",
+  "email": null,
+  "phone": "0300 302 0551",
+  "social": [],
+  "locations": [
+    "UK-wide",
+    "online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Former UK Armed Forces members",
+    "Reservists",
+    "Families of forces members"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Has served in the UK armed forces or reserves, or is a family member of someone who has"
+  ],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Self-refer online",
+    "Phone"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Self-refer online or by phone"
+  },
+  "activities": [
+    {
+      "name": "Talking therapy for veterans",
+      "summary": "Free, quick talking therapy for ex-forces, reservists and families, for trauma, stress, anxiety and depression.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 113",
+    "foundVia": "MECC Link",
+    "checkedUrl": "https://ptsdresolution.org/",
+    "evidence": "Active in 2026.",
+    "confidence": "high"
+  }
+}

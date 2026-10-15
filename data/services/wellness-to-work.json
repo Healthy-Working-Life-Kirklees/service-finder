@@ -1,0 +1,70 @@
+{
+  "id": "wellness-to-work",
+  "name": "Wellness to Work",
+  "organisation": "Locala Community Partnerships CIC",
+  "logo": "locala.webp",
+  "status": "Live - open to referrals",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual",
+    "employer"
+  ],
+  "categories": [
+    "Health linked to work",
+    "Finding work",
+    "Staying in work",
+    "MSK"
+  ],
+  "whoFor": "Kirklees residents aged 18 and over with a health condition or disability affecting their ability to get or keep a job.",
+  "age": "18+",
+  "webpage": "https://www.locala.org.uk/services/wellness-to-work",
+  "email": "wellnesstowork@locala.org.uk",
+  "phone": "07763 566360",
+  "social": [],
+  "locations": [
+    "Princess Royal Health Centre, Greenhead Rd, Huddersfield HD1 4EW",
+    "Batley Health Centre, 130 Upper Commercial St, Batley WF17 5ED",
+    "Dewsbury Health Centre, Wellington Road, Dewsbury WF13 1HN"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Batley",
+    "Dewsbury"
+  ],
+  "eligibility": [
+    "Aged 18 or over, living in Kirklees, with a health condition or disability affecting ability to get or keep a job",
+    "Out of work due to ill health, OR in work but at risk of falling out of work due to ill health (including musculoskeletal conditions and/or vocational rehabilitation needs)",
+    "Committed to remaining in or entering paid employment"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Online self referral: https://www.locala.org.uk/services/wellness-to-work",
+    "Online - practitioner or employer referral",
+    "In person - via events",
+    "Via in-house teams"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Yes, via any route",
+    "url": "https://www.locala.org.uk/services/wellness-to-work"
+  },
+  "activities": [
+    {
+      "name": "Wellness to Work",
+      "summary": "A personalised holistic assessment of barriers (health, confidence, skills, general wellbeing), clinical triage where needed, and a dedicated Employment Navigator and health professional who build an action plan. Includes MSK fast-track physiotherapy and occupational therapy vocational rehabilitation. Connects people to partners such as Get Set Goal, Kirklees Active Leisure, Kirklees College and Third Sector Leaders.",
+      "duration": "3-6 months, with coordination for up to 3 months afterwards, plus in-work support for people who get a job"
+    }
+  ],
+  "workExperience": "No",
+  "lastUpdated": "2026-09-08",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "hwl-service-finder",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build-data": "node scripts/build-data.mjs",
+    "check-data": "node scripts/check-data.mjs"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1"
+  }
+}

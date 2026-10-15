@@ -1,0 +1,64 @@
+{
+  "id": "get-started-kings-trust-fire",
+  "name": "Get Started with The King's Trust (WY Fire)",
+  "organisation": "West Yorkshire Fire and Rescue with The King's Trust",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Young people",
+    "Finding work",
+    "Skills"
+  ],
+  "whoFor": "16–25 not in full-time education or work, living in West Yorkshire.",
+  "age": "16-25",
+  "webpage": "https://westyorksfire.gov.uk/get-started",
+  "email": "kingstrust.team@westyorksfire.gov.uk",
+  "phone": "01924 334057",
+  "social": [],
+  "locations": [
+    "Venues vary (next: Stanningley, Leeds)"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Aged 16 to 25",
+    "Not in full-time education or work",
+    "Lives in West Yorkshire"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Is not in full-time education or work"
+  ],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Register via the registration link"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Register yourself using the registration link."
+  },
+  "activities": [
+    {
+      "name": "Fire station course",
+      "summary": "One-week course at a fire station: teamwork, fitness, fire drills and a First Aid qualification. Travel and lunch paid; doesn't affect benefits.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 69",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://westyorksfire.gov.uk/get-started",
+    "evidence": "Next course 7–11 Dec 2026.",
+    "confidence": "high"
+  }
+}

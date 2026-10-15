@@ -5,6 +5,7 @@
 set -euo pipefail
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 W=$(mktemp -d)
+node "$ROOT/scripts/build-data.mjs" # data/services.json is generated from data/services/
 
 build() { # build <dir> <mvp: true|false>
   mkdir -p "$1"

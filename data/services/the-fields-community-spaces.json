@@ -1,0 +1,62 @@
+{
+  "id": "the-fields-community-spaces",
+  "name": "The Fields Community Spaces",
+  "organisation": "Batley Multi Academy Trust",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Skills",
+    "ESOL",
+    "Wellbeing"
+  ],
+  "whoFor": "Parents, carers and the Batley community.",
+  "age": null,
+  "webpage": "https://www.batleymat.co.uk/the-fields-community-spaces/",
+  "email": "fieldscoordinator@batleymat.co.uk",
+  "phone": "07497 512 801",
+  "social": [],
+  "locations": [
+    "Manorfield WF17 7DQ",
+    "Field Lane WF17 5AH"
+  ],
+  "areas": [
+    "Batley"
+  ],
+  "eligibility": [
+    "Parents and carers",
+    "The Batley community"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Contact the coordinator by phone or email"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Contact the coordinator."
+  },
+  "activities": [
+    {
+      "name": "Community courses",
+      "summary": "Community rooms in two Batley schools running English, hair and beauty, sleep and wellbeing courses.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Not stated",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 64",
+    "foundVia": "Kirklees Community Directory",
+    "checkedUrl": "https://www.batleymat.co.uk/the-fields-community-spaces/",
+    "evidence": "Sept–Nov 2026 timetable.",
+    "confidence": "medium"
+  }
+}

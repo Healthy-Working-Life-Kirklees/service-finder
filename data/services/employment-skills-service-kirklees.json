@@ -1,0 +1,63 @@
+{
+  "id": "employment-skills-service-kirklees",
+  "name": "Employment and Skills Service (employment support)",
+  "organisation": "Kirklees Council",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Skills",
+    "Staying in work"
+  ],
+  "whoFor": "Kirklees residents out of work, or in work and wanting to progress.",
+  "age": null,
+  "webpage": "https://www.kirklees.gov.uk/beta/employment-and-skills/employment-support.aspx",
+  "email": "employmentandskills@kirklees.gov.uk",
+  "phone": "01484 225016",
+  "social": [],
+  "locations": [
+    "Postal: PO Box 1720, Huddersfield HD1 9EL"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Lives in Kirklees",
+    "Out of work, or in work and wanting to progress"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Email",
+    "Online enquiry form on my.kirklees.gov.uk"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself by phone, email or the online enquiry form"
+  },
+  "activities": [
+    {
+      "name": "Employment support",
+      "summary": "Advisers help you get past what's stopping you working, then find and apply for jobs: CVs, interview practice and a plan. Also helps people in work who want to move up or change jobs.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 14",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://jobs.kirklees.gov.uk/employment-support",
+    "evidence": "Page changed Aug 2025; council Armed Forces page (Oct 2026) still refers to it. Also runs the care-leaver strand of Connect to Work.",
+    "confidence": "high"
+  }
+}

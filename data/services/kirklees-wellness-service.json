@@ -1,0 +1,66 @@
+{
+  "id": "kirklees-wellness-service",
+  "name": "Kirklees Wellness Service",
+  "organisation": "Kirklees Council",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Health linked to work",
+    "Mental health",
+    "Long-term conditions"
+  ],
+  "whoFor": "Kirklees residents 16+.",
+  "age": "16+",
+  "webpage": "https://www.kirkleeswellnessservice.co.uk/",
+  "email": "wellness.service@kirklees.gov.uk",
+  "phone": "01484 234095 (Mon–Fri 9–5)",
+  "social": [],
+  "locations": [
+    "Venues across Kirklees"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Colne Valley"
+  ],
+  "eligibility": [
+    "Lives in Kirklees",
+    "Aged 16 or over"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Email",
+    "Website",
+    "Drop in at Slaithwaite, Wednesdays 3-6pm"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself by phone, email or the website, or drop in at Slaithwaite"
+  },
+  "activities": [
+    {
+      "name": "Health and wellbeing support",
+      "summary": "One-to-one and group support for health goals: stopping smoking, eating well, getting active, feeling better in your mind. Phone or in person.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "languages": "Translation available (NHS listing)",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 26",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.nhs.uk/services/service-directory/kirklees-wellness-service/N11043361",
+    "evidence": "NHS directory updated 5 Oct 2026; council pages Apr/Sep 2026.",
+    "confidence": "high"
+  }
+}

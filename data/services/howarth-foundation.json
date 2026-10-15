@@ -1,0 +1,63 @@
+{
+  "id": "howarth-foundation",
+  "name": "Howarth Foundation – jobs and mentoring after homelessness",
+  "organisation": "The Howarth Foundation",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Housing",
+    "Staying in work"
+  ],
+  "whoFor": "People in West Yorkshire who've experienced homelessness.",
+  "age": null,
+  "webpage": "https://howarthfoundation.org.uk/",
+  "email": "info@howarthfoundation.org.uk",
+  "phone": "01274 864999",
+  "social": [],
+  "locations": [
+    "West Yorkshire"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Has experienced homelessness",
+    "Lives in West Yorkshire"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Has experienced homelessness"
+  ],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Referral from a support organisation"
+  ],
+  "selfReferral": {
+    "allowed": "partly",
+    "note": "Usually a referral from a support organisation"
+  },
+  "activities": [
+    {
+      "name": "Jobs and mentoring",
+      "summary": "Finds jobs with partner employers for people who've been homeless, with mentoring for worker and employer.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 76",
+    "foundVia": "Treacle",
+    "checkedUrl": "https://howarthfoundation.org.uk/about/",
+    "evidence": "Site May 2026; events to Nov 2026.",
+    "confidence": "medium"
+  }
+}

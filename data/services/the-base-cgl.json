@@ -1,0 +1,86 @@
+{
+  "id": "the-base-cgl",
+  "name": "The Base – young people's drug and alcohol service",
+  "organisation": "Change Grow Live",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual",
+    "organisation"
+  ],
+  "categories": [
+    "Drug/alcohol",
+    "Young people"
+  ],
+  "whoFor": "Young people up to 21 and their parents/carers.",
+  "age": "Up to 21",
+  "webpage": "https://www.changegrowlive.org/the-base-kirklees",
+  "email": "Thebase@cgl.org.uk",
+  "phone": "01484 541589",
+  "social": [],
+  "locations": [
+    "Brian Jackson House, Huddersfield HD1 5JP"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Young people up to 21 who use drugs or alcohol",
+    "Their parents or carers"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "substance-use"
+  ],
+  "requiresMention": [
+    "drug",
+    "alcohol",
+    "substance",
+    "in recovery",
+    "rehab",
+    "addict",
+    "\\bCGL\\b",
+    "change grow live",
+    "narkoty",
+    "alkohol",
+    "uzależni",
+    "odwyk",
+    "terapi[aęi] uzależnień",
+    "منشیات",
+    "نشہ",
+    "نشے",
+    "شراب",
+    "الکحل",
+    "منشیات کی عادت",
+    "nasha"
+  ],
+  "referralRoutes": [
+    "Self-referral",
+    "Professional referral"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself or be referred by a professional"
+  },
+  "activities": [
+    {
+      "name": "Young people's drug and alcohol support",
+      "summary": "Free, private help for young people who use drugs or alcohol, plus advice for parents and workers.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 33",
+    "foundVia": "Kirklees Community Directory",
+    "checkedUrl": "https://www.changegrowlive.org/the-base-kirklees",
+    "evidence": "© 2026; directory Oct 2026.",
+    "confidence": "high"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "id": "hse-disabled-workers-guidance",
+  "name": "Supporting disabled workers – HSE guidance",
+  "organisation": "Health and Safety Executive",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "employer"
+  ],
+  "categories": [
+    "Employers",
+    "Staying in work",
+    "Long-term conditions"
+  ],
+  "whoFor": "Employers and managers.",
+  "age": null,
+  "webpage": "https://www.hse.gov.uk/disability/best-practice/index.htm",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Employers and managers"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Read online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Read the guidance online"
+  },
+  "activities": [
+    {
+      "name": "Disability at work guidance",
+      "summary": "Guidance on helping disabled workers and those with long-term conditions get into and stay in work, with manager conversation templates.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 119",
+    "foundVia": "Your list",
+    "checkedUrl": "https://www.hse.gov.uk/disability/best-practice/index.htm",
+    "evidence": "Updated June 2025.",
+    "confidence": "high"
+  }
+}

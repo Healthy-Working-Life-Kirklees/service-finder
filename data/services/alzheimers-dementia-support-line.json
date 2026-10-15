@@ -1,0 +1,64 @@
+{
+  "id": "alzheimers-dementia-support-line",
+  "name": "Alzheimer's Society Dementia Support Line",
+  "organisation": "Alzheimer's Society",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Carers",
+    "Long-term conditions"
+  ],
+  "whoFor": "People affected by dementia and carers.",
+  "age": null,
+  "webpage": "https://www.alzheimers.org.uk/get-support/dementia-support-line",
+  "email": null,
+  "phone": "0333 150 3456",
+  "social": [],
+  "locations": [
+    "Phone"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "People affected by dementia",
+    "Carers"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any",
+    "unpaid-caring"
+  ],
+  "referralRoutes": [
+    "Phone"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone the support line"
+  },
+  "activities": [
+    {
+      "name": "Dementia support line",
+      "summary": "Talk to a dementia adviser about diagnosis, care and caring.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Local rate",
+  "languages": "Welsh line; interpreters; BSL",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 89",
+    "foundVia": "MECC Link",
+    "checkedUrl": "https://www.alzheimers.org.uk/get-support/dementia-support-line",
+    "evidence": "Leaflet July 2026.",
+    "confidence": "high"
+  }
+}

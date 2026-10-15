@@ -1,0 +1,56 @@
+{
+  "id": "edens-forest-woodland-pathways",
+  "name": "Woodland Pathways' Programme of Woodland Sessions",
+  "organisation": "Eden's Forest CIC",
+  "logo": "edens-forest.webp",
+  "status": "Live - grant-funded project (status not stated in the pathways document)",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Wellbeing",
+    "Mental health"
+  ],
+  "whoFor": "Adults in Kirklees who want to improve wellbeing, build confidence, reconnect with others and take small steps towards future opportunities. Particularly helpful for people with low confidence, anxiety, health conditions, caring responsibilities, or who feel stuck or unsure of next steps.",
+  "age": "Adults",
+  "webpage": null,
+  "email": "info@edensforestcic.org",
+  "phone": "07734 898650 / 07934 450806",
+  "social": [],
+  "locations": [
+    "Eden's Forest CIC, Hey Wood, Hall Ing, Honley, HD9 - near Honley train station"
+  ],
+  "areas": [
+    "Holme Valley",
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Adult living in Kirklees"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Email info@edensforestcic.org"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Yes, by email"
+  },
+  "activities": [
+    {
+      "name": "Woodland Pathways Programme",
+      "summary": "A gentle, creative outdoor programme with shared food around the campfire and hands-on activities such as willow weaving, greenwood work, seasonal crafts and small woodland maintenance tasks. People join in as much or as little as they like. The team includes an Occupational Therapist who gives guidance on wellbeing, confidence and next steps. Suited to people who don't feel comfortable in formal settings.",
+      "duration": "5 weekly sessions of 4 hours per cohort (3 cohorts, 15 sessions in total)"
+    }
+  ],
+  "workExperience": "No",
+  "lastUpdated": "2026-10-12",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

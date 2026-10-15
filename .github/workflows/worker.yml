@@ -7,6 +7,9 @@ on:
       - "worker/**"
       - "data/**"
       - "prompt/**"
+      - "scripts/**"
+      - "package.json"
+      - "package-lock.json"
       - ".github/workflows/worker.yml"
   workflow_dispatch:
 
@@ -25,7 +28,16 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: worker/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            worker/package-lock.json
+      # Check the scheme files, then combine them into services.json, which the Worker bundles.
+      # A problem in the data stops the deploy.
+      - name: Check and build the scheme data
+        run: |
+          npm ci
+          npm run check-data
+          npm run build-data
       - name: Install
         working-directory: worker
         run: npm ci

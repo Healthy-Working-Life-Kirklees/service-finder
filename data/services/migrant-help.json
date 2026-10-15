@@ -1,0 +1,63 @@
+{
+  "id": "migrant-help",
+  "name": "Migrant Help asylum helpline",
+  "organisation": "Migrant Help",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Refugees and new arrivals",
+    "Housing",
+    "Benefits and money"
+  ],
+  "whoFor": "People seeking asylum in the UK.",
+  "age": null,
+  "webpage": "https://www.migranthelpuk.org/",
+  "email": null,
+  "phone": "0808 8010 503",
+  "social": [],
+  "locations": [
+    "Phone, UK-wide"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "People seeking asylum in the UK"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Is seeking asylum in the UK"
+  ],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Call the helpline"
+  },
+  "activities": [
+    {
+      "name": "Asylum helpline",
+      "summary": "Free helpline for people seeking asylum, including help applying for asylum support.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "languages": "Interpreting available",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 108",
+    "foundVia": "MECC Link",
+    "checkedUrl": "https://www.migranthelpuk.org/",
+    "evidence": "Refugee Week 2026 post.",
+    "confidence": "high"
+  }
+}

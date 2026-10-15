@@ -1,0 +1,65 @@
+{
+  "id": "aim2learn",
+  "name": "Aim2Learn free funded training",
+  "organisation": "Aim2Learn",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Skills"
+  ],
+  "whoFor": "Unemployed adults 19+.",
+  "age": "19+",
+  "webpage": "https://aim2learn.org/",
+  "email": "enquiries@aim2learn.org",
+  "phone": "0113 512 0516",
+  "social": [],
+  "locations": [
+    "Huddersfield (Media Centre HD1 1RL)",
+    "Leeds, Bradford"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Unemployed adults aged 19 or over"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Is unemployed"
+  ],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Check eligibility online",
+    "Phone",
+    "Email"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Check eligibility online, or phone or email."
+  },
+  "activities": [
+    {
+      "name": "Free job training",
+      "summary": "Free courses training for jobs like fibre engineer or door supervisor, plus English and maths.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 67",
+    "foundVia": "Kirklees Community Directory",
+    "checkedUrl": "https://aim2learn.org/",
+    "evidence": "© 2026; directory Sept 2026.",
+    "confidence": "high"
+  }
+}

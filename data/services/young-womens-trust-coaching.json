@@ -1,0 +1,62 @@
+{
+  "id": "young-womens-trust-coaching",
+  "name": "Young Women's Trust coaching and CV help",
+  "organisation": "Young Women's Trust",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Young people",
+    "Women",
+    "Finding work",
+    "Staying in work"
+  ],
+  "whoFor": "Young women 18–30.",
+  "age": "18-30",
+  "webpage": "https://www.youngwomenstrust.org/get-support/coaching/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Remote"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Young women aged 18 to 30"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Sign up online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Sign up online"
+  },
+  "activities": [
+    {
+      "name": "Work coaching and CV help",
+      "summary": "Free coaching by phone, email or WhatsApp for problems at work or job goals, plus CV feedback and webinars.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 145",
+    "foundVia": "District Provision Tool; Treacle",
+    "checkedUrl": "https://www.youngwomenstrust.org",
+    "evidence": "Live; no 2026 date.",
+    "confidence": "medium"
+  }
+}

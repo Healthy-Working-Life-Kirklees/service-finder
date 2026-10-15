@@ -1,8 +1,8 @@
 # Kirklees Healthy Working Life Service Finder (prototype)
-HEy
-A proof of concept: a chat page that matches people to Healthy Working Life schemes in Kirklees.
 
-**It is a prototype. The scheme details come from a draft pathways document and may be out of date.**
+A proof of concept: a chat page that matches people to Healthy Working Life schemes and other work and health support in Kirklees.
+
+**It is a prototype. The scheme details come from a draft pathways document and from web research, and may be out of date.**
 
 ## How it fits together
 
@@ -10,7 +10,7 @@ A proof of concept: a chat page that matches people to Healthy Working Life sche
                  static page + data         holds the API key, no storage
 
 - `site/` is the page. GitHub Pages serves it. It is public.
-- `data/services.json` is the scheme data (17 schemes). It is copied into the site on deploy and bundled into the Worker.
+- `data/services/` holds the scheme data, one file per scheme (168 at the moment: 31 Healthy Working Life schemes and 137 other local, regional and national services). On deploy they are checked and combined into `services.json`, which is copied into the site and bundled into the Worker.
 - `prompt/system.md` is the instructions Claude follows. Bundled into the Worker.
 - `worker/` is a small Cloudflare Worker. It holds the Anthropic API key, sends the scheme data and the conversation to Claude, and returns a short message, a list of matches (scheme id, how well it fits, a short reason and what to check first) and flags for urgent support and identifying details. The page draws the cards from `services.json`, so contact details are never written by the AI, and unknown or closed schemes are dropped.
 - Nothing about a conversation is stored or logged. Workers Logs are switched off.
@@ -37,9 +37,21 @@ If the repo name or organisation changes, update `ALLOWED_ORIGIN` in `worker/wra
 
 ## Updating the data or prompt
 
-Edit `data/services.json` or `prompt/system.md` and push to `main`. Both workflows redeploy. Keep `lastUpdated` honest: the page flags entries older than about 4.5 months. Entries with `"open": false` are never recommended.
+Each scheme is its own file in `data/services/`, named after its id (for example `data/services/elevate.json`). To change a scheme, edit its file. To add one, add a file. The rules every file must follow are in `data/schema.json`, and the field-by-field guide is [`docs/data-dictionary.md`](docs/data-dictionary.md).
 
-Each scheme also has `audience` (individual, employer, organisation or student), `gate` (something the person must already be, or be using, such as a Kirklees College student) and `healthFocus` (which health needs it is for). The full field-by-field guide is in [`docs/data-dictionary.md`](docs/data-dictionary.md).
+Before pushing, check and build:
+
+    npm install          # once
+    npm run check-data   # checks every scheme file against the schema and the other rules
+    npm run build-data   # combines them into data/services.json (generated, not kept in the repository)
+
+Push to a branch and open a pull request. The **Checks** workflow runs the data check and the Worker tests on every pull request. When it's merged to `main`, both deploys run the check again, build `services.json`, and publish. If the check fails, nothing is deployed. Editing `prompt/system.md` works the same way.
+
+To make sure every change goes through a pull request, including changes made later by an automated maintenance agent: Settings > Branches > add a rule for `main` that requires a pull request and requires the **Checks** workflow to pass.
+
+Keep `lastUpdated` honest: the page flags entries older than about 4.5 months, and `npm run check-data` lists them. Entries with `"open": false` are never recommended. Each scheme's `provenance` records where its details came from, so they can be rechecked.
+
+The Worker sends Claude every scheme with each message, but without contact details, trigger words or provenance (`NOT_FOR_AI` in `worker/src/index.js`), which is about 45,000 tokens. The data block is cached between messages. If the list grows to several hundred schemes, the Worker should filter it (by area and audience, say) before sending it.
 
 ### What the Worker sends back to the page
 
@@ -63,7 +75,7 @@ The page has a language switcher in the header: English, Polski and اردو (Ur
 - The chosen language goes in the address (`?lang=pl` or `?lang=ur`), not in browser storage, so the page still stores nothing. A link ending `?lang=ur` opens the page in Urdu, which is handy for posters or leaflets.
 - The page sends the language to the Worker, and the Worker tells Claude to reply in that language (`LANG_NOTES` in `worker/src/index.js`).
 - Scheme details on the cards (names, who it is for, eligibility, routes) come from `services.json` and stay in English. They are marked as English so screen readers read them correctly.
-- The crisis wording backstop (`CRISIS_RE`) and the `requiresMention` words in `services.json` include Polish and Urdu phrases, so the safety panel and the condition-specific schemes still work when someone writes in those languages. These lists are also a first draft for a translator to check and add to.
+- The crisis wording backstop (`CRISIS_RE`) and the `requiresMention` words in the scheme files include Polish and Urdu phrases, so the safety panel and the condition-specific schemes still work when someone writes in those languages. These lists are also a first draft for a translator to check and add to.
 - Fonts for Polish letters and for Urdu (Noto Nastaliq Urdu) are in `site/fonts/`. A browser only downloads them when the page shows those characters.
 - Switching language part-way through a chat leaves earlier messages and cards as they were. New replies come back in the new language.
 - The MVP help page and issues log are English only.
@@ -78,6 +90,7 @@ A bar under the header lets people choose a larger text size (A, A+, A++) and sw
 
 ## Local test of the Worker
 
+    npm install && npm run build-data
     cd worker && npm install
     node test/mock-anthropic.mjs &
     npx wrangler dev --port 8787 --var ANTHROPIC_API_KEY:test-key --var ANTHROPIC_API_URL:http://127.0.0.1:9999
@@ -109,6 +122,7 @@ The log must never hold personal or identifying information.
 
 ## Tests
 
+    npm run check-data             # the scheme data
     node worker/test/logic.mjs     # Worker logic, offline (model handling, guards, crisis backstop, team log)
     bash test/run-ui.sh            # headless-browser test of the pages, with MVP tools on and off (needs Docker)
     python3 worker/test/live_chat.py   # real conversations against the live Worker (spends a few pence)

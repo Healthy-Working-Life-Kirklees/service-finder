@@ -1,0 +1,56 @@
+{
+  "id": "pathways-to-potential-2",
+  "name": "Pathways to Potential 2",
+  "organisation": "Batley Sporting Foundation",
+  "logo": "batley-sporting-foundation.webp",
+  "status": "Live - grant-funded project (status not stated in the pathways document)",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Volunteering",
+    "Skills"
+  ],
+  "whoFor": "People who are not in education, employment or training (NEET), or at risk of becoming NEET, who want skills and experience to prepare for volunteering and paid work.",
+  "age": "Not stated",
+  "webpage": null,
+  "email": "jade@batleysportingfoundation.org",
+  "phone": "07584 569117",
+  "social": [],
+  "locations": [
+    "Batley Sporting Foundation Community Gym, Heritage Road, Batley, WF17 7NZ"
+  ],
+  "areas": [
+    "Batley"
+  ],
+  "eligibility": [
+    "Not in education, employment or training (NEET), or at risk of becoming NEET"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Application form from Batley Sporting Foundation or online (contact Jade Wardell)"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Apply using the application form"
+  },
+  "activities": [
+    {
+      "name": "Pathways to Potential 2",
+      "summary": "Gives economically inactive people the skills, tools and experience to prepare for volunteering and paid work.",
+      "duration": "Weekly provision"
+    }
+  ],
+  "workExperience": "No",
+  "lastUpdated": "2026-10-01",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

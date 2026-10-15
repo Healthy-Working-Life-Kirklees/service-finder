@@ -1,0 +1,61 @@
+{
+  "id": "steps-ahead-mentoring",
+  "name": "Steps Ahead Mentoring",
+  "organisation": "CIPD Trust",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Young people",
+    "Carers"
+  ],
+  "whoFor": "Jobseekers 18–30; parents/carers returning to work.",
+  "age": "18-30",
+  "webpage": "https://www.cipd.org/en/about/cipd-trust/getting-in-to-work/steps-ahead-young-people/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "National"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Jobseekers aged 18 to 30",
+    "Parents or carers returning to work"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Register online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Register online"
+  },
+  "activities": [
+    {
+      "name": "Job mentoring",
+      "summary": "Free one-to-one mentoring from a volunteer HR professional for CVs and interview confidence.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 136",
+    "foundVia": "District Provision Tool",
+    "checkedUrl": "https://www.cipd.org/en/about/cipd-trust/getting-in-to-work/steps-ahead-young-people/",
+    "evidence": "Running but matching slow.",
+    "confidence": "medium"
+  }
+}

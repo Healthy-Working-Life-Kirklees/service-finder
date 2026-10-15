@@ -1,0 +1,62 @@
+{
+  "id": "every-mind-matters",
+  "name": "Every Mind Matters",
+  "organisation": "NHS",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Health linked to work"
+  ],
+  "whoFor": "Anyone.",
+  "age": null,
+  "webpage": "https://www.nhs.uk/every-mind-matters/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Anyone"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Use the website"
+  },
+  "activities": [
+    {
+      "name": "Mental health self-help website",
+      "summary": "NHS website with a 5-minute Mind Plan quiz and advice on stress at work.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 100",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.nhs.uk/every-mind-matters/",
+    "evidence": "Modified Sep 2026.",
+    "confidence": "high"
+  }
+}

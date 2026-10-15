@@ -1,0 +1,64 @@
+{
+  "id": "carers-uk-helpline",
+  "name": "Carers UK helpline (incl. work rights)",
+  "organisation": "Carers UK",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Carers",
+    "Staying in work",
+    "Benefits and money"
+  ],
+  "whoFor": "Unpaid carers.",
+  "age": null,
+  "webpage": "https://www.carersuk.org/help-and-advice/work-and-career/",
+  "email": null,
+  "phone": "0808 808 7777",
+  "social": [],
+  "locations": [
+    "Phone and online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Unpaid carers"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "unpaid-caring"
+  ],
+  "referralRoutes": [
+    "Phone",
+    "Email form"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone or use the email form"
+  },
+  "activities": [
+    {
+      "name": "Carers advice helpline",
+      "summary": "Advice for unpaid carers on flexible working, Carer's Leave and Carer's Allowance.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 94",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.carersuk.org/help-and-advice/helpline-and-other-support/",
+    "evidence": "References Carers Rights Day Nov 2026.",
+    "confidence": "high"
+  }
+}

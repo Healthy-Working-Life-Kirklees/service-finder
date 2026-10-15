@@ -1,0 +1,65 @@
+{
+  "id": "op-restore",
+  "name": "Op RESTORE (veterans' physical health)",
+  "organisation": "Imperial College Healthcare NHS Trust",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Veterans",
+    "Long-term conditions"
+  ],
+  "whoFor": "Anyone who served at least one day with a service-related physical injury.",
+  "age": null,
+  "webpage": "https://www.imperial.nhs.uk/our-services/op-restore",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "England"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Served at least one day in the armed forces",
+    "Has a physical injury or health problem caused by military service"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Has served in the UK armed forces (at least one day)",
+    "Has a physical injury or health problem caused by military service"
+  ],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "GP referral"
+  ],
+  "selfReferral": {
+    "allowed": "no",
+    "note": "Needs a referral from your GP"
+  },
+  "activities": [
+    {
+      "name": "Veterans' physical health service",
+      "summary": "NHS service for veterans with physical injuries or health problems caused by military service.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free (NHS)",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 133",
+    "foundVia": "MECC Link",
+    "checkedUrl": "https://www.imperial.nhs.uk/our-services/op-restore",
+    "evidence": "Current referral process, page undated.",
+    "confidence": "medium"
+  }
+}

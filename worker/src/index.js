@@ -49,6 +49,11 @@ const CRISIS_RE = new RegExp(
 );
 
 const SERVICES = data.services;
+// What Claude is sent about each scheme. Contact details are left out (the page draws them from the data, so the
+// AI never writes them), as are fields only people or the Worker use: requiresMention is applied below by the
+// Worker itself, and provenance, logo and review dates are for maintaining the data. This keeps each request smaller.
+const NOT_FOR_AI = new Set(['webpage', 'email', 'phone', 'social', 'logo', 'requiresMention', 'provenance', 'lastUpdated', 'reviewCycle']);
+const AI_SERVICES = SERVICES.map((s) => Object.fromEntries(Object.entries(s).filter(([k]) => !NOT_FOR_AI.has(k))));
 const IDS = SERVICES.map((s) => s.id);
 const ID_SET = new Set(IDS);
 // Only schemes that are open to referrals can ever be shown as cards.
@@ -229,7 +234,7 @@ export default {
         { type: 'text', text: SYSTEM_PROMPT.trim() },
         {
           type: 'text',
-          text: `SERVICE DATA (JSON). Source: ${data.source}.\n${JSON.stringify(SERVICES)}`,
+          text: `SERVICE DATA (JSON). Source: ${data.source}.\n${JSON.stringify(AI_SERVICES)}`,
           cache_control: { type: 'ephemeral' },
         },
         { type: 'text', text: `${MODE_NOTES[mode]}${lang === 'en' ? '' : '\n' + LANG_NOTES[lang]}

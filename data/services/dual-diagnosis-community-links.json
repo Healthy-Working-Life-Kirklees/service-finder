@@ -1,0 +1,89 @@
+{
+  "id": "dual-diagnosis-community-links",
+  "name": "Community Links Dual Diagnosis service",
+  "organisation": "Community Links (KBOP)",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Drug/alcohol"
+  ],
+  "whoFor": "People 16+ in Kirklees with both needs.",
+  "age": "16+",
+  "webpage": "https://www.nhs.uk/services/service-directory/community-links-dual-diagnosis/N10991483",
+  "email": "hello@KBOP.org",
+  "phone": "01924 448977",
+  "social": [],
+  "locations": [
+    "Batley Business Park WF17 6ER"
+  ],
+  "areas": [
+    "Batley",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Aged 16 or over",
+    "Lives in Kirklees",
+    "Has both mental health problems and drug or alcohol use"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health",
+    "substance-use"
+  ],
+  "requiresMention": [
+    "drug",
+    "alcohol",
+    "substance",
+    "in recovery",
+    "rehab",
+    "addict",
+    "\\bCGL\\b",
+    "change grow live",
+    "narkoty",
+    "alkohol",
+    "uzależni",
+    "odwyk",
+    "terapi[aęi] uzależnień",
+    "منشیات",
+    "نشہ",
+    "نشے",
+    "شراب",
+    "الکحل",
+    "منشیات کی عادت",
+    "nasha"
+  ],
+  "referralRoutes": [
+    "Referral form",
+    "Email",
+    "Agency referral"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself or be referred by an agency, by form or email"
+  },
+  "activities": [
+    {
+      "name": "Dual diagnosis support",
+      "summary": "Up to 18 months' support for people with both mental health problems and drug or alcohol use.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 10",
+    "foundVia": "Kirklees Community Directory",
+    "checkedUrl": "https://www.nhs.uk/services/service-directory/community-links-dual-diagnosis/N10991483",
+    "evidence": "NHS directory Sept 2026; Kirklees directory Aug 2026.",
+    "confidence": "high"
+  }
+}

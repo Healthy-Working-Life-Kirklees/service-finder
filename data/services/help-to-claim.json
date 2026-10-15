@@ -1,0 +1,61 @@
+{
+  "id": "help-to-claim",
+  "name": "Help to Claim (Universal Credit)",
+  "organisation": "Citizens Advice",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Benefits and money"
+  ],
+  "whoFor": "New UC claimants in England.",
+  "age": null,
+  "webpage": "https://www.citizensadvice.org.uk/about-us/contact-us/contact-us/help-to-claim/",
+  "email": null,
+  "phone": "0800 144 8 444",
+  "social": [],
+  "locations": [
+    "Phone and webchat"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Making a new Universal Credit claim in England"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Webchat"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone or use webchat"
+  },
+  "activities": [
+    {
+      "name": "Universal Credit claim help",
+      "summary": "Free help to start a Universal Credit claim, prepare for the first Jobcentre appointment and check the first payment.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "languages": "Interpreters; BSL",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 104",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.citizensadvice.org.uk/about-us/contact-us/contact-us/help-to-claim/",
+    "evidence": "Running, links to 2026 UC changes.",
+    "confidence": "high"
+  }
+}

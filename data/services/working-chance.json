@@ -1,0 +1,91 @@
+{
+  "id": "working-chance",
+  "name": "Working Chance",
+  "organisation": "Working Chance",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Prison leavers",
+    "Women",
+    "Finding work"
+  ],
+  "whoFor": "Women with convictions.",
+  "age": null,
+  "webpage": "https://workingchance.org/",
+  "email": "info@workingchance.org",
+  "phone": null,
+  "social": [],
+  "locations": [
+    "UK-wide"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Women",
+    "Has a criminal conviction"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Has a criminal conviction"
+  ],
+  "healthFocus": [],
+  "requiresMention": [
+    "prison",
+    "jail",
+    "gaol",
+    "probation",
+    "criminal record",
+    "conviction",
+    "convicted",
+    "offend",
+    "ex-offender",
+    "released from",
+    "custody",
+    "\\bcourts?\\b",
+    "\\bCFO\\b",
+    "więzie",
+    "wiezie",
+    "areszt",
+    "kurator",
+    "wyrok",
+    "karaln",
+    "skazan",
+    "جیل",
+    "قید",
+    "سزا",
+    "پروبیشن",
+    "مجرمانہ ریکارڈ"
+  ],
+  "referralRoutes": [
+    "Self-referral",
+    "Referral by an agency"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Self-refer or be referred by an agency"
+  },
+  "activities": [
+    {
+      "name": "Employment support for women",
+      "summary": "Employment charity for women with convictions: CVs, interviews, confidence, disclosing a conviction.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Not stated",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 144",
+    "foundVia": "District Provision Tool",
+    "checkedUrl": "https://workingchance.org/",
+    "evidence": "Big Give 2026 mentioned.",
+    "confidence": "medium"
+  }
+}

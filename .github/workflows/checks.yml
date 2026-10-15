@@ -1,0 +1,28 @@
+name: Checks
+
+# Runs on every pull request and on pushes to branches other than main, so a change (by a person or an
+# agent) is checked before it is merged. Protect main in Settings > Branches and require this check to pass.
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Check the scheme data
+        run: |
+          npm ci
+          npm run check-data
+      - name: Worker logic tests
+        run: node worker/test/logic.mjs

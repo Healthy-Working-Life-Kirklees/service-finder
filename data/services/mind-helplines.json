@@ -1,0 +1,66 @@
+{
+  "id": "mind-helplines",
+  "name": "Mind Infoline, Legal Line and Welfare Benefits Line",
+  "organisation": "Mind",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Benefits and money",
+    "Employment rights"
+  ],
+  "whoFor": "Anyone in England and Wales affected by mental health problems.",
+  "age": null,
+  "webpage": "https://www.mind.org.uk/information-support/helplines/",
+  "email": null,
+  "phone": "Infoline 0300 123 3393; Legal 0300 466 6463; Benefits 0300 222 5782",
+  "social": [],
+  "locations": [
+    "Phone"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Lives in England or Wales",
+    "Affected by mental health problems"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Phone the Infoline",
+    "Phone the Legal Line",
+    "Phone the Welfare Benefits Line"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone the Infoline, Legal Line or Welfare Benefits Line"
+  },
+  "activities": [
+    {
+      "name": "Mental health information lines",
+      "summary": "Information on mental health and local support, legal information on discrimination, and benefits advice.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Local rate",
+  "languages": "Language Line interpreting",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 109",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.mind.org.uk/information-support/helplines/",
+    "evidence": "Lists 2026 closures.",
+    "confidence": "high"
+  }
+}

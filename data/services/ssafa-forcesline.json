@@ -1,0 +1,69 @@
+{
+  "id": "ssafa-forcesline",
+  "name": "SSAFA Forcesline",
+  "organisation": "SSAFA",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Veterans",
+    "Benefits and money",
+    "Housing",
+    "Mental health"
+  ],
+  "whoFor": "Serving personnel, veterans and families.",
+  "age": null,
+  "webpage": "https://www.ssafa.org.uk/get-help",
+  "email": null,
+  "phone": "0800 260 6780",
+  "social": [],
+  "locations": [
+    "Phone, UK-wide",
+    "WY office"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Serving armed forces personnel",
+    "Veterans",
+    "Families of serving personnel and veterans"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Is serving in the UK armed forces, is a veteran, or is a family member of one"
+  ],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone, Mon-Thu 9am-5pm, Fri 9am-4pm",
+    "Live chat",
+    "Find a local branch"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Call, use live chat or find a local branch"
+  },
+  "activities": [
+    {
+      "name": "Forces support line",
+      "summary": "Free phone line giving practical, money and emotional help to serving forces, veterans and families; links to local branches.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 135",
+    "foundVia": "MECC Link; Kirklees Community Directory",
+    "checkedUrl": "https://www.ssafa.org.uk/get-help",
+    "evidence": "2026 appeals on site.",
+    "confidence": "medium"
+  }
+}

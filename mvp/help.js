@@ -28,8 +28,9 @@
       const list = d.services || [];
       const overdue = list.filter((s) => s.open && age(s.lastUpdated) > STALE_DAYS);
       const notOpen = list.filter((s) => !s.open);
+      const hwl = list.filter((s) => s.hwlFunded).length;
       $('#data-summary').textContent =
-        list.length + ' schemes from "' + d.source + '". ' +
+        list.length + ' schemes and services: ' + hwl + ' Healthy Working Life schemes and ' + (list.length - hwl) + ' other services. ' +
         (overdue.length ? overdue.length + ' are overdue for a check (older than about four and a half months). ' : 'None are overdue for a check. ') +
         (notOpen.length ? notOpen.length + (notOpen.length === 1 ? ' is' : ' are') + ' not open yet and never recommended.' : '');
 
@@ -41,6 +42,9 @@
         if (s.audience && !s.audience.includes('individual')) notes.push('For ' + s.audience.join(' / ') + ', not individuals.');
         if (s.selfReferral && s.selfReferral.allowed === 'tbc') notes.push('Self-referral route to be confirmed.');
         if (!s.webpage) notes.push('No web page listed.');
+        if (s.level && s.level !== 'local') notes.push(s.level === 'national' ? 'National service.' : 'Regional service.');
+        if (s.provenance && s.provenance.confidence === 'medium') notes.push('Medium confidence in these details.');
+        if (s.provenance && s.provenance.source) notes.push('Source: ' + s.provenance.source + '.');
         const status = !s.open ? el('span', { class: 'pill bad', text: 'Not open yet' }) : age(s.lastUpdated) > STALE_DAYS ? el('span', { class: 'pill warn', text: 'Overdue a check' }) : el('span', { class: 'pill ok', text: 'Open' });
         body.append(el('tr', {}, el('td', { text: s.name }), el('td', { text: s.organisation }), el('td', {}, status), el('td', { class: 'nowrap', text: fmt(s.lastUpdated) }), el('td', { text: notes.join(' ') })));
       }

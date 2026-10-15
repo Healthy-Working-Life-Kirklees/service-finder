@@ -1,0 +1,59 @@
+{
+  "id": "cap-money-coaching",
+  "name": "CAP Money Coaching",
+  "organisation": "Christians Against Poverty",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Benefits and money",
+    "Debt"
+  ],
+  "whoFor": "Anyone.",
+  "age": null,
+  "webpage": "https://capuk.org/get-help/money-coaching",
+  "email": "startmoneycoaching@capuk.org",
+  "phone": "01274 760720",
+  "social": [],
+  "locations": [
+    "Local churches"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Anyone"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Find a local course by postcode"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Find a local course by postcode"
+  },
+  "activities": [
+    {
+      "name": "Money coaching course",
+      "summary": "Free short course in small groups to budget, save and take control of money.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 93",
+    "foundVia": "Kirklees Community Directory",
+    "checkedUrl": "https://capuk.org/get-help/money-coaching",
+    "evidence": "2026 client report referenced.",
+    "confidence": "high"
+  }
+}

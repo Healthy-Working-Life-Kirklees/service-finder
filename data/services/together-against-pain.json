@@ -1,0 +1,61 @@
+{
+  "id": "together-against-pain",
+  "name": "TAP (Together Against Pain)",
+  "organisation": "TAP volunteer group",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "MSK",
+    "Long-term conditions"
+  ],
+  "whoFor": "People with chronic pain.",
+  "age": null,
+  "webpage": null,
+  "email": "lordjohnrichardson@outlook.com",
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Salvation Army Hall, Oakes HD3 4DD (last Fri 12–2)"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "People with chronic pain"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "musculoskeletal-pain"
+  ],
+  "referralRoutes": [
+    "Drop in at the Salvation Army Hall, Oakes, last Friday of the month 12-2pm"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Just turn up."
+  },
+  "activities": [
+    {
+      "name": "Chronic pain peer group",
+      "summary": "Monthly peer group for people with long-term pain.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Not stated",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 63",
+    "foundVia": "Kirklees Community Directory",
+    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=7508",
+    "evidence": "Directory only (Aug 2026).",
+    "confidence": "medium"
+  }
+}

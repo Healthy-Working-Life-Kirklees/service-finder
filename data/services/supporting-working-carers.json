@@ -1,0 +1,83 @@
+{
+  "id": "supporting-working-carers",
+  "name": "Supporting Working Carers",
+  "organisation": "Carers Count Kirklees (delivered by Cloverleaf Advocacy)",
+  "logo": "carers-count.webp",
+  "status": "Live - open to referrals",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "employer"
+  ],
+  "categories": [
+    "Carers",
+    "Employers",
+    "Staying in work",
+    "Employment rights"
+  ],
+  "whoFor": "Kirklees employers supporting staff who have unpaid caring responsibilities, and working carers themselves (supported through their employer).",
+  "age": "Adults",
+  "webpage": "https://carerscountkirklees.org.uk/how-can-we-help/support-and-training/#employer-support",
+  "email": null,
+  "phone": "0300 012 0231",
+  "social": [],
+  "locations": [
+    "Online - 30-minute awareness sessions and one-to-one Teams calls",
+    "In person - employer forums (e.g. The Zone, Huddersfield) and employer drop-ins",
+    "On site at employer premises by arrangement"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Employers and organisations in Kirklees - managers, HR teams, mental health first aiders and anyone supporting staff wellbeing - who want to identify, engage, support and retain unpaid carers",
+    "Employees with unpaid caring responsibilities at risk of reducing hours or leaving work are supported indirectly through their employer"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "unpaid-caring"
+  ],
+  "referralRoutes": [
+    "Employer registration form (downloadable PDF)",
+    "Email",
+    "Online booking for awareness sessions, training and forums (Eventbrite)",
+    "In person - via employer drop-ins"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Yes - employers can register directly via any route"
+  },
+  "activities": [
+    {
+      "name": "Employer awareness training",
+      "summary": "A 30-minute online session on supporting employees who care, and to meet the team.",
+      "duration": "30 minutes, repeating dates through the year"
+    },
+    {
+      "name": "One-to-one employer support",
+      "summary": "A one-to-one Teams call, then tailored support to identify carers in the workforce and put practical policies and culture in place.",
+      "duration": "Ongoing, tailored"
+    },
+    {
+      "name": "Employer forums",
+      "summary": "Quarterly forums for peer learning and awareness raising.",
+      "duration": "Quarterly, 1.5 to 2 hours"
+    },
+    {
+      "name": "Employer training session",
+      "summary": "Free online training on legal duties and carers' rights, recognising and supporting carers, reducing discrimination risk and managing flexible working.",
+      "duration": "90 minutes, repeating dates through the year"
+    }
+  ],
+  "workExperience": "No",
+  "notes": "The source document lists named individuals' email addresses for this scheme; they are left out here until it is decided whether they should be public.",
+  "lastUpdated": "2026-08-03",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

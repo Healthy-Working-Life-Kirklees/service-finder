@@ -1,0 +1,62 @@
+{
+  "id": "money-advice-council-tenants",
+  "name": "Money Advice Team (council tenants)",
+  "organisation": "Kirklees Council (Homes & Neighbourhoods)",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Benefits and money",
+    "Debt"
+  ],
+  "whoFor": "Council tenants and leaseholders.",
+  "age": null,
+  "webpage": "https://www.kirklees.gov.uk/money-advice",
+  "email": null,
+  "phone": "01484 414975",
+  "social": [],
+  "locations": [
+    "Kirklees"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Kirklees Council tenant or leaseholder"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Is a Kirklees Council tenant or leaseholder"
+  ],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Online form",
+    "Phone"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself by online form or phone"
+  },
+  "activities": [
+    {
+      "name": "Money and benefits advice",
+      "summary": "Benefit checks and claims, budgeting, debts and bills. Can show whether you'd be better off in work and refer to employment support.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 28",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.kirklees.gov.uk/money-advice",
+    "evidence": "Page created March 2026.",
+    "confidence": "high"
+  }
+}

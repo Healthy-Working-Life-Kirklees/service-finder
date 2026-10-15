@@ -1,0 +1,64 @@
+{
+  "id": "kirklees-digital-hubs",
+  "name": "Kirklees Digital Hubs",
+  "organisation": "Kirklees Council (Digital Inclusion)",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Digital skills"
+  ],
+  "whoFor": "Anyone in Kirklees.",
+  "age": null,
+  "webpage": "https://www.kirklees.gov.uk/beta/digital-inclusion/digital-hubs.aspx",
+  "email": "digitalhubs@kirklees.gov.uk",
+  "phone": "01484 225016",
+  "social": [],
+  "locations": [
+    "Crosland Moor CLC HD4 5RX",
+    "Huddersfield Library HD1 2QF",
+    "Dewsbury Library WF12 8EQ",
+    "Jo Cox House, Batley WF17 5DR"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Dewsbury",
+    "Batley"
+  ],
+  "eligibility": [
+    "Anyone in Kirklees"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Contact the team",
+    "Ask at a hub"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Contact the team or ask at a hub"
+  },
+  "activities": [
+    {
+      "name": "Digital skills courses and cafés",
+      "summary": "Free computer courses and drop-in digital cafés for beginners upwards, to get online, use services and apply for jobs.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 21",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.kirklees.gov.uk/beta/digital-inclusion/digital-hubs.aspx",
+    "evidence": "Page changed June 2026.",
+    "confidence": "high"
+  }
+}

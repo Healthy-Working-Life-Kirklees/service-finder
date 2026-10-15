@@ -107,6 +107,9 @@
       s.selfReferral && s.selfReferral.allowed === 'yes' ? el('span', { class: 'badge self', text: t('selfYes') }) : null,
       s.selfReferral && s.selfReferral.allowed === 'partly' ? el('span', { class: 'badge self', text: t('selfPartly') }) : null,
       s.selfReferral && s.selfReferral.allowed === 'tbc' ? el('span', { class: 'badge', text: t('selfTbc') }) : null,
+      s.selfReferral && s.selfReferral.allowed === 'no' ? el('span', { class: 'badge', text: t('selfNo') }) : null,
+      s.level === 'regional' ? el('span', { class: 'badge', text: t('levelRegional') }) : null,
+      s.level === 'national' ? el('span', { class: 'badge', text: t('levelNational') }) : null,
       s.age ? el('span', { class: 'badge' }, t('age'), el('span', { ...EN, text: s.age })) : null
     );
 
@@ -141,7 +144,11 @@
       el('details', {}, el('summary', { text: t('whatWhere') }),
         el('ul', {}, (s.activities || []).map((a) => el('li', { ...EN, text: a.name + ': ' + a.summary + (a.duration ? ' (' + a.duration + ')' : '') }))),
         el('h4', { text: t('where') }),
-        el('ul', {}, (s.locations || []).map((x) => el('li', { ...EN, text: x })))
+        el('ul', {}, (s.locations || []).map((x) => el('li', { ...EN, text: x }))),
+        s.cost ? el('h4', { text: t('cost') }) : null,
+        s.cost ? el('ul', {}, el('li', { ...EN, text: s.cost })) : null,
+        s.languages ? el('h4', { text: t('languages') }) : null,
+        s.languages ? el('ul', {}, el('li', { ...EN, text: s.languages })) : null
       ),
       el('p', { class: 'meta', text: t('lastChecked', { date: fmtDate(s.lastUpdated) }) }),
       stale ? el('p', { class: 'stale', text: t('stale') }) : null,

@@ -1,0 +1,66 @@
+{
+  "id": "poppy-factory-employment",
+  "name": "Poppy Factory employment support for veterans",
+  "organisation": "The Poppy Factory",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Veterans",
+    "Finding work",
+    "Staying in work"
+  ],
+  "whoFor": "Anyone who served at least one day with a physical or mental health condition.",
+  "age": null,
+  "webpage": "https://www.poppyfactory.org/are-you-looking-for-work/",
+  "email": "support@poppyfactory.org",
+  "phone": "020 8940 3305",
+  "social": [],
+  "locations": [
+    "Consultants across England and Wales"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Served at least one day in the armed forces",
+    "Has a physical or mental health condition"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Has served in the UK armed forces (at least one day)"
+  ],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Register online",
+    "Be referred by another organisation"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Register online or be referred"
+  },
+  "activities": [
+    {
+      "name": "Employment support for veterans",
+      "summary": "An employment consultant helps veterans with a health condition find and keep work.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 134",
+    "foundVia": "District Provision Tool",
+    "checkedUrl": "https://www.poppyfactory.org/are-you-looking-for-work/",
+    "evidence": "Current service; no 2026 date.",
+    "confidence": "medium"
+  }
+}

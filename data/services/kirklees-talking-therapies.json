@@ -1,0 +1,69 @@
+{
+  "id": "kirklees-talking-therapies",
+  "name": "Kirklees Talking Therapies (main therapy service)",
+  "organisation": "South West Yorkshire Partnership NHS FT",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Health linked to work",
+    "Long-term conditions"
+  ],
+  "whoFor": "Kirklees residents over 17. Not a crisis service.",
+  "age": "Over 17",
+  "webpage": "https://www.kirklees-talkingtherapies.nhs.uk/",
+  "email": "Kirklees.talkingtherapies@swyt.nhs.uk",
+  "phone": "01484 343700",
+  "social": [],
+  "locations": [
+    "Folly Hall Mills, Huddersfield",
+    "online and phone"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Lives in Kirklees",
+    "Aged over 17"
+  ],
+  "exclusions": [
+    "Not a crisis service"
+  ],
+  "gate": [],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Self-refer online",
+    "Via your GP"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself online or through your GP"
+  },
+  "activities": [
+    {
+      "name": "Talking therapies",
+      "summary": "NHS talking therapy for stress, anxiety, low mood, panic and sleep problems: guided self-help, online therapy, CBT, counselling and groups.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free (NHS)",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 25",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.kirklees-talkingtherapies.nhs.uk/",
+    "evidence": "Site modified May 2026. Separate from the Employment Advice service already listed. MECC Link still lists an old IAPT number (01484 434625/6) — ignore.",
+    "confidence": "high"
+  }
+}

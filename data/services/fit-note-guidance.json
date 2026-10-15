@@ -1,0 +1,65 @@
+{
+  "id": "fit-note-guidance",
+  "name": "Fit note guidance",
+  "organisation": "DWP",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual",
+    "employer"
+  ],
+  "categories": [
+    "Health linked to work",
+    "Staying in work"
+  ],
+  "whoFor": "People off sick and employers.",
+  "age": null,
+  "webpage": "https://www.gov.uk/government/collections/fit-note",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "People off sick",
+    "Employers"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Read online",
+    "Ask a healthcare professional"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Read the guidance online or ask a healthcare professional"
+  },
+  "activities": [
+    {
+      "name": "Fit note guidance",
+      "summary": "Guidance on fit notes, who can issue them and how employers should use them.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 122",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.gov.uk/government/collections/fit-note",
+    "evidence": "Guidance dated 2023; reform pending.",
+    "confidence": "medium"
+  }
+}

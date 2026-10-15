@@ -1,0 +1,66 @@
+{
+  "id": "health-adjustment-passport",
+  "name": "Health Adjustment Passport",
+  "organisation": "DWP",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Staying in work",
+    "Disability & neurodiversity",
+    "Long-term conditions"
+  ],
+  "whoFor": "People with a disability or health condition starting or already in work, including apprentices, supported interns and self-employed.",
+  "age": null,
+  "webpage": "https://www.gov.uk/government/publications/health-adjustment-passport",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Has a disability or health condition",
+    "Starting work or already in work, including apprentices, supported interns and self-employed"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Download from GOV.UK",
+    "Fill it in yourself or with a work coach"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Download it from GOV.UK and fill it in yourself or with a work coach"
+  },
+  "activities": [
+    {
+      "name": "Workplace adjustments form",
+      "summary": "A free form to write down what changes and support would help you at work because of a health condition or disability. Use it to talk to your employer or to apply for Access to Work.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "languages": "English and Welsh; easy read and large print",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 103",
+    "foundVia": "MECC Link (Y&H Work and Health); MECC Gateway",
+    "checkedUrl": "https://www.gov.uk/government/publications/health-adjustment-passport",
+    "evidence": "GOV.UK updated 26 Jan 2026.",
+    "confidence": "high"
+  }
+}

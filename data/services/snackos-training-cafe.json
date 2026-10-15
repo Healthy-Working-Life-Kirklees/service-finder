@@ -1,0 +1,62 @@
+{
+  "id": "snackos-training-cafe",
+  "name": "Snacko's training café",
+  "organisation": "Snacko's / Stanley's Training Project",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Disability & neurodiversity"
+  ],
+  "whoFor": "People who find it hard to get into work, especially with learning disabilities.",
+  "age": null,
+  "webpage": "https://www.facebook.com/StanleysTrainingAndCatering/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Heckmondwike WF16 0NW"
+  ],
+  "areas": [
+    "Spen Valley"
+  ],
+  "eligibility": [
+    "People who find it hard to get into work",
+    "Especially people with learning disabilities"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "learning-disability-autism"
+  ],
+  "referralRoutes": [
+    "Message on Facebook: https://www.facebook.com/StanleysTrainingAndCatering/"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Get in touch through Facebook."
+  },
+  "activities": [
+    {
+      "name": "Catering work training",
+      "summary": "Catering project where people learn work skills serving the public, helping into paid or voluntary work.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Yes - work experience in a café",
+  "cost": "Not stated",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 62",
+    "foundVia": "Kirklees Community Directory",
+    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=7572",
+    "evidence": "Directory June 2026 only.",
+    "confidence": "medium"
+  }
+}

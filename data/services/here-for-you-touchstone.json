@@ -1,0 +1,63 @@
+{
+  "id": "here-for-you-touchstone",
+  "name": "Here For You (out-of-hours safe space)",
+  "organisation": "Touchstone",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health"
+  ],
+  "whoFor": "Kirklees adults (age conflicts: 18+ vs 16+).",
+  "age": null,
+  "webpage": "https://touchstonesupport.org.uk/hereforyou/",
+  "email": null,
+  "phone": "07741 900395",
+  "social": [],
+  "locations": [
+    "25 Trinity Street, Batley WF17 7JZ"
+  ],
+  "areas": [
+    "Batley",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Kirklees adults",
+    "Struggling to cope"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Call on the night",
+    "Text on the night"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Call or text on the night."
+  },
+  "activities": [
+    {
+      "name": "Out-of-hours safe space",
+      "summary": "Evening support if you're struggling to cope, in a calm space or by phone.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 52",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://touchstonesupport.org.uk/hereforyou/",
+    "evidence": "On council page (Sep 2026). Hours and age differ between sources — check.",
+    "confidence": "medium"
+  }
+}

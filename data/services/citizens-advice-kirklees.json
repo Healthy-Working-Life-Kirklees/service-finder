@@ -1,0 +1,66 @@
+{
+  "id": "citizens-advice-kirklees",
+  "name": "Kirklees Citizens Advice and Law Centre (KCALC)",
+  "organisation": "Kirklees Citizens Advice and Law Centre",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Benefits and money",
+    "Debt",
+    "Housing",
+    "Employment rights"
+  ],
+  "whoFor": "Kirklees residents.",
+  "age": null,
+  "webpage": "https://www.kcalc.org.uk",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Dewsbury: Empire House WF12 8DJ (Mon & Tue 9.30–3)",
+    "Huddersfield: Pearl House (Fri 10–1)"
+  ],
+  "areas": [
+    "Dewsbury",
+    "Huddersfield",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Kirklees residents"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Online call-back request form",
+    "Drop in at Empire House, Dewsbury, Mon and Tue 9.30-3",
+    "Drop in at Pearl House, Huddersfield, Fri 10-1"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Request a call back online or go to a drop-in"
+  },
+  "activities": [
+    {
+      "name": "Advice on money, housing and work",
+      "summary": "Free advice on benefits, debt, housing, work problems, discrimination and immigration. Request a call back online or go to a drop-in.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 20",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.kcalc.org.uk",
+    "evidence": "Site © 2026. Phone left blank: KCALC says AdviceLine no longer answered from 1 June, but council page (Mar 2026) still lists 0808 278 7896 — check with KCALC.",
+    "confidence": "high"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "id": "count-me-in-maths",
+  "name": "Count Me In (maths and numeracy)",
+  "organisation": "Kirklees Council Learning Service",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Skills",
+    "Finding work"
+  ],
+  "whoFor": "Residents 18+ below Level 2, out of work or working under 16 hrs, or facing big barriers.",
+  "age": "18+",
+  "webpage": "https://www.kirklees.gov.uk/beta/employment-and-skills/skills-support.aspx",
+  "email": "adult.learning@kirklees.gov.uk",
+  "phone": "01484 225016",
+  "social": [],
+  "locations": [
+    "Community venues across Kirklees"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Aged 18 or over",
+    "Lives in Kirklees",
+    "Maths below Level 2",
+    "Out of work, working under 16 hours a week, or facing big barriers"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Book on the course website",
+    "Contact the adult learning team"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Book on the course website or contact the adult learning team"
+  },
+  "activities": [
+    {
+      "name": "Maths courses",
+      "summary": "Free maths courses for adults: everyday money maths, maths for work, and courses for people learning English.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 12",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.kirklees.gov.uk/beta/employment-and-skills/skills-support.aspx",
+    "evidence": "Listed on skills page changed July 2026.",
+    "confidence": "high"
+  }
+}

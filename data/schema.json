@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Healthy-Working-Life-Kirklees/service-finder/data/schema.json",
+  "title": "Service Finder scheme",
+  "description": "One scheme or service, stored as data/services/<id>.json. See docs/data-dictionary.md for what each field means.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id", "name", "organisation", "status", "open", "hwlFunded", "level", "audience", "categories",
+    "whoFor", "age", "webpage", "email", "phone", "social", "locations", "areas", "eligibility",
+    "exclusions", "gate", "healthFocus", "referralRoutes", "selfReferral", "activities", "workExperience",
+    "lastUpdated", "reviewCycle", "provenance"
+  ],
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "textList": { "type": "array", "items": { "$ref": "#/$defs/text" } },
+    "nullableText": { "anyOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }] },
+    "url": { "type": "string", "pattern": "^https?://\\S+$" },
+    "date": { "type": "string", "pattern": "^20\\d\\d-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$" }
+  },
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "maxLength": 50 },
+    "name": { "$ref": "#/$defs/text" },
+    "organisation": { "$ref": "#/$defs/text" },
+    "logo": { "type": "string", "pattern": "^[\\w.-]+\\.(png|jpe?g|webp|svg)$" },
+    "status": { "$ref": "#/$defs/text" },
+    "open": { "type": "boolean" },
+    "hwlFunded": { "type": "boolean" },
+    "level": { "enum": ["local", "regional", "national"] },
+    "audience": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": { "enum": ["individual", "employer", "organisation", "student"] }
+    },
+    "categories": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": {
+        "enum": [
+          "Apprenticeships", "Benefits and money", "Bereavement", "Carers", "Debt", "Digital skills",
+          "Disability & neurodiversity", "Drug/alcohol", "Employers", "Employment rights", "ESOL",
+          "Finding work", "Health linked to work", "Housing", "Long-term conditions", "Men", "Mental health",
+          "MSK", "Older workers", "Prison leavers", "Refugees and new arrivals", "Returning to learning",
+          "Self-employment", "Skills", "Staying in work", "Travel", "Veterans", "Volunteering", "Wellbeing",
+          "Women", "Young people"
+        ]
+      }
+    },
+    "whoFor": { "$ref": "#/$defs/text" },
+    "age": { "$ref": "#/$defs/nullableText" },
+    "webpage": { "anyOf": [{ "$ref": "#/$defs/url" }, { "type": "null" }] },
+    "email": { "anyOf": [{ "type": "string", "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$" }, { "type": "null" }] },
+    "phone": { "$ref": "#/$defs/nullableText" },
+    "social": { "$ref": "#/$defs/textList" },
+    "locations": { "$ref": "#/$defs/textList" },
+    "areas": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": {
+        "enum": [
+          "Batley", "Colne Valley", "Dewsbury", "Holme Valley", "Huddersfield", "Kirkburton", "Mirfield",
+          "Spen Valley", "Kirklees-wide", "Online"
+        ]
+      }
+    },
+    "eligibility": { "$ref": "#/$defs/textList" },
+    "exclusions": { "$ref": "#/$defs/textList" },
+    "gate": { "$ref": "#/$defs/textList" },
+    "healthFocus": {
+      "type": "array", "uniqueItems": true,
+      "items": {
+        "enum": [
+          "any", "mental-health", "severe-mental-illness", "musculoskeletal-pain", "substance-use",
+          "learning-disability-autism", "unpaid-caring"
+        ]
+      }
+    },
+    "requiresMention": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/text" } },
+    "referralRoutes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/text" } },
+    "selfReferral": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed", "note"],
+      "properties": {
+        "allowed": { "enum": ["yes", "partly", "no", "tbc"] },
+        "note": { "$ref": "#/$defs/text" },
+        "url": { "$ref": "#/$defs/url" }
+      }
+    },
+    "activities": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "summary", "duration"],
+        "properties": {
+          "name": { "$ref": "#/$defs/text" },
+          "summary": { "$ref": "#/$defs/text" },
+          "duration": { "type": "string" }
+        }
+      }
+    },
+    "workExperience": { "$ref": "#/$defs/text" },
+    "cost": { "$ref": "#/$defs/text" },
+    "languages": { "$ref": "#/$defs/text" },
+    "notes": { "$ref": "#/$defs/text" },
+    "lastUpdated": { "$ref": "#/$defs/date" },
+    "reviewCycle": { "enum": ["Quarterly", "Six-monthly", "Yearly"] },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source"],
+      "properties": {
+        "source": { "$ref": "#/$defs/text" },
+        "foundVia": { "$ref": "#/$defs/text" },
+        "checkedUrl": { "$ref": "#/$defs/url" },
+        "evidence": { "$ref": "#/$defs/text" },
+        "confidence": { "enum": ["high", "medium", "low"] }
+      }
+    }
+  }
+}

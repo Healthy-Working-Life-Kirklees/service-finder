@@ -1,0 +1,59 @@
+{
+  "id": "wy-business-growth-hub",
+  "name": "West Yorkshire Business Growth Hub – start-up support",
+  "organisation": "West Yorkshire Combined Authority",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Self-employment"
+  ],
+  "whoFor": "People starting or running a business in West Yorkshire.",
+  "age": null,
+  "webpage": "https://www.westyorks-ca.gov.uk/business/growth-hub/starting-a-business/",
+  "email": "business@westyorks-ca.gov.uk",
+  "phone": "0113 348 1818",
+  "social": [],
+  "locations": [
+    "Leeds LS1 2DE"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "People starting or running a business in West Yorkshire"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Email"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Contact them yourself by phone or email"
+  },
+  "activities": [
+    {
+      "name": "Start-up business support",
+      "summary": "Free first point of contact for anyone starting a business, linking to advice, grants, loans and training.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 83",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.westyorks-ca.gov.uk/business/growth-hub/starting-a-business/",
+    "evidence": "Events listed Sep–Nov 2026.",
+    "confidence": "medium"
+  }
+}

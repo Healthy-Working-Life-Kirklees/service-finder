@@ -1,0 +1,64 @@
+{
+  "id": "local-welfare-provision",
+  "name": "Local Welfare Provision (incl. Crisis Resilience Fund)",
+  "organisation": "Kirklees Council",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Benefits and money",
+    "Housing"
+  ],
+  "whoFor": "Residents on Council Tax Reduction or registered for council tax, facing a short-term crisis.",
+  "age": null,
+  "webpage": "https://www.kirklees.gov.uk/lwp",
+  "email": "lwp@kirklees.gov.uk",
+  "phone": "01484 414782 (Mon–Fri 10–1)",
+  "social": [],
+  "locations": [
+    "Kirklees"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Kirklees resident",
+    "Receives Council Tax Reduction or is registered for council tax",
+    "Facing a short-term crisis"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Is receiving Council Tax Reduction or is registered for council tax in Kirklees"
+  ],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Email"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Apply by phone or email"
+  },
+  "activities": [
+    {
+      "name": "Emergency crisis help",
+      "summary": "One-off emergency help in a crisis: food parcels, energy vouchers, grants and short-term help with rent.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 27",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.kirklees.gov.uk/beta/benefits/local-welfare-provision.aspx",
+    "evidence": "Page changed April 2026. DPT (Apr 2026): Crisis Resilience Fund began 1 April 2026; Household Support Fund and Discretionary Housing Payments ended 31 March 2026. Fusion Housing gives food-claim hours as 10–5.",
+    "confidence": "high"
+  }
+}

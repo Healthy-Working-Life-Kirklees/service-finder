@@ -1,0 +1,91 @@
+{
+  "id": "ips-cgl",
+  "name": "Individual Placement and Support for Change Grow Live service users",
+  "organisation": "Change Grow Live (CGL)",
+  "logo": "change-grow-live.webp",
+  "status": "Live - open to referrals",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Drug/alcohol",
+    "Finding work",
+    "Staying in work"
+  ],
+  "whoFor": "Change Grow Live service users in Kirklees aged 18 and over who want to move into paid work.",
+  "age": "18+",
+  "webpage": "https://www.changegrowlive.org/service/kirklees-drug-alcohol/huddersfield#employment",
+  "email": "KirkleesIPS@cgl.org.uk",
+  "phone": "07721 969722 or 01484 353333",
+  "social": [],
+  "locations": [
+    "20 Manchester Road, Huddersfield HD1 3HJ",
+    "3 Wellington Street, Dewsbury WF13 1LY"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Dewsbury"
+  ],
+  "eligibility": [
+    "Aged 18 or over and in treatment at Change Grow Live",
+    "Out of work, or in work but at risk of losing their job because of substance use and/or ill health",
+    "Consents to receive input from the IPS service and has a GP registered within Kirklees"
+  ],
+  "exclusions": [
+    "Only wants to look at voluntary work or education"
+  ],
+  "gate": [
+    "Is in treatment with Change Grow Live"
+  ],
+  "healthFocus": [
+    "substance-use"
+  ],
+  "requiresMention": [
+    "drug",
+    "alcohol",
+    "substance",
+    "in recovery",
+    "rehab",
+    "addict",
+    "\\bCGL\\b",
+    "change grow live",
+    "narkoty",
+    "alkohol",
+    "uzależni",
+    "odwyk",
+    "terapi[aęi] uzależnień",
+    "منشیات",
+    "نشہ",
+    "نشے",
+    "شراب",
+    "الکحل",
+    "منشیات کی عادت",
+    "nasha"
+  ],
+  "referralRoutes": [
+    "Email",
+    "Phone",
+    "Via in-house teams",
+    "In person"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Yes, via any route"
+  },
+  "activities": [
+    {
+      "name": "Individual Placement and Support",
+      "summary": "A 'place then train' approach matching people in recovery with paid work they want to do. An Employment Specialist builds a vocational profile, engages employers, supports CVs and interviews and agrees reasonable adjustments, then supports the person and their employer once in work.",
+      "duration": "Job coaching/placement up to 9 months; follow-along support for the first 4 months in work"
+    }
+  ],
+  "workExperience": "Yes",
+  "lastUpdated": "2025-11-25",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

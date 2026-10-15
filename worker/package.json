@@ -3,7 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "node ../scripts/build-data.mjs",
     "dev": "wrangler dev",
+    "predeploy": "node ../scripts/build-data.mjs",
     "deploy": "wrangler deploy"
   },
   "devDependencies": {

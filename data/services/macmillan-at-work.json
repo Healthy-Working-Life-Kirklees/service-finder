@@ -1,0 +1,66 @@
+{
+  "id": "macmillan-at-work",
+  "name": "Macmillan at Work (employers)",
+  "organisation": "Macmillan Cancer Support",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "employer"
+  ],
+  "categories": [
+    "Employers",
+    "Long-term conditions",
+    "Staying in work"
+  ],
+  "whoFor": "Employers, HR and managers.",
+  "age": null,
+  "webpage": "https://www.macmillan.org.uk/cancer-information-and-support/get-help/financial-and-work/employers/macmillan-at-work",
+  "email": "workandcancer@macmillan.org.uk",
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Employers",
+    "HR staff",
+    "Managers"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Sign up online",
+    "Email"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Sign up online or email"
+  },
+  "activities": [
+    {
+      "name": "Employer cancer toolkit",
+      "summary": "Free employer toolkit and templates to support staff with cancer or caring for someone with cancer.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Toolkit free; masterclasses paid",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 106",
+    "foundVia": "Your list",
+    "checkedUrl": "https://www.macmillan.org.uk/cancer-information-and-support/get-help/financial-and-work/employers/macmillan-at-work",
+    "evidence": "© 2026.",
+    "confidence": "high"
+  }
+}

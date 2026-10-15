@@ -1,0 +1,92 @@
+{
+  "id": "unlock-helpline",
+  "name": "Unlock helpline",
+  "organisation": "Unlock",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Prison leavers",
+    "Finding work"
+  ],
+  "whoFor": "People with criminal records.",
+  "age": null,
+  "webpage": "https://unlock.org.uk/contact-us/",
+  "email": null,
+  "phone": "01634 247350; WhatsApp 07824 113848",
+  "social": [],
+  "locations": [
+    "Phone and online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "People with criminal records"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Has a criminal record"
+  ],
+  "healthFocus": [],
+  "requiresMention": [
+    "prison",
+    "jail",
+    "gaol",
+    "probation",
+    "criminal record",
+    "conviction",
+    "convicted",
+    "offend",
+    "ex-offender",
+    "released from",
+    "custody",
+    "\\bcourts?\\b",
+    "\\bCFO\\b",
+    "więzie",
+    "wiezie",
+    "areszt",
+    "kurator",
+    "wyrok",
+    "karaln",
+    "skazan",
+    "جیل",
+    "قید",
+    "سزا",
+    "پروبیشن",
+    "مجرمانہ ریکارڈ"
+  ],
+  "referralRoutes": [
+    "Phone",
+    "WhatsApp",
+    "Online form"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone, WhatsApp or use the online form"
+  },
+  "activities": [
+    {
+      "name": "Criminal record advice",
+      "summary": "Helpline for people with a criminal record on understanding their record and what to tell employers.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Not stated",
+  "languages": "Relay UK",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 141",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://unlock.org.uk/contact-us/",
+    "evidence": "© 2026.",
+    "confidence": "medium"
+  }
+}

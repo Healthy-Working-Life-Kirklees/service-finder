@@ -1,0 +1,59 @@
+{
+  "id": "find-a-job-dwp",
+  "name": "Find a job",
+  "organisation": "DWP",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work"
+  ],
+  "whoFor": "Anyone looking for work.",
+  "age": null,
+  "webpage": "https://www.gov.uk/find-a-job",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Anyone looking for work"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Search and apply online"
+  },
+  "activities": [
+    {
+      "name": "Job search website",
+      "summary": "Government website to search and apply for jobs.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 101",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.gov.uk/find-a-job",
+    "evidence": "Updated Sep 2026.",
+    "confidence": "high"
+  }
+}

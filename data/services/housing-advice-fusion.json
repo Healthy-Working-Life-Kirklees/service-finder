@@ -1,0 +1,62 @@
+{
+  "id": "housing-advice-fusion",
+  "name": "Housing advice service",
+  "organisation": "Fusion Housing",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Housing"
+  ],
+  "whoFor": "Anyone in Kirklees with a housing problem.",
+  "age": null,
+  "webpage": "http://www.fusionhousing.org.uk",
+  "email": "info@fusionhousing.org.uk",
+  "phone": "01484 425522 / 01924 454770",
+  "social": [],
+  "locations": [
+    "Pearl House, Huddersfield HD1 1BA",
+    "Empire House, Dewsbury"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Dewsbury",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Anyone in Kirklees with a housing problem"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Visit the Huddersfield or Dewsbury office"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone or visit."
+  },
+  "activities": [
+    {
+      "name": "Housing advice",
+      "summary": "Free advice on any housing problem, from first questions to court.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 53",
+    "foundVia": "Kirklees Community Directory",
+    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=349",
+    "evidence": "Directory Sept 2025 only.",
+    "confidence": "medium"
+  }
+}

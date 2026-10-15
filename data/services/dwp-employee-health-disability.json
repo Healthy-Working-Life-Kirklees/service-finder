@@ -1,0 +1,62 @@
+{
+  "id": "dwp-employee-health-disability",
+  "name": "Support with employee health and disability",
+  "organisation": "DWP",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "employer"
+  ],
+  "categories": [
+    "Employers",
+    "Staying in work"
+  ],
+  "whoFor": "Employers, especially small businesses.",
+  "age": null,
+  "webpage": "https://support-with-employee-health-and-disability.dwp.gov.uk/support-with-employee-health-and-disability",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Employers, especially small businesses"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Use the website (no sign-up)"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Use the website; no sign-up needed"
+  },
+  "activities": [
+    {
+      "name": "Employer health and disability advice",
+      "summary": "Free step-by-step online advice for employers on keeping staff with health conditions in work and returning after sickness.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 138",
+    "foundVia": "Your list",
+    "checkedUrl": "https://www.hse.gov.uk/disability/best-practice/index.htm",
+    "evidence": "Site blocks automated checks; HSE (2025) and Acas link to it.",
+    "confidence": "medium"
+  }
+}

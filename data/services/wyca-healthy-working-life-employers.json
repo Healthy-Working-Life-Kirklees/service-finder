@@ -1,0 +1,66 @@
+{
+  "id": "wyca-healthy-working-life-employers",
+  "name": "Healthy Working Life support for employers",
+  "organisation": "West Yorkshire Combined Authority",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "employer"
+  ],
+  "categories": [
+    "Employers",
+    "Staying in work",
+    "Disability & neurodiversity"
+  ],
+  "whoFor": "Employers in West Yorkshire.",
+  "age": null,
+  "webpage": "https://www.westyorks-ca.gov.uk/business-support/healthy-working-life/",
+  "email": "business@westyorks-ca.gov.uk",
+  "phone": "0113 348 1818",
+  "social": [],
+  "locations": [
+    "Online",
+    "training across WY"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Employers in West Yorkshire"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Register interest online",
+    "Phone",
+    "Email"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Register interest online, or phone or email."
+  },
+  "activities": [
+    {
+      "name": "Employer health toolkit",
+      "summary": "Free toolkit, podcast, training and Fair Work Charter helping employers take on and keep staff with health conditions or disabilities.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 70",
+    "foundVia": "WYCA (your list)",
+    "checkedUrl": "https://www.westyorks-ca.gov.uk/news/mayor-launches-bold-new-drive-to-close-disability-employment-gap-and-boost-wellbeing-and-productivity-across-west-yorkshire",
+    "evidence": "Launched 9 March 2026.",
+    "confidence": "high"
+  }
+}

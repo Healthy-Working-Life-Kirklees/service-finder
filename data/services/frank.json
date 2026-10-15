@@ -1,0 +1,85 @@
+{
+  "id": "frank",
+  "name": "FRANK drugs advice",
+  "organisation": "UK Government",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Drug/alcohol"
+  ],
+  "whoFor": "Anyone, including friends and family.",
+  "age": null,
+  "webpage": "https://www.talktofrank.com/",
+  "email": null,
+  "phone": "0300 123 6600 (text 82111)",
+  "social": [],
+  "locations": [
+    "Phone and online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Anyone, including friends and family"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "substance-use"
+  ],
+  "requiresMention": [
+    "drug",
+    "alcohol",
+    "substance",
+    "in recovery",
+    "rehab",
+    "addict",
+    "\\bCGL\\b",
+    "change grow live",
+    "narkoty",
+    "alkohol",
+    "uzależni",
+    "odwyk",
+    "terapi[aęi] uzależnień",
+    "منشیات",
+    "نشہ",
+    "نشے",
+    "شراب",
+    "الکحل",
+    "منشیات کی عادت",
+    "nasha"
+  ],
+  "referralRoutes": [
+    "Phone",
+    "Text 82111",
+    "Website"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone, text or use the website"
+  },
+  "activities": [
+    {
+      "name": "Drug and alcohol advice",
+      "summary": "Free, honest advice about drugs and alcohol, and help finding local services.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 121",
+    "foundVia": "MECC Link",
+    "checkedUrl": "https://www.talktofrank.com/",
+    "evidence": "Live; undated.",
+    "confidence": "medium"
+  }
+}

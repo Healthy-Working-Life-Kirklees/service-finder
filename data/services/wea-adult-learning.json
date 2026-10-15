@@ -1,0 +1,61 @@
+{
+  "id": "wea-adult-learning",
+  "name": "WEA adult learning courses",
+  "organisation": "Workers' Educational Association",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Skills",
+    "Digital skills"
+  ],
+  "whoFor": "Adults 19+.",
+  "age": "19+",
+  "webpage": "https://www.wea.org.uk/",
+  "email": null,
+  "phone": "0300 303 3464",
+  "social": [],
+  "locations": [
+    "Online and West Yorkshire venues"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Adults aged 19 or over"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Search and book online",
+    "Phone"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Search and book online or by phone"
+  },
+  "activities": [
+    {
+      "name": "Adult learning courses",
+      "summary": "Adult courses online and locally, including English and maths; many free.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Many free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 143",
+    "foundVia": "Treacle",
+    "checkedUrl": "https://www.wea.org.uk/",
+    "evidence": "Courses from Oct 2026.",
+    "confidence": "medium"
+  }
+}

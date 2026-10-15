@@ -1,0 +1,99 @@
+{
+  "id": "real-employment",
+  "name": "REAL Employment",
+  "organisation": "Kirklees Council",
+  "logo": "kirklees-council.webp",
+  "status": "Live - open to referrals",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual",
+    "employer"
+  ],
+  "categories": [
+    "Disability & neurodiversity",
+    "Finding work",
+    "Employers"
+  ],
+  "whoFor": "Kirklees adults aged 18 and over with learning disabilities, autism or additional needs seeking paid, sustainable employment.",
+  "age": "18+ (transitional support can start before 18th birthday)",
+  "webpage": "https://www.kirklees.gov.uk/beta/real-employment/index.aspx",
+  "email": null,
+  "phone": "01484 221581 (Monday to Friday, 8.30am-4.30pm)",
+  "social": [],
+  "locations": [
+    "Civic Centre 3, High Street, Huddersfield, HD1 2TG",
+    "Dewsbury Town Hall, Wakefield Old Road, Dewsbury, WF12 8DG"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Dewsbury"
+  ],
+  "eligibility": [
+    "Lives in Kirklees and is aged 18 or over",
+    "Has a learning disability, is autistic, or has associated additional needs with a substantial adverse effect on day-to-day activities, lasting or expected to last 12 months or more",
+    "A formal medical diagnosis is not required"
+  ],
+  "exclusions": [
+    "Zero rejection policy - where REAL cannot meet a person's needs they signpost to appropriate services",
+    "Work experience placements are not offered as a standalone service"
+  ],
+  "gate": [],
+  "healthFocus": [
+    "learning-disability-autism"
+  ],
+  "requiresMention": [
+    "learning disab",
+    "learning difficult",
+    "autis",
+    "asperger",
+    "additional needs",
+    "neurodiver",
+    "\\bASD\\b",
+    "niepełnosprawnoś[cć]i? intelektualn",
+    "niepelnosprawnos[cć]i? intelektualn",
+    "trudności w uczeniu",
+    "trudnosci w uczeniu",
+    "autyzm",
+    "autyst",
+    "spektrum autyzmu",
+    "neuroatyp",
+    "لرننگ ڈس ایبلٹی",
+    "سیکھنے میں معذوری",
+    "سیکھنے کی معذوری",
+    "ذہنی معذوری",
+    "آٹزم",
+    "آٹسٹک",
+    "\\bEHCP\\b",
+    "education,? health and care plan"
+  ],
+  "referralRoutes": [
+    "Online self referral - simple form, around 5 minutes (a valid personal email address is needed): https://my.kirklees.gov.uk/service/Jobs___Contact_REAL_Employment",
+    "Referral by a family member, carer or professional using the same online form",
+    "Phone - speak to an advisor"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Yes, via the online form",
+    "url": "https://my.kirklees.gov.uk/service/Jobs___Contact_REAL_Employment"
+  },
+  "activities": [
+    {
+      "name": "Supported employment and job matching",
+      "summary": "Job Coach support to match interests and skills to a job the person wants, including job searching, applications and interview techniques. Training can be part of the journey.",
+      "duration": ""
+    },
+    {
+      "name": "Employer support",
+      "summary": "Works with employers who have vacancies to match candidates to the role and support the placement.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No - not offered as a standalone service",
+  "lastUpdated": "2026-08-03",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

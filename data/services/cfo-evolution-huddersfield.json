@@ -1,0 +1,92 @@
+{
+  "id": "cfo-evolution-huddersfield",
+  "name": "CFO Evolution – Huddersfield Activity Hub",
+  "organisation": "HMPPS CFO, led by The Growth Company",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Prison leavers",
+    "Finding work",
+    "Housing"
+  ],
+  "whoFor": "People in prison or on probation in Yorkshire and the Humber.",
+  "age": null,
+  "webpage": "https://www.creatingfutureopportunities.gov.uk/cfo-evolution-referrals/",
+  "email": "CFOEvolution@growthco.uk",
+  "phone": "01942 423444 (service desk)",
+  "social": [],
+  "locations": [
+    "Norwich Union House, Market Street, Huddersfield HD1 2LR"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "People in prison or on probation",
+    "In Yorkshire and the Humber"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Is in prison or on probation"
+  ],
+  "healthFocus": [],
+  "requiresMention": [
+    "prison",
+    "jail",
+    "gaol",
+    "probation",
+    "criminal record",
+    "conviction",
+    "convicted",
+    "offend",
+    "ex-offender",
+    "released from",
+    "custody",
+    "\\bcourts?\\b",
+    "\\bCFO\\b",
+    "więzie",
+    "wiezie",
+    "areszt",
+    "kurator",
+    "wyrok",
+    "karaln",
+    "skazan",
+    "جیل",
+    "قید",
+    "سزا",
+    "پروبیشن",
+    "مجرمانہ ریکارڈ"
+  ],
+  "referralRoutes": [
+    "Referral form, usually via probation",
+    "Community referral by email"
+  ],
+  "selfReferral": {
+    "allowed": "partly",
+    "note": "Referral form, usually through probation; community referrals can be made by email."
+  },
+  "activities": [
+    {
+      "name": "Resettlement and work support",
+      "summary": "Help for people on probation or leaving prison: getting ready for work, wellbeing and resettling. Hub in Huddersfield.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 68",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.creatingfutureopportunities.gov.uk/?p=3483",
+    "evidence": "Page modified May 2026; runs to at least April 2027.",
+    "confidence": "high"
+  }
+}

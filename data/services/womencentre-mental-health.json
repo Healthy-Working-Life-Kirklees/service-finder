@@ -1,0 +1,63 @@
+{
+  "id": "womencentre-mental-health",
+  "name": "WomenCentre Mental Health and Wellbeing Service",
+  "organisation": "WomenCentre",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Women"
+  ],
+  "whoFor": "Women 18+ in Kirklees.",
+  "age": "18+",
+  "webpage": "https://www.womencentre.org.uk/",
+  "email": "info@womencentre.org.uk",
+  "phone": "01484 450866 (Hudds); 07714 489445 (Dewsbury)",
+  "social": [],
+  "locations": [
+    "15 Lord Street, Huddersfield",
+    "Empire House, Dewsbury"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Dewsbury"
+  ],
+  "eligibility": [
+    "Women aged 18 or over in Kirklees"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Contact the Huddersfield or Dewsbury centre"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Contact the centre."
+  },
+  "activities": [
+    {
+      "name": "Women's mental health support",
+      "summary": "Women-only groups, drop-ins, counselling and one-to-one support.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 65",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.womencentre.org.uk/test/kirklees/",
+    "evidence": "Site © 2025; listed as a current partner on council page (Sep 2026).",
+    "confidence": "medium"
+  }
+}

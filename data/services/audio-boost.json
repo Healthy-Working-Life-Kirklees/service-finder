@@ -1,0 +1,63 @@
+{
+  "id": "audio-boost",
+  "name": "Audio Boost",
+  "organisation": "Yorkshire Sound Women Network",
+  "logo": "yswn.webp",
+  "status": "Live - applications via the Yorkshire Sound Women Network website and social media; sessions start week commencing 4 January 2027",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Women",
+    "Skills",
+    "Finding work",
+    "Health linked to work"
+  ],
+  "whoFor": "Women (cis and trans) and gender-diverse people in Kirklees who are not in work or claiming Universal Credit and are living with a health condition, who want skills and confidence for work in the audio sector.",
+  "age": "Adults",
+  "webpage": "https://yorkshiresoundwomen.com/",
+  "email": "info@yorkshiresoundwomen.com",
+  "phone": "07946 531169",
+  "social": [],
+  "locations": [
+    "Various locations in Huddersfield (to be confirmed), with online support"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Online"
+  ],
+  "eligibility": [
+    "Women (cis and trans) and gender-diverse people",
+    "Lives in Kirklees",
+    "Not in work or claiming Universal Credit",
+    "Living with a health condition"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Application details will be shared on the Yorkshire Sound Women Network website and social media later in autumn 2026"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "Applications open later in autumn 2026"
+  },
+  "activities": [
+    {
+      "name": "Audio Boost",
+      "summary": "Hands-on workshops, talks and one-to-one support covering music technology roles such as producing tracks, DJing, engineering live events and making podcasts and radio shows, plus practical advice on finding work, in a friendly, supportive environment.",
+      "duration": "Six one-day workshops with online support throughout, starting week commencing 4 January 2027"
+    }
+  ],
+  "workExperience": "No",
+  "lastUpdated": "2026-10-12",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

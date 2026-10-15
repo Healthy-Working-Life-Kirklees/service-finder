@@ -1,0 +1,97 @@
+{
+  "id": "kirklees-employment-service",
+  "name": "Kirklees Employment Service",
+  "organisation": "Waythrough (formerly Richmond Fellowship)",
+  "logo": "waythrough.webp",
+  "status": "Live - open to referrals",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual",
+    "employer"
+  ],
+  "categories": [
+    "Mental health",
+    "Disability & neurodiversity",
+    "Finding work",
+    "Staying in work",
+    "Employers"
+  ],
+  "whoFor": "Kirklees adults aged 18 and over with experience of mental ill health - including autism and other neurodivergent conditions, hidden disabilities, a learning disability where mental health support is the primary need, or dementia in a community setting - who want paid work. Also advises employers.",
+  "age": "18+",
+  "webpage": "https://www.waythrough.org.uk/find-support-near-me/kirklees-employment-service/",
+  "email": "Info.KirkleesES@RichmondFellowship.org.uk",
+  "phone": "01484 434866",
+  "social": [],
+  "locations": [
+    "Huddersfield base",
+    "Dewsbury base",
+    "Community venues across Kirklees",
+    "Remote - telephone, Teams and email"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Dewsbury",
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Aged 18 or over and living in Kirklees",
+    "Currently or previously experiencing mental ill health, from low-level stress and anxiety to enduring severe problems - a medical diagnosis is not required; or has autism or a hidden disability",
+    "Has a goal of moving towards employment, education, training, volunteering or a placement, and is committed to working on agreed actions between sessions",
+    "Employers in Kirklees seeking advice on supporting employees' mental health are also eligible"
+  ],
+  "exclusions": [
+    "Under 18",
+    "Not ordinarily resident in Kirklees - people funded by a statutory body outside Kirklees are not eligible unless that agency spot purchases a place"
+  ],
+  "gate": [],
+  "healthFocus": [
+    "mental-health",
+    "learning-disability-autism"
+  ],
+  "referralRoutes": [
+    "Online referral form",
+    "Phone",
+    "Email",
+    "Practitioner referral - community psychiatric nurses, psychologists, consultant psychiatrists, occupational therapists, Job Centre Plus and other partner agencies"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Yes, via any route"
+  },
+  "activities": [
+    {
+      "name": "One-to-one adviser support",
+      "summary": "Support from a named adviser, face to face, by phone, over Teams or email. An Employment Support Plan is agreed and reviewed at least every six months. Includes benefits guidance, careers information and supported job search, plus peer support workshops.",
+      "duration": "Contact within 3 working days of referral, initial meeting within 10 working days; typically a 6-month timeframe"
+    },
+    {
+      "name": "Job retention and job change support",
+      "summary": "Helps people experiencing mental ill health at work to stay in their job or move to a more suitable role, including agreeing adjustments and in-work support when starting a new job.",
+      "duration": "Tailored to need"
+    },
+    {
+      "name": "Peer support workshops and groups",
+      "summary": "For people not yet ready for one-to-one support, or who prefer groups: assertiveness, self-esteem, resilience, confidence to work and ways to wellbeing. Online and in person.",
+      "duration": "Rolling programme"
+    },
+    {
+      "name": "Volunteering and Peer Champion opportunities",
+      "summary": "Roles where people draw on their own experience to support others and build skills and confidence.",
+      "duration": ""
+    },
+    {
+      "name": "Employer advice",
+      "summary": "Advice for employers on supporting employees with mental ill health: awareness and first aid training, reasonable adjustments, mental health champions, and specialist advice on employing people with autism, neurodivergent conditions, dementia or hidden disabilities.",
+      "duration": "On request"
+    }
+  ],
+  "workExperience": "Yes - including volunteering and placements",
+  "lastUpdated": "2026-09-03",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

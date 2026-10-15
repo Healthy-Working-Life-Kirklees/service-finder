@@ -1,0 +1,90 @@
+{
+  "id": "kirklees-drug-alcohol-cgl",
+  "name": "Kirklees Drug and Alcohol Service",
+  "organisation": "Change Grow Live",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Drug/alcohol",
+    "Health linked to work",
+    "Mental health"
+  ],
+  "whoFor": "Adults 18+ in Kirklees.",
+  "age": "18+",
+  "webpage": "https://www.changegrowlive.org/drug-alcohol-s-kirklees/drugs-alcohol",
+  "email": null,
+  "phone": "01484 353333",
+  "social": [],
+  "locations": [
+    "20 Manchester Road, Huddersfield HD1 3HJ",
+    "3 Wellington Street, Dewsbury WF13 1LY"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Dewsbury",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Aged 18 or over",
+    "Lives in Kirklees"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "substance-use"
+  ],
+  "requiresMention": [
+    "drug",
+    "alcohol",
+    "substance",
+    "in recovery",
+    "rehab",
+    "addict",
+    "\\bCGL\\b",
+    "change grow live",
+    "narkoty",
+    "alkohol",
+    "uzależni",
+    "odwyk",
+    "terapi[aęi] uzależnień",
+    "منشیات",
+    "نشہ",
+    "نشے",
+    "شراب",
+    "الکحل",
+    "منشیات کی عادت",
+    "nasha"
+  ],
+  "referralRoutes": [
+    "Phone",
+    "Online 'Get support' page",
+    "Visit a hub in Huddersfield or Dewsbury"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone, use the online 'Get support' page or visit a hub"
+  },
+  "activities": [
+    {
+      "name": "Drug and alcohol support",
+      "summary": "Free, confidential help with drugs or alcohol: advice, treatment, detox, mental health support and recovery groups.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 22",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.changegrowlive.org/drug-alcohol-s-kirklees/drugs-alcohol",
+    "evidence": "Site © 2026 with current hours. Separate from IPS for CGL service users.",
+    "confidence": "high"
+  }
+}

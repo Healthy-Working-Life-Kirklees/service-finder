@@ -1,0 +1,63 @@
+{
+  "id": "social-prescribing-kirklees",
+  "name": "Social prescribing link workers and health coaches",
+  "organisation": "Kirklees Primary Care Networks / Kirklees Council",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Health linked to work",
+    "Mental health",
+    "Finding work",
+    "Benefits and money"
+  ],
+  "whoFor": "Anyone registered with a Kirklees GP practice.",
+  "age": null,
+  "webpage": "https://www.kirklees.gov.uk/personalised-care",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "GP practices across Kirklees"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Registered with a Kirklees GP practice"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Is registered with a Kirklees GP"
+  ],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Ask at your GP practice"
+  ],
+  "selfReferral": {
+    "allowed": "partly",
+    "note": "Ask at your GP practice to be put in touch"
+  },
+  "activities": [
+    {
+      "name": "Social prescribing",
+      "summary": "A link worker at your GP practice connects you to local help — groups, jobs and training, housing and benefits advice. Health coaches help manage a condition.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 31",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.kirklees.gov.uk/personalised-care",
+    "evidence": "Council page changed April 2026.",
+    "confidence": "high"
+  }
+}

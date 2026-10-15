@@ -1,0 +1,88 @@
+{
+  "id": "nacro-criminal-record-support",
+  "name": "Nacro Criminal Record Support Service",
+  "organisation": "Nacro",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Prison leavers",
+    "Finding work"
+  ],
+  "whoFor": "People with criminal records.",
+  "age": null,
+  "webpage": "https://nacro.org.uk/",
+  "email": "helpline@nacro.org.uk",
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Phone and email"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "People with criminal records"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Has a criminal record"
+  ],
+  "healthFocus": [],
+  "requiresMention": [
+    "prison",
+    "jail",
+    "gaol",
+    "probation",
+    "criminal record",
+    "conviction",
+    "convicted",
+    "offend",
+    "ex-offender",
+    "released from",
+    "custody",
+    "\\bcourts?\\b",
+    "\\bCFO\\b",
+    "więzie",
+    "wiezie",
+    "areszt",
+    "kurator",
+    "wyrok",
+    "karaln",
+    "skazan",
+    "جیل",
+    "قید",
+    "سزا",
+    "پروبیشن",
+    "مجرمانہ ریکارڈ"
+  ],
+  "referralRoutes": [
+    "Email"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Email the helpline"
+  },
+  "activities": [
+    {
+      "name": "Criminal record advice",
+      "summary": "Advice on what's on your record, what to tell employers and applying for jobs.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Not stated",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 130",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://nacro.org.uk/?p=26243",
+    "evidence": "Page Aug 2025, © 2026. Phone came back truncated — confirm before publishing.",
+    "confidence": "medium"
+  }
+}

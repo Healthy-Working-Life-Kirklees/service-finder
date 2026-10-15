@@ -1,0 +1,70 @@
+{
+  "id": "msk-pain-service-cora",
+  "name": "Kirklees MSK and Pain Service (physio self-referral)",
+  "organisation": "Cora Health",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Health linked to work",
+    "MSK",
+    "Long-term conditions"
+  ],
+  "whoFor": "Adults 18+ (pain clinics need GP referral).",
+  "age": "18+",
+  "webpage": "https://www.corahealth.co.uk/locations/yorkshire-and-the-humber/kirklees/referrals/",
+  "email": null,
+  "phone": "01924 792075",
+  "social": [],
+  "locations": [
+    "Clinics incl. Liversedge, Huddersfield Leisure Centre, Princess Royal, Holme Valley, Batley, Dewsbury"
+  ],
+  "areas": [
+    "Spen Valley",
+    "Huddersfield",
+    "Holme Valley",
+    "Batley",
+    "Dewsbury",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Aged 18 or over",
+    "Has back, neck, joint or muscle problems"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "musculoskeletal-pain"
+  ],
+  "referralRoutes": [
+    "Self-refer online (PhysioNow)",
+    "Phone for help",
+    "GP referral for pain clinics"
+  ],
+  "selfReferral": {
+    "allowed": "partly",
+    "note": "Refer yourself online for physio, no GP needed; pain clinics need a GP referral"
+  },
+  "activities": [
+    {
+      "name": "Physiotherapy and rehab",
+      "summary": "NHS physio and rehab for back, neck, joint and muscle problems. Refer yourself online — no GP needed.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free (NHS)",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 24",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.corahealth.co.uk/locations/yorkshire-and-the-humber/kirklees/referrals/",
+    "evidence": "Referral page updated March 2026. Separate from Flippin' Pain.",
+    "confidence": "high"
+  }
+}

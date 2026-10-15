@@ -1,0 +1,60 @@
+{
+  "id": "hwl-community-grants",
+  "name": "Healthy Working Life Community Grants Programme",
+  "organisation": "Kirklees Council Employment & Skills Service",
+  "logo": "kirklees-council.webp",
+  "status": "Future - not yet open to referrals. Grants awarded; no information on individual grant-funded schemes until awards are confirmed",
+  "open": false,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "organisation"
+  ],
+  "categories": [
+    "Health linked to work",
+    "Wellbeing",
+    "Finding work"
+  ],
+  "whoFor": "Economically inactive Kirklees residents, reached through voluntary and community organisations funded by the programme. Grants go to VCSE and grassroots organisations, not individuals.",
+  "age": "Adults",
+  "webpage": null,
+  "email": "Trailblazer@kirklees.gov.uk",
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Community settings across Kirklees - hyperlocal delivery by VCSE and grassroots organisations"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Economically inactive residents, particularly those with health conditions or disabilities, and other priority groups"
+  ],
+  "exclusions": [
+    "People who are in work or actively seeking work"
+  ],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Delivery is by funded VCSE and grassroots organisations; participant access routes will be confirmed once grants are awarded"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "To be confirmed following grant awards"
+  },
+  "activities": [
+    {
+      "name": "Community grants to VCSE and grassroots organisations",
+      "summary": "Grants of 3,000 to 10,000 pounds for single organisations and up to 20,000 pounds for joint applications, funding community-based pre-employment and wellbeing activity. Organisations must be registered on the Kirklees Grant Access Point.",
+      "duration": "Projects start by 1 October 2026 at the latest"
+    }
+  ],
+  "workExperience": "Yes - where offered by funded projects",
+  "lastUpdated": "2026-08-03",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

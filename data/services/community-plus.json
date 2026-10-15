@@ -1,0 +1,64 @@
+{
+  "id": "community-plus",
+  "name": "Community Plus",
+  "organisation": "Kirklees Council",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Health linked to work",
+    "Long-term conditions",
+    "Volunteering"
+  ],
+  "whoFor": "Kirklees residents, including people with long-term conditions or reduced mobility.",
+  "age": null,
+  "webpage": "https://www.kirklees.gov.uk/beta/community-plus/healthy-and-active.aspx",
+  "email": "community.plus@kirklees.gov.uk",
+  "phone": "01484 225224",
+  "social": [],
+  "locations": [
+    "Across Kirklees"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Kirklees residents",
+    "Includes people with long-term conditions or reduced mobility"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Online form",
+    "Phone",
+    "Email",
+    "Anyone can refer"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself or anyone can refer you, by online form, phone or email"
+  },
+  "activities": [
+    {
+      "name": "Local activities and connections",
+      "summary": "One-to-one help to find local activities and get more active and connected; free training to become a volunteer walk or exercise leader.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Yes - volunteer walk or exercise leader training",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 11",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.kirklees.gov.uk/beta/community-plus/healthy-and-active.aspx",
+    "evidence": "Page changed Sept 2026 with Sept 2026 training dates.",
+    "confidence": "high"
+  }
+}

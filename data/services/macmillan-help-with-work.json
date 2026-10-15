@@ -1,0 +1,68 @@
+{
+  "id": "macmillan-help-with-work",
+  "name": "Macmillan Support Line and Help with Work",
+  "organisation": "Macmillan Cancer Support",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual",
+    "employer"
+  ],
+  "categories": [
+    "Long-term conditions",
+    "Staying in work",
+    "Benefits and money"
+  ],
+  "whoFor": "People with cancer, carers and employers.",
+  "age": null,
+  "webpage": "https://www.macmillan.org.uk/cancer-information-and-support/get-help/help-with-work",
+  "email": null,
+  "phone": "0808 808 00 00",
+  "social": [],
+  "locations": [
+    "Phone and online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "People with cancer",
+    "Carers of people with cancer",
+    "Employers"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any",
+    "unpaid-caring"
+  ],
+  "referralRoutes": [
+    "Phone",
+    "Online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone the support line or use the website"
+  },
+  "activities": [
+    {
+      "name": "Cancer and work support",
+      "summary": "Help for people with cancer on talking to employers, rights at work and self-employment, plus money advice.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 128",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.macmillan.org.uk/cancer-information-and-support/get-help/help-with-work",
+    "evidence": "© 2026.",
+    "confidence": "medium"
+  }
+}
