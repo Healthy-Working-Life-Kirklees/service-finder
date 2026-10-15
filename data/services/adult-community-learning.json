@@ -1,0 +1,64 @@
+{
+  "id": "adult-community-learning",
+  "name": "Adult and Community Learning (Adult Learning Kirklees)",
+  "organisation": "Kirklees Council Learning Service",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Skills",
+    "Digital skills",
+    "Finding work",
+    "Volunteering"
+  ],
+  "whoFor": "Residents 19+ resident in UK 3+ years (asylum seekers/refugees after 6 months).",
+  "age": "19+",
+  "webpage": "https://courseskirklees.cognisoft.cloud",
+  "email": "adult.learning@kirklees.gov.uk",
+  "phone": "01484 225016",
+  "social": [],
+  "locations": [
+    "Community venues across Kirklees"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Aged 19 or over",
+    "Has lived in the UK for at least 3 years (asylum seekers and refugees after 6 months)"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Book on the course website",
+    "Phone",
+    "Email"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Book a course on the website, or phone or email"
+  },
+  "activities": [
+    {
+      "name": "Community courses",
+      "summary": "Free friendly courses in community venues on confidence, wellbeing, getting ready for work, volunteering and computer skills.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free (WYCA-funded)",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 2",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.kirklees.gov.uk/beta/employment-and-skills/skills-support.aspx",
+    "evidence": "Skills page changed July 2026; mentions Adult Learners' Awards 22 Oct 2026.",
+    "confidence": "high"
+  }
+}

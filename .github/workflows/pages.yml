@@ -7,6 +7,9 @@ on:
       - "site/**"
       - "mvp/**"
       - "data/**"
+      - "scripts/**"
+      - "package.json"
+      - "package-lock.json"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -27,6 +30,17 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Check the scheme files, then combine them into services.json. A problem in the data stops the deploy.
+      - name: Check and build the scheme data
+        run: |
+          npm ci
+          npm run check-data
+          npm run build-data
 
       - name: Assemble the site
         env:

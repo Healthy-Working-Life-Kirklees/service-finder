@@ -1,0 +1,63 @@
+{
+  "id": "northern-college",
+  "name": "Northern College – short and residential courses",
+  "organisation": "Northern College (Barnsley College)",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Skills",
+    "Returning to learning"
+  ],
+  "whoFor": "Adults; usually free if unemployed or low-paid (WY threshold £25,750).",
+  "age": "Adults",
+  "webpage": "https://www.northern.ac.uk/northern-college-campus",
+  "email": "info@barnsley.ac.uk",
+  "phone": "01226 216216",
+  "social": [],
+  "locations": [
+    "Wentworth Castle, Barnsley S75 3ET",
+    "online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Adults",
+    "Usually free if unemployed or low-paid (West Yorkshire threshold £25,750)"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Apply online",
+    "Contact the college"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Apply online or contact the college"
+  },
+  "activities": [
+    {
+      "name": "Short and residential courses",
+      "summary": "Short courses, often with a free overnight stay, to help adults return to learning, build confidence and gain qualifications.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free for most eligible",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 80",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.northern.ac.uk/fees-and-funding",
+    "evidence": "Campus page updated Aug 2026.",
+    "confidence": "medium"
+  }
+}

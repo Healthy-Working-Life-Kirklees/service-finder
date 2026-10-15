@@ -1,0 +1,67 @@
+{
+  "id": "combat-stress",
+  "name": "Combat Stress helpline and treatment",
+  "organisation": "Combat Stress",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Veterans",
+    "Mental health"
+  ],
+  "whoFor": "Veterans and their families.",
+  "age": null,
+  "webpage": "https://combatstress.org.uk/",
+  "email": "helpline@combatstress.org.uk",
+  "phone": "0800 138 1619 (text 07537 173683)",
+  "social": [],
+  "locations": [
+    "Phone and UK-wide"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Veterans",
+    "Families of veterans"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Has served in the UK armed forces, or is a family member of a veteran"
+  ],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Phone (24 hours)",
+    "Text",
+    "Email",
+    "Professional referral"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Call, text or email; professionals can also refer"
+  },
+  "activities": [
+    {
+      "name": "Veterans trauma support",
+      "summary": "24-hour helpline and specialist treatment for military trauma and PTSD; support for families too.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 96",
+    "foundVia": "MECC Link; District Provision Tool",
+    "checkedUrl": "https://combatstress.org.uk/",
+    "evidence": "Page published Sept 2026.",
+    "confidence": "high"
+  }
+}

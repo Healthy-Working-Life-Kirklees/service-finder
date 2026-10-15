@@ -1,0 +1,66 @@
+{
+  "id": "metrorover-jobseeker-permit",
+  "name": "MetroRover jobseeker travel permit",
+  "organisation": "West Yorkshire Metro / WYCA",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Travel"
+  ],
+  "whoFor": "Jobseekers on UC with a work coach, JSA or ESA WRAG.",
+  "age": null,
+  "webpage": "https://admin.wymetro.com/tickets-and-passes/daysavers-and-family-tickets/metrorover-tickets-for-job-seekers/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Travel Centres incl. Huddersfield and Dewsbury"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Dewsbury",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Jobseekers on Universal Credit with a work coach",
+    "Or claiming JSA",
+    "Or claiming ESA (Work-Related Activity Group)"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Is claiming Universal Credit with a work coach, JSA or ESA (Work-Related Activity Group)"
+  ],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Get the form stamped at the Jobcentre",
+    "Take it to a Travel Centre (incl. Huddersfield and Dewsbury) with £5 and a photo"
+  ],
+  "selfReferral": {
+    "allowed": "partly",
+    "note": "Get the form stamped at the Jobcentre, then take it to a Travel Centre with £5 and a photo"
+  },
+  "activities": [
+    {
+      "name": "Jobseeker travel pass",
+      "summary": "Cheap 28-day pass for buses and trains across West Yorkshire to get to interviews, training and appointments.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "£5 per 28 days",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 78",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://admin.wymetro.com/tickets-and-passes/daysavers-and-family-tickets/metrorover-tickets-for-job-seekers/",
+    "evidence": "Page live, undated; Weaver Network rebrand coming.",
+    "confidence": "medium"
+  }
+}

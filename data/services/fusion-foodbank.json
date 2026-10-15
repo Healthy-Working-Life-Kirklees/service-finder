@@ -1,0 +1,62 @@
+{
+  "id": "fusion-foodbank",
+  "name": "Fusion Foodbank",
+  "organisation": "Fusion Housing",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Benefits and money",
+    "Housing"
+  ],
+  "whoFor": "Kirklees residents in urgent need.",
+  "age": null,
+  "webpage": "https://www.fusionhousing.org.uk/Our-Services/fusion-foodbank-and-more/",
+  "email": null,
+  "phone": "01484 414782 (LWP food claims)",
+  "social": [],
+  "locations": [
+    "Dewsbury office"
+  ],
+  "areas": [
+    "Dewsbury",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Kirklees residents in urgent need who can't afford food"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone Local Welfare Provision (food claims)",
+    "Dewsbury office",
+    "Ask your support worker"
+  ],
+  "selfReferral": {
+    "allowed": "partly",
+    "note": "Go through the Local Welfare Provision phone line, the Dewsbury office, or a support worker."
+  },
+  "activities": [
+    {
+      "name": "Food packs",
+      "summary": "Free food packs for people who can't afford food.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 51",
+    "foundVia": "MECC Link",
+    "checkedUrl": "https://www.fusionhousing.org.uk/Our-Services/fusion-foodbank-and-more/",
+    "evidence": "Page undated.",
+    "confidence": "medium"
+  }
+}

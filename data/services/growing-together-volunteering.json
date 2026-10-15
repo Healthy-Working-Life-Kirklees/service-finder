@@ -1,0 +1,58 @@
+{
+  "id": "growing-together-volunteering",
+  "name": "Growing Together - Volunteering Pathways",
+  "organisation": "LS2Y and Dalton Together",
+  "logo": "ls2y.webp",
+  "status": "Live - grant-funded project (status not stated in the pathways document)",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Volunteering",
+    "Finding work",
+    "Skills",
+    "Wellbeing"
+  ],
+  "whoFor": "Parents, carers and anyone with health-related or personal barriers to work who is not currently working or looking for work.",
+  "age": "18+",
+  "webpage": null,
+  "email": "lisanewbold@ls2y.co.uk",
+  "phone": "01484 516444",
+  "social": [],
+  "locations": [
+    "The Chestnut Centre, 2A Chestnut Street, Huddersfield, HD2 1HJ"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Aged 18+",
+    "Economically inactive (not working and not looking for work)"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Contact Lisa Newbold by email or phone"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Get in touch directly with Lisa Newbold"
+  },
+  "activities": [
+    {
+      "name": "Growing Together - Volunteering Pathways",
+      "summary": "One-to-one mentoring, employability and CV support, safeguarding and early years training, wellbeing activities, and supported volunteering placements in Stay & Play sessions and other community settings, leading to next steps in training, education or work.",
+      "duration": "Ongoing support"
+    }
+  ],
+  "workExperience": "Yes - supported volunteering placements in Stay & Play sessions and community settings",
+  "lastUpdated": "2026-09-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

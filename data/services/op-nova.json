@@ -1,0 +1,94 @@
+{
+  "id": "op-nova",
+  "name": "Op NOVA (veterans in the justice system)",
+  "organisation": "Forces Employment Charity (for NHS England)",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Veterans",
+    "Prison leavers",
+    "Housing",
+    "Finding work"
+  ],
+  "whoFor": "Anyone in England who served at least a day and is in contact with the justice system.",
+  "age": null,
+  "webpage": "https://www.forcesemployment.org.uk/programmes/op-nova/",
+  "email": null,
+  "phone": "0121 262 3058 (charity main line)",
+  "social": [],
+  "locations": [
+    "England"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Lives in England",
+    "Served at least one day in the armed forces",
+    "In contact with the police, courts, prison or probation"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Has served in the UK armed forces (at least one day)",
+    "Is in contact with the police, courts, prison or probation"
+  ],
+  "healthFocus": [],
+  "requiresMention": [
+    "prison",
+    "jail",
+    "gaol",
+    "probation",
+    "criminal record",
+    "conviction",
+    "convicted",
+    "offend",
+    "ex-offender",
+    "released from",
+    "custody",
+    "\\bcourts?\\b",
+    "\\bCFO\\b",
+    "więzie",
+    "wiezie",
+    "areszt",
+    "kurator",
+    "wyrok",
+    "karaln",
+    "skazan",
+    "جیل",
+    "قید",
+    "سزا",
+    "پروبیشن",
+    "مجرمانہ ریکارڈ"
+  ],
+  "referralRoutes": [
+    "Self-referral online form",
+    "Referral by an agency via the online form"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Self-refer or be referred using the online form"
+  },
+  "activities": [
+    {
+      "name": "Support for justice-involved veterans",
+      "summary": "Help for veterans in contact with police, courts, prison or probation with housing, work, debt and health.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 112",
+    "foundVia": "MECC Link",
+    "checkedUrl": "https://www.forcesemployment.org.uk/programmes/op-nova/",
+    "evidence": "Page modified Aug 2026. MECC lists 0800 917 7299 and opnova@forcesemployment.org.uk — not on provider page.",
+    "confidence": "high"
+  }
+}

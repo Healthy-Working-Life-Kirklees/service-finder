@@ -1,0 +1,76 @@
+{
+  "id": "talking-therapies-employment",
+  "name": "Kirklees Talking Therapies Employment Advice",
+  "organisation": "South West Yorkshire Partnership NHS Foundation Trust (NHS Kirklees Talking Therapies)",
+  "logo": "swypft.webp",
+  "status": "Live - open to referrals",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Staying in work",
+    "Finding work",
+    "Health linked to work"
+  ],
+  "whoFor": "Kirklees Talking Therapies service users with common mental health conditions who want to find, keep or return to work.",
+  "age": "17+",
+  "webpage": "https://kirklees-talkingtherapies.nhs.uk/how-can-we-help-you/employment-advice/",
+  "email": "Kirklees.talkingtherapies@swyt.nhs.uk",
+  "phone": "01484 343700 (Monday to Friday, 8.30am-4.20pm)",
+  "social": [
+    "https://www.facebook.com/Kirklees.TalkingTherapies/"
+  ],
+  "locations": [
+    "Across Kirklees, via Kirklees Talking Therapies venues and remote appointments"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Aged 17 or over, receiving or referred for Kirklees Talking Therapies treatment for a common mental health condition",
+    "Employment or career goals are part of their recovery - for example off work and anxious about returning, planning a phased return, at risk of losing work, looking for a first job, or wanting to change role"
+  ],
+  "exclusions": [
+    "Not a Kirklees Talking Therapies service user",
+    "Needs urgent mental health support - contact the Kirklees 24-hour Single Point of Access team on 01924 316830"
+  ],
+  "gate": [
+    "Is receiving, or has been referred for, Kirklees Talking Therapies"
+  ],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Online self referral via the Talking Therapies assessment route",
+    "Phone",
+    "Via in-house teams - the therapist may invite the person to an employment advisor appointment",
+    "Practitioner referral - health professionals via the information for professionals route"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Yes - self-refer to Talking Therapies by phone or online, then access employment advice through the service"
+  },
+  "activities": [
+    {
+      "name": "Integrated employment advice alongside therapy",
+      "summary": "Employment advisors work jointly with therapists. One-to-one, client-led support on goals, CVs, gaps in employment, disclosure, applications and interviews, training needs, and an agreed action plan. Free and confidential. In person, by phone, video or the SilverCloud platform.",
+      "duration": "Usually around six appointments, extended where needed"
+    },
+    {
+      "name": "Job retention and workplace support",
+      "summary": "Helps people stay in work while managing mental health: reasonable adjustments, relationships at work, re-establishing contact with the workplace and phased returns.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "lastUpdated": "2026-09-03",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

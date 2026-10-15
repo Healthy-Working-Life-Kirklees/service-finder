@@ -1,0 +1,61 @@
+{
+  "id": "forces-employment-charity",
+  "name": "Forces Employment Charity",
+  "organisation": "Forces Employment Charity",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Veterans",
+    "Finding work"
+  ],
+  "whoFor": "Anyone who served at least one day in the Regular Armed Forces.",
+  "age": null,
+  "webpage": "https://www.forcesemployment.org.uk/",
+  "email": "info@forcesemployment.org.uk",
+  "phone": "0121 262 3058",
+  "social": [],
+  "locations": [
+    "Remote and regional advisers"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Served at least one day in the Regular Armed Forces"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Has served at least one day in the UK Regular Armed Forces"
+  ],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Register online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Register online"
+  },
+  "activities": [
+    {
+      "name": "Employment support for veterans",
+      "summary": "Careers advice, CV and interview help and job matching for anyone who's served.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Not stated",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 123",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.forcesemployment.org.uk/contact-us/",
+    "evidence": "© 2026.",
+    "confidence": "medium"
+  }
+}

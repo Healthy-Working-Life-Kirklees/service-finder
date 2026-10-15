@@ -112,7 +112,8 @@ async function worker(route) {
   // ---------- help page ----------
   await page.goto(ON + '/mvp/help.html');
   await page.waitForSelector('#data-table tbody tr');
-  check('help: data table lists all 17 schemes', (await page.locator('#data-table tbody tr').count()) === 17);
+  const schemeCount = require('/repo/data/services.json').services.length;
+  check(`help: data table lists all ${schemeCount} schemes`, (await page.locator('#data-table tbody tr').count()) === schemeCount);
   check('help: overdue entries flagged (>= 4)', (await page.locator('#data-table .pill.warn').count()) >= 4, String(await page.locator('#data-table .pill.warn').count()));
   check('help: not-open scheme flagged', (await page.locator('#data-table .pill.bad').count()) === 1);
   check('help: has the key sections', (await page.locator('h2').allTextContents()).join('|').includes('Reporting a problem'));

@@ -1,0 +1,63 @@
+{
+  "id": "find-an-apprenticeship",
+  "name": "Find an apprenticeship",
+  "organisation": "Department for Education",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Apprenticeships",
+    "Finding work"
+  ],
+  "whoFor": "16+ not in full-time education.",
+  "age": "16+",
+  "webpage": "https://www.gov.uk/apply-apprenticeship",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Aged 16 or over",
+    "Not in full-time education"
+  ],
+  "exclusions": [
+    "People in full-time education"
+  ],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Search and apply online"
+  },
+  "activities": [
+    {
+      "name": "Apprenticeship search",
+      "summary": "Official site to search and apply for apprenticeships in England.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Yes - apprenticeships",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 102",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.gov.uk/apply-apprenticeship",
+    "evidence": "Updated Oct 2026.",
+    "confidence": "high"
+  }
+}

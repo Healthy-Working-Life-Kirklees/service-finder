@@ -1,0 +1,69 @@
+{
+  "id": "atw-mental-health-able-futures",
+  "name": "Access to Work Mental Health Support – Able Futures",
+  "organisation": "Able Futures (for DWP)",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Staying in work"
+  ],
+  "whoFor": "People in work whose mental health affects their job; once only, one provider.",
+  "age": null,
+  "webpage": "https://able-futures.co.uk/",
+  "email": null,
+  "phone": "0800 321 3137",
+  "social": [],
+  "locations": [
+    "Online and phone"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "In work",
+    "Mental health affects their job",
+    "Can only be used once, from one provider"
+  ],
+  "exclusions": [
+    "People who have already had Access to Work Mental Health Support"
+  ],
+  "gate": [
+    "Is in work"
+  ],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Online",
+    "Phone"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself online or by phone"
+  },
+  "activities": [
+    {
+      "name": "Mental health support at work",
+      "summary": "Nine months of private support from a mental health professional to cope at work and plan changes with your employer.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 85",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://able-futures.co.uk/",
+    "evidence": "Named on GOV.UK (Oct 2026).",
+    "confidence": "high"
+  }
+}

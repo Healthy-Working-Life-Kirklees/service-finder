@@ -1,0 +1,62 @@
+{
+  "id": "andys-man-club-huddersfield",
+  "name": "Andy's Man Club – Huddersfield",
+  "organisation": "ANDYSMANCLUB",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Men"
+  ],
+  "whoFor": "Men 18+.",
+  "age": "18+",
+  "webpage": "https://andysmanclub.co.uk/groups/",
+  "email": "info@andysmanclub.co.uk",
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Cedar Court Hotel, Ainley Top HD3 3RH (official list)",
+    "directory lists more Kirklees venues — check"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Men aged 18 or over"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Just turn up, Mondays 7pm"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Just turn up on a Monday at 7pm."
+  },
+  "activities": [
+    {
+      "name": "Men's peer talking group",
+      "summary": "Free peer talking group for men every Monday at 7pm.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 40",
+    "foundVia": "Kirklees Community Directory; MECC Link",
+    "checkedUrl": "https://andysmanclub.co.uk/full-club-lists/",
+    "evidence": "Provider news Oct 2026; only Ainley Top on official list.",
+    "confidence": "medium"
+  }
+}

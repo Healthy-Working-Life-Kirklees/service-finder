@@ -1,0 +1,70 @@
+{
+  "id": "clear-inspire-north",
+  "name": "CLEAR (mental health recovery groups and courses)",
+  "organisation": "Inspire North",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Skills",
+    "Volunteering"
+  ],
+  "whoFor": "Adults 18+ in Kirklees, registered with a GP, who feel they have a mental health need.",
+  "age": "18+",
+  "webpage": "https://inspirenorth.co.uk/our-services/get-help-and-support-page/clear",
+  "email": "clear.huddersfield@inspirenorth.co.uk",
+  "phone": "01484 519097",
+  "social": [],
+  "locations": [
+    "Lion Chambers, Huddersfield HD1 1ES",
+    "North Kirklees venues"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Aged 18 or over",
+    "Lives in Kirklees",
+    "Registered with a GP",
+    "Feels they have a mental health need"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Is registered with a GP"
+  ],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Email referral form",
+    "Phone",
+    "Professional referral"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself or be referred by a professional, by email form or phone"
+  },
+  "activities": [
+    {
+      "name": "Mental health recovery groups",
+      "summary": "Groups and courses to recover mental health and build confidence and skills; personal plan for up to two years.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 6",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://inspirenorth.co.uk/our-services/get-help-and-support-page/clear",
+    "evidence": "Timetables for Jul–Dec 2026 on page.",
+    "confidence": "high"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "id": "housing-solutions-kirklees",
+  "name": "Housing Solutions Service",
+  "organisation": "Kirklees Council",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Housing",
+    "Prison leavers",
+    "Veterans"
+  ],
+  "whoFor": "Anyone homeless or at risk, including prison leavers (up to 56 days before release), care leavers, veterans.",
+  "age": null,
+  "webpage": "https://www.kirklees.gov.uk/homeless",
+  "email": "housing.solutions@kirklees.gov.uk",
+  "phone": "01484 221350 (24hr: 01484 414933)",
+  "social": [],
+  "locations": [
+    "Huddersfield Library HD1 2YZ",
+    "Dewsbury Library WF12 8EQ"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Dewsbury",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Homeless or at risk of losing their home",
+    "Includes prison leavers (up to 56 days before release), care leavers and veterans"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Email",
+    "Online form",
+    "In person at Huddersfield or Dewsbury library"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Contact by phone, email, online form or in person"
+  },
+  "activities": [
+    {
+      "name": "Housing and homelessness advice",
+      "summary": "Free advice if you're homeless or might lose your home. Staff make a housing plan with you; in-person at Huddersfield and Dewsbury libraries.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 18",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.kirklees.gov.uk/beta/housing/sleeping-rough.aspx",
+    "evidence": "Pages changed Aug–Sept 2026.",
+    "confidence": "high"
+  }
+}

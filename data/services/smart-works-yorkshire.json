@@ -1,0 +1,63 @@
+{
+  "id": "smart-works-yorkshire",
+  "name": "Smart Works Yorkshire",
+  "organisation": "Smart Works",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Women"
+  ],
+  "whoFor": "Unemployed women.",
+  "age": null,
+  "webpage": "https://yorkshire.smartworks.org.uk/",
+  "email": "leeds@smartworks.org.uk",
+  "phone": "0113 234 6503",
+  "social": [],
+  "locations": [
+    "Leeds LS9 7DZ",
+    "online appointments"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Women",
+    "Out of work"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Agency referral (e.g. Jobcentre)",
+    "Online"
+  ],
+  "selfReferral": {
+    "allowed": "partly",
+    "note": "Referral from an agency such as the Jobcentre, or online"
+  },
+  "activities": [
+    {
+      "name": "Interview clothes and coaching",
+      "summary": "Free interview clothes and coaching for women who are out of work; you keep the outfit.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 72",
+    "foundVia": "District Provision Tool",
+    "checkedUrl": "https://yorkshire.smartworks.org.uk/",
+    "evidence": "Events March 2026.",
+    "confidence": "high"
+  }
+}

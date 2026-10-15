@@ -1,0 +1,60 @@
+{
+  "id": "stepchange",
+  "name": "StepChange debt advice",
+  "organisation": "StepChange Debt Charity",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Debt"
+  ],
+  "whoFor": "Anyone struggling with debt.",
+  "age": null,
+  "webpage": "https://www.stepchange.org/contact-us.aspx",
+  "email": null,
+  "phone": "0800 138 1111",
+  "social": [],
+  "locations": [
+    "Phone and online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Anyone struggling with debt"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Online debt advice tool"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone or use the online debt advice tool"
+  },
+  "activities": [
+    {
+      "name": "Debt advice",
+      "summary": "Free debt advice by phone or online tool.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 118",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.stepchange.org/contact-us.aspx",
+    "evidence": "© 2026.",
+    "confidence": "high"
+  }
+}

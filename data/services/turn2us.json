@@ -1,0 +1,60 @@
+{
+  "id": "turn2us",
+  "name": "Turn2us benefits calculator and grants search",
+  "organisation": "Turn2us",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Benefits and money"
+  ],
+  "whoFor": "Anyone on a low income.",
+  "age": null,
+  "webpage": "https://www.turn2us.org.uk/get-support",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Anyone on a low income"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Online benefits calculator",
+    "Online grants search"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Use the online tools"
+  },
+  "activities": [
+    {
+      "name": "Benefits check and grants search",
+      "summary": "Online tools to check benefits and find charity grants.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 140",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.turn2us.org.uk/get-support",
+    "evidence": "© 2026.",
+    "confidence": "medium"
+  }
+}

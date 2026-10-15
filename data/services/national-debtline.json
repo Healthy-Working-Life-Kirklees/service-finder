@@ -1,0 +1,60 @@
+{
+  "id": "national-debtline",
+  "name": "National Debtline",
+  "organisation": "Money Advice Trust",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Debt"
+  ],
+  "whoFor": "Anyone with money worries.",
+  "age": null,
+  "webpage": "https://www.nationaldebtline.org/contact-us/",
+  "email": null,
+  "phone": "0808 808 4000",
+  "social": [],
+  "locations": [
+    "Phone and webchat"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Anyone with money worries"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Webchat"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone or use webchat"
+  },
+  "activities": [
+    {
+      "name": "Debt advice",
+      "summary": "Free, private debt advice by phone or webchat.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 132",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.nationaldebtline.org/contact-us/",
+    "evidence": "Contact page live; undated.",
+    "confidence": "medium"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": "business-disability-forum",
+  "name": "Business Disability Forum Knowledge Hub",
+  "organisation": "Business Disability Forum",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "employer"
+  ],
+  "categories": [
+    "Employers",
+    "Disability & neurodiversity"
+  ],
+  "whoFor": "Employers.",
+  "age": null,
+  "webpage": "https://businessdisabilityforum.org.uk",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Employers"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Use the knowledge hub online"
+  },
+  "activities": [
+    {
+      "name": "Disability inclusion guidance",
+      "summary": "Free online disability-inclusion guidance for employers; other services for paying members.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Hub free; membership paid",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 91",
+    "foundVia": "Acas page",
+    "checkedUrl": "https://businessdisabilityforum.org.uk",
+    "evidence": "Events Oct–Nov 2026.",
+    "confidence": "high"
+  }
+}

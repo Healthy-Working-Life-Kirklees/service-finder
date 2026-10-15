@@ -1,0 +1,65 @@
+{
+  "id": "acas-helpline",
+  "name": "Acas helpline",
+  "organisation": "Acas",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual",
+    "employer"
+  ],
+  "categories": [
+    "Employment rights",
+    "Staying in work",
+    "Health linked to work"
+  ],
+  "whoFor": "Workers and employers.",
+  "age": null,
+  "webpage": "https://www.acas.org.uk/contact/get-advice",
+  "email": null,
+  "phone": "0300 123 1100",
+  "social": [],
+  "locations": [
+    "Phone and online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Workers",
+    "Employers"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone the helpline or get advice online"
+  },
+  "activities": [
+    {
+      "name": "Workplace rights advice",
+      "summary": "Free, impartial advice on rights at work, including sickness absence and returning after illness.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free (call charges may apply)",
+  "languages": "Interpreter on request",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 84",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.acas.org.uk/contact/get-advice",
+    "evidence": "Guidance updated June 2026.",
+    "confidence": "high"
+  }
+}

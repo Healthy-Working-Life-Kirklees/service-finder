@@ -1,0 +1,66 @@
+{
+  "id": "kirklees-library-hubs",
+  "name": "Kirklees Library Hubs",
+  "organisation": "Kirklees Council Libraries",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Digital skills",
+    "Benefits and money",
+    "Housing",
+    "Finding work"
+  ],
+  "whoFor": "Anyone in Kirklees.",
+  "age": null,
+  "webpage": "https://www.kirklees.gov.uk/beta/libraries/services-and-resources/library-hubs.aspx",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "10 hubs: Dewsbury, Huddersfield, Holmfirth, Batley, Heckmondwike, Cleckheaton, Birstall, Ravensthorpe, Kirkburton, Almondbury"
+  ],
+  "areas": [
+    "Dewsbury",
+    "Huddersfield",
+    "Holme Valley",
+    "Batley",
+    "Spen Valley",
+    "Kirkburton"
+  ],
+  "eligibility": [
+    "Anyone in Kirklees"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Drop in at a library hub (most help needs no appointment)"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Drop in; most help needs no appointment"
+  },
+  "activities": [
+    {
+      "name": "Help with services and forms",
+      "summary": "Staff help with council services, benefits, housing and online forms, and link you to job, learning and health support. Free computers, Wi-Fi and printing.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 23",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.kirklees.gov.uk/beta/libraries/services-and-resources/library-hubs.aspx",
+    "evidence": "Page created Aug 2026.",
+    "confidence": "high"
+  }
+}

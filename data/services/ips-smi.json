@@ -1,0 +1,93 @@
+{
+  "id": "ips-smi",
+  "name": "Individual Placement and Support for Severe Mental Illness (SMI)",
+  "organisation": "South West Yorkshire Partnership NHS Foundation Trust",
+  "logo": "swypft.webp",
+  "status": "Live - open to referrals",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Staying in work",
+    "Finding work",
+    "Employment rights"
+  ],
+  "whoFor": "Adults in Kirklees with severe and complex mental health needs, under secondary care, who want to find or keep paid work.",
+  "age": "Adults",
+  "webpage": "https://www.southwestyorkshire.nhs.uk/services/kirklees-individual-placement-and-support-ips-employment-service/",
+  "email": "kirkleesipsservice@swyt.nhs.uk",
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Folly Hall Mills, St Thomas Road, Huddersfield, HD1 3LT",
+    "Beckside Court, 286 Bradford Road, Batley, WF17 5PW"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Batley"
+  ],
+  "eligibility": [
+    "Currently receiving support from secondary care mental health services (Core, Enhanced or Early Intervention in Psychosis teams)",
+    "Committed to remaining in or entering paid employment",
+    "In work and struggling, off sick, or in work and seeking a different role to improve wellbeing - or looking for work"
+  ],
+  "exclusions": [
+    "Mild to moderate mental health conditions",
+    "Solely physical health conditions",
+    "Only wants to look at voluntary work or education",
+    "Not currently under the care of secondary care mental health services"
+  ],
+  "gate": [
+    "Is receiving support from secondary care mental health services"
+  ],
+  "healthFocus": [
+    "severe-mental-illness"
+  ],
+  "requiresMention": [
+    "severe",
+    "psychosis",
+    "psychotic",
+    "schizo",
+    "bipolar",
+    "secondary care",
+    "community mental health",
+    "\\bCMHT\\b",
+    "early intervention",
+    "\\bSMI\\b",
+    "complex mental",
+    "psychoz",
+    "psychotyczn",
+    "schizofren",
+    "dwubiegunow",
+    "سائیکوسس",
+    "شیزوفرینیا",
+    "بائی پولر",
+    "بائیپولر"
+  ],
+  "referralRoutes": [
+    "Via in-house teams",
+    "Email",
+    "Online self referral - electronic 'expression of interest' form under 'Referrals' on the service webpage"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Yes, via the online expression of interest form"
+  },
+  "activities": [
+    {
+      "name": "Work retention support using the principles of IPS",
+      "summary": "Employment specialists work with community mental health services to explore interests, skills and goals, build an employment plan and address barriers. Rapid, intensive support from referral, support for both the person and their employer, help with disclosure and reasonable adjustments, and information about workplace rights.",
+      "duration": "Time-unlimited follow-along support for as long as the person wishes"
+    }
+  ],
+  "workExperience": "Yes",
+  "lastUpdated": "2025-12-08",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

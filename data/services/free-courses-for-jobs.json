@@ -1,0 +1,61 @@
+{
+  "id": "free-courses-for-jobs",
+  "name": "Free Courses for Jobs (Level 2 and 3)",
+  "organisation": "Department for Education",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Skills"
+  ],
+  "whoFor": "19+ earning under £25,750 or unemployed.",
+  "age": "19+",
+  "webpage": "https://www.gov.uk/guidance/free-courses-for-jobs",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Local colleges and online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Aged 19 or over",
+    "Earning under £25,750, or unemployed"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Search the course finder",
+    "Contact the course provider"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Search the course finder and contact the course provider"
+  },
+  "activities": [
+    {
+      "name": "Free Level 2 and 3 courses",
+      "summary": "Free Level 3 courses in accounting, digital, care etc. and Level 2 in construction and engineering.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free if eligible",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 124",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.gov.uk/guidance/free-courses-for-jobs",
+    "evidence": "No end date stated.",
+    "confidence": "medium"
+  }
+}

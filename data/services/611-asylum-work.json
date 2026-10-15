@@ -1,0 +1,62 @@
+{
+  "id": "611-asylum-work",
+  "name": "611 Asylum Work",
+  "organisation": "Huddersfield Elim Pentecostal Church",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Refugees and new arrivals",
+    "Benefits and money"
+  ],
+  "whoFor": "Asylum seekers and refugees in Kirklees.",
+  "age": null,
+  "webpage": "https://huddelim.org.uk/611-asylum",
+  "email": "info@huddelim.org.uk",
+  "phone": "01484 535554 (appts 01484 986110)",
+  "social": [],
+  "locations": [
+    "Oasis Centre, Huddersfield HD1 5BW (Fri 10.30–2.30)"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Asylum seekers and refugees in Kirklees"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Is an asylum seeker or refugee"
+  ],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Drop in at the Oasis Centre, Huddersfield, Fridays 10.30am-2.30pm",
+    "Phone Monday to Thursday to book an appointment"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Come to the Friday drop-in or phone Monday to Thursday to book."
+  },
+  "activities": [
+    {
+      "name": "Practical help for refugees",
+      "summary": "Practical help for asylum seekers and refugees with forms, letters and calls; signposting and a Friday drop-in with food.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 37",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationdetails.aspx?orgid=7376",
+    "evidence": "Directory updated 30 June 2026.",
+    "confidence": "medium"
+  }
+}

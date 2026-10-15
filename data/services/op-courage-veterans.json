@@ -1,0 +1,68 @@
+{
+  "id": "op-courage-veterans",
+  "name": "Op COURAGE – Veterans Mental Health (West & South Yorkshire)",
+  "organisation": "Leeds and York Partnership NHS FT",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Veterans",
+    "Mental health"
+  ],
+  "whoFor": "Veterans, reservists and service leavers.",
+  "age": null,
+  "webpage": "https://www.leedsandyorkpft.nhs.uk/our-services/op-courage-veterans-mental-health-wellbeing-service/",
+  "email": "OpCourageNORTH@cntw.nhs.uk",
+  "phone": "0300 373 3332 (8am–8pm, 7 days)",
+  "social": [],
+  "locations": [
+    "Remote/Leeds base (no walk-ins)"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Veterans",
+    "Reservists",
+    "Service leavers"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Has served in the UK armed forces (veteran, reservist or service leaver)"
+  ],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Self-referral",
+    "Via GP",
+    "Via family or a charity",
+    "Phone"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself, or be referred by your GP, family or a charity"
+  },
+  "activities": [
+    {
+      "name": "Veterans mental health support",
+      "summary": "NHS mental health support for veterans and service leavers, with links to help on jobs, money and housing.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free (NHS)",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 71",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.leedsandyorkpft.nhs.uk/our-services/op-courage-veterans-mental-health-wellbeing-service/",
+    "evidence": "Pages updated Dec 2025 / June 2026; linked from council armed forces page.",
+    "confidence": "high"
+  }
+}

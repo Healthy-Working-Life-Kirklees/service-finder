@@ -1,0 +1,70 @@
+{
+  "id": "p2p-proper-job",
+  "name": "Pathways to Possibilities (Proper Job Theatre Company)",
+  "organisation": "Proper Job Theatre Company Ltd",
+  "logo": "proper-job.webp",
+  "status": "Live - open to referrals",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Wellbeing",
+    "Returning to learning",
+    "Volunteering",
+    "Finding work"
+  ],
+  "whoFor": "Economically inactive Kirklees residents aged 18+, particularly people with health conditions or disabilities, who want to build skills and confidence and take a next step into learning, volunteering or work.",
+  "age": "18+",
+  "webpage": null,
+  "email": "engagement@properjob.org.uk",
+  "phone": "01484 514687 or 07716 639494",
+  "social": [],
+  "locations": [
+    "Proper Job Theatre Company Ltd, 46/47 Byram Arcade, Westgate, Huddersfield HD1 1ND",
+    "Community settings across Kirklees",
+    "Remote support (a mix of face-to-face and remote)"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Lives in Kirklees",
+    "Has the right to live and work in the UK",
+    "Economically inactive (of working age), particularly with health conditions or disabilities"
+  ],
+  "exclusions": [
+    "None specified - if the Trailblazer element is not suitable, the person will be supported via the most appropriate alternative option"
+  ],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Email P2P@kirklees.gov.uk",
+    "Email the delivery partner programme address (to be confirmed)",
+    "Phone"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "To be confirmed"
+  },
+  "activities": [
+    {
+      "name": "Pathways to Possibilities",
+      "summary": "Three strands: health and wellbeing (confidence, resilience, social connections); engaging and building confidence for learning; and preparation for employment. Connects people to volunteering, learning and employment opportunities. 50 places available.",
+      "duration": "Programme starts 1 September 2026; referrals close 1 March 2027. No fixed duration - flexible and person-centred"
+    }
+  ],
+  "workExperience": "Yes - volunteering and work experience opportunities",
+  "notes": "Webpage and self-referral route still to be confirmed in the source document.",
+  "lastUpdated": "2026-09-02",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

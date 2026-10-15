@@ -1,0 +1,58 @@
+{
+  "id": "pathways-to-potential",
+  "name": "Pathways to Potential",
+  "organisation": "Community Platform Together CIC and The Branch",
+  "logo": "community-platform.webp",
+  "status": "Live - grant-funded project (status not stated in the pathways document)",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Wellbeing",
+    "Digital skills",
+    "Finding work",
+    "Volunteering"
+  ],
+  "whoFor": "Economically inactive people who want to improve wellbeing, build confidence and move closer to volunteering, training or work, including people facing long-term health conditions, disability, mental health challenges, caring, addiction, debt, risk of homelessness, the criminal justice system or isolation.",
+  "age": "Adults",
+  "webpage": null,
+  "email": "dave@communityplatform.org.uk",
+  "phone": "07557 916 390",
+  "social": [],
+  "locations": [
+    "The Branch, Jubilee Centre, Huddersfield, HD1 4SH - a welcoming, accessible community space"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Economically inactive (not working and not looking for work)"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Self-referral (contact David Ennis)",
+    "Referral through partner organisations in the community"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Yes"
+  },
+  "activities": [
+    {
+      "name": "Pathways to Potential Programme",
+      "summary": "Group workshops and one-to-one guidance covering wellbeing and mindfulness, digital confidence and basic IT skills (including AI), CVs, job searching and interviews, and volunteering and community connections.",
+      "duration": "10 sessions over eight weeks (three cohorts, 30 places in total)"
+    }
+  ],
+  "workExperience": "Volunteering opportunities",
+  "lastUpdated": "2026-10-01",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

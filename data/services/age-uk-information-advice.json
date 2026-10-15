@@ -1,0 +1,62 @@
+{
+  "id": "age-uk-information-advice",
+  "name": "Information and Advice (benefits checks)",
+  "organisation": "Age UK Calderdale & Kirklees",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Benefits and money",
+    "Older workers",
+    "Carers"
+  ],
+  "whoFor": "Older people near or over State Pension age, families and carers.",
+  "age": null,
+  "webpage": "https://www.ageuk.org.uk/calderdaleandkirklees/our-services/information-and-advice/",
+  "email": "enquiry@ageukck.org.uk",
+  "phone": "01422 252 040",
+  "social": [],
+  "locations": [
+    "Covers Kirklees (office Halifax)"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Older people near or over State Pension age",
+    "Their families and carers"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone, Mon-Fri 9-4",
+    "Email"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone or email, Monday to Friday 9am to 4pm"
+  },
+  "activities": [
+    {
+      "name": "Benefits and money advice",
+      "summary": "Free advice for older people and families: benefits checks and claim forms, housing, warmth and care.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 19",
+    "foundVia": "MECC Link",
+    "checkedUrl": "https://www.ageuk.org.uk/calderdaleandkirklees/our-services/information-and-advice/",
+    "evidence": "© 2026; April 2026 statement of service.",
+    "confidence": "high"
+  }
+}

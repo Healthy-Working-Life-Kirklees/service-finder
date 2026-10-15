@@ -1,0 +1,61 @@
+{
+  "id": "ck-careers-adult-guidance",
+  "name": "Adult careers and employability guidance",
+  "organisation": "C+K Careers",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Skills"
+  ],
+  "whoFor": "Adults in Kirklees.",
+  "age": "Adults",
+  "webpage": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=318",
+  "email": "enquiries@ckcareers.co.uk",
+  "phone": "01484 242000",
+  "social": [],
+  "locations": [
+    "Brian Jackson House, Huddersfield HD1 5JP"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Adults in Kirklees"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone and ask for the adult team",
+    "Email and ask for the adult team"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone or email and ask for the adult team."
+  },
+  "activities": [
+    {
+      "name": "Careers advice",
+      "summary": "Free, impartial careers advice for adults on jobs, training and next steps.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 38",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=318",
+    "evidence": "Directory Oct 2025; council pages (to Oct 2026) still point to it. Separate from My Way Forward.",
+    "confidence": "medium"
+  }
+}

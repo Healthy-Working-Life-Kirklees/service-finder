@@ -1,0 +1,62 @@
+{
+  "id": "wyca-finding-a-job",
+  "name": "West Yorkshire 'Finding a job' employment support",
+  "organisation": "West Yorkshire Combined Authority",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Skills",
+    "Staying in work",
+    "Young people"
+  ],
+  "whoFor": "Adults in West Yorkshire at any career stage.",
+  "age": "Adults",
+  "webpage": "https://www.westyorks-ca.gov.uk/skills/for-adults/finding-a-job/",
+  "email": null,
+  "phone": "0113 251 7272",
+  "social": [],
+  "locations": [
+    "Delivered through district hubs"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Adults in West Yorkshire at any career stage"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Online form (passed to the Kirklees hub)"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself using the online form; it is passed to the Kirklees hub"
+  },
+  "activities": [
+    {
+      "name": "Employment support",
+      "summary": "A free adviser helps with job search, CV, interviews and training, including after redundancy or to move on at work.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 82",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.westyorks-ca.gov.uk/skills/for-adults/finding-a-job/",
+    "evidence": "Live sign-up form Oct 2026; page undated. In Kirklees this is delivered as Employment Kirklees (already an HWL scheme) — may be a duplicate route.",
+    "confidence": "medium"
+  }
+}

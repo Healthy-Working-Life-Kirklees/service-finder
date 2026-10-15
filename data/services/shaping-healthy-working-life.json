@@ -1,0 +1,57 @@
+{
+  "id": "shaping-healthy-working-life",
+  "name": "Shaping Healthy Working Life",
+  "organisation": "Shaping Care in Kirklees CIC",
+  "logo": "shaping-care-kirklees.webp",
+  "status": "Live - grant-funded project (status not stated in the pathways document)",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Wellbeing",
+    "Volunteering",
+    "Returning to learning",
+    "Finding work"
+  ],
+  "whoFor": "Economically inactive people, particularly those with health issues (though it is not limited to them), who want to rebuild routines and confidence and prepare for volunteering, work or study.",
+  "age": "Adults",
+  "webpage": null,
+  "email": "info@shapingcarekirklees.org",
+  "phone": "07597 122074",
+  "social": [],
+  "locations": [
+    "Gledholt Methodist Church, 30 Edgerton Grove Road, Marsh, Huddersfield, HD1 5QX"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Economically inactive (not working and not looking for work)"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Email info@shapingcarekirklees.org or phone 07597 122074 (contact: Griffith Gay)"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Email or phone directly"
+  },
+  "activities": [
+    {
+      "name": "Shaping Healthy Working Life",
+      "summary": "Practical support to overcome challenges, rebuild daily routines and boost confidence, connecting people with local providers, voluntary groups and activities to prepare for volunteering, work or study.",
+      "duration": "Regular sessions, weekly or fortnightly"
+    }
+  ],
+  "workExperience": "Volunteering and training opportunities",
+  "lastUpdated": "2026-10-01",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

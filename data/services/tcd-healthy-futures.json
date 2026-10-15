@@ -1,0 +1,58 @@
+{
+  "id": "tcd-healthy-futures",
+  "name": "TCD Healthy Futures",
+  "organisation": "TCD",
+  "logo": "tcd.webp",
+  "status": "Live - grant-funded project (status not stated in the pathways document)",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Wellbeing",
+    "Volunteering",
+    "Skills",
+    "Finding work"
+  ],
+  "whoFor": "Adults across Kirklees who want to improve wellbeing, build confidence, reduce isolation and take positive steps towards volunteering, learning and employment.",
+  "age": "18+",
+  "webpage": "https://www.tcd-charity.co.uk",
+  "email": "charitytcd@gmail.com",
+  "phone": "07950 325836",
+  "social": [],
+  "locations": [
+    "Jo Cox House, 90 Commercial Street, Batley, WF17 5DS"
+  ],
+  "areas": [
+    "Batley",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Adult (18+) living in Kirklees"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Google form (link not yet given in the pathways document)"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "Referral is by Google form; the pathways document does not say whether people can refer themselves"
+  },
+  "activities": [
+    {
+      "name": "Healthy Futures Programme",
+      "summary": "Peer support, physical and creative activities, volunteering and one-to-one support. Participants connect with others, develop new skills and get access to employment, training and wider support services, in a safe, welcoming space.",
+      "duration": "Weekly programme"
+    }
+  ],
+  "workExperience": "Volunteering opportunities as part of the programme",
+  "lastUpdated": "2026-10-12",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

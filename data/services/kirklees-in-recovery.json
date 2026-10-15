@@ -1,0 +1,88 @@
+{
+  "id": "kirklees-in-recovery",
+  "name": "Kirklees in Recovery",
+  "organisation": "Kirklees in Recovery CIC",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Drug/alcohol"
+  ],
+  "whoFor": "Anyone affected by drink or drug problems.",
+  "age": null,
+  "webpage": "https://kirkleesinrecovery.com",
+  "email": "info@kirkleesinrecovery.com",
+  "phone": "07469 967631",
+  "social": [],
+  "locations": [
+    "Huddersfield",
+    "Kirklees-wide"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Anyone affected by drink or drug problems"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "substance-use"
+  ],
+  "requiresMention": [
+    "drug",
+    "alcohol",
+    "substance",
+    "in recovery",
+    "rehab",
+    "addict",
+    "\\bCGL\\b",
+    "change grow live",
+    "narkoty",
+    "alkohol",
+    "uzależni",
+    "odwyk",
+    "terapi[aęi] uzależnień",
+    "منشیات",
+    "نشہ",
+    "نشے",
+    "شراب",
+    "الکحل",
+    "منشیات کی عادت",
+    "nasha"
+  ],
+  "referralRoutes": [
+    "Website",
+    "Facebook help group",
+    "Phone",
+    "Email"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Get in touch through the website, Facebook, phone or email."
+  },
+  "activities": [
+    {
+      "name": "Recovery community",
+      "summary": "Local recovery community linking people to mutual-aid groups and local services; Facebook help group.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 58",
+    "foundVia": "Kirklees Community Directory",
+    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=8159",
+    "evidence": "Directory July 2026; site's newest content 2021.",
+    "confidence": "medium"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": "flippin-pain",
+  "name": "Flippin' Pain (incl. Why We Hurt)",
+  "organisation": "Cora Health (formerly Connect Health)",
+  "logo": "cora-health.webp",
+  "status": "Live - open to referrals",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "MSK",
+    "Long-term conditions",
+    "Wellbeing"
+  ],
+  "whoFor": "Anyone in Kirklees living with persistent pain lasting more than three months, and the professionals who support them.",
+  "age": "Adults",
+  "webpage": "https://www.flippinpain.co.uk/",
+  "email": "info@flippinpain.co.uk",
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Digital/online - accessible to Kirklees residents from any location"
+  ],
+  "areas": [
+    "Online"
+  ],
+  "eligibility": [
+    "Kirklees resident living with persistent (chronic) musculoskeletal (MSK) pain of more than 3 months who can benefit from a digital patient activation programme",
+    "Professionals across the integrated care system (healthcare, local authority, physical activity and leisure) who want the competence and confidence to support people with chronic pain"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "musculoskeletal-pain"
+  ],
+  "referralRoutes": [
+    "Via a referring professional - email invitation to the hosting platform",
+    "Link to the programme information web page, then opt in"
+  ],
+  "selfReferral": {
+    "allowed": "partly",
+    "note": "Yes, where a link has been shared by a referring professional or through campaign activity"
+  },
+  "activities": [
+    {
+      "name": "Why We Hurt - digital patient activation programme",
+      "summary": "Seven short (about 5 minute) videos with transcripts, interactive exercises, a library of information and a peer discussion forum, helping people understand pain and manage it, including staying physically, socially and economically active. Endorsed by the British Pain Society and the European Pain Federation. Optional health coach moderation.",
+      "duration": "Unlimited access for up to 12 months from sign-up"
+    },
+    {
+      "name": "Targeted workforce development",
+      "summary": "Education on modern pain science for professionals working across the integrated care system.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "notes": "1,000 Why We Hurt licences funded by NHS West Yorkshire ICB. DPIA completed; Cora Health is data controller.",
+  "lastUpdated": "2026-08-03",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

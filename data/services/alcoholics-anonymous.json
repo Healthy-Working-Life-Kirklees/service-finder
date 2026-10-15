@@ -1,0 +1,85 @@
+{
+  "id": "alcoholics-anonymous",
+  "name": "Alcoholics Anonymous",
+  "organisation": "Alcoholics Anonymous GB",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Drug/alcohol"
+  ],
+  "whoFor": "Anyone with a drinking problem.",
+  "age": null,
+  "webpage": "https://www.alcoholics-anonymous.org.uk/",
+  "email": "help@aamail.org",
+  "phone": "0800 917 7650",
+  "social": [],
+  "locations": [
+    "Meetings across Kirklees and online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Anyone with a drinking problem"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "substance-use"
+  ],
+  "requiresMention": [
+    "drug",
+    "alcohol",
+    "substance",
+    "in recovery",
+    "rehab",
+    "addict",
+    "\\bCGL\\b",
+    "change grow live",
+    "narkoty",
+    "alkohol",
+    "uzależni",
+    "odwyk",
+    "terapi[aęi] uzależnień",
+    "منشیات",
+    "نشہ",
+    "نشے",
+    "شراب",
+    "الکحل",
+    "منشیات کی عادت",
+    "nasha"
+  ],
+  "referralRoutes": [
+    "Phone",
+    "Email",
+    "Meeting finder"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Call or email, or find a meeting with the meeting finder"
+  },
+  "activities": [
+    {
+      "name": "Peer support meetings",
+      "summary": "Free peer support to stop drinking: helpline and local or online meetings.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 88",
+    "foundVia": "MECC Link",
+    "checkedUrl": "https://www.alcoholics-anonymous.org.uk/",
+    "evidence": "News Jul–Sep 2026.",
+    "confidence": "high"
+  }
+}

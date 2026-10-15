@@ -1,0 +1,75 @@
+{
+  "id": "employment-kirklees",
+  "name": "Employment Kirklees",
+  "organisation": "Paddock Community Trust, in partnership with Kirklees Council",
+  "logo": "paddock-trust.webp",
+  "status": "Live - open to referrals",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Skills",
+    "Benefits and money",
+    "Apprenticeships",
+    "Self-employment"
+  ],
+  "whoFor": "Anyone living in Kirklees, in or out of work, looking for employment support close to home.",
+  "age": "Adults",
+  "webpage": "https://www.paddocktrust.org.uk/employmentkirklees/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Paddock Trust bases in Huddersfield and Batley",
+    "Community settings across Kirklees - libraries, community and faith centres, schools and other accessible public venues"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Batley",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Lives in Kirklees, whether employed or unemployed",
+    "Looking for support into work, apprenticeships, in-work progression or self-employment, or looking for new skills, learning or training"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Online enquiry via the Paddock Trust website",
+    "Phone",
+    "In person - via community venues and drop-ins",
+    "Partner referral, including Kirklees Council Employment & Skills Service"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Yes, via any route"
+  },
+  "activities": [
+    {
+      "name": "One-to-one employment support",
+      "summary": "Starts with an assessment of the person's situation, skills and goals. Covers strengths and transferable skills, CVs, job applications and interviews, benefits and financial advice, and volunteering, training and education opportunities. Helps with barriers such as childcare, low confidence or lack of skills.",
+      "duration": "Flexible and open-ended, at the person's own pace"
+    },
+    {
+      "name": "Group workshops",
+      "summary": "Course-based workshops in community settings on personal development, wellbeing, goal setting, CV writing, job searching and interview techniques, alongside 1-to-1 guidance.",
+      "duration": "Course-based"
+    },
+    {
+      "name": "Connecting to local opportunities and services",
+      "summary": "Links people to local employers, vacancies, training providers and wider community support, including digital inclusion, information and advice, and wellbeing services delivered by Paddock Trust.",
+      "duration": "Ongoing"
+    }
+  ],
+  "workExperience": "Volunteering and work-related opportunities identified as part of the plan",
+  "lastUpdated": "2026-08-03",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "id": "cgl-family-support",
+  "name": "Kirklees Drug and Alcohol Family Support",
+  "organisation": "Change Grow Live",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Drug/alcohol",
+    "Carers",
+    "Mental health"
+  ],
+  "whoFor": "Adults and children affected by someone else's use.",
+  "age": null,
+  "webpage": "https://www.changegrowlive.org/drug-alcohol-kirklees/family-support",
+  "email": null,
+  "phone": "01484 353333",
+  "social": [],
+  "locations": [
+    "Huddersfield and Dewsbury hubs"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Dewsbury",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Family and loved ones of someone using drugs or alcohol",
+    "Adults and children affected by someone else's drug or alcohol use"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "substance-use",
+    "unpaid-caring"
+  ],
+  "requiresMention": [
+    "drug",
+    "alcohol",
+    "substance",
+    "in recovery",
+    "rehab",
+    "addict",
+    "\\bCGL\\b",
+    "change grow live",
+    "narkoty",
+    "alkohol",
+    "uzależni",
+    "odwyk",
+    "terapi[aęi] uzależnień",
+    "منشیات",
+    "نشہ",
+    "نشے",
+    "شراب",
+    "الکحل",
+    "منشیات کی عادت",
+    "nasha"
+  ],
+  "referralRoutes": [
+    "Phone",
+    "Visit the Huddersfield or Dewsbury hub",
+    "Ask the recovery coordinator"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone, visit a hub, or ask the recovery coordinator."
+  },
+  "activities": [
+    {
+      "name": "Family support",
+      "summary": "One-to-one help or group programme for family and loved ones of someone using drugs or alcohol.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 54",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.changegrowlive.org/drug-alcohol-kirklees/family-support",
+    "evidence": "Live page on CGL Kirklees site (© 2026).",
+    "confidence": "medium"
+  }
+}

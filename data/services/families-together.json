@@ -1,0 +1,69 @@
+{
+  "id": "families-together",
+  "name": "Families Together – emotional wellbeing (up to 25 with SEND)",
+  "organisation": "Kirklees Council",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Young people",
+    "Mental health",
+    "Disability & neurodiversity"
+  ],
+  "whoFor": "Kirklees children, young people and families.",
+  "age": "Children and young people; up to 25 with SEND",
+  "webpage": "https://www.kirklees.gov.uk/familiestogethergatewaysupportrequest",
+  "email": null,
+  "phone": "01484 456823",
+  "social": [],
+  "locations": [
+    "Sheepridge, Slaithwaite, Dewsbury Moor, Birstall"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Colne Valley",
+    "Dewsbury",
+    "Batley",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Kirklees children, young people and families",
+    "Young people with SEND up to age 25"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Online Gateway form",
+    "Phone",
+    "Visit a centre"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Use the online Gateway form, phone or visit a centre"
+  },
+  "activities": [
+    {
+      "name": "Family early help",
+      "summary": "Early help for families and young people including emotional wellbeing support; up to age 25 for young people with SEND.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 16",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.kirklees.gov.uk/familiestogethergatewaysupportrequest",
+    "evidence": "Page changed Oct 2026.",
+    "confidence": "high"
+  }
+}

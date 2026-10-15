@@ -1,0 +1,63 @@
+{
+  "id": "business-debtline",
+  "name": "Business Debtline",
+  "organisation": "Money Advice Trust",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Debt",
+    "Self-employment"
+  ],
+  "whoFor": "Self-employed and small business owners.",
+  "age": null,
+  "webpage": "https://www.businessdebtline.org/",
+  "email": null,
+  "phone": "0800 197 6026",
+  "social": [],
+  "locations": [
+    "Phone and online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Self-employed people",
+    "Small business owners"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Webchat",
+    "Online tools"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone, use webchat or the online tools"
+  },
+  "activities": [
+    {
+      "name": "Business debt advice",
+      "summary": "Free debt advice for self-employed people and small business owners.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 90",
+    "foundVia": "District Provision Tool",
+    "checkedUrl": "https://www.businessdebtline.org/",
+    "evidence": "Live Oct 2026.",
+    "confidence": "high"
+  }
+}

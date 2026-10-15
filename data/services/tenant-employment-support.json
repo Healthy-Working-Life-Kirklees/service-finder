@@ -1,0 +1,68 @@
+{
+  "id": "tenant-employment-support",
+  "name": "Employment, skills and training support for tenants",
+  "organisation": "Kirklees Council (Homes & Neighbourhoods)",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Skills",
+    "Apprenticeships",
+    "Digital skills",
+    "Volunteering"
+  ],
+  "whoFor": "Council tenants and their household, aged 16–65, with the right to work in the UK.",
+  "age": "16-65",
+  "webpage": "https://www.kirklees.gov.uk/employment-support",
+  "email": null,
+  "phone": "01484 221028 (Mon–Thu 9–5, Fri 9–4.30)",
+  "social": [],
+  "locations": [
+    "Kirklees-wide"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Kirklees Council tenant or member of their household",
+    "Aged 16 to 65",
+    "Has the right to work in the UK"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Is a Kirklees Council tenant or lives in a council tenant's household",
+    "Has the right to work in the UK"
+  ],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Online form on my.kirklees.gov.uk",
+    "Phone"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself by online form or phone"
+  },
+  "activities": [
+    {
+      "name": "Employment and skills mentoring",
+      "summary": "One-to-one mentor and personal plan covering confidence, job search, CVs, interviews, apprenticeships, digital skills and devices, placements, training and volunteering.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Yes - placements and volunteering",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 15",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.kirklees.gov.uk/employment-support",
+    "evidence": "Page created March 2026; advertises 2026/27 programmes.",
+    "confidence": "high"
+  }
+}

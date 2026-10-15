@@ -1,0 +1,67 @@
+{
+  "id": "bud-therapeutic-gardening",
+  "name": "Bud – therapeutic gardening",
+  "organisation": "Growing Works",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Long-term conditions",
+    "Volunteering"
+  ],
+  "whoFor": "Adults with mental health problems, long-term conditions or who feel isolated.",
+  "age": "Adults",
+  "webpage": "http://www.growingworks.org.uk",
+  "email": "info@growingworks.org.uk",
+  "phone": "07845 415289",
+  "social": [],
+  "locations": [
+    "Wakefield Road Allotments, Dalton HD5 9XN (Tue & Thu 10–1)"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Adults with mental health problems",
+    "Adults with long-term conditions",
+    "Adults who feel isolated"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health",
+    "any"
+  ],
+  "referralRoutes": [
+    "Email first",
+    "Self-referral",
+    "Referral from a service"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself or be referred by a service; email first"
+  },
+  "activities": [
+    {
+      "name": "Therapeutic gardening groups",
+      "summary": "Small allotment groups gardening and learning outdoor skills, sharing soup from what they grow; volunteering available.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Yes - volunteering",
+  "cost": "Not stated",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 4",
+    "foundVia": "Kirklees Community Directory",
+    "checkedUrl": "http://www.growingworks.org.uk",
+    "evidence": "Sept 2026 news.",
+    "confidence": "high"
+  }
+}

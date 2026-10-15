@@ -1,0 +1,59 @@
+{
+  "id": "kirklees-employer-support",
+  "name": "Employer support (recruitment, apprenticeships, inclusive hiring)",
+  "organisation": "Kirklees Council Employment and Skills",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "employer"
+  ],
+  "categories": [
+    "Employers",
+    "Skills"
+  ],
+  "whoFor": "Kirklees employers.",
+  "age": null,
+  "webpage": "https://www.kirklees.gov.uk/beta/employment-and-skills/employer-support.aspx",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Kirklees"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Kirklees employers"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Employment and Skills contact page"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Get in touch through the Employment and Skills contact page."
+  },
+  "activities": [
+    {
+      "name": "Employer recruitment support",
+      "summary": "Free help for Kirklees businesses to find local staff, take on apprentices, upskill and hire more fairly.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 48",
+    "foundVia": "Follow-up from WYCA",
+    "checkedUrl": "https://www.kirklees.gov.uk/beta/employment-and-skills/employer-support.aspx",
+    "evidence": "Page changed March 2025.",
+    "confidence": "medium"
+  }
+}

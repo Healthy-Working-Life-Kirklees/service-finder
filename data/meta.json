@@ -1,0 +1,5 @@
+{
+  "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026), and the Kirklees additional services spreadsheet v3 (web research, October 2026). Each scheme says where its own details came from in \"provenance\".",
+  "converted": "2026-10-07",
+  "notes": "One file per scheme in data/services/, named after its id. scripts/build-data.mjs combines them into services.json, and scripts/check-data.mjs checks them against data/schema.json. The field-by-field guide is docs/data-dictionary.md."
+}

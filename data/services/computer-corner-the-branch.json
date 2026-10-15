@@ -1,0 +1,59 @@
+{
+  "id": "computer-corner-the-branch",
+  "name": "Computer Corner drop-in",
+  "organisation": "The Branch (Rivertree Trust)",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Digital skills",
+    "Finding work"
+  ],
+  "whoFor": "Anyone.",
+  "age": null,
+  "webpage": "https://www.thebranch.uk/calendar/",
+  "email": "alison.lloyd@thebranch.uk",
+  "phone": "01484 551551",
+  "social": [],
+  "locations": [
+    "Jubilee Centre, Paddock HD1 4SH (Mon 10.30–12)"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Anyone"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Drop in at the Jubilee Centre, Paddock, Mondays 10.30am-12pm"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Just turn up on a Monday morning."
+  },
+  "activities": [
+    {
+      "name": "Computer help drop-in",
+      "summary": "Free weekly drop-in with laptops and help to fill forms, apply for jobs or learn computer skills.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 46",
+    "foundVia": "Kirklees Community Directory",
+    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=8894",
+    "evidence": "Directory June 2026 only.",
+    "confidence": "medium"
+  }
+}

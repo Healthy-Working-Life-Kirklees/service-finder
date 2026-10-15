@@ -1,0 +1,63 @@
+{
+  "id": "kings-trust",
+  "name": "The King's Trust – Yorkshire and the Humber",
+  "organisation": "The King's Trust",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Young people",
+    "Finding work",
+    "Self-employment"
+  ],
+  "whoFor": "11–30 not in work, education or training.",
+  "age": "11-30",
+  "webpage": "https://www.kingstrust.org.uk/",
+  "email": "yhoutreach@kingstrust.org.uk",
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Yorkshire and the Humber"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Aged 11 to 30",
+    "Not in work, education or training"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Email the regional outreach team",
+    "Sign up online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Email the regional outreach team or sign up online"
+  },
+  "activities": [
+    {
+      "name": "Courses and mentoring",
+      "summary": "Free courses and mentoring to build confidence and skills to get a job or start a business.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 81",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=1974",
+    "evidence": "Kirklees directory updated 12 Oct 2026.",
+    "confidence": "medium"
+  }
+}

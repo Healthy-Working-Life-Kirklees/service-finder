@@ -1,0 +1,70 @@
+{
+  "id": "recovery-wellbeing-college",
+  "name": "Calderdale & Kirklees Recovery and Wellbeing College",
+  "organisation": "South West Yorkshire Partnership NHS FT",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Skills",
+    "Health linked to work"
+  ],
+  "whoFor": "Adults, including carers.",
+  "age": "Adults",
+  "webpage": "https://www.calderdalekirkleesrc.nhs.uk/",
+  "email": "ckrecovery.wellbeing@swyt.nhs.uk",
+  "phone": "07717 867911",
+  "social": [],
+  "locations": [
+    "Ravensleigh, Dewsbury WF13 4LL",
+    "Huddersfield, Dewsbury, Mirfield venues",
+    "online"
+  ],
+  "areas": [
+    "Dewsbury",
+    "Huddersfield",
+    "Mirfield",
+    "Online"
+  ],
+  "eligibility": [
+    "Adults",
+    "Includes carers"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Enrol online",
+    "Email",
+    "Phone"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Enrol yourself online, by email or phone"
+  },
+  "activities": [
+    {
+      "name": "Recovery learning courses",
+      "summary": "Free learning courses (not therapy) on confidence, sleep, managing low mood and more, online and around Kirklees.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 7",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.calderdalekirkleesrc.nhs.uk/courses/",
+    "evidence": "Course list runs Oct–Dec 2026.",
+    "confidence": "high"
+  }
+}

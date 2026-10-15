@@ -1,0 +1,62 @@
+{
+  "id": "crosland-moor-clc",
+  "name": "Crosland Moor Community Learning Centre",
+  "organisation": "Crosland Moor CLC",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Skills",
+    "Digital skills",
+    "ESOL"
+  ],
+  "whoFor": "Local adults.",
+  "age": "Adults",
+  "webpage": "https://www.croslandmoorclc.org.uk/",
+  "email": "enquiries@croslandmoorclc.org.uk",
+  "phone": "01484 462346",
+  "social": [],
+  "locations": [
+    "15 Park Road West, Huddersfield HD4 5RX"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Local adults"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Email",
+    "Drop in"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone, email or drop in."
+  },
+  "activities": [
+    {
+      "name": "Community learning courses",
+      "summary": "Local centre with courses in computer skills, ESOL and skills for work.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Not stated",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 47",
+    "foundVia": "Kirklees Community Directory; District Provision Tool",
+    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=7740",
+    "evidence": "Directory July 2026.",
+    "confidence": "medium"
+  }
+}

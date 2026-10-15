@@ -1,0 +1,62 @@
+{
+  "id": "business-kirklees-start-up",
+  "name": "Business Kirklees – start-up support",
+  "organisation": "Kirklees Council",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual",
+    "employer"
+  ],
+  "categories": [
+    "Self-employment"
+  ],
+  "whoFor": "People starting a business and businesses in Kirklees.",
+  "age": null,
+  "webpage": "https://businesskirklees.com/",
+  "email": "business.enquiries@kirklees.gov.uk",
+  "phone": "01484 221000",
+  "social": [],
+  "locations": [
+    "Kirklees-wide"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "People starting a business",
+    "Businesses in Kirklees"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Email",
+    "Website"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Contact by phone, email or the website"
+  },
+  "activities": [
+    {
+      "name": "Business start-up advice",
+      "summary": "Council advice for starting or growing a business: funding, premises, skills.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 5",
+    "foundVia": "Kirklees Community Directory",
+    "checkedUrl": "https://businesskirklees.com/",
+    "evidence": "Sept 2026 news.",
+    "confidence": "high"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": "better-in-kirklees",
+  "name": "Better in Kirklees (social prescribing for long-term conditions)",
+  "organisation": "Touchstone",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Long-term conditions",
+    "Mental health",
+    "Disability & neurodiversity",
+    "Carers"
+  ],
+  "whoFor": "Adults 18+ with a long-term condition; unpaid carers.",
+  "age": "18+",
+  "webpage": "https://www.kirklees.gov.uk/beta/health-and-well-being/better-in-kirklees.aspx",
+  "email": "bik@touchstonesupport.org.uk",
+  "phone": "01924 846808",
+  "social": [],
+  "locations": [
+    "Dewsbury Business Centre WF13 1HF"
+  ],
+  "areas": [
+    "Dewsbury",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Adults aged 18 or over with a long-term condition",
+    "Unpaid carers"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any",
+    "unpaid-caring"
+  ],
+  "referralRoutes": [
+    "Professional referral"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "Referral from a professional; unclear whether you can refer yourself."
+  },
+  "activities": [
+    {
+      "name": "Social prescribing",
+      "summary": "Helps adults with long-term conditions find local groups and activities to feel less lonely and more confident.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 42",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.kirklees.gov.uk/beta/health-and-well-being/better-in-kirklees.aspx",
+    "evidence": "Council page Feb 2025; no 2026 confirmation.",
+    "confidence": "medium"
+  }
+}

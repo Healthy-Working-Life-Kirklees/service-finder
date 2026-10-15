@@ -1,0 +1,76 @@
+{
+  "id": "gamstop",
+  "name": "GAMSTOP self-exclusion",
+  "organisation": "GAMSTOP",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Debt"
+  ],
+  "whoFor": "Anyone wanting to stop gambling online.",
+  "age": null,
+  "webpage": "https://www.gamstop.co.uk/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Anyone wanting to stop gambling online"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Register online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Register on the website"
+  },
+  "activities": [
+    {
+      "name": "Gambling self-exclusion",
+      "summary": "Free tool that blocks UK-licensed gambling sites and apps.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 126",
+    "foundVia": "MECC Link",
+    "checkedUrl": "https://www.gamstop.co.uk/",
+    "evidence": "© 2026.",
+    "confidence": "medium"
+  },
+  "requiresMention": [
+    "gambl",
+    "betting",
+    "\\bbets?\\b",
+    "casino",
+    "slot machine",
+    "fruit machine",
+    "bookies",
+    "hazardow",
+    "hazardzie",
+    "zakład",
+    "zaklad",
+    "kasyn",
+    "جوا",
+    "جوئے",
+    "\\bjua\\b"
+  ]
+}

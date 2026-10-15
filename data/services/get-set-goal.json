@@ -1,0 +1,86 @@
+{
+  "id": "get-set-goal",
+  "name": "Get Set Goal",
+  "organisation": "University of Huddersfield",
+  "logo": "university-of-huddersfield.webp",
+  "status": "Live - open to referrals",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual",
+    "employer"
+  ],
+  "categories": [
+    "Employers",
+    "Health linked to work",
+    "Staying in work",
+    "Wellbeing",
+    "Self-employment"
+  ],
+  "whoFor": "Employers and self-employed people in Kirklees - primarily SMEs and sole traders - whose staff are experiencing ill health and at risk of falling out of work.",
+  "age": "18+",
+  "webpage": "https://www.hud.ac.uk/gsg/",
+  "email": "GetSetGoal@hud.ac.uk",
+  "phone": "01484 472201",
+  "social": [],
+  "locations": [
+    "University of Huddersfield campus",
+    "Onsite at business premises and other event venues",
+    "Online"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Employees (including in SMEs, independent care sector, VCSE and healthcare organisations) and self-employed people experiencing ill health. Focus for 2026-27 is SMEs and sole traders, but larger employers are still supported",
+    "At risk of falling out of work due to ill health",
+    "Committed to making a long term lifestyle change"
+  ],
+  "exclusions": [
+    "Under 18"
+  ],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Online self referral: https://forms.office.com/pages/responsepage.aspx?id=2p8utZEGhUW9_FzK4c4YkKgnxFOY-bxNpu8du5KE9JtUQUpPN1ZMSzZEUlc5SU1KMVExNDBPMDQ4NSQlQCN0PWcu&route=shorturl",
+    "Online - organisation referral: https://forms.office.com/pages/responsepage.aspx?id=2p8utZEGhUW9_FzK4c4YkKgnxFOY-bxNpu8du5KE9JtUNkVLMlFTSkhZSlBEMzhDUjFLMThBMDg3NyQlQCN0PWcu&route=shorturl"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Yes, via the online form",
+    "url": "https://forms.office.com/pages/responsepage.aspx?id=2p8utZEGhUW9_FzK4c4YkKgnxFOY-bxNpu8du5KE9JtUQUpPN1ZMSzZEUlc5SU1KMVExNDBPMDQ4NSQlQCN0PWcu&route=shorturl"
+  },
+  "activities": [
+    {
+      "name": "One-to-one wellbeing coaching",
+      "summary": "Tailored light-touch wellbeing support using goal setting to improve lifestyle choices and manage conditions, with signposting to other Healthy Working Life services. Wellbeing coaching only - it is not a counselling service. Delivered by University of Huddersfield healthcare students under clinical supervision.",
+      "duration": "Up to 6 weekly sessions, Monday to Friday 9am-4pm excluding bank holidays"
+    },
+    {
+      "name": "Events in businesses or the community",
+      "summary": "Awareness raising, initial health checks and the chance to book one-to-one sessions.",
+      "duration": "One-off or regular"
+    },
+    {
+      "name": "Wellbeing workshops",
+      "summary": "Interactive workshops tailored to the business or organisation, for example managing stress, improving sleep and mental wellbeing.",
+      "duration": "Usually 20-30 minutes"
+    },
+    {
+      "name": "Health checks",
+      "summary": "Basic checks of blood pressure, oxygen level, pulse and respiration rate. Around 7% of people checked between April 2025 and March 2026 were signposted to their GP.",
+      "duration": "5-8 minutes per person"
+    }
+  ],
+  "workExperience": "No",
+  "lastUpdated": "2026-08-03",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "id": "this-way-4-english",
+  "name": "This Way 4 English (ESOL access)",
+  "organisation": "Kirklees Council",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "ESOL",
+    "Refugees and new arrivals",
+    "Skills"
+  ],
+  "whoFor": "Asylum seekers, refugees and migrants in Kirklees.",
+  "age": null,
+  "webpage": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationdetails.aspx?orgid=8902",
+  "email": "tw4e@kirklees.gov.uk",
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Civic Centre 3, High Street, Huddersfield HD1 2TG"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "Asylum seeker, refugee or migrant",
+    "Lives in Kirklees"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Is an asylum seeker, refugee or migrant"
+  ],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Email"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Contact the team by email"
+  },
+  "activities": [
+    {
+      "name": "English level checks and classes",
+      "summary": "Checks your level of English and finds the right class, course, volunteering or activity. Also runs free community English classes.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Yes - volunteering",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 35",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationdetails.aspx?orgid=8902",
+    "evidence": "Directory updated 30 June 2026; on skills page (July 2026).",
+    "confidence": "high"
+  }
+}

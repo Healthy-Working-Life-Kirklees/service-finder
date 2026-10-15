@@ -1,0 +1,59 @@
+{
+  "id": "empowerher-imws",
+  "name": "EmpowerHer: Steps to Wellbeing and Work Project",
+  "organisation": "IMWS",
+  "logo": "imws.webp",
+  "status": "Live - grant-funded project (status not stated in the pathways document)",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Women",
+    "ESOL",
+    "Digital skills",
+    "Wellbeing",
+    "Skills"
+  ],
+  "whoFor": "Women aged 19 and over who are not working or looking for work and want to improve wellbeing, build confidence and learn new skills.",
+  "age": "19+",
+  "webpage": null,
+  "email": "shamim.ali@imws.org.uk",
+  "phone": "01924 500555",
+  "social": [],
+  "locations": [
+    "Al Hikmah Centre, 28 Track Road, Batley, WF17 7AA"
+  ],
+  "areas": [
+    "Batley"
+  ],
+  "eligibility": [
+    "Women aged 19 and over",
+    "Economically inactive (not working and not looking for work)"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone the Centre on 01924 500555"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone the Centre directly"
+  },
+  "activities": [
+    {
+      "name": "EmpowerHer: Steps to Wellbeing and Work Project",
+      "summary": "Beginner ESOL (English) classes, digital skills classes, wellbeing activities, confidence building and one-to-one mentoring.",
+      "duration": "One day a week"
+    }
+  ],
+  "workExperience": "No",
+  "lastUpdated": "2026-09-30",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

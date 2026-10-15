@@ -1,0 +1,65 @@
+{
+  "id": "kirklees-college-adult-courses",
+  "name": "Adult courses 19+ incl. Targeted Employment Programmes",
+  "organisation": "Kirklees College",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Skills",
+    "Digital skills",
+    "Finding work"
+  ],
+  "whoFor": "Adults 19+. Fully funded if unemployed, earning under £26,800, or taking a first Level 2/3.",
+  "age": "19+",
+  "webpage": "https://www.kirkleescollege.ac.uk/adult-learners/",
+  "email": "customerservices@kirkleescollege.ac.uk",
+  "phone": "01484 437100",
+  "social": [],
+  "locations": [
+    "Huddersfield and Dewsbury centres, community venues, online"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Dewsbury",
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Aged 19 or over",
+    "Fully funded if unemployed, earning under £26,800, or taking a first Level 2 or Level 3 course"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Contact Customer Services to check funding",
+    "Enrol on a course"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Contact Customer Services to check funding, then enrol"
+  },
+  "activities": [
+    {
+      "name": "Adult courses and job programmes",
+      "summary": "Part-time adult courses including free English, maths and digital skills. Short employer-linked programmes end with a guaranteed interview for a real job.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free if eligible; otherwise fees",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 3",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://kirkleescollege.ac.uk/wp-content/uploads/2026/07/AdultCourseGuide_Sept26_digital-4.pdf",
+    "evidence": "Sept 2026 Adult Course Guide (uploaded July 2026).",
+    "confidence": "high"
+  }
+}

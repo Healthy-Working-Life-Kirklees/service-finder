@@ -1,0 +1,62 @@
+{
+  "id": "calderdale-credit-union",
+  "name": "Calderdale Credit Union",
+  "organisation": "Calderdale Credit Union",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Benefits and money",
+    "Debt"
+  ],
+  "whoFor": "People who live or work in Calderdale or Kirklees.",
+  "age": null,
+  "webpage": "https://www.calderdalecreditunion.co.uk/",
+  "email": "admin@calderdalecreditunion.co.uk",
+  "phone": "01422 386060",
+  "social": [],
+  "locations": [
+    "Halifax HX1 1HJ"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Lives or works in Calderdale or Kirklees"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Email",
+    "Join online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone, email or join online."
+  },
+  "activities": [
+    {
+      "name": "Savings and affordable loans",
+      "summary": "Not-for-profit savings and fair loans for people who live or work in Calderdale or Kirklees.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free to join; loans charge interest",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 43",
+    "foundVia": "MECC Link",
+    "checkedUrl": "https://www.calderdalecreditunion.co.uk/",
+    "evidence": "Directory Sept 2025; MECC's Huddersfield office no longer shown.",
+    "confidence": "medium"
+  }
+}

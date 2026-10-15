@@ -1,0 +1,63 @@
+{
+  "id": "evenbreak",
+  "name": "Evenbreak job board",
+  "organisation": "Evenbreak",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Disability & neurodiversity",
+    "Finding work"
+  ],
+  "whoFor": "Disabled jobseekers and people with long-term conditions.",
+  "age": null,
+  "webpage": "https://www.evenbreak.com/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Disabled jobseekers",
+    "Jobseekers with long-term conditions"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Sign up online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Sign up on the website"
+  },
+  "activities": [
+    {
+      "name": "Inclusive job board",
+      "summary": "Job site for disabled people with inclusive employers, plus free job alerts and coaching.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free for jobseekers",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 120",
+    "foundVia": "District Provision Tool",
+    "checkedUrl": "https://www.evenbreak.com/",
+    "evidence": "© 2026.",
+    "confidence": "medium"
+  }
+}

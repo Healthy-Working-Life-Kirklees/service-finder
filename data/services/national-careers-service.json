@@ -1,0 +1,62 @@
+{
+  "id": "national-careers-service",
+  "name": "National Careers Service (now DWP Jobs and Careers Service)",
+  "organisation": "DWP",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Skills"
+  ],
+  "whoFor": "Adults 18+ in England.",
+  "age": "18+",
+  "webpage": "https://nationalcareers.service.gov.uk/",
+  "email": null,
+  "phone": "0800 072 0288",
+  "social": [],
+  "locations": [
+    "Phone and online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Aged 18 or over",
+    "Lives in England"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Online tools (skills quiz, course search)"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Call or use the online tools"
+  },
+  "activities": [
+    {
+      "name": "Careers advice",
+      "summary": "Free careers advice by phone and online, skills quiz and course search.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 131",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://nationalcareers.service.gov.uk/contact-us",
+    "evidence": "Moved in-house Oct 2026 — recheck phone and name.",
+    "confidence": "medium"
+  }
+}

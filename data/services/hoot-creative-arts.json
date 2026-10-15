@@ -1,0 +1,71 @@
+{
+  "id": "hoot-creative-arts",
+  "name": "hoot creative arts",
+  "organisation": "hoot creative arts",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Skills",
+    "Disability & neurodiversity"
+  ],
+  "whoFor": "Adults in Kirklees, especially with mental health difficulties.",
+  "age": "Adults",
+  "webpage": "https://www.hootcreativearts.co.uk/",
+  "email": "info@hootcreativearts.co.uk",
+  "phone": "01484 516224",
+  "social": [],
+  "locations": [
+    "Bates Mill, Huddersfield HD1 3DX",
+    "Dewsbury/Dalton",
+    "online"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Dewsbury",
+    "Online"
+  ],
+  "eligibility": [
+    "Adults in Kirklees",
+    "Especially people with mental health difficulties",
+    "Some sessions for adults with learning disabilities, autism or dementia"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health",
+    "learning-disability-autism"
+  ],
+  "referralRoutes": [
+    "Self-referral via the website",
+    "Referral via the website",
+    "Welcome Taster Wednesdays, 11am-12pm"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself or be referred through the website, or come to a Welcome Taster Wednesday."
+  },
+  "activities": [
+    {
+      "name": "Creative arts sessions",
+      "summary": "Free music, singing, art and writing sessions to help adults look after their mental health; sessions for adults with learning disabilities, autism or dementia.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 36",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.hootcreativearts.co.uk/",
+    "evidence": "News posts June–Aug 2026.",
+    "confidence": "high"
+  }
+}

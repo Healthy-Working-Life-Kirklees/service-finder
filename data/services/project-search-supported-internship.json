@@ -1,0 +1,93 @@
+{
+  "id": "project-search-supported-internship",
+  "name": "Project SEARCH supported internship",
+  "organisation": "Mid Yorkshire Teaching NHS Trust / Kirklees College / Kirklees Council",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Disability & neurodiversity",
+    "Young people",
+    "Finding work"
+  ],
+  "whoFor": "18–24 with a learning disability and/or autism and an EHCP.",
+  "age": "18-24",
+  "webpage": "https://www.midyorks.nhs.uk/project-search",
+  "email": null,
+  "phone": "01924 541000",
+  "social": [],
+  "locations": [
+    "Dewsbury and District Hospital"
+  ],
+  "areas": [
+    "Dewsbury"
+  ],
+  "eligibility": [
+    "Aged 18 to 24",
+    "Has a learning disability and/or autism",
+    "Has an EHCP"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Has an Education, Health and Care Plan (EHCP)"
+  ],
+  "healthFocus": [
+    "learning-disability-autism"
+  ],
+  "requiresMention": [
+    "learning disab",
+    "learning difficult",
+    "autis",
+    "asperger",
+    "additional needs",
+    "neurodiver",
+    "\\bASD\\b",
+    "niepełnosprawnoś[cć]i? intelektualn",
+    "niepelnosprawnos[cć]i? intelektualn",
+    "trudności w uczeniu",
+    "trudnosci w uczeniu",
+    "autyzm",
+    "autyst",
+    "spektrum autyzmu",
+    "neuroatyp",
+    "لرننگ ڈس ایبلٹی",
+    "سیکھنے میں معذوری",
+    "سیکھنے کی معذوری",
+    "ذہنی معذوری",
+    "آٹزم",
+    "آٹسٹک",
+    "\\bEHCP\\b",
+    "education,? health and care plan"
+  ],
+  "referralRoutes": [
+    "Apply via Kirklees College",
+    "Assessment day",
+    "Starts each September"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Apply through Kirklees College; there is an assessment day and places start each September."
+  },
+  "activities": [
+    {
+      "name": "Supported hospital internship",
+      "summary": "Year-long hospital-based internship: young people with a learning disability try three jobs with a job coach, then get help into paid work.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Yes - year-long work placements",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 59",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.midyorks.nhs.uk/project-search",
+    "evidence": "Trust news (Aug 2025) invited applications for 2026 places.",
+    "confidence": "medium"
+  }
+}

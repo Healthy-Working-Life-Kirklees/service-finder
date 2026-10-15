@@ -1,0 +1,64 @@
+{
+  "id": "versus-arthritis-helpline",
+  "name": "Versus Arthritis helpline and work advice",
+  "organisation": "Versus Arthritis",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "MSK",
+    "Long-term conditions",
+    "Staying in work"
+  ],
+  "whoFor": "People with arthritis or MSK conditions.",
+  "age": null,
+  "webpage": "https://www.versusarthritis.org/about-arthritis/living-with-arthritis/work/",
+  "email": null,
+  "phone": "0800 5200 520",
+  "social": [],
+  "locations": [
+    "Phone and online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "People with arthritis or MSK (joint and muscle) conditions"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "musculoskeletal-pain"
+  ],
+  "referralRoutes": [
+    "Phone",
+    "Online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone the helpline or use the website"
+  },
+  "activities": [
+    {
+      "name": "Arthritis helpline and work advice",
+      "summary": "Helpline for people with arthritis or joint and muscle pain, plus advice on rights at work and flexible working.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 142",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.versusarthritis.org/get-help/helpline/",
+    "evidence": "Live; undated.",
+    "confidence": "medium"
+  }
+}

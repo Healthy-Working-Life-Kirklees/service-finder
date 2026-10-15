@@ -107,7 +107,7 @@
 
     <h2 id="how">How it works</h2>
     <ul>
-      <li><strong>The data</strong> is one file of 17 schemes (<code>data/services.json</code>), converted from the pathways document. The AI is given the whole list with each message.</li>
+      <li><strong>The data</strong> is one file per scheme (in <code>data/services/</code>): the Healthy Working Life schemes from the pathways document, plus other local, regional and national services from the October 2026 web research. The AI is given the whole list with each message, without contact details. When a Healthy Working Life scheme and another service fit about as well, it lists the Healthy Working Life scheme first.</li>
       <li><strong>The instructions</strong> that tell the AI how to behave are in <code>prompt/system.md</code>. We can change them without touching any code.</li>
       <li><strong>Cards</strong> are drawn from the data file. The AI only chooses which scheme IDs to show, how well each fits ("Strong match" or "Worth checking") and writes the short reason and what to check first. Anything not on the list is thrown away, and so is anything that isn't open yet.</li>
       <li><strong>Safeguards</strong>: schemes for a specific circumstance are only shown if the person's own words mention it. Crisis wording triggers the crisis response regardless of what the AI decides, and urgent replies never show scheme cards or ask questions. The AI can ask at most two follow-up questions in a chat, and the service counts them rather than trusting the AI to. Schemes that aren't open yet are never recommended.</li>
@@ -142,6 +142,7 @@
 
     <h2 id="changes">What has changed</h2>
     <ul>
+      <li><strong>15 Oct 2026</strong>: added 137 more services from the web research spreadsheet (crisis helplines and directories left out). The scheme data is now one file per scheme, checked automatically before it goes live. Cards now show whether a service is regional or national, whether it needs a referral, its cost and any language support.</li>
       <li><strong>8 Oct 2026</strong>: new instructions for the AI. It now says how well each scheme fits ("Strong match" or "Worth checking") and what to check first. It asks at most two follow-up questions per chat. It recognises five kinds of urgent support, not just mental health crisis. Schemes now record who they are for, anything the person must already be using, and which health needs they cover.</li>
       <li><strong>7 Oct 2026</strong>: first working version. The AI is Claude Sonnet 5.5. Added the crisis safeguard, the condition-specific scheme safeguard, "last checked" warnings, and this help page and log.</li>
     </ul>

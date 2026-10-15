@@ -1,0 +1,63 @@
+{
+  "id": "connect-housing-young-people",
+  "name": "Young people's supported housing",
+  "organisation": "Connect Housing",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Housing",
+    "Young people"
+  ],
+  "whoFor": "Young people under 25.",
+  "age": "Under 25",
+  "webpage": "https://www.connecthousing.org.uk/find-a-home/housing-with-specialist-support/",
+  "email": "hello@connecthousing.org.uk",
+  "phone": "0300 5000 600",
+  "social": [],
+  "locations": [
+    "Huddersfield and Heckmondwike"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Spen Valley"
+  ],
+  "eligibility": [
+    "Young people under 25",
+    "Have been homeless or are leaving care"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Is homeless or has been homeless, or is leaving care"
+  ],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Contact Connect Housing"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Contact Connect Housing."
+  },
+  "activities": [
+    {
+      "name": "Supported housing",
+      "summary": "Supported homes with 24-hour staff for young people who've been homeless or are leaving care, with help into education or training.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Not stated",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 66",
+    "foundVia": "Kirklees Community Directory",
+    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=8075",
+    "evidence": "Directory Oct 2026 only.",
+    "confidence": "medium"
+  }
+}

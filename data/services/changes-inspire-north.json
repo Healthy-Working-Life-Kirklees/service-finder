@@ -1,0 +1,93 @@
+{
+  "id": "changes-inspire-north",
+  "name": "Changes service",
+  "organisation": "Inspire North",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Prison leavers"
+  ],
+  "whoFor": "Adults 18–65 in Kirklees with complex needs and offending in the last 12 months.",
+  "age": "18-65",
+  "webpage": "https://www.inspirenorth.co.uk/our-services/get-help-and-support-page/changes/",
+  "email": "changes@inspirenorth.co.uk",
+  "phone": "01924 448975 / 07891 598183",
+  "social": [],
+  "locations": [
+    "25 Trinity Street, Batley WF17 7JZ"
+  ],
+  "areas": [
+    "Batley"
+  ],
+  "eligibility": [
+    "Aged 18 to 65",
+    "Lives in Kirklees",
+    "Has complex needs and past trauma",
+    "Has offended in the last 12 months, or is at risk of offending"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Has offended in the last 12 months, or is at risk of offending"
+  ],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "requiresMention": [
+    "prison",
+    "jail",
+    "gaol",
+    "probation",
+    "criminal record",
+    "conviction",
+    "convicted",
+    "offend",
+    "ex-offender",
+    "released from",
+    "custody",
+    "\\bcourts?\\b",
+    "\\bCFO\\b",
+    "więzie",
+    "wiezie",
+    "areszt",
+    "kurator",
+    "wyrok",
+    "karaln",
+    "skazan",
+    "جیل",
+    "قید",
+    "سزا",
+    "پروبیشن",
+    "مجرمانہ ریکارڈ"
+  ],
+  "referralRoutes": [
+    "Referral from any service"
+  ],
+  "selfReferral": {
+    "allowed": "no",
+    "note": "Needs a referral from any service"
+  },
+  "activities": [
+    {
+      "name": "Complex needs support groups",
+      "summary": "Support and weekly groups for adults with complex needs and past trauma who've offended or are at risk of offending.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 9",
+    "foundVia": "Kirklees Community Directory",
+    "checkedUrl": "https://www.inspirenorth.co.uk/our-services/get-help-and-support-page/changes/",
+    "evidence": "2026 timetable on page.",
+    "confidence": "high"
+  }
+}

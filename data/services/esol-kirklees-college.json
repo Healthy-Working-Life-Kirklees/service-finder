@@ -1,0 +1,64 @@
+{
+  "id": "esol-kirklees-college",
+  "name": "ESOL (English for Speakers of Other Languages)",
+  "organisation": "Kirklees College",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "ESOL",
+    "Refugees and new arrivals",
+    "Skills"
+  ],
+  "whoFor": "People whose first language isn't English.",
+  "age": "16+",
+  "webpage": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationdetails.aspx?orgid=2729",
+  "email": "info@kirkleescollege.ac.uk",
+  "phone": "01484 437000",
+  "social": [],
+  "locations": [
+    "Pioneer Higher Skills Centre, Dewsbury WF13 1BD",
+    "Springfield Sixth Form Centre WF13 2NP",
+    "Huddersfield"
+  ],
+  "areas": [
+    "Dewsbury",
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "First language is not English",
+    "Part-time classes for adults; full-time courses for 16 to 18 year olds"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Contact the college to enrol"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Contact the college to enrol"
+  },
+  "activities": [
+    {
+      "name": "English classes (ESOL)",
+      "summary": "Part-time English classes for adults from complete beginners upwards; full-time courses for 16–18s.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Funding available",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 13",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationdetails.aspx?orgid=2729",
+    "evidence": "Directory updated 22 June 2026; in Sept 2026 guide.",
+    "confidence": "high"
+  }
+}

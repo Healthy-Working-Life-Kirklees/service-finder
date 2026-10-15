@@ -1,0 +1,64 @@
+{
+  "id": "equality-advisory-support-service",
+  "name": "Equality Advisory and Support Service (EASS)",
+  "organisation": "EASS (government-funded)",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Employment rights",
+    "Disability & neurodiversity",
+    "Staying in work"
+  ],
+  "whoFor": "Anyone in England, Scotland and Wales.",
+  "age": null,
+  "webpage": "https://www.equalityadvisoryservice.com/",
+  "email": null,
+  "phone": "0808 800 0082 (Mon–Fri 9–7, Sat 10–2)",
+  "social": [],
+  "locations": [
+    "Phone and online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Anyone in England, Scotland and Wales"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Phone",
+    "Web chat",
+    "Contact form"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone, use web chat or the contact form"
+  },
+  "activities": [
+    {
+      "name": "Discrimination advice helpline",
+      "summary": "Free helpline if you think you've been treated unfairly or discriminated against, for example at work because of a disability. Explains your rights and next steps.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "languages": "BSL interpreting",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 99",
+    "foundVia": "Acas page; Treacle",
+    "checkedUrl": "https://www.equalityhumanrights.com/contact-us",
+    "evidence": "EHRC contact page updated April 2026 gives these details.",
+    "confidence": "high"
+  }
+}

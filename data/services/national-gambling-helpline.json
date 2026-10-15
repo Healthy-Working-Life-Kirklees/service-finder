@@ -1,0 +1,79 @@
+{
+  "id": "national-gambling-helpline",
+  "name": "National Gambling Helpline",
+  "organisation": "GamCare",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Debt"
+  ],
+  "whoFor": "Anyone in Great Britain.",
+  "age": null,
+  "webpage": "https://www.gamcare.org.uk/",
+  "email": null,
+  "phone": "0808 8020 133",
+  "social": [],
+  "locations": [
+    "Phone and online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Anyone in Great Britain affected by gambling"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "requiresMention": [
+    "gambl",
+    "betting",
+    "\\bbets?\\b",
+    "casino",
+    "slot machine",
+    "fruit machine",
+    "bookies",
+    "hazardow",
+    "hazardzie",
+    "zakład",
+    "zaklad",
+    "kasyn",
+    "جوا",
+    "جوئے",
+    "\\bjua\\b"
+  ],
+  "referralRoutes": [
+    "Phone (24/7)",
+    "Chat",
+    "WhatsApp"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Phone, chat or WhatsApp, 24 hours a day"
+  },
+  "activities": [
+    {
+      "name": "Gambling helpline",
+      "summary": "Free 24/7 helpline for anyone affected by gambling, linking to free treatment.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 111",
+    "foundVia": "MECC Link",
+    "checkedUrl": "https://www.gamcare.org.uk/",
+    "evidence": "Modified Sept 2026.",
+    "confidence": "high"
+  }
+}

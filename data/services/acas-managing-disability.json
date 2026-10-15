@@ -1,0 +1,65 @@
+{
+  "id": "acas-managing-disability",
+  "name": "Managing disability at work – Acas guidance",
+  "organisation": "Acas",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "employer",
+    "individual"
+  ],
+  "categories": [
+    "Employers",
+    "Staying in work"
+  ],
+  "whoFor": "Employers, managers and employees.",
+  "age": null,
+  "webpage": "https://www.acas.org.uk/supporting-disabled-people/more-support-for-managing-disability-at-work",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Employers",
+    "Managers",
+    "Employees"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Read online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Read the guidance online"
+  },
+  "activities": [
+    {
+      "name": "Disability at work guidance",
+      "summary": "Free guidance on supporting disabled staff, with links to further help; paid manager training available.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Guidance free; training paid",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 107",
+    "foundVia": "Your list",
+    "checkedUrl": "https://www.acas.org.uk/supporting-disabled-people/more-support-for-managing-disability-at-work",
+    "evidence": "Updated Sept 2024.",
+    "confidence": "high"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "id": "s2r-support-to-recovery",
+  "name": "S2R Support to Recovery",
+  "organisation": "S2R",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Skills",
+    "Volunteering"
+  ],
+  "whoFor": "Adults in Kirklees.",
+  "age": "Adults",
+  "webpage": "https://www.s2r.org.uk/",
+  "email": "contact@s2r.org.uk",
+  "phone": "07933 358800; office 01484 539531",
+  "social": [],
+  "locations": [
+    "5–7 Brook Street, Huddersfield HD1 1EB"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Adults in Kirklees",
+    "No diagnosis needed"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Self-referral online",
+    "Self-referral at your first session"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself online or at your first session."
+  },
+  "activities": [
+    {
+      "name": "Wellbeing workshops",
+      "summary": "Creative, wellbeing and outdoor workshops like gardening, sewing and walking. No diagnosis needed.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Yes - volunteering",
+  "cost": "Not stated",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 61",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.s2r.org.uk/",
+    "evidence": "June 2026 activity schedule on site.",
+    "confidence": "medium"
+  }
+}

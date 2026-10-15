@@ -1,0 +1,64 @@
+{
+  "id": "welcome-centre-food-advice",
+  "name": "Food packs and Advice, Guidance & Support",
+  "organisation": "The Welcome Centre",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Benefits and money",
+    "Housing"
+  ],
+  "whoFor": "People in crisis in Kirklees (advice only for food-pack recipients).",
+  "age": null,
+  "webpage": "https://www.thewelcomecentre.org/pages/need-our-help",
+  "email": null,
+  "phone": "01484 515086",
+  "social": [],
+  "locations": [
+    "15 Lord Street, Huddersfield HD1 1QB"
+  ],
+  "areas": [
+    "Huddersfield",
+    "Kirklees-wide"
+  ],
+  "eligibility": [
+    "People in crisis in Kirklees",
+    "Advice and support only for people receiving food packs"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Referral from a GP",
+    "Referral from a support worker",
+    "Referral via Local Welfare Provision (LWP)",
+    "Referral via KCALC"
+  ],
+  "selfReferral": {
+    "allowed": "no",
+    "note": "You need a referral, for example from a GP, support worker, Local Welfare Provision or KCALC."
+  },
+  "activities": [
+    {
+      "name": "Emergency food and advice",
+      "summary": "Emergency food and household packs, plus caseworkers who advocate, give small grants and refer on.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 50",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.thewelcomecentre.org/pages/need-our-help",
+    "evidence": "Page undated; referral routes match current council pages. MECC Link gives 01484 414782, which is the council's LWP line — keep 01484 515086.",
+    "confidence": "medium"
+  }
+}

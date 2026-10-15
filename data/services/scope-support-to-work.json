@@ -1,0 +1,64 @@
+{
+  "id": "scope-support-to-work",
+  "name": "Support to Work",
+  "organisation": "Scope",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Disability & neurodiversity",
+    "Staying in work"
+  ],
+  "whoFor": "Disabled people 16+ who can use internet, email and phone.",
+  "age": "16+",
+  "webpage": "https://www.scope.org.uk/employment-services/support-to-work/",
+  "email": "supporttowork@scope.org.uk",
+  "phone": "0300 222 5742",
+  "social": [],
+  "locations": [
+    "Online and phone"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Disabled people aged 16 or over",
+    "Able to use the internet, email and phone"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "Register online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Register online"
+  },
+  "activities": [
+    {
+      "name": "Employment support for disabled people",
+      "summary": "Free employment adviser for disabled people: CV, job search, interviews, talking to employers about adjustments, and support once in work.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 137",
+    "foundVia": "Web research (14 Oct)",
+    "checkedUrl": "https://www.scope.org.uk/employment-services/support-to-work/",
+    "evidence": "Sign-up open; no 2026 date.",
+    "confidence": "medium"
+  }
+}

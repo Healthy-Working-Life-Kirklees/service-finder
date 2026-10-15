@@ -1,0 +1,56 @@
+{
+  "id": "lbt-future-creative",
+  "name": "Future Creative: Inclusive Volunteering",
+  "organisation": "Lawrence Batley Theatre",
+  "logo": "lawrence-batley-theatre.webp",
+  "status": "Live - grant-funded project (status not stated in the pathways document)",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Volunteering",
+    "Skills"
+  ],
+  "whoFor": "People aged 18 and over who want to build skills and confidence by volunteering in arts and cultural activities.",
+  "age": "18+",
+  "webpage": "https://www.thelbt.org/get-involved/volunteer/",
+  "email": "dom@thelbt.org",
+  "phone": "01484 430528",
+  "social": [],
+  "locations": [
+    "Lawrence Batley Theatre, Queen Street, Huddersfield, HD1 2SP"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Aged 18 and over"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Via the Lawrence Batley Theatre website (preferred)",
+    "Phone 01484 430528 for support"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Apply through the theatre's website, or phone for help"
+  },
+  "activities": [
+    {
+      "name": "Future Creative: Inclusive Volunteering",
+      "summary": "Formal and informal training and meaningful involvement in arts and cultural activities, to develop new skills and build confidence.",
+      "duration": "Ongoing programme"
+    }
+  ],
+  "workExperience": "Yes - volunteering at the theatre",
+  "lastUpdated": "2026-10-01",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

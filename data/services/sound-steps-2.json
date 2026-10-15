@@ -1,0 +1,57 @@
+{
+  "id": "sound-steps-2",
+  "name": "Sound Steps 2",
+  "organisation": "Yorkshire Youth & Music and Umbrella Yoga",
+  "logo": "yorkshire-youth-music.webp",
+  "status": "Live - grant-funded project (status not stated in the pathways document)",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Young people",
+    "Skills",
+    "Wellbeing"
+  ],
+  "whoFor": "Young people aged 18 to 24 who want to build creative music skills while looking after their wellbeing.",
+  "age": "18-24",
+  "webpage": "https://www.yym.org.uk",
+  "email": "becky@yym.org.uk",
+  "phone": "07977 223679",
+  "social": [],
+  "locations": [
+    "LG31 The Media Centre, 7 Northumberland Street, Huddersfield, HD1 1RL"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Aged 18 to 24"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Sign up online at https://www.yym.org.uk/sound-steps"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Yes, using the sign-up link on the website",
+    "url": "https://www.yym.org.uk/sound-steps"
+  },
+  "activities": [
+    {
+      "name": "Sound Steps 2",
+      "summary": "Weekly sessions in songwriting, beat-making, recording, music production and DJing, led by experienced professional music leaders, supporting wellbeing, teamwork and personal development.",
+      "duration": "23 weeks"
+    }
+  ],
+  "workExperience": "No",
+  "lastUpdated": "2026-09-21",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+  }
+}

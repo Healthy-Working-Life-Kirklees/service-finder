@@ -1,0 +1,83 @@
+{
+  "id": "wy-suicide-bereavement",
+  "name": "West Yorkshire Suicide Bereavement Service",
+  "organisation": "Leeds Mind",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual",
+    "employer"
+  ],
+  "categories": [
+    "Mental health",
+    "Bereavement",
+    "Staying in work"
+  ],
+  "whoFor": "People of any age in Kirklees affected by suicide.",
+  "age": null,
+  "webpage": "https://www.leedsmind.org.uk/suicide-bereavement-services-west-yorkshire/",
+  "email": "sbs@leedsmind.org.uk",
+  "phone": "0113 305 5800",
+  "social": [],
+  "locations": [
+    "WY-wide",
+    "face to face, phone, video"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "People of any age in Kirklees affected by a death by suicide"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "requiresMention": [
+    "bereave",
+    "grief",
+    "griev",
+    "passed away",
+    "died",
+    "death of",
+    "suicide",
+    "lost (my|our|her|his|their) (mum|dad|mother|father|husband|wife|partner|son|daughter|brother|sister|child|baby|friend)",
+    "żałob",
+    "zalob",
+    "zmarł",
+    "zmarl",
+    "śmier",
+    "smier",
+    "وفات",
+    "انتقال",
+    "سوگ"
+  ],
+  "referralRoutes": [
+    "Self-refer online",
+    "Via GP"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Refer yourself online or go through your GP"
+  },
+  "activities": [
+    {
+      "name": "Suicide bereavement support",
+      "summary": "Support for anyone affected by a death by suicide, one-to-one or in groups, plus support for workplaces.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 74",
+    "foundVia": "District Provision Tool",
+    "checkedUrl": "https://www.leedsmind.org.uk/suicide-bereavement-services-west-yorkshire/",
+    "evidence": "Oct–Dec 2026 events.",
+    "confidence": "high"
+  }
+}
