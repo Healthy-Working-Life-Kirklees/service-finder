@@ -79,7 +79,7 @@ async function worker(route) {
   // ---------- main page (MVP tools ON) ----------
   await page.goto(ON + '/');
   check('main: team bar shown when MVP tools are on', (await page.locator('.teambar a').allTextContents()).join('|').includes('Help'));
-  check('main: team bar links point at /mvp/', (await page.locator('.teambar a').evaluateAll((a) => a.map((x) => x.getAttribute('href')))).join() === 'mvp/help.html,mvp/log.html');
+  check('main: team bar links point at /mvp/', (await page.locator('.teambar a').evaluateAll((a) => a.map((x) => x.getAttribute('href')))).join() === 'mvp/help.html,mvp/services.html,mvp/log.html');
   await page.fill('#message', 'I am 20 and anxious in Dewsbury');
   await page.click('#send');
   await page.waitForSelector('.card');
@@ -118,6 +118,23 @@ async function worker(route) {
   check('help: not-open scheme flagged', (await page.locator('#data-table .pill.bad').count()) === 1);
   check('help: has the key sections', (await page.locator('h2').allTextContents()).join('|').includes('Reporting a problem'));
 
+  // ---------- all services page ----------
+  await page.goto(ON + '/mvp/services.html');
+  await page.waitForSelector('.svc');
+  check(`services: lists all ${schemeCount} schemes`, (await page.locator('.svc').count()) === schemeCount);
+  await page.fill('#q', 'gambling');
+  await page.waitForTimeout(300);
+  const gambling = await page.locator('.svc').count();
+  check('services: search narrows the list', gambling > 0 && gambling < schemeCount, String(gambling));
+  check('services: search is kept in the address', page.url().includes('q=gambling'));
+  await page.click('#clear');
+  await page.selectOption('#f-type', 'hwl');
+  check('services: HWL filter shows the HWL schemes', (await page.locator('.svc').count()) === require('/repo/data/services.json').services.filter((x) => x.hwlFunded).length);
+  await page.goto(ON + '/mvp/services.html?review=closed');
+  await page.waitForSelector('.svc');
+  check('services: filters restored from the address (not open = 1)', (await page.locator('.svc').count()) === 1);
+  check('services: edit link points at the scheme file', /\/edit\/main\/data\/services\/[a-z0-9-]+\.json$/.test(await page.locator('.svc a', { hasText: 'Edit on GitHub' }).first().getAttribute('href')));
+
   // ---------- log page ----------
   await page.goto(ON + '/mvp/log.html');
   check('log: gate shown first', await page.locator('#gate').isVisible() && !(await page.locator('#app').isVisible()));
@@ -128,7 +145,7 @@ async function worker(route) {
   await page.fill('#pass', PASS);
   await page.click('#unlock');
   await page.waitForSelector('#app:not([hidden])');
-  check('log: unlocked, starter offer shown on an empty log', await page.locator('#starter').isVisible());
+  check('log: unlocked, starter offer shown on an empty log', await page.waitForSelector('#starter:not([hidden])', { timeout: 5000 }).then(() => true, () => false));
   await page.click('#load-starter');
   await page.waitForSelector('#list .entry');
   check('log: starter list loaded (15 open shown, 1 done hidden)', (await page.locator('#list .entry').count()) === 15, String(await page.locator('#list .entry').count()));
@@ -183,7 +200,7 @@ async function worker(route) {
 
   await page.reload();
   await page.waitForSelector('#app:not([hidden])');
-  check('log: stays unlocked on reload (this tab only)', await page.locator('#list .entry').count() > 0);
+  check('log: stays unlocked on reload (this tab only)', await page.waitForSelector('#list .entry', { timeout: 5000 }).then(() => true, () => false));
   // suggested entries: offered, added in one go, note appended to #12, not offered again
   await page.waitForSelector('#suggested:not([hidden])');
   check('log: suggested entries are offered', (await page.textContent('#suggested')).includes('Data freshness') && (await page.textContent('#suggested')).includes('12 new entries'), await page.textContent('#suggested'));
@@ -194,10 +211,15 @@ async function worker(route) {
   check('log: 12 suggested entries added', (await page.locator('#list .entry').count()) === before + 12);
   await page.waitForSelector('#suggested:not([hidden])');
   check('log: the urgent-support pack is still offered', (await page.textContent('#suggested')).includes('Urgent support') && (await page.textContent('#suggested')).includes('2 new entries'), await page.textContent('#suggested'));
-  await page.click('#suggested button');
-  await page.locator('#suggested').waitFor({ state: 'hidden' });
+  await page.locator('#suggested button').first().click();
   for (let i = 0; i < 50 && (await page.locator('#list .entry').count()) !== before + 14; i++) await page.waitForTimeout(200);
   check('log: 2 urgent-support entries added', (await page.locator('#list .entry').count()) === before + 14);
+  await page.waitForSelector('#suggested:not([hidden])');
+  check('log: the October import pack is still offered', (await page.textContent('#suggested')).includes('October 2026 import') && (await page.textContent('#suggested')).includes('22 new entries'), await page.textContent('#suggested'));
+  await page.locator('#suggested button').first().click();
+  await page.locator('#suggested').waitFor({ state: 'hidden' });
+  for (let i = 0; i < 50 && (await page.locator('#list .entry').count()) !== before + 36; i++) await page.waitForTimeout(200);
+  check('log: 22 import-check entries added', (await page.locator('#list .entry').count()) === before + 36);
   check('log: freshness entries have their details', (await page.locator('#list .entry', { hasText: 'option B: AI-assisted' }).locator('.details').textContent()).includes('15p to 35p'));
   check('log: note appended to the existing "keep the data fresh" entry', (await page.locator('#list .entry', { hasText: 'Keep the data fresh automatically' }).locator('summary').textContent()).includes('(1)'));
   await page.reload();
@@ -211,7 +233,7 @@ async function worker(route) {
 
   // ---------- phone-width layout ----------
   await page.setViewportSize({ width: 375, height: 800 });
-  for (const [name, path] of [['main', '/'], ['help', '/mvp/help.html'], ['log (gate)', '/mvp/log.html']]) {
+  for (const [name, path] of [['main', '/'], ['help', '/mvp/help.html'], ['services', '/mvp/services.html'], ['log (gate)', '/mvp/log.html']]) {
     await page.goto(ON + path);
     await page.waitForTimeout(300);
     const over = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
@@ -230,7 +252,8 @@ async function worker(route) {
   const r1 = await off.goto(OFF + '/mvp/help.html');
   const r2 = await off.goto(OFF + '/mvp/log.html');
   const r3 = await off.goto(OFF + '/mvp/seed-log.json');
-  check('off: help, log and starter list are not published (404)', r1.status() === 404 && r2.status() === 404 && r3.status() === 404, [r1.status(), r2.status(), r3.status()].join());
+  const r4 = await off.goto(OFF + '/mvp/services.html');
+  check('off: help, log, services list and starter list are not published (404)', [r1, r2, r3, r4].every((r) => r.status() === 404), [r1, r2, r3, r4].map((r) => r.status()).join());
   const cfg = await (await off.goto(OFF + '/config.js')).text();
   check('off: config says mvpTools false', cfg.includes('"mvpTools":false'), cfg);
 

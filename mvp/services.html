@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>All services | Kirklees HWL Service Finder</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="mvp.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to the content</a>
+
+  <nav class="teambar" aria-label="MVP team">
+    <div class="wrap wide">
+      <strong>MVP team only</strong>
+      <a href="../">Service Finder</a>
+      <a href="help.html">Help</a>
+      <a href="services.html" aria-current="page">All services</a>
+      <a href="log.html">Issues and actions log</a>
+    </div>
+  </nav>
+
+  <header class="site-header">
+    <div class="wrap wide">
+      <h1>All services<br><span>Kirklees Healthy Working Life Service Finder</span></h1>
+    </div>
+  </header>
+
+  <main id="main" class="wrap wide">
+    <p class="mvp-banner"><strong>For the MVP team only.</strong> Every scheme and service the finder knows about, from the same data the AI uses. Use it to check what's there, what's missing and what needs reviewing. To change a service, use its "Edit on GitHub" link and open a pull request.</p>
+
+    <div id="summary" class="summary"></div>
+
+    <div class="search">
+      <label for="q">Search</label>
+      <input id="q" type="search" autocomplete="off" placeholder="Name, organisation, place, phone, eligibility…" aria-describedby="q-hint">
+      <p id="q-hint" class="hint">Matches every word you type, anywhere in a service's details.</p>
+    </div>
+
+    <details class="filter-panel" id="filter-panel" open>
+      <summary>Filters</summary>
+      <div class="filters" id="filters">
+        <div><label for="f-type">Type</label>
+          <select id="f-type">
+            <option value="">All</option>
+            <option value="hwl">Healthy Working Life schemes</option>
+            <option value="other">Other services</option>
+          </select></div>
+        <div><label for="f-level">Level</label>
+          <select id="f-level">
+            <option value="">All</option>
+            <option value="local">Local</option>
+            <option value="regional">Regional</option>
+            <option value="national">National</option>
+          </select></div>
+        <div><label for="f-area">Area</label><select id="f-area"><option value="">All</option></select></div>
+        <div><label for="f-category">Category</label><select id="f-category"><option value="">All</option></select></div>
+        <div><label for="f-health">Health focus</label><select id="f-health"><option value="">All</option></select></div>
+        <div><label for="f-audience">Audience</label><select id="f-audience"><option value="">All</option></select></div>
+        <div><label for="f-self">Self-referral</label>
+          <select id="f-self">
+            <option value="">All</option>
+            <option value="yes">Can refer themselves</option>
+            <option value="partly">Partly</option>
+            <option value="no">Needs a referral</option>
+            <option value="tbc">To be confirmed</option>
+          </select></div>
+        <div><label for="f-review">Review</label>
+          <select id="f-review">
+            <option value="">All</option>
+            <option value="overdue">Overdue a check</option>
+            <option value="due">Due a check</option>
+            <option value="current">Up to date</option>
+            <option value="closed">Not open</option>
+          </select></div>
+        <div><label for="f-confidence">Confidence</label>
+          <select id="f-confidence">
+            <option value="">All</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+            <option value="none">Not rated</option>
+          </select></div>
+        <div><label for="f-gap">Gaps and flags</label>
+          <select id="f-gap">
+            <option value="">All</option>
+            <option value="no-phone">No phone</option>
+            <option value="no-email">No email</option>
+            <option value="no-web">No web page</option>
+            <option value="no-contact">No phone, email or web page</option>
+            <option value="no-age">No age given</option>
+            <option value="gated">Has a gate</option>
+            <option value="mention">Only shown when mentioned</option>
+            <option value="not-free">Not free for everyone</option>
+          </select></div>
+        <div><label for="f-sort">Sort by</label>
+          <select id="f-sort">
+            <option value="name">Name (A to Z)</option>
+            <option value="org">Organisation (A to Z)</option>
+            <option value="oldest">Last checked (oldest first)</option>
+            <option value="newest">Last checked (newest first)</option>
+          </select></div>
+      </div>
+    </details>
+
+    <div class="toolbar">
+      <button id="clear" class="btn secondary small" type="button">Clear search and filters</button>
+      <button id="expand" class="btn secondary small" type="button">Show all details</button>
+      <button id="export" class="btn secondary small" type="button">Download these as CSV</button>
+    </div>
+
+    <p id="count" class="count" role="status" aria-live="polite"></p>
+    <div id="list" class="entries"></div>
+    <p id="empty" class="msg info" hidden>Nothing matches. Try fewer words, or clear the filters.</p>
+    <p id="load-error" class="msg err" role="alert" hidden>Could not load the service list.</p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap wide">
+      <p><strong>In an emergency call 999.</strong> For urgent mental health support in Kirklees, call the 24-hour Single Point of Access team on <a href="tel:01924316830">01924 316830</a> or call NHS 111.</p>
+    </div>
+  </footer>
+
+  <script src="services.js" defer></script>
+</body>
+</html>
