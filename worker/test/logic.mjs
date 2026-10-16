@@ -12,6 +12,7 @@ let src = fs.readFileSync(path.join(root, 'worker/src/index.js'), 'utf8');
 // Swap the two bundler-style imports for plain file reads so Node can load the module.
 src = src
   .replace("import data from '../../data/services.json';", `const data = JSON.parse(${JSON.stringify(fs.readFileSync(path.join(root, 'data/services.json'), 'utf8'))});`)
+  .replace("import schema from '../../data/schema.json';", `const schema = JSON.parse(${JSON.stringify(fs.readFileSync(path.join(root, 'data/schema.json'), 'utf8'))});`)
   .replace("import SYSTEM_PROMPT from '../../prompt/system.md';", `const SYSTEM_PROMPT = ${JSON.stringify(fs.readFileSync(path.join(root, 'prompt/system.md'), 'utf8'))};`);
 const tmp = path.join(root, 'worker/src/.under-test.mjs'); // inside src/ so './teamlog.js' and './feedback.js' resolve; git-ignored
 fs.writeFileSync(tmp, src);
@@ -260,6 +261,7 @@ const mkStore = () => {
   const storage = {
     get: async (k) => mem.get(k),
     put: async (k, v) => { mem.set(k, v); },
+    delete: async (k) => mem.delete(k),
     list: async ({ prefix }) => new Map([...mem.entries()].filter(([k]) => k.startsWith(prefix)).sort(([a], [b]) => a.localeCompare(b))),
   };
   return new mod.LogStore({ storage });
@@ -351,6 +353,33 @@ check('decisions: wrong Origin -> 403', r.status === 403);
 const pre3 = await worker.fetch(new Request('https://w/log/decisions/kbop', { method: 'OPTIONS', headers: { Origin: O } }), logEnv());
 check('decisions: preflight allows PUT', pre3.headers.get('Access-Control-Allow-Methods').includes('PUT'));
 
+// edits to a service's details
+r = await logCall('GET', '/log/edits');
+check('edits: empty to start', r.status === 200 && Object.keys(r.body.edits).length === 0);
+const goodEdit = { changes: { phone: '01484 000000', whoFor: 'Adults in Kirklees looking for work.', areas: ['Huddersfield', 'Kirklees-wide'], webpage: null }, before: { phone: null, whoFor: 'old', areas: ['Kirklees-wide'], webpage: 'https://a.example' }, note: 'Phoned them', by: 'PL', checked: true, checkedUrl: 'https://kbop.example/contact' };
+r = await logCall('PUT', '/log/edits/kbop', goodEdit);
+check('edits: saved with the cleaned changes, before values and who', r.status === 200 && r.body.item.changes.phone === '01484 000000' && r.body.item.changes.webpage === null && r.body.item.before.areas.length === 1 && r.body.item.by === 'PL' && r.body.item.checked === true, JSON.stringify(r.body));
+const editErr = async (changes, extra = {}) => (await logCall('PUT', '/log/edits/kbop', { ...goodEdit, changes, ...extra })).body.error || '';
+check('edits: unknown area refused', /isn't allowed/.test(await editErr({ areas: ['Leeds'] })));
+check('edits: id and listing can\'t be changed here', /can't be changed/.test(await editErr({ id: 'x' })) && /can't be changed/.test(await editErr({ listing: { decision: 'include' } })));
+check('edits: bad web page refused', /web page/i.test(await editErr({ webpage: 'www.example.org' })));
+check('edits: bad email refused', /email/i.test(await editErr({ email: 'nope' })));
+check('edits: empty name refused', /can't be empty/.test(await editErr({ name: '  ' })));
+check('edits: categories need at least one', /at least one/.test(await editErr({ categories: [] })));
+check('edits: activities need a name and summary', /name and a summary/.test(await editErr({ activities: [{ name: 'x', summary: '' }] })));
+check('edits: a reason is needed', /what changed/.test(await editErr(goodEdit.changes, { note: '' })));
+check('edits: where you checked must be a web address', /web address/.test(await editErr(goodEdit.changes, { checkedUrl: 'the website' })));
+r = await logCall('PUT', '/log/edits/kbop', { ...goodEdit, changes: { ...goodEdit.changes, phone: '01484 111111' }, by: 'AB' });
+check('edits: a second change replaces the first and keeps it in history', r.body.item.changes.phone === '01484 111111' && r.body.item.history.length === 1);
+r = await logCall('GET', '/log/edits', null, { origin: null });
+check('edits: a script (no Origin) can read them', r.status === 200 && r.body.edits.kbop);
+r = await logCall('PUT', '/log/edits/kbop', goodEdit, { origin: null });
+check('edits: but not change them without the page origin', r.status === 403);
+r = await logCall('DELETE', '/log/edits/kbop', { by: 'PL' });
+check('edits: discard', r.status === 200 && Object.keys((await logCall('GET', '/log/edits')).body.edits).length === 0);
+r = await logCall('DELETE', '/log/edits/kbop', { by: 'PL' });
+check('edits: discarding twice -> 404', r.status === 404);
+
 // apply-decisions.mjs, on a copy of a few scheme files
 {
   const d = fs.mkdtempSync(path.join(os.tmpdir(), 'dec-'));
@@ -371,7 +400,32 @@ check('decisions: preflight allows PUT', pre3.headers.get('Access-Control-Allow-
   check('apply: excludes', read('hopeline247-papyrus').decision === 'exclude');
   check('apply: never puts an incomplete service live, and says so', read('kbop').decision === 'review' && /details still to be completed[\s\S]*kbop/.test(out), out);
   check('apply: reports unknown services', out.includes('not-a-service'));
-  check('apply: running again changes nothing', /0 services updated, 3 already up to date/.test(run()), run());
+  check('apply: running again changes nothing', /0 listing decisions applied, 3 already up to date/.test(run()), run());
+
+  // edits: fill in kbop's missing details, then the include decision goes through
+  const kb = JSON.parse(fs.readFileSync(path.join(d, 'kbop.json'), 'utf8'));
+  const filled = {
+    whoFor: 'Adults in Kirklees with complex needs.', referralRoutes: ['Referral from a support worker'], selfReferral: { allowed: 'no', note: 'Needs a referral' },
+    activities: [{ name: 'Key worker support', summary: 'One-to-one help.', duration: '' }], phone: '01484 000000', notes: null,
+  };
+  const before = Object.fromEntries(Object.keys(filled).map((k) => [k, kb[k] === undefined ? null : kb[k]]));
+  const acas = JSON.parse(fs.readFileSync(path.join(d, 'acas-helpline.json'), 'utf8'));
+  fs.writeFileSync(inp, JSON.stringify({
+    decisions: { kbop: { decision: 'include', by: 'PL', t: '2026-10-17T10:00:00Z' } },
+    edits: {
+      kbop: { changes: filled, before, note: 'Phoned the provider', by: 'PL', checked: true, checkedUrl: 'https://kbop.example/', t: '2026-10-17T09:00:00Z' },
+      'acas-helpline': { changes: { phone: '0300 999 9999' }, before: { phone: '0300 000 0000' }, note: 'New number', by: 'AB', t: '2026-10-17T09:00:00Z' },
+      'samaritans-helpline': { changes: { areas: ['Leeds'] }, before: {}, note: 'Bad', by: 'AB', t: '2026-10-17T09:00:00Z' },
+    },
+  }));
+  const out2 = run();
+  const kb2 = JSON.parse(fs.readFileSync(path.join(d, 'kbop.json'), 'utf8'));
+  check('apply edits: details written, removed note dropped', kb2.phone === '01484 000000' && kb2.whoFor === filled.whoFor && !('notes' in kb2), JSON.stringify(kb2).slice(0, 300));
+  check('apply edits: "checked" sets the last-checked date and where', kb2.lastUpdated === '2026-10-17' && kb2.provenance.checkedUrl === 'https://kbop.example/' && kb2.provenance.evidence.includes('Phoned the provider'));
+  check('apply edits: once filled in, the include decision goes through', kb2.listing.decision === 'include' && kb2.listing.by === 'PL', JSON.stringify(kb2.listing));
+  check('apply edits: a field changed in the data since is not overwritten', JSON.parse(fs.readFileSync(path.join(d, 'acas-helpline.json'), 'utf8')).phone === acas.phone && /data has changed since[\s\S]*acas-helpline[\s\S]*phone/.test(out2), out2);
+  check('apply edits: an edit that fails the schema is reported, not written', !JSON.parse(fs.readFileSync(path.join(d, 'samaritans-helpline.json'), 'utf8')).areas.includes('Leeds') && /wouldn't pass the data check[\s\S]*samaritans/.test(out2), out2);
+  check('apply edits: summary shows old and new values', /phone: \(none\) → 01484 000000/.test(out2), out2);
   fs.rmSync(d, { recursive: true, force: true });
 }
 

@@ -38,5 +38,12 @@ services.sort((a, b) => String(a.id).localeCompare(String(b.id)));
 
 const live = services.filter((s) => s.listing && s.listing.decision === 'include');
 fs.writeFileSync(out, JSON.stringify({ ...meta, count: live.length, services: live }, null, 2) + '\n');
-fs.writeFileSync(outAll, JSON.stringify({ ...meta, count: services.length, services }, null, 2) + '\n');
+// The All services page's edit form offers the same choices the schema allows.
+const schema = JSON.parse(fs.readFileSync(path.join(root, 'data', 'schema.json'), 'utf8'));
+const P = schema.properties;
+const choices = {
+  level: P.level.enum, reviewCycle: P.reviewCycle.enum, audience: P.audience.items.enum, categories: P.categories.items.enum,
+  areas: P.areas.items.enum, healthFocus: P.healthFocus.items.enum, selfReferral: P.selfReferral.properties.allowed.enum,
+};
+fs.writeFileSync(outAll, JSON.stringify({ ...meta, count: services.length, choices, services }, null, 2) + '\n');
 console.log(`Built data/services.json (${live.length} on the live list) and data/services-all.json (all ${services.length}).`);

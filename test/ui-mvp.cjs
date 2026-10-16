@@ -22,6 +22,7 @@ let lastChat = null;
 let feedbackFlag = true; // what /health says about feedback
 let fbSent = []; // feedback the page sent
 const decisions = {}; // listing decisions recorded on the All services page
+const edits = {}; // edits to details recorded on the All services page
 const mk = (f, status) => {
   const t = new Date().toISOString();
   const it = { id: ++seq, type: f.type || 'Issue', title: f.title, details: f.details || '', area: f.area || 'Other', priority: f.priority || 'Medium', owner: f.owner || '', status: status || 'Open', created: t, updated: t, updates: [] };
@@ -32,7 +33,7 @@ const mk = (f, status) => {
 async function worker(route) {
   const req = route.request();
   const url = new URL(req.url());
-  const cors = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type, x-team-passcode', 'access-control-allow-methods': 'GET, POST, PATCH, OPTIONS' };
+  const cors = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type, x-team-passcode', 'access-control-allow-methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS' };
   const json = (obj, status = 200) => route.fulfill({ status, headers: { ...cors, 'content-type': 'application/json' }, body: JSON.stringify(obj) });
   if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: cors });
 
@@ -65,6 +66,17 @@ async function worker(route) {
       return json({ imported: items.length });
     }
     if (url.pathname === '/log/decisions') return json({ decisions });
+    if (url.pathname === '/log/edits') return json({ edits });
+    const em = url.pathname.match(/^\/log\/edits\/([a-z0-9-]+)$/);
+    if (em && req.method() === 'PUT') {
+      const b = JSON.parse(req.postData());
+      edits[em[1]] = { ...b, t: new Date().toISOString(), history: [] };
+      return json({ id: em[1], item: edits[em[1]] });
+    }
+    if (em && req.method() === 'DELETE') {
+      delete edits[em[1]];
+      return json({ id: em[1], deleted: true });
+    }
     const dm = url.pathname.match(/^\/log\/decisions\/([a-z0-9-]+)$/);
     if (dm && req.method() === 'PUT') {
       const b = JSON.parse(req.postData());
@@ -360,7 +372,7 @@ async function worker(route) {
   // ---------- listing decisions on the All services page (signed in from the log, same tab) ----------
   await page.goto(ON + '/mvp/services.html?listing=review&q=samaritans');
   await page.waitForSelector('#signed-in:not([hidden])');
-  check('decide: signed in via the log passcode in this tab', (await page.textContent('#signed-in-text')).includes('0 decisions'), await page.textContent('#signed-in-text'));
+  check('decide: signed in via the log passcode in this tab', (await page.textContent('#signed-in-text')).includes('0 decisions and 0 edited services'), await page.textContent('#signed-in-text'));
   await page.waitForSelector('.svc .decide');
   check('decide: decision controls shown', (await page.locator('#svc-samaritans-helpline .decide input[type=radio]').count()) === 3);
   await page.fill('#by', '');
@@ -389,10 +401,47 @@ async function worker(route) {
   check('decide: summary counts decisions waiting to be applied', sStats.some((x) => x.startsWith('2') && x.includes('waiting to be applied')), sStats.join(' | '));
   const [dd] = await Promise.all([page.waitForEvent('download'), page.click('#export-decisions')]);
   const saved = JSON.parse(fs.readFileSync(await dd.path(), 'utf8'));
-  check('decide: decisions download for apply-decisions', saved.decisions.kbop.decision === 'include' && saved.decisions['samaritans-helpline'].decision === 'exclude');
+  check('decide: decisions download for apply-decisions', saved.decisions.kbop.decision === 'include' && saved.decisions['samaritans-helpline'].decision === 'exclude' && 'edits' in saved);
+
+  // ---------- editing a service's details ----------
+  await page.goto(ON + '/mvp/services.html?q=kbop');
+  await page.waitForSelector('#svc-kbop .edit-open button');
+  await page.click('#svc-kbop .edit-open button');
+  await page.waitForSelector('#svc-kbop form.edit-form');
+  check('edit: form starts from the data', (await page.inputValue('#ed-kbop-name')) === 'Kirklees Better Outcomes Partnership (KBOP)' && (await page.inputValue('#ed-kbop-level')) === 'local');
+  check('edit: "To be completed" boxes highlighted', (await page.locator('#svc-kbop .edit .tbc').count()) >= 3, String(await page.locator('#svc-kbop .edit .tbc').count()));
+  await page.click('#svc-kbop form.edit-form button[type=submit]');
+  check('edit: nothing changed is caught', (await page.textContent('#svc-kbop .edit .msg')).includes('Nothing has changed'));
+  await page.fill('#ed-kbop-phone', '01484 000000');
+  await page.fill('#ed-kbop-whoFor', 'Adults in Kirklees with complex needs.');
+  await page.check('#ed-kbop-areas input[value=Batley]');
+  await page.fill('#ed-kbop-act-summary-0', 'One-to-one key worker support.');
+  await page.click('#svc-kbop form.edit-form button[type=submit]');
+  check('edit: needs a reason', (await page.textContent('#svc-kbop .edit .msg')).includes('what changed'));
+  await page.fill('#ed-kbop-why', 'Phoned the provider');
+  await page.check('#ed-kbop-checked');
+  await page.click('#svc-kbop form.edit-form button[type=submit]');
+  await page.waitForSelector('#svc-kbop .waiting');
+  const sent = edits.kbop;
+  check('edit: only the changed fields are sent, with what the data said', sent && Object.keys(sent.changes).sort().join() === 'activities,areas,phone,whoFor' && sent.before.phone === null && sent.checked === true && sent.by === 'TB', JSON.stringify(sent && sent.changes));
+  check('edit: waiting changes shown, old and new', (await page.textContent('#svc-kbop .waiting')).includes('01484 000000') && (await page.locator('#svc-kbop .waiting del').count()) === 4);
+  check('edit: badge says it is waiting to be applied', (await page.locator('#svc-kbop .pill.blue', { hasText: 'Details edited by TB' }).count()) === 1);
+  await page.click('#svc-kbop .edit-open button');
+  await page.waitForSelector('#svc-kbop form.edit-form');
+  check('edit: editing again starts from the waiting changes', (await page.inputValue('#ed-kbop-phone')) === '01484 000000');
+  await page.click('#svc-kbop .edit button:has-text("Cancel")');
+  await page.goto(ON + '/mvp/services.html?decision=edited');
+  await page.waitForSelector('.svc');
+  check('edit: "details edited" filter', (await page.locator('.svc').count()) === 1);
+  page.once('dialog', (d) => d.accept());
+  await page.click('#svc-kbop .waiting button');
+  await page.waitForSelector('#svc-kbop .waiting', { state: 'detached' });
+  check('edit: waiting changes can be discarded', !edits.kbop);
+  await page.goto(ON + '/mvp/services.html?decision=pending');
+  await page.waitForSelector('.svc');
   const [dc] = await Promise.all([page.waitForEvent('download'), page.click('#export')]);
   const csv2 = fs.readFileSync(await dc.path(), 'utf8');
-  check('decide: CSV includes the live list and team decision', csv2.includes('"Live list"') && csv2.includes('"Exclude completely"'));
+  check('decide: CSV includes the live list and team decision', csv2.includes('"Live list"') && csv2.includes('"Exclude completely"'), csv2.slice(0, 600));
   await page.click('#lock');
   check('decide: sign out hides the controls', (await page.locator('.decide').count()) === 0);
   await page.goto(ON + '/mvp/log.html');

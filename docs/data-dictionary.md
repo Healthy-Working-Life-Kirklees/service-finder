@@ -126,7 +126,7 @@ Every scheme has every field below, except where it says "optional". An empty li
 | `listing.by` | text | Optional. Who made the decision (name or initials, as entered on the All services page). Absent for the starting values set when the service was added. |
 | `listing.date` | date | Optional. When the decision was made, as `YYYY-MM-DD`. |
 
-The MVP team makes these decisions on the All services page; `npm run apply-decisions` writes them here (see the README). `open` is separate: it says whether a scheme is taking referrals. An included scheme that isn't open is shown but never recommended.
+The MVP team makes these decisions on the All services page, and can also edit most of a service's other fields there; `npm run apply-decisions` writes both into the scheme files (see the README). `open` is separate: it says whether a scheme is taking referrals. An included scheme that isn't open is shown but never recommended.
 
 ## Known quirks
 
