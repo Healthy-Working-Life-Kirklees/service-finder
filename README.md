@@ -126,11 +126,11 @@ How it works:
 2. Filter to what you want to work through. "Live list: Waiting for review" shows the 47 services added for review. "Team changes: Not yet decided by the team" shows everything nobody has decided on yet.
 3. For each service, choose include, further review or exclude, add a reason, and save. Decisions are stored on the Worker with the team log, so everyone sees them straight away, and a changed decision keeps the earlier ones as history. Nothing about a person is stored, only the service, the decision, the reason, the name or initials given and the time.
 4. **Editing details.** "Edit details" on any service opens a form with its details: name, contact details, who it's for, areas, categories, eligibility, how to get in, self-referral, what it offers and so on. Boxes still saying "To be completed" are highlighted. Say what changed and why, and tick "I have checked these details are current" if you checked them with the provider or its website (that sets the "last checked" date when applied). Only the fields that differ from the data are saved, with what the data said at the time. The changes show on the service, old and new, until they are applied, and can be discarded. One set of waiting changes is kept per service; editing again replaces it. The Worker checks every value against the same rules as the data (`worker/src/serviceedit.js`, using `data/schema.json`). The id, logo, trigger words (`requiresMention`), HWL flag and listing decision can't be changed this way.
-5. **Applying them.** Decisions and edits don't change the live finder by themselves. Someone with the repository runs:
+5. **Applying them.** Decisions and edits don't change the live finder by themselves. To apply them, on GitHub go to **Actions > Apply team changes > Run workflow** (tick "Preview only" first to see what would change). It fetches the team's decisions and edits from the Worker, writes the edited details and then each decision, reason, name and date into `data/services/<id>.json`, runs the data check and the Worker tests, and opens a pull request whose description lists every change, with old and new values. Merge that pull request and the deploys rebuild the live list. Until then the page shows "waiting to be applied". Running it again when nothing is new opens nothing.
 
-        WORKER_URL=https://hwl-service-finder.<subdomain>.workers.dev TEAM_PASSCODE='...' npm run apply-decisions
+   One-off setup for the button: in Settings > Secrets and variables > Actions, add a **secret** called `TEAM_PASSCODE` with the same value as the Worker's `TEAM_PASSCODE` (the `WORKER_URL` variable is already there for the Pages deploy). In Settings > Actions > General > Workflow permissions, tick **Allow GitHub Actions to create and approve pull requests**. Pull requests opened by the workflow don't trigger the Checks workflow (GitHub doesn't let one workflow's pull request start another), which is why the workflow runs the same checks itself; both deploys check the data again on merge.
 
-   (or saves the file from "Download the team's changes" on the page and runs `npm run apply-decisions -- --input <file>`; add `--dry-run` to preview). It writes edited details first, then each decision, reason, name and date into the service's `listing`, in `data/services/<id>.json`, and prints a summary to paste into the pull request, with old and new values. Once the pull request is merged, the deploys rebuild the live list. Until then the page shows "waiting to be applied".
+   The same thing can be run from a copy of the repository: `WORKER_URL=... TEAM_PASSCODE='...' npm run apply-decisions`, or `npm run apply-decisions -- --input <file>` with the file from "Download the team's changes" (add `--dry-run` to preview). It prints the same summary.
 
    It holds back, and lists in the summary: an edit to a field that has been changed in the data since the edit was made (so nobody's change is overwritten), an edit that wouldn't pass the data check, and a service chosen for the live list whose details still say "To be completed".
 
@@ -142,7 +142,7 @@ How it works:
 **Switch off (for the wider test):**
 1. Set `MVP_TOOLS` to `false` (or delete it) and re-run the Pages deploy. The pages and the links disappear.
 2. Delete the `TEAM_PASSCODE` secret. The log, decision and edit routes then return 404.
-3. Apply any outstanding decisions and edits first (`npm run apply-decisions`), as they are stored with the log.
+3. Apply any outstanding decisions and edits first (Actions > Apply team changes), as they are stored with the log.
 4. Export the log first if you want to keep it (Download as CSV on the log page).
 
 The log must never hold personal or identifying information.

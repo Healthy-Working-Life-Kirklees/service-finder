@@ -2,6 +2,9 @@
 // request: first any edits to a service's details, then the listing decisions (include, review or exclude).
 // Nothing reaches the live site until that pull request is merged.
 //
+// Usually run from GitHub: Actions > Apply team changes > Run workflow (.github/workflows/apply-team-changes.yml),
+// which opens the pull request itself. By hand:
+//
 //   WORKER_URL=https://hwl-service-finder.<subdomain>.workers.dev TEAM_PASSCODE='...' npm run apply-decisions
 //   npm run apply-decisions -- --input team-changes.json   (the file saved from the All services page)
 //   add --dry-run to see what would change without changing anything
