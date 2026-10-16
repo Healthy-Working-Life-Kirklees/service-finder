@@ -1,0 +1,96 @@
+name: Apply team changes
+
+# The "button" for the MVP team's changes from the All services page: Actions > Apply team changes > Run workflow.
+# It fetches the team's listing decisions and edits from the Worker, writes them into data/services/, checks the
+# data, and opens a pull request with a summary of what changed. Nothing goes live until that pull request is merged.
+#
+# One-off setup (see the README, "Reviewing which services are live, and editing details"):
+#   - Settings > Secrets and variables > Actions > Secrets: add TEAM_PASSCODE (the same value as the Worker secret).
+#   - The WORKER_URL variable is already used by the Pages deploy.
+#   - Settings > Actions > General > Workflow permissions: tick "Allow GitHub Actions to create and approve pull requests".
+
+on:
+  workflow_dispatch:
+    inputs:
+      preview:
+        description: "Preview only: show what would change, without opening a pull request"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: apply-team-changes
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Check the setup
+        env:
+          WORKER_URL: ${{ vars.WORKER_URL }}
+          TEAM_PASSCODE: ${{ secrets.TEAM_PASSCODE }}
+        run: |
+          missing=""
+          [ -n "$WORKER_URL" ] || missing="$missing the WORKER_URL variable,"
+          [ -n "$TEAM_PASSCODE" ] || missing="$missing the TEAM_PASSCODE secret,"
+          if [ -n "$missing" ]; then
+            echo "::error::This needs${missing%,} (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
+
+      - name: Apply the team's decisions and edits
+        env:
+          WORKER_URL: ${{ vars.WORKER_URL }}
+          TEAM_PASSCODE: ${{ secrets.TEAM_PASSCODE }}
+          PREVIEW: ${{ inputs.preview }}
+        run: |
+          npm ci
+          if [ "$PREVIEW" = "true" ]; then extra=--dry-run; else extra=; fi
+          npm run -s apply-decisions -- $extra > "$RUNNER_TEMP/summary.md"
+          cat "$RUNNER_TEMP/summary.md" >> "$GITHUB_STEP_SUMMARY"
+
+      # The same checks a pull request gets. If the changes would break the data, stop here and open nothing.
+      - name: Check the data
+        run: |
+          npm run check-data
+          node worker/test/logic.mjs > "$RUNNER_TEMP/tests.txt" || { tail -40 "$RUNNER_TEMP/tests.txt"; exit 1; }
+          tail -1 "$RUNNER_TEMP/tests.txt"
+
+      - name: Open a pull request
+        if: ${{ !inputs.preview }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          if git diff --quiet -- data/services; then
+            echo "Nothing to apply: the data already matches the team's decisions and edits." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          branch="team-changes/$(date -u +%Y-%m-%d)-${GITHUB_RUN_NUMBER}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add data/services
+          git commit -q -m "Apply the MVP team's decisions and edits ($(date -u +%Y-%m-%d))" -m "Run by $ACTOR from the Apply team changes workflow."
+          git push -q origin "$branch"
+          {
+            cat "$RUNNER_TEMP/summary.md"
+            echo
+            echo "---"
+            echo "Opened by the [Apply team changes]($RUN_URL) workflow, run by @$ACTOR. The data check and Worker tests passed in that run. Merge to put these changes live."
+          } > "$RUNNER_TEMP/body.md"
+          url=$(gh pr create --base main --head "$branch" --title "Apply the MVP team's decisions and edits ($(date -u '+%-d %b %Y'))" --body-file "$RUNNER_TEMP/body.md")
+          echo "Pull request: $url" | tee -a "$GITHUB_STEP_SUMMARY"
