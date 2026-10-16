@@ -105,3 +105,46 @@ button.stat:hover { border-color: var(--blue); }
   .facts { grid-template-columns: 1fr; gap: .1rem; }
   .facts dd { margin-bottom: .45rem; }
 }
+
+/* ---------- listing decisions (All services page) ---------- */
+.review-signin { background: var(--light); border-radius: 4px; padding: .8rem 1rem; margin: 0 0 1rem; }
+.review-signin h2 { font-size: 1.15rem; }
+.review-signin .field input { max-width: 18rem; width: 100%; }
+.mt-sm { margin-top: .6rem; }
+.svc.listing-review { border-left-color: #b35c00; }
+.svc.listing-exclude { border-left-color: #8a9aa5; background: #fafafa; }
+.svc .listing { margin: .2rem 0 .4rem; font-size: .95rem; max-width: 70ch; }
+.decide { border: 1px solid var(--border); border-radius: 4px; padding: .6rem .8rem; margin: .5rem 0 .2rem; background: #fbfcfc; }
+.decide legend { font-weight: 700; padding: 0 .3rem; }
+.decide .choices { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; margin: .2rem 0 .5rem; }
+.decide .choices label { display: flex; align-items: center; gap: .35rem; font-weight: 400; }
+.decide .choices input { width: 1.2rem; height: 1.2rem; margin: 0; }
+.decide label.note { display: block; font-weight: 700; font-size: .9rem; margin-bottom: .2rem; }
+.decide textarea { font: inherit; font-size: 1rem; width: 100%; padding: .4rem .5rem; border: 2px solid var(--text); border-radius: 4px; }
+.decide .row-end { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-top: .4rem; }
+.decide .msg { margin: 0; }
+.decide .current { margin: 0 0 .4rem; font-size: .95rem; }
+.decide .notes { margin: .2rem 0 0; }
+
+/* ---------- editing details (All services page) ---------- */
+.svc .edit-open { margin: .4rem 0 0; }
+.waiting { border: 1px solid #b7d1e8; background: #f2f7fc; border-radius: 4px; padding: .6rem .8rem; margin: .5rem 0; }
+.waiting del { color: var(--crisis); }
+.waiting ins { color: #00562a; text-decoration: none; font-weight: 700; }
+.edit { border: 2px solid var(--blue); border-radius: 4px; padding: .7rem .9rem; margin: .6rem 0; background: #fff; }
+.edit h4 { margin: 0 0 .2rem; font-size: 1.05rem; color: var(--dark-blue); }
+.edit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0 1rem; }
+.edit .field { margin-bottom: .6rem; }
+.edit .field label { display: block; font-weight: 700; font-size: .9rem; margin-bottom: .2rem; }
+.edit input[type=text], .edit input[type=url], .edit input[type=email], .edit select, .edit textarea {
+  font: inherit; font-size: 1rem; width: 100%; padding: .35rem .5rem; border: 2px solid var(--text); border-radius: 4px; background: #fff;
+}
+.edit fieldset.checks { border: 1px solid var(--border); border-radius: 4px; margin: 0 0 .7rem; padding: .4rem .7rem .6rem; }
+.edit fieldset.checks legend { font-weight: 700; font-size: .95rem; padding: 0 .3rem; }
+.edit .choices { display: flex; flex-wrap: wrap; gap: .3rem 1rem; }
+.edit .choices label { display: flex; align-items: center; gap: .3rem; font-size: .95rem; }
+.edit .act { border-left: 3px solid var(--border); padding-left: .6rem; margin-bottom: .6rem; }
+.edit label.inline { display: flex; align-items: center; gap: .4rem; margin-bottom: .5rem; font-weight: 700; }
+.edit .tbc input, .edit .tbc textarea, .edit .tbc select, .edit .act.tbc input, .edit .act.tbc textarea { border-color: #b35c00; background: var(--warn-bg); }
+.edit .row-end { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
+.edit .row-end .msg { margin: 0; }

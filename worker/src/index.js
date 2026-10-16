@@ -13,7 +13,9 @@
 
 import data from '../../data/services.json';
 import SYSTEM_PROMPT from '../../prompt/system.md';
+import schema from '../../data/schema.json';
 import { handleLog } from './teamlog.js';
+import { makeChecker } from './serviceedit.js';
 import { handleFeedback, feedbackOn } from './feedback.js';
 
 // The team issues log lives in its own Durable Object class (see teamlog.js).
@@ -52,6 +54,8 @@ const CRISIS_RE = new RegExp(
 );
 
 const SERVICES = data.services;
+// Checks changes to a service's details made by the MVP team on the All services page.
+const EDIT_CHECKER = makeChecker(schema);
 // What Claude is sent about each scheme. Contact details are left out (the page draws them from the data, so the
 // AI never writes them), as are fields only people or the Worker use: requiresMention is applied below by the
 // Worker itself, and provenance, logo and review dates are for maintaining the data. This keeps each request smaller.
@@ -192,7 +196,7 @@ export default {
     const cors = originOk
       ? {
           'Access-Control-Allow-Origin': origin,
-          'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
+          'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'content-type, x-team-passcode, x-feedback-passcode',
           'Access-Control-Max-Age': '600',
           Vary: 'Origin',
@@ -202,7 +206,10 @@ export default {
     if (request.method === 'OPTIONS') return new Response(null, { status: originOk ? 204 : 403, headers: cors });
     if (url.pathname === '/health') return json({ ok: true, aiConfigured: Boolean(env.ANTHROPIC_API_KEY), teamLog: Boolean(env.TEAM_PASSCODE), feedback: feedbackOn(env) }, 200, cors);
     // MVP-team issues log: off unless the TEAM_PASSCODE secret is set.
-    if (url.pathname.startsWith('/log/')) return originOk ? handleLog(request, env, url, cors) : json({ error: 'Not allowed.' }, 403, cors);
+    // Reading the team's listing decisions is also allowed with no Origin at all (not from a browser), so
+    // scripts/apply-decisions.mjs can fetch them with the passcode, like the feedback digest does.
+    const scriptRead = !origin && request.method === 'GET' && (url.pathname === '/log/decisions' || url.pathname === '/log/edits');
+    if (url.pathname.startsWith('/log/')) return originOk || scriptRead ? handleLog(request, env, url, cors, EDIT_CHECKER) : json({ error: 'Not allowed.' }, 403, cors);
     // User feedback: sending is public (with the same checks as /chat); reading needs the FEEDBACK_PASSCODE secret.
     if (url.pathname === '/feedback' || url.pathname.startsWith('/feedback/')) return handleFeedback(request, env, url, cors, originOk, FEEDBACK_DATA);
     if (url.pathname !== '/chat' || request.method !== 'POST') return json({ error: 'Not found.' }, 404, cors);

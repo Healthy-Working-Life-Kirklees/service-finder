@@ -60,5 +60,9 @@
     "checkedUrl": "https://www.scope.org.uk/employment-services/support-to-work/",
     "evidence": "Sign-up open; no 2026 date.",
     "confidence": "medium"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

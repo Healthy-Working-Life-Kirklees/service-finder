@@ -58,5 +58,9 @@
     "checkedUrl": "https://andysmanclub.co.uk/full-club-lists/",
     "evidence": "Provider news Oct 2026; only Ainley Top on official list.",
     "confidence": "medium"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

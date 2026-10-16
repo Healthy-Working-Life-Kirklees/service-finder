@@ -1,0 +1,64 @@
+{
+  "id": "hub-of-hope",
+  "name": "Hub of Hope",
+  "organisation": "Chasing the Stigma",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual",
+    "organisation"
+  ],
+  "categories": [
+    "Mental health"
+  ],
+  "whoFor": "Anyone, including practitioners.",
+  "age": null,
+  "webpage": "https://hubofhope.co.uk/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Online"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Website or app"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Website or app"
+  },
+  "activities": [
+    {
+      "name": "Directory of services",
+      "summary": "Free website and app listing mental health support across the UK, searchable by postcode.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "notes": "A directory of other services, not a service people are referred to.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 105",
+    "foundVia": "Your list",
+    "checkedUrl": "https://hubofhope.co.uk/about-us",
+    "evidence": "© 2026.",
+    "confidence": "high"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "Left out of the October import because it is a directory, not a service. Added so the MVP team can decide."
+  }
+}

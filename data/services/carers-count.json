@@ -61,5 +61,9 @@
     "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationDetails.aspx?orgId=7338",
     "evidence": "Directory March 2025; site July 2025. Separate from Supporting Working Carers. Provider site (June 2026) gives Empire House, Dewsbury; directory gives Brian Jackson House/5th floor.",
     "confidence": "medium"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

@@ -1,0 +1,61 @@
+{
+  "id": "mencap-in-kirklees",
+  "name": "Mencap in Kirklees",
+  "organisation": "Mencap in Kirklees",
+  "status": "Not verified as running (web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Disability & neurodiversity",
+    "Skills"
+  ],
+  "whoFor": "To be completed: the October 2026 research did not confirm who this is for.",
+  "age": null,
+  "webpage": "https://www.nhs.uk/services/service-directory/mencap-in-kirklees/N10498906",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "learning-disability-autism"
+  ],
+  "referralRoutes": [
+    "To be completed"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "To be completed."
+  },
+  "activities": [
+    {
+      "name": "Mencap in Kirklees",
+      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Not known",
+  "notes": "Why it wasn't on the main list: No evidence of a current employment offer. Directory (June 2025) mentions employment training: 01484 340811, info@mencapinkirklees.org.uk, Lindley HD3 3LX.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 8",
+    "foundVia": "Web research or directory review (October 2026)",
+    "evidence": "No evidence of a current employment offer. Directory (June 2025) mentions employment training: 01484 340811, info@mencapinkirklees.org.uk, Lindley HD3 3LX.",
+    "confidence": "low",
+    "checkedUrl": "https://www.nhs.uk/services/service-directory/mencap-in-kirklees/N10498906"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+  }
+}

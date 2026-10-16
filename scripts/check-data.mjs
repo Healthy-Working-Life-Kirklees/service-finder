@@ -4,7 +4,8 @@
 //
 // 1. Each file matches data/schema.json (required fields, allowed values, date and web address formats).
 // 2. Rules a schema can't express: the file name matches the id, logos exist, requiresMention patterns
-//    are valid, dates aren't in the future.
+//    are valid, dates aren't in the future, and a service on the live list ("listing": include) has no
+//    "To be completed" placeholders left in it.
 // It also reports (without failing) entries overdue for a check, so they are easy to spot.
 //
 // Exits with an error if anything fails, which stops the deploy or marks the pull request as failing.
@@ -14,6 +15,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Ajv2020 from 'ajv/dist/2020.js';
 
+const PLACEHOLDER = 'To be completed';
 const STALE_DAYS = 135; // the same threshold the page uses for its "may be out of date" warning
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dir = path.join(root, 'data', 'services');
@@ -41,6 +43,7 @@ if (meta) {
 const today = new Date().toISOString().slice(0, 10);
 const files = fs.readdirSync(dir).filter((f) => !f.startsWith('.'));
 const overdue = [];
+const decisions = { include: 0, review: 0, exclude: 0 };
 const names = new Map();
 
 for (const f of files.sort()) {
@@ -71,17 +74,24 @@ for (const f of files.sort()) {
   }
   if (s.lastUpdated > today) fail(rel, `lastUpdated (${s.lastUpdated}) is in the future`);
   if (Number.isNaN(Date.parse(s.lastUpdated))) fail(rel, `lastUpdated (${s.lastUpdated}) isn't a real date`);
+  if (s.listing.date && s.listing.date > today) fail(rel, `listing.date (${s.listing.date}) is in the future`);
+  // Services added only for review carry "To be completed" where the research found nothing. They can't go live
+  // until a person fills those in.
+  if (s.listing.decision === 'include' && JSON.stringify(s).includes(PLACEHOLDER)) {
+    fail(rel, `is on the live list ("listing": include) but still says "${PLACEHOLDER}". Fill in the details first, or set the decision to review.`);
+  }
+  decisions[s.listing.decision] += 1;
   const key = (s.name + ' | ' + s.organisation).toLowerCase();
   if (names.has(key)) fail(rel, `same name and organisation as ${names.get(key)}`);
   names.set(key, rel);
-  if (s.open && (Date.now() - Date.parse(s.lastUpdated)) / 86400000 > STALE_DAYS) overdue.push(`${s.id} (${s.lastUpdated})`);
+  if (s.open && s.listing.decision === 'include' && (Date.now() - Date.parse(s.lastUpdated)) / 86400000 > STALE_DAYS) overdue.push(`${s.id} (${s.lastUpdated})`);
 }
 
 if (!files.length) fail('data/services/', 'no scheme files found');
 
-if (overdue.length) console.log(`Note: ${overdue.length} open entries are overdue for a check: ${overdue.join(', ')}`);
+if (overdue.length) console.log(`Note: ${overdue.length} open entries on the live list are overdue for a check: ${overdue.join(', ')}`);
 if (errors.length) {
   console.error(`\n${errors.length} problem${errors.length === 1 ? '' : 's'} in the scheme data:\n  ` + errors.join('\n  '));
   process.exit(1);
 }
-console.log(`Checked ${files.length} scheme files: all fine.`);
+console.log(`Checked ${files.length} scheme files: all fine. On the live list: ${decisions.include}. Waiting for review: ${decisions.review}. Excluded: ${decisions.exclude}.`);

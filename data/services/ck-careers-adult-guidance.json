@@ -57,5 +57,9 @@
     "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=318",
     "evidence": "Directory Oct 2025; council pages (to Oct 2026) still point to it. Separate from My Way Forward.",
     "confidence": "medium"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

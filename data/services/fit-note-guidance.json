@@ -61,5 +61,9 @@
     "checkedUrl": "https://www.gov.uk/government/collections/fit-note",
     "evidence": "Guidance dated 2023; reform pending.",
     "confidence": "medium"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

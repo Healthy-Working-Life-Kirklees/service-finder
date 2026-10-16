@@ -5,7 +5,8 @@
   "scripts": {
     "build-data": "node scripts/build-data.mjs",
     "check-data": "node scripts/check-data.mjs",
-    "feedback-digest": "node scripts/feedback-digest.mjs"
+    "feedback-digest": "node scripts/feedback-digest.mjs",
+    "apply-decisions": "node scripts/apply-decisions.mjs"
   },
   "devDependencies": {
     "ajv": "^8.17.1"

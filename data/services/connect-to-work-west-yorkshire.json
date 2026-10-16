@@ -1,0 +1,63 @@
+{
+  "id": "connect-to-work-west-yorkshire",
+  "name": "Connect to Work (West Yorkshire / Kirklees)",
+  "organisation": "WYCA with Kirklees Council",
+  "status": "Not verified as running (web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Staying in work",
+    "Health linked to work",
+    "Disability & neurodiversity"
+  ],
+  "whoFor": "To be completed: the October 2026 research did not confirm who this is for.",
+  "age": null,
+  "webpage": "https://www.westyorks-ca.gov.uk/governance/procurement/healthy-working-life-connect-to-work-market-engagement/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "To be completed"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "To be completed."
+  },
+  "activities": [
+    {
+      "name": "Connect to Work (West Yorkshire / Kirklees)",
+      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Not known",
+  "notes": "Why it wasn't on the main list: No public referral route. In Kirklees delivered mostly through REAL Employment (already listed); lead provider contract from Sep 2026.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 3",
+    "foundVia": "Web research or directory review (October 2026)",
+    "evidence": "No public referral route. In Kirklees delivered mostly through REAL Employment (already listed); lead provider contract from Sep 2026.",
+    "confidence": "low",
+    "checkedUrl": "https://www.westyorks-ca.gov.uk/governance/procurement/healthy-working-life-connect-to-work-market-engagement/"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+  }
+}

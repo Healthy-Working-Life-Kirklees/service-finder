@@ -1,0 +1,63 @@
+{
+  "id": "shout-85258",
+  "name": "Shout 85258 text support",
+  "organisation": "Mental Health Innovations",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health"
+  ],
+  "whoFor": "Anyone in the UK.",
+  "age": null,
+  "webpage": "https://giveusashout.org/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Text, UK-wide"
+  ],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Text SHOUT to 85258"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Text SHOUT to 85258"
+  },
+  "activities": [
+    {
+      "name": "Listening and support",
+      "summary": "Free 24/7 text service: text and a trained volunteer texts back.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "notes": "A crisis or listening line. The finder already shows urgent contacts in its crisis panel and gives no cards when someone mentions suicide or self-harm.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 116",
+    "foundVia": "MECC Link",
+    "checkedUrl": "https://giveusashout.org/",
+    "evidence": "News items Jul–Oct 2026.",
+    "confidence": "high"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "Left out of the October import because the crisis panel covers crisis support. Added so the MVP team can decide."
+  }
+}

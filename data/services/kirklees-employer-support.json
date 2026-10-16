@@ -55,5 +55,9 @@
     "checkedUrl": "https://www.kirklees.gov.uk/beta/employment-and-skills/employer-support.aspx",
     "evidence": "Page changed March 2025.",
     "confidence": "medium"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

@@ -1,0 +1,61 @@
+{
+  "id": "workwell",
+  "name": "WorkWell",
+  "organisation": "DWP/DHSC",
+  "status": "Closed or not running (web research, October 2026)",
+  "open": false,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Health linked to work",
+    "Staying in work"
+  ],
+  "whoFor": "To be completed: the October 2026 research did not confirm who this is for.",
+  "age": null,
+  "webpage": "https://www.gov.uk/government/news/new-64-million-plan-to-help-people-stay-in-work",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "To be completed"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "To be completed."
+  },
+  "activities": [
+    {
+      "name": "WorkWell",
+      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Not known",
+  "notes": "Why it wasn't on the main list: West Yorkshire isn't a WorkWell pilot area.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 21",
+    "foundVia": "Web research or directory review (October 2026)",
+    "evidence": "West Yorkshire isn't a WorkWell pilot area.",
+    "confidence": "low",
+    "checkedUrl": "https://www.gov.uk/government/news/new-64-million-plan-to-help-people-stay-in-work"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "Research found it closed or not running, and advised not listing it. Added so the MVP team can confirm."
+  }
+}

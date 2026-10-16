@@ -74,3 +74,13 @@ Where phone or online support is offered, these are matched as `Kirklees-wide`. 
 ## 7. Translation
 
 - [ ] The new card wording (regional/national service, needs a referral, cost, languages and formats) and the new trigger words for convictions, bereavement and gambling have first-draft Polish and Urdu. Add them to the translator's list.
+
+## 8. Services added for the MVP team to review (16 October 2026)
+
+47 more services were added with `"listing": {"decision": "review"}`, so they are **not** on the live finder until the team decides. Work through them on the All services page (filter "Live list: Waiting for review"), choosing include, further review or exclude for each.
+
+- [ ] The 40 from the spreadsheet's "Not verified or closed" tab. Each file's `notes` says why it wasn't confirmed. Before including one, check it's running and fill in everything that says "To be completed" with "Edit details" on the same page (the check won't let it go live otherwise). Its categories, level, areas and health focus were guessed from the name, so check those too.
+- [ ] 5 of them were found closed: HOPELINE247 (Papyrus), the West Yorkshire Staff Mental Health and Wellbeing Hub, the Working Families helpline, WorkWell (not a West Yorkshire pilot) and Works Better. The research advised not listing them; they're there so the team can confirm and exclude them.
+- [ ] Two overlap with services already live: Connect to Work (delivered in Kirklees through REAL Employment) and the Employment West Yorkshire page (delivered as Employment Kirklees).
+- [ ] The 3 crisis lines (Samaritans, CALM, Shout). If included, the AI could suggest them as cards. The crisis panel already shows urgent contacts, and gives no cards when someone mentions suicide or self-harm, so think about whether they add anything outside a crisis.
+- [ ] The 4 directories (Kirklees Welcomes, MECC Link, the District Provision Tool, Hub of Hope). They list other services rather than offering support themselves. MECC Link and the District Provision Tool are written for practitioners.

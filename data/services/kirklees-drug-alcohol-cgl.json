@@ -86,5 +86,9 @@
     "checkedUrl": "https://www.changegrowlive.org/drug-alcohol-s-kirklees/drugs-alcohol",
     "evidence": "Site © 2026 with current hours. Separate from IPS for CGL service users.",
     "confidence": "high"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

@@ -61,5 +61,9 @@
     "checkedUrl": "https://www.imperial.nhs.uk/our-services/op-restore",
     "evidence": "Current referral process, page undated.",
     "confidence": "medium"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }
