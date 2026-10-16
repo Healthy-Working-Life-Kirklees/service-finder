@@ -29,20 +29,39 @@
   </header>
 
   <main id="main" class="wrap wide">
-    <p class="mvp-banner"><strong>For the MVP team only.</strong> Every scheme and service the finder knows about, including those not yet on the live list. Only services on the live list are shown on the finder and given to the AI. Use this page to decide, for each service, whether to <strong>include</strong> it on the live list, give it <strong>further review</strong>, or <strong>exclude</strong> it completely. To change a service's details, use its "Edit on GitHub" link and open a pull request.</p>
+    <p class="mvp-banner"><strong>For the MVP team only.</strong> Every scheme and service the finder knows about, including those not on the live list. Only services <strong>on the live list</strong> are shown on the finder and given to the AI. Sign in below to decide which services are live, correct their details, and add services that are missing.</p>
+
+    <details class="how" id="how">
+      <summary>How to use this page</summary>
+      <ol>
+        <li><strong>Sign in</strong> with the team passcode (the same one as the issues log) and put your name or initials. They are saved with everything you do, so the team can see who did what. Without signing in you can still search, filter and read everything.</li>
+        <li><strong>Find what needs doing.</strong> Use the figures at the top (each one is a shortcut) or the filters. "Live list: Waiting for review" shows services not yet live. "Team changes: Not yet decided by the team" shows everything nobody has decided on. "Sort by: Waiting for review first" puts them at the top.</li>
+        <li><strong>Decide.</strong> In each service's "Team decision" box choose:
+          <ul>
+            <li><strong>Include on the live list</strong>: shown on the finder and given to the AI.</li>
+            <li><strong>Needs further review</strong>: kept off the live list until someone checks it.</li>
+            <li><strong>Exclude completely</strong>: kept off for good, for example closed, not in Kirklees, not a service, or a duplicate.</li>
+          </ul>
+          Give a reason for further review or exclude, then save. You can change a decision later; earlier ones are kept.</li>
+        <li><strong>Correct or complete details.</strong> "Edit details" opens a form with the service's details. Boxes still saying "To be completed" are highlighted: a service can't go live until they're filled in. Say what changed and why, and tick "I have checked these details are current" if you checked them with the provider or its website. Your changes show on the service, old and new, until they're applied, and can be discarded.</li>
+        <li><strong>Add a missing service.</strong> "Add a service" (above the list) opens an empty form. Say where the service came from and why it should be added. The page warns you if it looks like one already listed. It then appears as "New: not yet in the data", and the team reviews, edits and decides on it like any other. A new service never goes live unless the team decides to include it.</li>
+        <li><strong>Going live.</strong> Everything is saved for the team straight away, but the finder itself only changes when the team's changes are applied: Phil runs <strong>Apply team changes</strong> on GitHub and merges the pull request it opens. Until then you'll see "waiting to be applied". Changes that clash with something changed since, or that break the data rules, are held back and listed for Phil to sort out.</li>
+      </ol>
+      <p>Please don't put personal or identifying information in reasons or notes. To see a service's file and its history, open its "Full details" and use the GitHub links.</p>
+    </details>
 
     <section id="review-signin" class="review-signin" aria-labelledby="review-h">
-      <h2 id="review-h" class="mt0">Record decisions</h2>
+      <h2 id="review-h" class="mt0">Review, edit and add services</h2>
       <div id="signin-form">
-        <p>Enter the team passcode (the same one as the issues log) to record a decision on any service, edit its details, or add a new service. Without it you can still search and read everything.</p>
+        <p>Enter the team passcode to decide on services, edit their details and add new ones. Without it you can still search and read everything.</p>
         <div class="field"><label for="pass">Team passcode</label><input id="pass" type="password" autocomplete="off"></div>
         <button id="unlock" class="btn primary small" type="button">Sign in</button>
       </div>
       <p id="signin-msg" class="msg err" role="alert" hidden></p>
-      <div class="field mt-sm"><label for="by">Your name or initials</label><input id="by" type="text" maxlength="40" autocomplete="off" aria-describedby="by-hint"><p id="by-hint" class="hint">Saved with each decision you make.</p></div>
+      <div class="field mt-sm"><label for="by">Your name or initials</label><input id="by" type="text" maxlength="40" autocomplete="off" aria-describedby="by-hint"><p id="by-hint" class="hint">Saved with each decision, edit and new service.</p></div>
       <div id="signed-in" hidden>
         <p><span id="signed-in-text"></span> <button id="lock" class="btn secondary small" type="button">Sign out</button></p>
-        <p class="hint">Decisions and edits are saved straight away and everyone on the team sees them. They reach the live finder only after they are applied to the data (on GitHub: Actions &gt; Apply team changes &gt; Run workflow, then merge the pull request it opens), so "waiting to be applied" means the team has made a change but the finder hasn't changed yet. New services you add are listed as "New: not yet in the data" and are reviewed and decided on like the rest.</p>
+        <p class="hint">Everything you save is shared with the team straight away. It reaches the live finder when the team's changes are applied (Phil: Actions &gt; Apply team changes on GitHub, then merge), so "waiting to be applied" means saved but not live yet. See "How to use this page" above.</p>
       </div>
     </section>
 
