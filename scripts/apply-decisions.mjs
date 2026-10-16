@@ -1,5 +1,7 @@
 // Writes the MVP team's changes from the All services page into the scheme files, so they can go into a pull
-// request: first any edits to a service's details, then the listing decisions (include, review or exclude).
+// request: first new services the team has added (each becomes data/services/<id>.json), then edits to a
+// service's details, then the listing decisions (include, review or exclude). A new service starts as "review"
+// and only goes on the live list if the team has also decided to include it.
 // Nothing reaches the live site until that pull request is merged.
 //
 // Usually run from GitHub: Actions > Apply team changes > Run workflow (.github/workflows/apply-team-changes.yml),
@@ -43,7 +45,7 @@ const input = opt('--input');
 async function load() {
   if (input) {
     const d = JSON.parse(fs.readFileSync(input, 'utf8'));
-    return { decisions: d.decisions || {}, edits: d.edits || {} };
+    return { decisions: d.decisions || {}, edits: d.edits || {}, added: d.added || {} };
   }
   const url = String(process.env.WORKER_URL || '').replace(/\/$/, '');
   const pass = process.env.TEAM_PASSCODE || '';
@@ -59,7 +61,7 @@ async function load() {
     }
     return res.json();
   };
-  return { decisions: (await get('/log/decisions')).decisions || {}, edits: (await get('/log/edits')).edits || {} };
+  return { decisions: (await get('/log/decisions')).decisions || {}, edits: (await get('/log/edits')).edits || {}, added: (await get('/log/new')).added || {} };
 }
 
 const same = (a, b) => JSON.stringify(a === undefined ? null : a) === JSON.stringify(b === undefined ? null : b);
@@ -77,10 +79,62 @@ function open(id) {
   return files.get(id);
 }
 
-const { decisions, edits } = await load();
+const { decisions, edits, added } = await load();
 const unknown = new Set();
 
-// ---------- 1. edits to details ----------
+// ---------- 1. new services ----------
+// Every other service's name and organisation, to catch an obvious duplicate.
+const taken = new Map();
+for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.json'))) {
+  try {
+    const s = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
+    taken.set((s.name + ' | ' + s.organisation).toLowerCase(), s.id);
+  } catch {}
+}
+const created = [];
+const newProblems = [];
+let addedSame = 0;
+for (const [id, a] of Object.entries(added).sort(([x], [y]) => x.localeCompare(y))) {
+  if (!a || !a.service || typeof a.service !== 'object') continue;
+  if (!ID_RE.test(id) || id.length > 50) {
+    newProblems.push({ id, name: a.service.name, by: a.by, why: 'the id is not valid' });
+    continue;
+  }
+  const file = path.join(dir, id + '.json');
+  if (fs.existsSync(file)) {
+    const existing = JSON.parse(fs.readFileSync(file, 'utf8'));
+    // Already applied by an earlier run: the file came from this entry.
+    if (existing.provenance && String(existing.provenance.source || '').startsWith('Added on the All services page')) addedSame += 1;
+    else newProblems.push({ id, name: a.service.name, by: a.by, why: 'a service with this id is already in the data; change the id' });
+    continue;
+  }
+  const dupe = taken.get((a.service.name + ' | ' + a.service.organisation).toLowerCase());
+  if (dupe) {
+    newProblems.push({ id, name: a.service.name, by: a.by, why: `it has the same name and organisation as \`${dupe}\`` });
+    continue;
+  }
+  const date = String(a.created || a.t || '').slice(0, 10) || new Date().toISOString().slice(0, 10);
+  const lastDate = String(a.t || '').slice(0, 10) || date;
+  const s = { id, ...a.service, hwlFunded: false };
+  for (const k of Object.keys(s)) if (s[k] === null && !REQUIRED.has(k)) delete s[k];
+  s.lastUpdated = lastDate;
+  s.reviewCycle = s.reviewCycle || 'Quarterly';
+  s.provenance = { source: `Added on the All services page by ${a.createdBy || a.by} (${date})`, evidence: a.note };
+  if (a.checkedUrl) s.provenance.checkedUrl = a.checkedUrl;
+  s.listing = { decision: 'review', reason: `New service added by ${a.createdBy || a.by}, waiting for the team to review it.` };
+  // Keep the field order the same as the other files.
+  const order = [...Object.keys(schema.properties)];
+  const ordered = Object.fromEntries(order.filter((k) => k in s).map((k) => [k, s[k]]));
+  if (!validate(ordered)) {
+    newProblems.push({ id, name: s.name, by: a.by, why: "it wouldn't pass the data check: " + validate.errors.map((x) => `${x.instancePath || '(top)'} ${x.message}`).slice(0, 3).join('; ') });
+    continue;
+  }
+  files.set(id, { file, s: ordered, dirty: true });
+  taken.set((s.name + ' | ' + s.organisation).toLowerCase(), id);
+  created.push({ id, name: s.name, organisation: s.organisation, by: a.createdBy || a.by, date, note: a.note });
+}
+
+// ---------- 2. edits to details ----------
 const edited = [];
 const conflicts = [];
 const invalid = [];
@@ -126,7 +180,7 @@ for (const [id, e] of Object.entries(edits).sort(([a], [b]) => a.localeCompare(b
   edited.push({ id, name: next.name, by: e.by, date, note: e.note, checked: Boolean(e.checked), changes });
 }
 
-// ---------- 2. listing decisions ----------
+// ---------- 3. listing decisions ----------
 const changed = [];
 const blocked = [];
 let decisionsSame = 0;
@@ -164,7 +218,18 @@ if (!dryRun) for (const f of files.values()) if (f && f.dirty) fs.writeFileSync(
 // ---------- summary ----------
 const n = (k, one, many) => `${k} ${k === 1 ? one : many}`;
 const out = [`# MVP team changes${dryRun ? ' (dry run: nothing changed)' : ''}`, ''];
-out.push(`${n(edited.length, 'service', 'services')} with edited details, ${editsSame} already up to date. ${n(changed.length, 'listing decision', 'listing decisions')} applied, ${decisionsSame} already up to date.`, '');
+out.push(`${n(created.length, 'new service', 'new services')} added, ${addedSame} already added. ${n(edited.length, 'service', 'services')} with edited details, ${editsSame} already up to date. ${n(changed.length, 'listing decision', 'listing decisions')} applied, ${decisionsSame} already up to date.`, '');
+if (created.length) {
+  out.push(`## New services (${created.length})`, '');
+  out.push('Each starts as "waiting for review" unless the team has also decided to include or exclude it (below).', '');
+  for (const c of created) out.push(`- **${c.name}**, ${c.organisation} (\`data/services/${c.id}.json\`). Added by ${c.by}, ${c.date}: ${c.note}`);
+  out.push('');
+}
+if (newProblems.length) {
+  out.push(`## New services not added (${newProblems.length})`, '');
+  for (const c of newProblems) out.push(`- **${c.name || c.id}** (\`${c.id}\`), added by ${c.by}: ${c.why}.`);
+  out.push('');
+}
 if (edited.length) {
   out.push(`## Details changed (${edited.length})`, '');
   for (const x of edited) {

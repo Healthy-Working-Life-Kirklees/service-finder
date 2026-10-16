@@ -112,7 +112,7 @@ For the initial MVP team only, not for the wider test.
 - `mvp/suggested-entries.json` holds packs of suggested log entries (for example the data-freshness options). The log page offers to add any whose title isn't already in the log, using the signed-in person's own session, and can append a note to an existing entry. To suggest more entries, add a pack to that file and push.
 - These pages are deployed only when the repository variable `MVP_TOOLS` is exactly `true`. When it is, the main page also shows a small "MVP team only" bar linking to them.
 
-### Reviewing which services are live, and editing details
+### Reviewing which services are live, editing details and adding services
 
 For each service, the MVP team decides one of three things on the All services page:
 
@@ -126,13 +126,14 @@ How it works:
 2. Filter to what you want to work through. "Live list: Waiting for review" shows the 47 services added for review. "Team changes: Not yet decided by the team" shows everything nobody has decided on yet.
 3. For each service, choose include, further review or exclude, add a reason, and save. Decisions are stored on the Worker with the team log, so everyone sees them straight away, and a changed decision keeps the earlier ones as history. Nothing about a person is stored, only the service, the decision, the reason, the name or initials given and the time.
 4. **Editing details.** "Edit details" on any service opens a form with its details: name, contact details, who it's for, areas, categories, eligibility, how to get in, self-referral, what it offers and so on. Boxes still saying "To be completed" are highlighted. Say what changed and why, and tick "I have checked these details are current" if you checked them with the provider or its website (that sets the "last checked" date when applied). Only the fields that differ from the data are saved, with what the data said at the time. The changes show on the service, old and new, until they are applied, and can be discarded. One set of waiting changes is kept per service; editing again replaces it. The Worker checks every value against the same rules as the data (`worker/src/serviceedit.js`, using `data/schema.json`). The id, logo, trigger words (`requiresMention`), HWL flag and listing decision can't be changed this way.
-5. **Applying them.** Decisions and edits don't change the live finder by themselves. To apply them, on GitHub go to **Actions > Apply team changes > Run workflow** (tick "Preview only" first to see what would change). It fetches the team's decisions and edits from the Worker, writes the edited details and then each decision, reason, name and date into `data/services/<id>.json`, runs the data check and the Worker tests, and opens a pull request whose description lists every change, with old and new values. Merge that pull request and the deploys rebuild the live list. Until then the page shows "waiting to be applied". Running it again when nothing is new opens nothing.
+5. **Adding a new service.** "Add a service" (above the list, once signed in) opens the same form, empty, plus an id for its file (made from the name). Say where the service came from and why it should be added. Before saving, the page checks for a service with the same or a very similar name, or the same web site, and asks you to confirm if it finds one. A new service is listed as **"New: not yet in the data"** (the "Live list" filter has an option for these). The team reviews it exactly like any other: anyone can edit it, decide include, further review or exclude, or discard it. It is stored on the Worker until the team's changes are next applied, when it becomes `data/services/<id>.json`, as "waiting for review" unless the team has already decided. **A new service never goes live without a team decision to include it.**
+6. **Applying them.** New services, decisions and edits don't change the live finder by themselves. To apply them, on GitHub go to **Actions > Apply team changes > Run workflow** (tick "Preview only" first to see what would change). It fetches the team's new services, decisions and edits from the Worker, creates a file for each new service, writes the edited details and then each decision, reason, name and date into `data/services/<id>.json`, runs the data check and the Worker tests, and opens a pull request whose description lists every change, with old and new values. Merge that pull request and the deploys rebuild the live list. Until then the page shows "waiting to be applied". Running it again when nothing is new opens nothing.
 
    One-off setup for the button: in Settings > Secrets and variables > Actions, add a **secret** called `TEAM_PASSCODE` with the same value as the Worker's `TEAM_PASSCODE` (the `WORKER_URL` variable is already there for the Pages deploy). In Settings > Actions > General > Workflow permissions, tick **Allow GitHub Actions to create and approve pull requests**. Pull requests opened by the workflow don't trigger the Checks workflow (GitHub doesn't let one workflow's pull request start another), which is why the workflow runs the same checks itself; both deploys check the data again on merge.
 
    The same thing can be run from a copy of the repository: `WORKER_URL=... TEAM_PASSCODE='...' npm run apply-decisions`, or `npm run apply-decisions -- --input <file>` with the file from "Download the team's changes" (add `--dry-run` to preview). It prints the same summary.
 
-   It holds back, and lists in the summary: an edit to a field that has been changed in the data since the edit was made (so nobody's change is overwritten), an edit that wouldn't pass the data check, and a service chosen for the live list whose details still say "To be completed".
+   It holds back, and lists in the summary: a new service whose id is already taken, or with the same name and organisation as one already in the data; an edit to a field that has been changed in the data since the edit was made (so nobody's change is overwritten), an edit that wouldn't pass the data check, and a service chosen for the live list whose details still say "To be completed".
 
 **Switch on:**
 1. Cloudflare dashboard > Workers & Pages > hwl-service-finder > Settings > Variables and Secrets: add a **secret** called `TEAM_PASSCODE` (a long passphrase, 16+ characters). Share it with the team directly, not by chat or email to people outside the team.
@@ -141,8 +142,8 @@ How it works:
 
 **Switch off (for the wider test):**
 1. Set `MVP_TOOLS` to `false` (or delete it) and re-run the Pages deploy. The pages and the links disappear.
-2. Delete the `TEAM_PASSCODE` secret. The log, decision and edit routes then return 404.
-3. Apply any outstanding decisions and edits first (Actions > Apply team changes), as they are stored with the log.
+2. Delete the `TEAM_PASSCODE` secret. The log, decision, edit and new-service routes then return 404.
+3. Apply any outstanding new services, decisions and edits first (Actions > Apply team changes), as they are stored with the log.
 4. Export the log first if you want to keep it (Download as CSV on the log page).
 
 The log must never hold personal or identifying information.

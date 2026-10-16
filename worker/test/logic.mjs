@@ -380,6 +380,34 @@ check('edits: discard', r.status === 200 && Object.keys((await logCall('GET', '/
 r = await logCall('DELETE', '/log/edits/kbop', { by: 'PL' });
 check('edits: discarding twice -> 404', r.status === 404);
 
+// new services added by the team
+const newSvc = () => ({
+  name: 'Batley Job Club', organisation: 'Batley Community Centre', status: 'Live - open to referrals', open: true, level: 'local', audience: ['individual'],
+  categories: ['Finding work'], whoFor: 'Anyone in Batley looking for work.', age: null, webpage: 'https://batleyjobclub.example', email: null, phone: '01924 000000',
+  social: [], locations: ['Batley Community Centre, Tuesdays 10am to 12pm'], areas: ['Batley'], eligibility: [], exclusions: [], gate: [], healthFocus: [],
+  referralRoutes: ['Drop in'], selfReferral: { allowed: 'yes', note: 'Just turn up' }, activities: [{ name: 'Job club', summary: 'CV help and job search.', duration: 'Weekly' }],
+  workExperience: 'No', cost: 'Free', languages: null, notes: null, reviewCycle: 'Quarterly',
+});
+r = await logCall('GET', '/log/new');
+check('new: empty to start', r.status === 200 && Object.keys(r.body.added).length === 0);
+r = await logCall('PUT', '/log/new/batley-job-club', { service: newSvc(), note: 'Suggested by a work coach', by: 'PL', checkedUrl: 'https://batleyjobclub.example' });
+check('new: saved, with who added it', r.status === 200 && r.body.item.service.name === 'Batley Job Club' && r.body.item.createdBy === 'PL', JSON.stringify(r.body).slice(0, 300));
+r = await logCall('PUT', '/log/new/batley-job-club', { service: { ...newSvc(), phone: '01924 111111' }, note: 'Phone corrected', by: 'AB' });
+check('new: saving again updates it but keeps who first added it', r.body.item.service.phone === '01924 111111' && r.body.item.createdBy === 'PL' && r.body.item.by === 'AB' && r.body.item.history.length === 1);
+const missing = newSvc(); delete missing.referralRoutes;
+r = await logCall('PUT', '/log/new/batley-job-club', { service: missing, note: 'x y z', by: 'PL' });
+check('new: every required field must be there', r.status === 400 && /How to get in/.test(r.body.error), JSON.stringify(r.body));
+r = await logCall('PUT', '/log/new/batley-job-club', { service: { ...newSvc(), listing: { decision: 'include' } }, note: 'x y z', by: 'PL' });
+check('new: can\'t set its own listing decision', r.status === 400);
+r = await logCall('PUT', '/log/new/acas-helpline', { service: newSvc(), note: 'x y z', by: 'PL' });
+check('new: an id already used by a live service is refused', r.status === 409);
+r = await logCall('PUT', '/log/new/batley-job-club', { service: newSvc(), note: '', by: 'PL' });
+check('new: needs to say where it came from', r.status === 400);
+r = await logCall('GET', '/log/new', null, { origin: null });
+check('new: a script (no Origin) can read them', r.status === 200 && r.body.added['batley-job-club']);
+r = await logCall('DELETE', '/log/new/batley-job-club', { by: 'PL' });
+check('new: discard', r.status === 200 && Object.keys((await logCall('GET', '/log/new')).body.added).length === 0);
+
 // apply-decisions.mjs, on a copy of a few scheme files
 {
   const d = fs.mkdtempSync(path.join(os.tmpdir(), 'dec-'));
@@ -426,6 +454,25 @@ check('edits: discarding twice -> 404', r.status === 404);
   check('apply edits: a field changed in the data since is not overwritten', JSON.parse(fs.readFileSync(path.join(d, 'acas-helpline.json'), 'utf8')).phone === acas.phone && /data has changed since[\s\S]*acas-helpline[\s\S]*phone/.test(out2), out2);
   check('apply edits: an edit that fails the schema is reported, not written', !JSON.parse(fs.readFileSync(path.join(d, 'samaritans-helpline.json'), 'utf8')).areas.includes('Leeds') && /wouldn't pass the data check[\s\S]*samaritans/.test(out2), out2);
   check('apply edits: summary shows old and new values', /phone: \(none\) → 01484 000000/.test(out2), out2);
+  // new services: created as files, waiting for review unless the team also decided
+  const newOne = { ...newSvc(), cost: 'Free', notes: null };
+  fs.writeFileSync(inp, JSON.stringify({
+    added: {
+      'batley-job-club': { service: newOne, note: 'Suggested by a work coach', by: 'AB', createdBy: 'PL', created: '2026-10-17T09:00:00Z', t: '2026-10-17T10:00:00Z', checkedUrl: 'https://batleyjobclub.example' },
+      'kbop-copy': { service: { ...newOne, name: kb2.name, organisation: kb2.organisation }, note: 'Dupe', by: 'AB', createdBy: 'AB', t: '2026-10-17T10:00:00Z' },
+      kbop: { service: newOne, note: 'Id clash', by: 'AB', createdBy: 'AB', t: '2026-10-17T10:00:00Z' },
+      'bad-new': { service: { ...newOne, name: 'Bad one', areas: ['Leeds'] }, note: 'Bad', by: 'AB', createdBy: 'AB', t: '2026-10-17T10:00:00Z' },
+      'second-new': { service: { ...newOne, name: 'Second new club' }, note: 'Another', by: 'AB', createdBy: 'AB', t: '2026-10-17T10:00:00Z' },
+    },
+    decisions: { 'second-new': { decision: 'include', by: 'PL', t: '2026-10-17T11:00:00Z' } },
+  }));
+  const out3 = run();
+  const bj = JSON.parse(fs.readFileSync(path.join(d, 'batley-job-club.json'), 'utf8'));
+  check('apply new: file created, waiting for review, with provenance', bj.id === 'batley-job-club' && bj.listing.decision === 'review' && bj.hwlFunded === false && bj.provenance.source.includes('PL') && bj.provenance.checkedUrl === 'https://batleyjobclub.example' && !('notes' in bj) && bj.lastUpdated === '2026-10-17', JSON.stringify(bj).slice(0, 400));
+  check('apply new: fields in the usual order', Object.keys(bj).slice(0, 4).join() === 'id,name,organisation,status', Object.keys(bj).join());
+  check('apply new: a team decision to include applies straight away', JSON.parse(fs.readFileSync(path.join(d, 'second-new.json'), 'utf8')).listing.decision === 'include');
+  check('apply new: duplicate name, id clash and schema failure reported, not created', !fs.existsSync(path.join(d, 'kbop-copy.json')) && !fs.existsSync(path.join(d, 'bad-new.json')) && out3.includes('same name and organisation') && out3.includes('already in the data') && out3.includes('Bad one'), out3);
+  check('apply new: running again doesn\'t create it twice', /0 new services added, 2 already added/.test(run()), run());
   fs.rmSync(d, { recursive: true, force: true });
 }
 
