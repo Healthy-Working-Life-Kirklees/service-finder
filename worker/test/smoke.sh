@@ -30,5 +30,14 @@ check "crisis: type reported"           "mental_health_crisis" "$(echo "$R" | py
 R=$(curl -s -X POST $B/chat -H "Origin: $O" -H "$J" -d '{"mode":"staff","messages":[{"role":"user","content":"I support someone anxious in Dewsbury"}]}')
 check "fit and check_first passed on"   "strong,possible,Check the health criteria." "$(echo "$R" | python3 -c 'import sys,json;r=json.load(sys.stdin)["recommendations"];print(r[0]["fit"]+","+r[1]["fit"]+","+r[1]["check_first"])')"
 
+# User feedback (on by default; the read routes are off unless FEEDBACK_PASSCODE is set)
+check "health says feedback is on"      "True" "$(curl -s $B/health | python3 -c 'import sys,json;print(json.load(sys.stdin)["feedback"])')"
+FB='{"kind":"card","schemeIds":["wellness-to-work"],"recordLastUpdated":"2026-09-08","reasons":["contact-wrong"],"text":"Rang 07700 900123, no answer","lang":"en","mode":"public"}'
+check "feedback: card entry stored"     201 "$(code -X POST $B/feedback -H "Origin: $O" -H "$J" -d "$FB")"
+check "feedback: wrong Origin refused"  403 "$(code -X POST $B/feedback -H "Origin: https://evil.example" -H "$J" -d "$FB")"
+check "feedback: unknown scheme"        400 "$(code -X POST $B/feedback -H "Origin: $O" -H "$J" -d '{"kind":"card","schemeIds":["nope"],"recordLastUpdated":"2026-09-08","reasons":["closed"],"lang":"en","mode":"public"}')"
+check "feedback: over 4 KB"             413 "$(python3 -c "print('{\"x\":\"' + 'a'*5000 + '\"}')" | curl -s -o /dev/null -w '%{http_code}' -X POST $B/feedback -H "Origin: $O" -H "$J" --data-binary @-)"
+check "feedback: read without passcode" 404 "$(code $B/feedback/items)"
+
 if [ -f /tmp/last-request.json ]; then echo "upstream request seen by mock: $(cat /tmp/last-request.json)"; fi
 echo "passed=$ok failed=$bad"; [ $bad -eq 0 ]

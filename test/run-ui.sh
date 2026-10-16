@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Browser test of the MVP pages: builds the site twice (MVP tools on and off), serves both locally,
 # and drives them with headless Chromium against a mocked Worker. No real API or credit is used.
-#   bash test/run-ui.sh
+#   bash test/run-ui.sh      (uses Docker, or a local Playwright if Docker isn't running)
 set -euo pipefail
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 W=$(mktemp -d)
@@ -21,6 +21,12 @@ build "$W/off" false
 (cd "$W/off" && exec python3 -m http.server 18481 --bind 127.0.0.1 >/dev/null 2>&1) & P2=$!
 trap 'kill $P1 $P2 2>/dev/null || true; rm -rf "$W"' EXIT
 sleep 1
+
+# Without Docker, use a Playwright installed on this machine (for example in a cloud session).
+if ! docker info >/dev/null 2>&1 && node -e "require('playwright')" >/dev/null 2>&1; then
+  node "$ROOT/test/ui-mvp.cjs"
+  exit $?
+fi
 
 docker run --rm --network host --user "$(id -u):$(id -g)" \
   -e HOME=/tmp -e PLAYWRIGHT_BROWSERS_PATH=/ms-playwright -e NODE_PATH=/tmp/pw/node_modules \

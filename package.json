@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "build-data": "node scripts/build-data.mjs",
-    "check-data": "node scripts/check-data.mjs"
+    "check-data": "node scripts/check-data.mjs",
+    "feedback-digest": "node scripts/feedback-digest.mjs"
   },
   "devDependencies": {
     "ajv": "^8.17.1"

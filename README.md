@@ -14,6 +14,7 @@ A proof of concept: a chat page that matches people to Healthy Working Life sche
 - `prompt/system.md` is the instructions Claude follows. Bundled into the Worker.
 - `worker/` is a small Cloudflare Worker. It holds the Anthropic API key, sends the scheme data and the conversation to Claude, and returns a short message, a list of matches (scheme id, how well it fits, a short reason and what to check first) and flags for urgent support and identifying details. The page draws the cards from `services.json`, so contact details are never written by the AI, and unknown or closed schemes are dropped.
 - Nothing about a conversation is stored or logged. Workers Logs are switched off.
+- People can send short feedback on a listing or a reply, and tell us what's missing. That is stored on the Worker, without any of the conversation (see [User feedback](#user-feedback)).
 
 ## Spend and abuse protection
 
@@ -71,7 +72,7 @@ The page has a language switcher in the header: English, Polski and اردو (Ur
 
 - All the page's own wording is in `site/i18n.js`, one block per language. To change a translation, edit it there and keep the keys the same in every language.
 - The example questions on the landing page are in `chipsSelf` (someone looking for support for themselves) and `chipsStaff` (someone helping another person). The page shows them alternately, and clicking one also sets "Who is this for?" to match. Keep the two lists the same length so the mix stays even.
-- **The Polish and Urdu text is a first draft. Have a qualified translator check it before the wider test**, especially the urgent support wording (the `crisis...` and `footer...` lines).
+- **The Polish and Urdu text is a first draft. Have a qualified translator check it before the wider test**, especially the urgent support wording (the `crisis...` and `footer...` lines) and the feedback wording (the `fb...` lines: `fbCardLink`, `fbCardLegend`, the `fbReason...`, `fbNo...` and `fbGap...` lines, `fbTextLabel`, `fbTextNote`, `fbRedactWarn`, the `fbThanks...` lines, `fbServiceName`, `fbServiceWebsite`, `fbServiceArea`, `fbSupportLegend`, `fbSupportArea` and the button and error wording).
 - The chosen language goes in the address (`?lang=pl` or `?lang=ur`), not in browser storage, so the page still stores nothing. A link ending `?lang=ur` opens the page in Urdu, which is handy for posters or leaflets.
 - The page sends the language to the Worker, and the Worker tells Claude to reply in that language (`LANG_NOTES` in `worker/src/index.js`).
 - Scheme details on the cards (names, who it is for, eligibility, routes) come from `services.json` and stay in English. They are marked as English so screen readers read them correctly.
@@ -121,10 +122,55 @@ For the initial MVP team only, not for the wider test.
 
 The log must never hold personal or identifying information.
 
+## User feedback
+
+People who use the finder are often the first to notice that a listing is out of date, and coaches and frontline staff know services we haven't heard of. The page gives them three short ways to tell us:
+
+1. **"Report a problem with this listing"** at the bottom of every scheme card. Tick boxes for what's wrong (closed, wrong contact details, wrong eligibility, no reply, not in my area, something useful missing, something else) and an optional comment.
+2. **"Was this helpful?"** with Yes and No under every reply that shows cards. Not under urgent support replies or replies that ask questions. No opens a few tick boxes; "It missed a service I know about" opens the form below.
+3. **"Know a service that should be here? Tell us"** under every result reply and in the page footer, so it can be used at any time. In staff mode it says "Do you refer people to a service that isn't listed? Tell us". It asks about a service that isn't listed (name, website, area), a kind of support someone looked for and couldn't find (a category and an area), or something else.
+
+The code is in `site/feedback.js` (the page) and `worker/src/feedback.js` (the Worker). The wording is in `site/i18n.js` (the `fb...` keys).
+
+**What is collected:** which kind of feedback it is, the date (no time), the scheme id (and the date the listing shown had last been checked), or the ids of the schemes shown in a reply, the boxes ticked, a comment of up to 300 characters, the details of a suggested service, the categories and area of a gap, the page's mode and language, and whether anything was removed from the text. Each entry also has a status (`New`, `Reviewed`, `Actioned`, `Not actioned`) and a reviewer note.
+
+**What is deliberately not collected:** any of the conversation (no messages, no "what I have understood", nothing the AI wrote), IP addresses, browser details, times of day, names or contact details. The page asks people not to include names, contact details or anything about their own situation. Even so, email addresses, UK phone numbers, UK postcodes and National Insurance numbers are replaced with `[removed]`, first in the page before sending (the page tells the person it will do this) and again in the Worker before storing. The patterns are `REDACT_PATTERNS` in `worker/src/feedback.js`, with a copy in `site/feedback.js`; the tests check the two match. They can't catch everything (a person's name, for example), so read comments with that in mind. The page still stores nothing in the browser: no cookies, no local storage, no analytics.
+
+**Protection:** sending feedback has the same checks as the chat: the Pages origin only, a 4 KB size limit, 5 a minute from one address (`FEEDBACK_LIMITER`), and a global cap of `MAX_FEEDBACK_PER_DAY` a day (300 by default, in `worker/wrangler.toml`). The Worker checks every value against fixed lists and the data (scheme ids, areas and categories), and rejects anything else.
+
+**Where it is stored:** its own Durable Object (`FeedbackStore`, binding `FEEDBACK_STORE`), separate from the team log, so it keeps working when the log is switched off for the wider test.
+
+**Retention:** entries older than 12 months are deleted. The check runs every time feedback is written or read.
+
+**Switch on and off:** feedback is on unless `FEEDBACK_ENABLED` in `worker/wrangler.toml` is `"false"`. To switch it off, change it to `"false"` and merge (the Worker redeploys). Sending then returns 404, `/health` says `feedback: false`, and the page hides all the feedback links. Change it back to `"true"` to switch it on again. Entries already stored are kept, and can still be read.
+
+**Reading the feedback (one-off setup):** Cloudflare dashboard > Workers & Pages > hwl-service-finder > Settings > Variables and Secrets: add a **secret** called `FEEDBACK_PASSCODE` (a long passphrase, 16+ characters). Share it only with the people who do the triage. Without it the read routes return 404, but people can still send feedback. The routes, with the passcode in an `X-Feedback-Passcode` header:
+
+- `GET /feedback/items`, optionally `?status=New` and `?since=YYYY-MM-DD`
+- `PATCH /feedback/items/<id>` with `{"status": "Actioned", "note": "Fixed in PR 23"}`
+- `GET /feedback/export.csv`
+
+**The digest:** a Markdown summary of the `New` entries, for the weekly triage (and later for the maintenance agent). It only reads; it changes nothing.
+
+    WORKER_URL=https://hwl-service-finder.<subdomain>.workers.dev FEEDBACK_PASSCODE='...' npm run feedback-digest > digest.md
+
+It has two parts. **What's wrong**: reports grouped by scheme, most reported first, with the reasons, the comments and the path to the scheme's file, and schemes with 2 or more reports in 30 days flagged at the top. **What's missing**: suggested services (grouped and counted, and checked against the names and websites of existing schemes, with likely duplicates marked), listings missing useful details, and the kinds of support people couldn't find, counted by category and area and compared with how many open schemes the data has for each category, so thin areas stand out. Then a count of Yes and No by mode and language. `--input <file>` works from a saved copy of `/feedback/items` instead.
+
+**Weekly triage:**
+
+1. Run the digest.
+2. Decide what to do with each entry. Check the details with the service or its website; feedback is a lead, not a fact.
+3. For a problem with a listing, change `data/services/<id>.json` (and its `lastUpdated` and `provenance`) in a pull request. For a suggested service, research it, and if it checks out add a new scheme file in a pull request (see `docs/data-dictionary.md`). Nothing is ever applied to the data automatically.
+4. Mark each entry `Actioned` (with the pull request in the note) or `Not actioned` (with the reason), or `Reviewed` if it needs more time. For example:
+
+        curl -X PATCH "$WORKER_URL/feedback/items/12" -H "X-Feedback-Passcode: $FEEDBACK_PASSCODE" -H 'content-type: application/json' -d '{"status":"Actioned","note":"PR 31"}'
+
+**Before the wider test, the information governance lead should review this approach** (what is collected, the removal of personal details, the 12-month retention, and who holds the passcode).
+
 ## Tests
 
     npm run check-data             # the scheme data
-    node worker/test/logic.mjs     # Worker logic, offline (model handling, guards, crisis backstop, team log)
-    bash test/run-ui.sh            # headless-browser test of the pages, with MVP tools on and off (needs Docker)
+    node worker/test/logic.mjs     # Worker logic, offline (model handling, guards, crisis backstop, team log, feedback, digest)
+    bash test/run-ui.sh            # headless-browser test of the pages, with MVP tools on and off, and the feedback forms (Docker, or a local Playwright)
     python3 worker/test/live_chat.py   # real conversations against the live Worker (spends a few pence)
 
