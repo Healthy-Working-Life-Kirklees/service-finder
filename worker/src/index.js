@@ -14,9 +14,12 @@
 import data from '../../data/services.json';
 import SYSTEM_PROMPT from '../../prompt/system.md';
 import { handleLog } from './teamlog.js';
+import { handleFeedback, feedbackOn } from './feedback.js';
 
 // The team issues log lives in its own Durable Object class (see teamlog.js).
 export { LogStore } from './teamlog.js';
+// User feedback has its own store, separate from the team log (see feedback.js).
+export { FeedbackStore } from './feedback.js';
 
 const MODE_NOTES = {
   public:
@@ -56,6 +59,12 @@ const NOT_FOR_AI = new Set(['webpage', 'email', 'phone', 'social', 'logo', 'requ
 const AI_SERVICES = SERVICES.map((s) => Object.fromEntries(Object.entries(s).filter(([k]) => !NOT_FOR_AI.has(k))));
 const IDS = SERVICES.map((s) => s.id);
 const ID_SET = new Set(IDS);
+// What feedback may refer to: the scheme ids, and the areas and categories already used in the data.
+const FEEDBACK_DATA = {
+  ids: ID_SET,
+  areas: [...new Set(SERVICES.flatMap((s) => s.areas || []))].sort(),
+  categories: [...new Set(SERVICES.flatMap((s) => s.categories || []))].sort(),
+};
 // Only schemes that are open to referrals can ever be shown as cards.
 const OPEN_SET = new Set(SERVICES.filter((s) => s.open === true).map((s) => s.id));
 // Schemes built for a specific circumstance are only shown if the person's own words mention it.
@@ -184,16 +193,18 @@ export default {
       ? {
           'Access-Control-Allow-Origin': origin,
           'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
-          'Access-Control-Allow-Headers': 'content-type, x-team-passcode',
+          'Access-Control-Allow-Headers': 'content-type, x-team-passcode, x-feedback-passcode',
           'Access-Control-Max-Age': '600',
           Vary: 'Origin',
         }
       : { Vary: 'Origin' };
 
     if (request.method === 'OPTIONS') return new Response(null, { status: originOk ? 204 : 403, headers: cors });
-    if (url.pathname === '/health') return json({ ok: true, aiConfigured: Boolean(env.ANTHROPIC_API_KEY), teamLog: Boolean(env.TEAM_PASSCODE) }, 200, cors);
+    if (url.pathname === '/health') return json({ ok: true, aiConfigured: Boolean(env.ANTHROPIC_API_KEY), teamLog: Boolean(env.TEAM_PASSCODE), feedback: feedbackOn(env) }, 200, cors);
     // MVP-team issues log: off unless the TEAM_PASSCODE secret is set.
     if (url.pathname.startsWith('/log/')) return originOk ? handleLog(request, env, url, cors) : json({ error: 'Not allowed.' }, 403, cors);
+    // User feedback: sending is public (with the same checks as /chat); reading needs the FEEDBACK_PASSCODE secret.
+    if (url.pathname === '/feedback' || url.pathname.startsWith('/feedback/')) return handleFeedback(request, env, url, cors, originOk, FEEDBACK_DATA);
     if (url.pathname !== '/chat' || request.method !== 'POST') return json({ error: 'Not found.' }, 404, cors);
     if (!originOk) return json({ error: 'Not allowed.' }, 403, cors);
     if (!env.ANTHROPIC_API_KEY) return json({ error: 'The AI service is not configured yet.' }, 503, cors);

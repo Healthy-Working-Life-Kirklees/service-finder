@@ -1,6 +1,7 @@
 // Local logic test for the Worker (no network, no Cloudflare). Run: node worker/test/logic.mjs
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -12,9 +13,10 @@ let src = fs.readFileSync(path.join(root, 'worker/src/index.js'), 'utf8');
 src = src
   .replace("import data from '../../data/services.json';", `const data = JSON.parse(${JSON.stringify(fs.readFileSync(path.join(root, 'data/services.json'), 'utf8'))});`)
   .replace("import SYSTEM_PROMPT from '../../prompt/system.md';", `const SYSTEM_PROMPT = ${JSON.stringify(fs.readFileSync(path.join(root, 'prompt/system.md'), 'utf8'))};`);
-const tmp = path.join(root, 'worker/src/.under-test.mjs'); // inside src/ so './teamlog.js' resolves; git-ignored
+const tmp = path.join(root, 'worker/src/.under-test.mjs'); // inside src/ so './teamlog.js' and './feedback.js' resolve; git-ignored
 fs.writeFileSync(tmp, src);
 const mod = await import(pathToFileURL(tmp).href);
+const fb = await import(pathToFileURL(path.join(root, 'worker/src/feedback.js')).href);
 const worker = mod.default;
 process.on('exit', () => fs.rmSync(tmp, { force: true }));
 
@@ -316,6 +318,262 @@ check('log: imported statuses/areas kept', r.body.items[0].status === 'Done' && 
 // preflight allows the passcode header and PATCH
 const pre = await worker.fetch(new Request('https://w/log/items', { method: 'OPTIONS', headers: { Origin: O } }), logEnv());
 check('log: preflight allows x-team-passcode and PATCH', pre.status === 204 && pre.headers.get('Access-Control-Allow-Headers').includes('x-team-passcode') && pre.headers.get('Access-Control-Allow-Methods').includes('PATCH'));
+
+// ----- User feedback -----
+const FB_PASS = 'feedback passcode for tests';
+const mkFbStore = () => {
+  const mem = new Map();
+  const storage = {
+    mem,
+    get: async (k) => mem.get(k),
+    put: async (k, v) => { if (typeof k === 'object') for (const [a, b] of Object.entries(k)) mem.set(a, b); else mem.set(k, v); },
+    delete: async (ks) => { for (const k of [].concat(ks)) mem.delete(k); },
+    list: async ({ prefix, limit = Infinity }) => new Map([...mem.entries()].filter(([k]) => k.startsWith(prefix)).sort(([a], [b]) => a.localeCompare(b)).slice(0, limit)),
+  };
+  return new mod.FeedbackStore({ storage });
+};
+let fbStore = mkFbStore();
+let limiterHits = 0;
+const fbEnv = (extra = {}) => ({
+  ...env('claude-sonnet-5-5'),
+  FEEDBACK_PASSCODE: FB_PASS,
+  FEEDBACK_STORE: { idFromName: () => 'x', get: () => ({ fetch: (u, init) => fbStore.fetch(new Request(u, init)) }) },
+  ...extra,
+});
+const fbCall = async (method, p, body, { pass = null, e = fbEnv(), origin = O, raw = null } = {}) => {
+  const headers = { 'content-type': 'application/json' };
+  if (origin) headers.Origin = origin;
+  if (pass !== null) headers['x-feedback-passcode'] = pass;
+  const res = await worker.fetch(new Request('https://w' + p, { method, headers, body: raw !== null ? raw : body ? JSON.stringify(body) : undefined }), e);
+  const type = res.headers.get('content-type') || '';
+  return { status: res.status, body: type.includes('json') ? await res.json() : await res.text(), headers: res.headers };
+};
+const send = (body, opts) => fbCall('POST', '/feedback', body, opts);
+const items = async () => (await fbCall('GET', '/feedback/items', null, { pass: FB_PASS })).body.items;
+const cardFb = (o = {}) => ({ kind: 'card', schemeIds: ['wellness-to-work'], recordLastUpdated: '2026-10-01', reasons: ['contact-wrong'], text: 'The phone number rings out.', lang: 'en', mode: 'public', ...o });
+const replyFb = (o = {}) => ({ kind: 'reply', schemeIds: ['wellness-to-work', 'fitness-for-work'], helpful: true, lang: 'pl', mode: 'staff', ...o });
+const gapFb = (o = {}) => ({ kind: 'gap', reasons: ['missing-service'], missedService: { name: 'Batley Job Club', website: 'https://example.org/job-club', area: 'Batley' }, lang: 'en', mode: 'staff', ...o });
+
+// /health flag
+let h = await (await worker.fetch(new Request('https://w/health', { headers: { Origin: O } }), fbEnv())).json();
+check('feedback: /health says feedback is on by default', h.feedback === true, JSON.stringify(h));
+h = await (await worker.fetch(new Request('https://w/health'), fbEnv({ FEEDBACK_ENABLED: 'false' }))).json();
+check('feedback: /health says off when FEEDBACK_ENABLED is "false"', h.feedback === false);
+h = await (await worker.fetch(new Request('https://w/health'), fbEnv({ FEEDBACK_ENABLED: 'true' }))).json();
+check('feedback: /health says on when FEEDBACK_ENABLED is "true"', h.feedback === true);
+h = await (await worker.fetch(new Request('https://w/health'), env('x'))).json();
+check('feedback: /health says off when the store is not bound', h.feedback === false);
+r = await send(cardFb(), { e: fbEnv({ FEEDBACK_ENABLED: 'false' }) });
+check('feedback: POST /feedback is 404 when switched off', r.status === 404);
+
+// Valid entries are stored with only what is needed
+r = await send(cardFb());
+check('feedback: card entry accepted (201)', r.status === 201 && r.body.ok === true, JSON.stringify(r.body));
+r = await send(replyFb());
+check('feedback: "helpful: yes" entry accepted', r.status === 201, JSON.stringify(r.body));
+r = await send(replyFb({ helpful: false, reasons: ['info-wrong', 'missed-service'], text: 'Two of these looked out of date.' }));
+check('feedback: "helpful: no" entry with reasons accepted', r.status === 201, JSON.stringify(r.body));
+r = await send(gapFb({ reasons: ['missing-service', 'missing-support'], gapCategories: ['Carers', 'Something else'], gapArea: 'Dewsbury', text: 'Nothing for carers in Dewsbury.' }));
+check('feedback: gap entry accepted', r.status === 201, JSON.stringify(r.body));
+let all = await items();
+const today = new Date().toISOString().slice(0, 10);
+const KEYS = ['id', 'kind', 'date', 'schemeIds', 'recordLastUpdated', 'helpful', 'reasons', 'text', 'missedService', 'gapCategories', 'gapArea', 'lang', 'mode', 'redacted', 'status', 'note'].sort().join();
+check('feedback: four entries stored, all New, dated today with no time', all.length === 4 && all.every((x) => x.status === 'New' && x.date === today), JSON.stringify(all));
+check('feedback: entries hold only the agreed fields (no IP, user agent or time)', all.every((x) => Object.keys(x).sort().join() === KEYS), Object.keys(all[0]).sort().join());
+check('feedback: card entry keeps the scheme id and the date of the record shown', all[0].kind === 'card' && all[0].schemeIds.join() === 'wellness-to-work' && all[0].recordLastUpdated === '2026-10-01' && all[0].helpful === null);
+check('feedback: reply entries keep ids, helpful, mode and language', all[1].helpful === true && all[1].schemeIds.length === 2 && all[1].mode === 'staff' && all[1].lang === 'pl' && all[2].helpful === false && all[2].reasons.join() === 'info-wrong,missed-service');
+check('feedback: gap entry keeps the missed service, categories and area', all[3].missedService.name === 'Batley Job Club' && all[3].missedService.area === 'Batley' && all[3].gapCategories.join() === 'Carers,Something else' && all[3].gapArea === 'Dewsbury', JSON.stringify(all[3]));
+
+// Validation: everything else is rejected with a plain-English error
+const bad = [
+  ['unknown kind', { ...cardFb(), kind: 'complaint' }],
+  ['unknown scheme id', cardFb({ schemeIds: ['not-a-scheme'] })],
+  ['two ids on a card', cardFb({ schemeIds: ['wellness-to-work', 'fitness-for-work'] })],
+  ['unknown id in a reply', replyFb({ schemeIds: ['wellness-to-work', 'nope'] })],
+  ['more than five ids in a reply', replyFb({ schemeIds: ['wellness-to-work', 'fitness-for-work', 'elevate', 'flippin-pain', 'get-set-goal', 'employment-kirklees'] })],
+  ['reply with no ids', replyFb({ schemeIds: [] })],
+  ['bad reason', cardFb({ reasons: ['rude-staff'] })],
+  ['reply reason on a card', cardFb({ reasons: ['none-fit'] })],
+  ['card with no reason', cardFb({ reasons: [] })],
+  ['gap with no reason', gapFb({ reasons: [] })],
+  ['oversized text', cardFb({ text: 'x'.repeat(301) })],
+  ['text that is not text', cardFb({ text: { a: 1 } })],
+  ['bad date of the record', cardFb({ recordLastUpdated: 'yesterday' })],
+  ['missing helpful', replyFb({ helpful: undefined })],
+  ['reasons with "yes"', replyFb({ helpful: true, reasons: ['none-fit'] })],
+  ['bad language', cardFb({ lang: 'fr' })],
+  ['bad mode', cardFb({ mode: 'admin' })],
+  ['extra field', cardFb({ messages: [{ role: 'user', content: 'hi' }] })],
+  ['conversation sneaked into a reply', replyFb({ understood_needs: ['anxious'] })],
+  ['website not http(s)', gapFb({ missedService: { name: 'x', website: 'javascript:alert(1)' } })],
+  ['website without a scheme', gapFb({ missedService: { name: 'x', website: 'example.org' } })],
+  ['website too long', gapFb({ missedService: { website: 'https://example.org/' + 'a'.repeat(200) } })],
+  ['service name too long', gapFb({ missedService: { name: 'n'.repeat(101) } })],
+  ['unknown area', gapFb({ missedService: { area: 'Leeds' } })],
+  ['unknown category', gapFb({ reasons: ['missing-support'], gapCategories: ['Astrology'] })],
+  ['category without "kind of support"', gapFb({ gapCategories: ['Carers'] })],
+  ['unknown support area', gapFb({ reasons: ['missing-support'], gapCategories: ['Carers'], gapArea: 'Narnia' })],
+  ['service details without "a service"', gapFb({ reasons: ['missing-other'] })],
+  ['extra service field', gapFb({ missedService: { name: 'x', phone: '01484 123456' } })],
+];
+for (const [name, body] of bad) {
+  r = await send(body);
+  check('feedback: rejected - ' + name, r.status === 400 && typeof r.body.error === 'string' && r.body.error.length > 5, r.status + ' ' + JSON.stringify(r.body));
+}
+r = await send(null, { raw: 'not json' });
+check('feedback: rejected - not JSON', r.status === 400);
+r = await send(cardFb(), { origin: 'https://evil.example' });
+check('feedback: rejected - wrong origin (403)', r.status === 403);
+r = await send(cardFb(), { origin: null });
+check('feedback: rejected - no origin (403)', r.status === 403);
+r = await send(null, { raw: JSON.stringify(cardFb({ text: 'x'.repeat(200) })) + ' '.repeat(4000) });
+check('feedback: rejected - over 4 KB before parsing (413)', r.status === 413);
+r = await fbCall('GET', '/feedback', null);
+check('feedback: GET /feedback is not a route (404)', r.status === 404);
+check('feedback: nothing stored from rejected requests', (await items()).length === 4);
+r = await send(gapFb({ missedService: { name: '  Spaced out  ', website: 'http://example.org' } }));
+all = await items();
+check('feedback: text fields are trimmed', all[4].missedService.name === 'Spaced out' && all[4].missedService.area === '', JSON.stringify(all[4]));
+
+// Removing personal details
+const red = (t) => fb.redact(t).text;
+const removes = [
+  ['email', 'email me at jane.smith+work@example.co.uk please'],
+  ['mobile with a space', 'call 07700 900123'],
+  ['mobile run together', 'call 07700900123'],
+  ['mobile with +44', 'call +44 7700 900123'],
+  ['mobile with +44 and no spaces', 'call +447700900123'],
+  ['landline 01484', 'ring 01484 123456'],
+  ['landline in brackets', 'ring (01484) 123456'],
+  ['Leeds number', 'ring 0113 496 0000'],
+  ['London number', 'ring 020 7946 0000'],
+  ['freephone with dashes', 'ring 0800-123-4567'],
+  ['+44 (0) form', 'ring +44 (0)1484 123456'],
+  ['0044 form', 'ring 0044 1484 123456'],
+  ['postcode with a space', 'I live at HD1 4EW'],
+  ['postcode run together, lower case', 'near wf135ab'],
+  ['London postcode', 'SW1A 1AA'],
+  ['NI number with spaces', 'my NI is QQ 12 34 56 C'],
+  ['NI number run together', 'ab123456c'],
+];
+for (const [name, text] of removes) {
+  const out = red(text);
+  check('redaction: removes ' + name, out.includes('[removed]') && !/\d{4}|@|4EW|5AB|1AA|56 ?C/i.test(out), out);
+}
+const keeps = ['Open to people aged 16+', 'Based in HD1, near the bus station', 'Runs 9:30 to 4:30, Monday to Friday', 'It cost £5 per 28 days in 2026', 'Open 2025-2026', 'Ages 18-25 and 50+', 'Call 999 or NHS 111', 'Room 101, floor 2', 'They said it closed on 01/09/2026', 'WF13 area', 'Ofsted ref 123456'];
+for (const text of keeps) check('redaction: leaves alone "' + text + '"', red(text) === text, red(text));
+check('redaction: says when it removed something', fb.redact('x@y.com').redacted === true && fb.redact('hello').redacted === false);
+r = await send(cardFb({ text: 'Ring me on 07700 900123 or email a@b.com, I live in HD1 4EW' }));
+all = await items();
+check('redaction: applied before storing, and the entry marked redacted', all[5].text === 'Ring me on [removed] or email [removed], I live in [removed]' && all[5].redacted === true && all[4].redacted === false, JSON.stringify(all[5]));
+r = await send(gapFb({ missedService: { name: 'Call Sue on 07700900123', website: 'https://example.org' } }));
+all = await items();
+check('redaction: also applied to the service name', all[6].missedService.name === 'Call Sue on [removed]' && all[6].redacted === true);
+r = await send(cardFb({ text: 'Number was [removed]' }));
+all = await items();
+check('redaction: text the page already redacted is marked redacted', all[7].redacted === true);
+const pageSrc = fs.readFileSync(path.join(root, 'site/feedback.js'), 'utf8');
+check('redaction: the page uses the same patterns as the Worker', fb.REDACT_PATTERNS.every((re) => pageSrc.includes(String(re))), fb.REDACT_PATTERNS.filter((re) => !pageSrc.includes(String(re))).join(' '));
+
+// Rate limit and daily cap
+let lim = 0;
+const limiter = { limit: async () => ({ success: ++lim <= 5 }) };
+fbStore = mkFbStore();
+const limited = [];
+for (let i = 0; i < 6; i++) limited.push((await send(cardFb(), { e: fbEnv({ FEEDBACK_LIMITER: limiter }) })).status);
+check('feedback: per-IP limit - the sixth in a minute gets 429', limited.join() === '201,201,201,201,201,429', limited.join());
+fbStore = mkFbStore();
+const capped = [];
+for (let i = 0; i < 4; i++) capped.push((await send(cardFb(), { e: fbEnv({ MAX_FEEDBACK_PER_DAY: '3' }) })).status);
+check('feedback: daily cap - the fourth of 3 a day gets 503', capped.join() === '201,201,201,503', capped.join());
+check('feedback: nothing stored past the cap', (await items()).length === 3);
+fbStore.ctx.storage.mem.set('day', '2020-01-01');
+r = await send(cardFb(), { e: fbEnv({ MAX_FEEDBACK_PER_DAY: '3' }) });
+check('feedback: daily cap resets on a new day', r.status === 201);
+
+// Read routes
+r = await fbCall('GET', '/feedback/items', null, { pass: FB_PASS, e: fbEnv({ FEEDBACK_PASSCODE: undefined }) });
+check('feedback: read routes 404 with no FEEDBACK_PASSCODE set', r.status === 404);
+r = await fbCall('GET', '/feedback/export.csv', null, { pass: 'x', e: fbEnv({ FEEDBACK_PASSCODE: undefined }) });
+check('feedback: CSV 404 with no FEEDBACK_PASSCODE set', r.status === 404);
+r = await fbCall('PATCH', '/feedback/items/1', { status: 'Reviewed' }, { pass: 'x', e: fbEnv({ FEEDBACK_PASSCODE: undefined }) });
+check('feedback: PATCH 404 with no FEEDBACK_PASSCODE set', r.status === 404);
+r = await send(cardFb(), { e: fbEnv({ FEEDBACK_PASSCODE: undefined }) });
+check('feedback: sending still works with no FEEDBACK_PASSCODE set', r.status === 201);
+r = await fbCall('GET', '/feedback/items', null, { pass: 'wrong' });
+check('feedback: wrong passcode -> 401', r.status === 401);
+r = await fbCall('GET', '/feedback/items', null);
+check('feedback: missing passcode -> 401', r.status === 401);
+r = await fbCall('GET', '/feedback/export.csv', null, { pass: 'wrong' });
+check('feedback: CSV with the wrong passcode -> 401', r.status === 401);
+r = await fbCall('PATCH', '/feedback/items/1', { status: 'Reviewed' }, { pass: 'wrong' });
+check('feedback: PATCH with the wrong passcode -> 401', r.status === 401);
+r = await fbCall('GET', '/feedback/items', null, { pass: FB_PASS, origin: 'https://evil.example' });
+check('feedback: read from another website refused (403)', r.status === 403);
+r = await fbCall('GET', '/feedback/items', null, { pass: FB_PASS, origin: null });
+check('feedback: read with the passcode and no Origin (the digest script) works', r.status === 200 && r.body.items.length === 5, JSON.stringify(r.body).slice(0, 200));
+r = await fbCall('PATCH', '/feedback/items/2', { status: 'Actioned', note: 'Fixed in PR 20. Spoke to Sue on 07700 900123.' }, { pass: FB_PASS });
+check('feedback: PATCH changes status and adds a note (with details removed)', r.status === 200 && r.body.item.status === 'Actioned' && r.body.item.note === 'Fixed in PR 20. Spoke to Sue on [removed].', JSON.stringify(r.body));
+r = await fbCall('PATCH', '/feedback/items/2', { status: 'Done' }, { pass: FB_PASS });
+check('feedback: PATCH with an unknown status -> 400', r.status === 400);
+r = await fbCall('PATCH', '/feedback/items/2', {}, { pass: FB_PASS });
+check('feedback: PATCH with nothing to change -> 400', r.status === 400);
+r = await fbCall('PATCH', '/feedback/items/99', { status: 'Reviewed' }, { pass: FB_PASS });
+check('feedback: PATCH an unknown id -> 404', r.status === 404);
+r = await fbCall('GET', '/feedback/items?status=New', null, { pass: FB_PASS });
+check('feedback: filter by status', r.body.items.length === 4 && r.body.items.every((x) => x.status === 'New'));
+r = await fbCall('GET', '/feedback/items?status=Bogus', null, { pass: FB_PASS });
+check('feedback: unknown status filter -> 400', r.status === 400);
+r = await fbCall('GET', '/feedback/items?since=' + today, null, { pass: FB_PASS });
+const r2 = await fbCall('GET', '/feedback/items?since=2999-01-01', null, { pass: FB_PASS });
+check('feedback: filter by since', r.body.items.length === 5 && r2.body.items.length === 0);
+r = await fbCall('GET', '/feedback/items?since=last-week', null, { pass: FB_PASS });
+check('feedback: bad since -> 400', r.status === 400);
+await send(cardFb({ text: '=HYPERLINK("http://x")' }));
+r = await fbCall('GET', '/feedback/export.csv', null, { pass: FB_PASS });
+check('feedback: CSV export has a header, one row per entry and a download name', r.status === 200 && r.body.startsWith('"id","date","kind"') && r.body.trim().split('\r\n').length === 7 && /attachment; filename="service-finder-feedback-\d{4}-\d{2}-\d{2}\.csv"/.test(r.headers.get('content-disposition')), r.body.slice(0, 200));
+check('feedback: CSV neutralises a leading "=" (formula injection)', r.body.includes("\"'=HYPERLINK"));
+const pre2 = await worker.fetch(new Request('https://w/feedback/items', { method: 'OPTIONS', headers: { Origin: O } }), fbEnv());
+check('feedback: preflight allows x-feedback-passcode', pre2.status === 204 && pre2.headers.get('Access-Control-Allow-Headers').includes('x-feedback-passcode'));
+
+// Retention: entries older than 12 months are deleted on the next write (and never returned)
+fbStore = mkFbStore();
+const old = (y, m, d) => { const x = new Date(); x.setUTCFullYear(x.getUTCFullYear() - y, x.getUTCMonth() - m, x.getUTCDate() - d); return x.toISOString().slice(0, 10); };
+const memFb = fbStore.ctx.storage.mem;
+memFb.set('fb:0000001', { id: 1, kind: 'card', date: old(2, 0, 0), status: 'New' });
+memFb.set('fb:0000002', { id: 2, kind: 'card', date: old(1, 0, 1), status: 'Actioned' });
+memFb.set('fb:0000003', { id: 3, kind: 'card', date: old(0, 11, 0), status: 'New' });
+memFb.set('seq', 3);
+check('retention: the cutoff is 12 months ago', fb.retentionCutoff(new Date('2026-10-16T12:00:00Z')) === '2025-10-16');
+await send(cardFb());
+check('retention: entries older than 12 months deleted on write, newer kept', [...memFb.keys()].filter((k) => k.startsWith('fb:')).join() === 'fb:0000003,fb:0000004', [...memFb.keys()].join());
+memFb.set('fb:0000000', { id: 0, kind: 'gap', date: old(1, 1, 0), status: 'New' });
+check('retention: old entries are never returned by a read', (await items()).every((x) => x.id !== 0) && !memFb.has('fb:0000000'));
+fbStore = mkFbStore();
+for (let i = 1; i <= 230; i++) fbStore.ctx.storage.mem.set('fb:' + String(i).padStart(7, '0'), { id: i, date: old(2, 0, 0) });
+fbStore.ctx.storage.mem.set('seq', 230);
+await send(cardFb());
+check('retention: clears a large backlog in batches', (await items()).length === 1);
+
+// The digest script (read-only, from a saved list of entries)
+fbStore = mkFbStore();
+for (const b of [
+  cardFb(), cardFb({ reasons: ['closed', 'contact-wrong'], text: 'Phone is dead' }), cardFb({ schemeIds: ['fitness-for-work'], reasons: ['missing-details'], text: 'No opening times' }),
+  replyFb(), replyFb({ helpful: false, reasons: ['none-fit'] }),
+  gapFb(), gapFb({ missedService: { name: 'batley job club', website: '' } }), gapFb({ missedService: { name: 'Wellness to Work', website: 'https://www.locala.org.uk/services/wellness-to-work' } }),
+  gapFb({ reasons: ['missing-support'], missedService: undefined, gapCategories: ['Carers'], gapArea: 'Dewsbury' }),
+]) await send(b);
+const dump = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'fb-')), 'entries.json');
+fs.writeFileSync(dump, JSON.stringify({ items: await items() }));
+const digest = execFileSync(process.execPath, [path.join(root, 'scripts/feedback-digest.mjs'), '--input', dump], { encoding: 'utf8' });
+fs.rmSync(dump, { force: true });
+check('digest: has the two main parts and the summary', digest.includes("## What's wrong") && digest.includes("## What's missing") && digest.includes('## Helpful or not'), digest.slice(0, 300));
+check('digest: flags a scheme with 2+ reports in 30 days, with its data file', /Wellness to Work.*2 reports/.test(digest) && digest.includes('data/services/wellness-to-work.json'), digest);
+check('digest: groups repeated suggestions and counts them', /Batley Job Club.*suggested 2 times/i.test(digest), digest);
+check('digest: marks a suggestion that is probably already listed', /Wellness to Work.*likely duplicate of `wellness-to-work`/i.test(digest), digest);
+check('digest: lists listings missing useful details', /missing useful details[\s\S]*Fitness for Work/i.test(digest), digest);
+check('digest: counts kinds of support by category and compares with the data', /\| Carers \| 1 \| Dewsbury \(1\) \| \d+ \|/.test(digest), digest);
+check('digest: helpful counts by mode and language', /\| staff \| pl \| 1 \| 1 \|/.test(digest), digest);
 
 console.log(`passed=${pass} failed=${fail}`);
 process.exit(fail ? 1 : 0);

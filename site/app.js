@@ -154,7 +154,9 @@
       stale ? el('p', { class: 'stale', text: t('stale') }) : null,
       el('div', { class: 'tools' },
         el('button', { type: 'button', class: 'btn secondary small', text: t('copy'), onclick: (e) => copyDetails(s, e.currentTarget) }),
-        window.ACCESS ? window.ACCESS.listenButton(() => spokenText(s), 'en-GB', t('listenTo', { name: s.name })) : null)
+        window.ACCESS ? window.ACCESS.listenButton(() => spokenText(s), 'en-GB', t('listenTo', { name: s.name })) : null),
+      // "Report a problem with this listing" (feedback.js). Only there when feedback is switched on.
+      window.FEEDBACK ? window.FEEDBACK.cardControl(s) : null
     );
     return node;
   }
@@ -336,6 +338,12 @@
           logEl.append(el('div', { class: 'more-options' }, el('button', { type: 'button', class: 'chip', text: ask, onclick: () => send(ask) })));
         }
       }
+      // Feedback under a result reply (feedback.js): "Was this helpful?" when it has cards, and "Tell us what's
+      // missing" always. Never under urgent support or a reply that asks questions. Only scheme ids are sent.
+      if (window.FEEDBACK && data.status === 'results' && !data.safety_concern) {
+        const fb = window.FEEDBACK.replyControls((data.recommendations || []).map((x) => x.id).filter((id) => services.has(id)));
+        if (fb) logEl.append(fb);
+      }
       // Screen readers hear the reply (and any questions) and how many services
       // were suggested, but not the cards themselves; they can move through those with their heading keys.
       // The urgent support panel is left out here because it announces itself (role=alert).
@@ -400,6 +408,9 @@
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(input.value); }
   });
   $('#reset').addEventListener('click', reset);
+
+  // Feedback links (feedback.js). They appear once the Worker's /health says feedback is on.
+  if (window.FEEDBACK) window.FEEDBACK.init({ el, announce, api: API, mode, services: () => services });
 
   fetch('services.json')
     .then((r) => r.json())

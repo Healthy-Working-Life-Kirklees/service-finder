@@ -1,6 +1,8 @@
 // Browser test for the MVP pages. Run by test/run-ui.sh (headless Chromium, mocked Worker, no real API use).
 const { chromium } = require('playwright');
 const fs = require('node:fs');
+const path = require('node:path');
+const DATA = require(path.join(__dirname, '..', 'data', 'services.json')).services;
 
 const ON = 'http://127.0.0.1:18480';   // build with MVP tools switched on
 const OFF = 'http://127.0.0.1:18481';  // build with MVP tools off (the wider-test version)
@@ -16,6 +18,8 @@ const check = (name, cond, extra = '') => {
 let seq = 0;
 let log = [];
 let lastChat = null;
+let feedbackFlag = true; // what /health says about feedback
+let fbSent = []; // feedback the page sent
 const mk = (f, status) => {
   const t = new Date().toISOString();
   const it = { id: ++seq, type: f.type || 'Issue', title: f.title, details: f.details || '', area: f.area || 'Other', priority: f.priority || 'Medium', owner: f.owner || '', status: status || 'Open', created: t, updated: t, updates: [] };
@@ -29,6 +33,12 @@ async function worker(route) {
   const cors = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type, x-team-passcode', 'access-control-allow-methods': 'GET, POST, PATCH, OPTIONS' };
   const json = (obj, status = 200) => route.fulfill({ status, headers: { ...cors, 'content-type': 'application/json' }, body: JSON.stringify(obj) });
   if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: cors });
+
+  if (url.pathname === '/health') return json({ ok: true, aiConfigured: true, teamLog: true, feedback: feedbackFlag });
+  if (url.pathname === '/feedback' && req.method() === 'POST') {
+    fbSent.push(JSON.parse(req.postData()));
+    return json({ ok: true, redacted: false }, 201);
+  }
 
   if (url.pathname === '/chat') {
     const body = JSON.parse(req.postData());
@@ -85,10 +95,50 @@ async function worker(route) {
   await page.waitForSelector('.card');
   check('main: scheme card rendered from the data file', (await page.locator('.card h3').first().textContent()) === 'My Way Forward');
   check('main: overdue warning on the stale entry', (await page.locator('.card .stale').count()) === 1);
+
+  // ---------- feedback: "Report a problem with this listing" ----------
+  const lastSent = () => fbSent[fbSent.length - 1];
+  const waitSent = async (n) => { for (let i = 0; i < 50 && fbSent.length < n; i++) await page.waitForTimeout(100); };
+  const cardLink = page.locator('.card').first().locator('.fb-card .linkish');
+  check('feedback: each card has a "Report a problem" link', (await cardLink.textContent()) === 'Report a problem with this listing' && (await cardLink.getAttribute('aria-expanded')) === 'false');
+  await cardLink.focus();
+  await page.keyboard.press('Enter');
+  const cardForm = page.locator('.card').first().locator('form.fb-card-form');
+  await cardForm.waitFor();
+  check('feedback: the card form opens inside the card from the keyboard', (await cardLink.getAttribute('aria-expanded')) === 'true' && (await cardLink.getAttribute('aria-controls')) === (await cardForm.getAttribute('id')));
+  check('feedback: card form has a fieldset, a legend with the scheme name in English, and 7 labelled tick boxes', (await cardForm.locator('fieldset legend [lang="en"]').textContent()) === 'My Way Forward' && (await cardForm.locator('fieldset label input[type=checkbox]').count()) === 7);
+  const ta = cardForm.locator('textarea');
+  const taId = await ta.getAttribute('id');
+  check('feedback: comment box has a label, the privacy note and a 300 character limit', (await ta.getAttribute('maxlength')) === '300' && (await cardForm.locator('label[for="' + taId + '"]').count()) === 1 && (await cardForm.locator('.fb-note').textContent()).includes("Please don't include names, contact details") && (await ta.getAttribute('aria-describedby')).includes(taId + '-note'));
+  await cardForm.locator('button[type=submit]').click();
+  check('feedback: sending with nothing ticked asks for a tick', (await cardForm.locator('.fb-error').textContent()).includes('at least one') && fbSent.length === 0);
+  await cardForm.locator('input[value="contact-wrong"]').check();
+  await cardForm.locator('input[value="missing-details"]').check();
+  await ta.fill('The number 07700 900123 rang out, email info@example.org');
+  check('feedback: the page warns that contact details will be removed', await cardForm.locator('.fb-warn').isVisible() && (await cardForm.locator('.fb-warn').textContent()).includes('remove'));
+  await cardForm.locator('button[type=submit]').click();
+  await page.locator('.card').first().locator('.fb-thanks').waitFor();
+  const sentCard = lastSent();
+  const mwf = DATA.find((x) => x.id === 'my-way-forward');
+  check('feedback: card entry sends the scheme id, the record date, reasons, mode and language', sentCard.kind === 'card' && sentCard.schemeIds.join() === 'my-way-forward' && sentCard.recordLastUpdated === mwf.lastUpdated && sentCard.reasons.join() === 'contact-wrong,missing-details' && sentCard.mode === 'public' && sentCard.lang === 'en', JSON.stringify(sentCard));
+  check('feedback: contact details removed in the page before sending', sentCard.text === 'The number [removed] rang out, email [removed]', sentCard.text);
+  check('feedback: thank-you replaces the form and has focus', await page.evaluate(() => document.activeElement.classList.contains('fb-thanks')) && (await page.locator('.card').first().locator('form, .fb-card .linkish').count()) === 0);
+  await page.waitForTimeout(300);
+  check('feedback: thank-you announced in the live region', (await page.textContent('#sr-status')).includes("We'll check this listing"));
+
+  // ---------- feedback: "Was this helpful?" ----------
+  check('feedback: helpful buttons under a reply with cards', (await page.locator('.fb-helpful').count()) === 1 && (await page.locator('.fb-helpful button').allTextContents()).join() === 'Yes,No');
+  check('feedback: "Tell us" link under the result reply', (await page.locator('.fb-reply .fb-gap-link').first().textContent()) === 'Know a service that should be here? Tell us');
+  await page.locator('.fb-helpful button', { hasText: 'Yes' }).click();
+  await page.locator('.fb-reply .fb-thanks').first().waitFor();
+  const sentYes = lastSent();
+  check('feedback: Yes sends straight away with only the ids, mode and language', sentYes.kind === 'reply' && sentYes.helpful === true && sentYes.schemeIds.join() === 'my-way-forward' && Object.keys(sentYes).sort().join() === 'helpful,kind,lang,mode,schemeIds', JSON.stringify(sentYes));
+  check('feedback: thank-you after Yes has focus', await page.evaluate(() => document.activeElement.classList.contains('fb-thanks')));
   await page.fill('#message', 'crisis');
   await page.click('#send');
   await page.waitForSelector('.crisis');
   check('main: crisis panel shown when flagged', (await page.locator('.crisis').count()) === 1);
+  check('feedback: no helpful buttons or feedback links under an urgent support reply', (await page.locator('.fb-reply').count()) === 1);
   check('main: card shows the fit badge and the check-first line', (await page.locator('.card .badge.fit-possible').first().textContent()) === 'Worth checking' && (await page.locator('.card .check').first().textContent()).startsWith('Check first:'));
   check('main: "what I have understood" line shown', (await page.locator('.bubble .understood').first().textContent()).includes('aged 20; anxious'));
   check('main: mental health crisis panel has the Single Point of Access number', (await page.locator('.crisis').first().textContent()).includes('01924 316830'));
@@ -100,19 +150,83 @@ async function worker(route) {
   await page.fill('#message', 'I am unsure what I need');
   await page.click('#send');
   await page.waitForFunction(() => document.body.textContent.includes('Which town are you nearest to?'));
+  await page.waitForFunction(() => !document.querySelector('#send').disabled);
+  check('feedback: no helpful buttons or feedback links under a reply that asks questions', (await page.locator('.fb-reply').count()) === 1 && (await page.locator('.fb-helpful').count()) === 0);
   await page.fill('#message', 'Dewsbury');
   await page.click('#send');
   await page.waitForFunction(() => document.querySelectorAll('.bubble.assistant').length >= 5 && !document.querySelector('#send').disabled);
   check('main: follow-up questions asked are recorded in the history sent back', lastChat.messages.some((m) => m.role === 'assistant' && m.content.includes('(Follow-up questions asked: 1)')), JSON.stringify(lastChat.messages));
+
+  // ---------- feedback: "No", then "It missed a service I know about" ----------
+  const reply2 = page.locator('.fb-reply').nth(1);
+  check('feedback: helpful buttons under the next result reply', (await reply2.locator('.fb-helpful').count()) === 1);
+  await reply2.locator('.fb-helpful button', { hasText: 'No' }).click();
+  const noForm = reply2.locator('form.fb-no-form');
+  await noForm.waitFor();
+  check('feedback: No opens tick boxes, with focus on the first', (await noForm.locator('input[type=checkbox]').count()) === 4 && await page.evaluate(() => document.activeElement.value === 'none-fit') && (await noForm.locator('textarea').getAttribute('maxlength')) === '300');
+  check('feedback: gap form not open yet', (await reply2.locator('form.fb-gap-form').count()) === 0);
+  await noForm.locator('input[value="missed-service"]').check();
+  await reply2.locator('form.fb-gap-form').waitFor();
+  check('feedback: "It missed a service I know about" opens the gap form, the same one as the Tell us link', (await reply2.locator('form.fb-gap-form').count()) === 1 && (await reply2.locator('.fb-gap-link').getAttribute('aria-expanded')) === 'true' && (await reply2.locator('.fb-gap-link').getAttribute('aria-controls')) === (await reply2.locator('form.fb-gap-form').getAttribute('id')));
+  await page.waitForTimeout(300);
+  check('feedback: opening the gap form is announced', (await page.textContent('#sr-status')).includes('opened below'));
+  await noForm.locator('input[value="info-wrong"]').check();
+  await noForm.locator('button[type=submit]').click();
+  await reply2.locator('.fb-thanks').first().waitFor();
+  const sentNo = lastSent();
+  check('feedback: No sends the reasons, ids, mode and language', sentNo.kind === 'reply' && sentNo.helpful === false && sentNo.reasons.join() === 'info-wrong,missed-service' && sentNo.schemeIds.join() === 'my-way-forward', JSON.stringify(sentNo));
+  const gapForm = reply2.locator('form.fb-gap-form');
+  check('feedback: gap form is still open after sending the No form', await gapForm.isVisible());
+  check('feedback: service fields only appear once "a service" is ticked', !(await gapForm.locator('.fb-sub').first().isVisible()));
+  await gapForm.locator('input[value="missing-service"]').check();
+  check('feedback: gap form shows name, website and area fields with labels', await gapForm.locator('.fb-sub').first().isVisible() && (await gapForm.locator('.fb-sub').first().locator('label').count()) === 3);
+  const areaOpts = await gapForm.locator('.fb-sub').first().locator('select option').allTextContents();
+  check('feedback: area choices come from the data, plus "Don\'t know"', areaOpts.includes('Batley') && areaOpts.includes('Kirklees-wide') && areaOpts[areaOpts.length - 1] === "Don't know" && areaOpts.length === new Set(DATA.flatMap((x) => x.areas)).size + 2, areaOpts.join('|'));
+  await gapForm.locator('.fb-sub').first().locator('input[type=text]').fill('Batley Job Club');
+  await gapForm.locator('input[type=url]').fill('not a web address');
+  await gapForm.locator('button[type=submit]').click();
+  check('feedback: a bad website is explained and not sent', (await gapForm.locator('.fb-error').textContent()).includes('http') && lastSent() === sentNo);
+  await gapForm.locator('input[type=url]').fill('www.example.org/job-club');
+  await gapForm.locator('.fb-sub').first().locator('select').selectOption('Batley');
+  await gapForm.locator('button[type=submit]').click();
+  await reply2.locator('.fb-gap-slot .fb-thanks').waitFor();
+  const sentGap = lastSent();
+  check('feedback: gap entry sent, with the website given https://', sentGap.kind === 'gap' && sentGap.reasons.join() === 'missing-service' && sentGap.missedService.name === 'Batley Job Club' && sentGap.missedService.website === 'https://www.example.org/job-club' && sentGap.missedService.area === 'Batley' && sentGap.mode === 'public', JSON.stringify(sentGap));
   await page.fill('#message', 'My name is Jane Smith and I need work');
   await page.click('#send');
   await page.waitForSelector('.pii-note');
   check('main: reminder about identifying details shown when flagged', (await page.locator('.pii-note').textContent()).includes("Please don't type names"));
+  check('feedback: "Tell us" link under a result reply with no cards, but no helpful buttons', (await page.locator('.fb-reply').count()) === 3 && (await page.locator('.fb-reply').nth(2).locator('.fb-helpful').count()) === 0 && (await page.locator('.fb-reply').nth(2).locator('.fb-gap-link').count()) === 1);
+
+  // ---------- feedback: the footer link, any time ----------
+  const footLink = page.locator('#fb-footer .fb-gap-link');
+  check('feedback: "Tell us" link in the footer', await footLink.isVisible() && (await footLink.textContent()) === 'Know a service that should be here? Tell us');
+  // "Who is this for?" is hidden during a chat, so try the footer on a fresh page, with no chat at all.
+  await page.goto(ON + '/');
+  await footLink.waitFor();
+  await page.locator('label:has(input[name=mode][value=staff])').click();
+  check('feedback: staff wording for practitioners', (await footLink.textContent()) === "Do you refer people to a service that isn't listed? Tell us");
+  await footLink.click();
+  const footForm = page.locator('#fb-footer form.fb-gap-form');
+  await footForm.waitFor();
+  await footForm.locator('input[value="missing-support"]').check();
+  check('feedback: categories come from the data, in English, plus "Something else"', (await footForm.locator('input[name=category]').count()) === new Set(DATA.flatMap((x) => x.categories)).size + 1 && (await footForm.locator('label:has(input[value="Carers"]) span').getAttribute('lang')) === 'en');
+  await footForm.locator('input[value="Carers"]').check();
+  await footForm.locator('.fb-sub').nth(1).locator('select').selectOption('Dewsbury');
+  await footForm.locator('textarea').fill('Nothing for young carers who want work.');
+  await footForm.locator('button[type=submit]').click();
+  await page.locator('#fb-footer .fb-thanks').waitFor();
+  const sentFoot = lastSent();
+  check('feedback: footer form sends a gap entry with categories and area, in staff mode', sentFoot.kind === 'gap' && sentFoot.reasons.join() === 'missing-support' && sentFoot.gapCategories.join() === 'Carers' && sentFoot.gapArea === 'Dewsbury' && sentFoot.mode === 'staff' && !sentFoot.missedService, JSON.stringify(sentFoot));
+  check('feedback: footer link still offered after sending', await footLink.isVisible());
+  const everything = JSON.stringify(fbSent);
+  check('feedback: nothing from the conversation is ever sent', fbSent.length === 5 && fbSent.every((x) => !('messages' in x) && !('understood_needs' in x) && !('message' in x)) && !everything.includes('aged 20') && !everything.includes('Here is a match'), everything);
+  check('feedback: nothing stored in the browser', await page.evaluate(() => localStorage.length === 0 && sessionStorage.length === 0 && document.cookie === ''));
 
   // ---------- help page ----------
   await page.goto(ON + '/mvp/help.html');
   await page.waitForSelector('#data-table tbody tr');
-  const schemeCount = require('/repo/data/services.json').services.length;
+  const schemeCount = DATA.length;
   check(`help: data table lists all ${schemeCount} schemes`, (await page.locator('#data-table tbody tr').count()) === schemeCount);
   check('help: overdue entries flagged (>= 4)', (await page.locator('#data-table .pill.warn').count()) >= 4, String(await page.locator('#data-table .pill.warn').count()));
   check('help: not-open scheme flagged', (await page.locator('#data-table .pill.bad').count()) === 1);
@@ -129,7 +243,7 @@ async function worker(route) {
   check('services: search is kept in the address', page.url().includes('q=gambling'));
   await page.click('#clear');
   await page.selectOption('#f-type', 'hwl');
-  check('services: HWL filter shows the HWL schemes', (await page.locator('.svc').count()) === require('/repo/data/services.json').services.filter((x) => x.hwlFunded).length);
+  check('services: HWL filter shows the HWL schemes', (await page.locator('.svc').count()) === DATA.filter((x) => x.hwlFunded).length);
   await page.goto(ON + '/mvp/services.html?review=closed');
   await page.waitForSelector('.svc');
   check('services: filters restored from the address (not open = 1)', (await page.locator('.svc').count()) === 1);
@@ -230,6 +344,53 @@ async function worker(route) {
   check('log: lock returns to the gate', await page.locator('#gate').isVisible());
   await page.reload();
   check('log: still locked after reload', await page.locator('#gate').isVisible() && !(await page.locator('#app').isVisible()));
+
+  // ---------- feedback switched off on the Worker ----------
+  feedbackFlag = false;
+  await page.goto(ON + '/');
+  await page.waitForTimeout(300);
+  await page.fill('#message', 'I am 20 and anxious in Dewsbury');
+  await page.click('#send');
+  await page.waitForSelector('.card');
+  check('feedback off: no card link, no helpful buttons, no Tell us links', (await page.locator('.fb-card, .fb-reply, .fb-helpful').count()) === 0);
+  check('feedback off: footer link hidden', !(await page.locator('#fb-footer').isVisible()) && (await page.locator('#fb-footer .fb-gap-link').count()) === 0);
+  feedbackFlag = true;
+
+  // ---------- feedback in Urdu (right to left) ----------
+  await page.goto(ON + '/?lang=ur');
+  await page.waitForSelector('#fb-footer .fb-gap-link');
+  await page.fill('#message', 'I am 20 and anxious in Dewsbury');
+  await page.click('#send');
+  await page.waitForSelector('.card .fb-card .linkish');
+  await page.locator('.card .fb-card .linkish').first().click();
+  await page.locator('#fb-footer .fb-gap-link').click();
+  const urCard = page.locator('form.fb-card-form').first();
+  await urCard.waitFor();
+  const dirs = await page.evaluate(() => [...document.querySelectorAll('form.fb-card-form, #fb-footer form.fb-gap-form')].map((f) => getComputedStyle(f).direction));
+  check('feedback in Urdu: the forms are laid out right to left', dirs.length === 2 && dirs.every((d) => d === 'rtl'), dirs.join());
+  check('feedback in Urdu: the wording is in Urdu and the scheme name stays in English', (await page.locator('.card .fb-card .linkish').first().textContent()) === 'اس اندراج میں مسئلے کی اطلاع دیں' && (await urCard.locator('legend [lang="en"]').textContent()) === 'My Way Forward');
+  const tickBox = await urCard.locator('input[type=checkbox]').first().boundingBox();
+  const tickText = await urCard.locator('.fb-tick label span').first().boundingBox();
+  check('feedback in Urdu: tick boxes sit on the right of their labels', tickBox.x > tickText.x, JSON.stringify([tickBox, tickText]));
+
+  // ---------- feedback forms at the largest text size, high contrast, phone width ----------
+  await page.setViewportSize({ width: 375, height: 800 });
+  for (const q of ['?size=3&contrast=high', '?lang=ur&size=3']) {
+    await page.goto(ON + '/' + q);
+    await page.waitForSelector('#fb-footer .fb-gap-link');
+    await page.fill('#message', 'I am 20 and anxious in Dewsbury');
+    await page.click('#send');
+    await page.waitForSelector('.card .fb-card .linkish');
+    await page.locator('.card .fb-card .linkish').first().click();
+    await page.locator('.fb-reply .fb-helpful button').nth(1).click();
+    await page.locator('.fb-no-form input[value="missed-service"]').check();
+    await page.locator('.fb-reply form.fb-gap-form input[value="missing-service"]').check();
+    await page.locator('.fb-reply form.fb-gap-form input[value="missing-support"]').check();
+    await page.waitForTimeout(200);
+    const over = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    check('feedback: no sideways scrolling with the forms open at ' + q, over <= 1, 'overflow ' + over + 'px');
+  }
+  await page.setViewportSize({ width: 1000, height: 900 });
 
   // ---------- phone-width layout ----------
   await page.setViewportSize({ width: 375, height: 800 });
