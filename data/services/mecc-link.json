@@ -1,0 +1,61 @@
+{
+  "id": "mecc-link",
+  "name": "MECC Link (Yorkshire and Humber)",
+  "organisation": "Y&H Public Health Network",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "organisation"
+  ],
+  "categories": [
+    "Wellbeing"
+  ],
+  "whoFor": "Frontline workers and volunteers.",
+  "age": null,
+  "webpage": "https://www.mecclink.co.uk/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Online"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Online"
+  },
+  "activities": [
+    {
+      "name": "Directory of services",
+      "summary": "Signposting tool for staff and volunteers to point people to self-care and local and national support.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "notes": "A directory of other services, not a service people are referred to.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 77",
+    "foundVia": "Your list",
+    "checkedUrl": "https://www.mecclink.co.uk/",
+    "evidence": "© 2026; Kirklees content is thin.",
+    "confidence": "medium"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "Left out of the October import because it is a directory, not a service. Added so the MVP team can decide."
+  }
+}

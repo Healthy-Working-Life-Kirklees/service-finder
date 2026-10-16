@@ -1,0 +1,60 @@
+{
+  "id": "west-yorkshire-promise",
+  "name": "West Yorkshire Promise (work experience 14–24)",
+  "organisation": "WYCA",
+  "status": "Not verified as running (web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual",
+    "student"
+  ],
+  "categories": [
+    "Young people",
+    "Finding work"
+  ],
+  "whoFor": "Young people aged 14 to 24 in West Yorkshire (work experience).",
+  "age": null,
+  "webpage": "https://www.westyorks-ca.gov.uk/news/every-young-person-in-west-yorkshire-to-be-guaranteed-work-experience-opportunities-as-mayor-acts-to-prevent-a-lost-generation/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "To be completed"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "To be completed."
+  },
+  "activities": [
+    {
+      "name": "West Yorkshire Promise (work experience 14–24)",
+      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Not known",
+  "notes": "Why it wasn't on the main list: Announced June 2026; no sign-up route yet.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 13",
+    "foundVia": "Web research or directory review (October 2026)",
+    "evidence": "Announced June 2026; no sign-up route yet.",
+    "confidence": "low",
+    "checkedUrl": "https://www.westyorks-ca.gov.uk/news/every-young-person-in-west-yorkshire-to-be-guaranteed-work-experience-opportunities-as-mayor-acts-to-prevent-a-lost-generation/"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+  }
+}

@@ -60,5 +60,9 @@
     "checkedUrl": "https://www.kirklees.gov.uk/beta/benefits/local-welfare-provision.aspx",
     "evidence": "Page changed April 2026. DPT (Apr 2026): Crisis Resilience Fund began 1 April 2026; Household Support Fund and Discretionary Housing Payments ended 31 March 2026. Fusion Housing gives food-claim hours as 10–5.",
     "confidence": "high"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

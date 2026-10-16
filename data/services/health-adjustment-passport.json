@@ -62,5 +62,9 @@
     "checkedUrl": "https://www.gov.uk/government/publications/health-adjustment-passport",
     "evidence": "GOV.UK updated 26 Jan 2026.",
     "confidence": "high"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

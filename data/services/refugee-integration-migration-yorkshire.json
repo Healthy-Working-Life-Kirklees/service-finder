@@ -1,0 +1,59 @@
+{
+  "id": "refugee-integration-migration-yorkshire",
+  "name": "Refugee Integration Service",
+  "organisation": "Migration Yorkshire",
+  "status": "Not verified as running (web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Refugees and new arrivals",
+    "Finding work"
+  ],
+  "whoFor": "To be completed: the October 2026 research did not confirm who this is for.",
+  "age": null,
+  "webpage": "https://www.migrationyorkshire.org.uk/node/482",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "To be completed"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "To be completed."
+  },
+  "activities": [
+    {
+      "name": "Refugee Integration Service",
+      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Not known",
+  "notes": "Why it wasn't on the main list: Page last changed Aug 2023.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 11",
+    "foundVia": "Web research or directory review (October 2026)",
+    "evidence": "Page last changed Aug 2023.",
+    "confidence": "low",
+    "checkedUrl": "https://www.migrationyorkshire.org.uk/node/482"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+  }
+}

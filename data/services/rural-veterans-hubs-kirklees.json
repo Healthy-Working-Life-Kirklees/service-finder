@@ -61,5 +61,9 @@
     "checkedUrl": "https://www.cobseo.org.uk/members/directory/rural-veterans-hubs-kirklees/",
     "evidence": "Directory updated May 2026; provider events calendar still 2025.",
     "confidence": "medium"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

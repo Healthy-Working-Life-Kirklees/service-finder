@@ -90,5 +90,9 @@
     "checkedUrl": "https://www.forcesemployment.org.uk/programmes/op-nova/",
     "evidence": "Page modified Aug 2026. MECC lists 0800 917 7299 and opnova@forcesemployment.org.uk — not on provider page.",
     "confidence": "high"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

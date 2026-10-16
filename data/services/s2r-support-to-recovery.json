@@ -60,5 +60,9 @@
     "checkedUrl": "https://www.s2r.org.uk/",
     "evidence": "June 2026 activity schedule on site.",
     "confidence": "medium"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

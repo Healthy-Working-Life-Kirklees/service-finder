@@ -65,5 +65,9 @@
     "checkedUrl": "https://www.kirklees-talkingtherapies.nhs.uk/",
     "evidence": "Site modified May 2026. Separate from the Employment Advice service already listed. MECC Link still lists an old IAPT number (01484 434625/6) — ignore.",
     "confidence": "high"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

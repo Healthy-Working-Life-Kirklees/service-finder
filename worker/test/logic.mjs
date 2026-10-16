@@ -319,6 +319,62 @@ check('log: imported statuses/areas kept', r.body.items[0].status === 'Done' && 
 const pre = await worker.fetch(new Request('https://w/log/items', { method: 'OPTIONS', headers: { Origin: O } }), logEnv());
 check('log: preflight allows x-team-passcode and PATCH', pre.status === 204 && pre.headers.get('Access-Control-Allow-Headers').includes('x-team-passcode') && pre.headers.get('Access-Control-Allow-Methods').includes('PATCH'));
 
+// ----- Listing decisions (MVP team) -----
+check('live list: only services with listing decision include reach the Worker', svc.every((s) => s.listing && s.listing.decision === 'include'));
+const allSvc = JSON.parse(fs.readFileSync(path.join(root, 'data/services-all.json'), 'utf8')).services;
+check('all-services file holds every service, live or not', allSvc.length > svc.length && allSvc.some((s) => s.listing.decision === 'review'), allSvc.length + ' vs ' + svc.length);
+check('AI can never pick a service waiting for review', !props.matches.items.properties.service_id.enum.includes('kbop') && !props.matches.items.properties.service_id.enum.includes('samaritans-helpline'));
+
+store = mkStore();
+r = await logCall('GET', '/log/decisions');
+check('decisions: empty to start', r.status === 200 && Object.keys(r.body.decisions).length === 0, JSON.stringify(r.body));
+r = await logCall('PUT', '/log/decisions/kbop', { decision: 'exclude', note: 'Retendered; not taking referrals', by: 'PL' });
+check('decisions: set one', r.status === 200 && r.body.item.decision === 'exclude' && r.body.item.by === 'PL', JSON.stringify(r.body));
+r = await logCall('PUT', '/log/decisions/kbop', { decision: 'include', by: 'AB' });
+check('decisions: change keeps the earlier one in history', r.status === 200 && r.body.item.decision === 'include' && r.body.item.history.length === 1 && r.body.item.history[0].decision === 'exclude');
+r = await logCall('PUT', '/log/decisions/kbop', { decision: 'maybe', by: 'AB' });
+check('decisions: unknown decision -> 400', r.status === 400);
+r = await logCall('PUT', '/log/decisions/kbop', { decision: 'review', by: 'AB', note: '' });
+check('decisions: review or exclude needs a reason -> 400', r.status === 400);
+r = await logCall('PUT', '/log/decisions/kbop', { decision: 'include', by: '' });
+check('decisions: needs a name -> 400', r.status === 400);
+r = await logCall('PUT', '/log/decisions/Bad_Id', { decision: 'include', by: 'AB' });
+check('decisions: bad service id -> 404', r.status === 404);
+r = await logCall('PUT', '/log/decisions/kbop', { decision: 'include', by: 'AB' }, { pass: 'nope' });
+check('decisions: wrong passcode -> 401', r.status === 401);
+r = await logCall('GET', '/log/decisions', null, { origin: null });
+check('decisions: a script (no Origin) can read them with the passcode', r.status === 200 && r.body.decisions.kbop.decision === 'include');
+r = await logCall('PUT', '/log/decisions/kbop', { decision: 'include', by: 'AB' }, { origin: null });
+check('decisions: but not change them without the page origin', r.status === 403);
+r = await logCall('GET', '/log/decisions', null, { origin: 'https://evil.example' });
+check('decisions: wrong Origin -> 403', r.status === 403);
+const pre3 = await worker.fetch(new Request('https://w/log/decisions/kbop', { method: 'OPTIONS', headers: { Origin: O } }), logEnv());
+check('decisions: preflight allows PUT', pre3.headers.get('Access-Control-Allow-Methods').includes('PUT'));
+
+// apply-decisions.mjs, on a copy of a few scheme files
+{
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'dec-'));
+  for (const id of ['kbop', 'samaritans-helpline', 'acas-helpline', 'hopeline247-papyrus']) fs.copyFileSync(path.join(root, 'data/services', id + '.json'), path.join(d, id + '.json'));
+  const inp = path.join(d, 'decisions.json');
+  fs.writeFileSync(inp, JSON.stringify({ decisions: {
+    kbop: { decision: 'include', by: 'PL', t: '2026-10-16T10:00:00Z' },
+    'samaritans-helpline': { decision: 'include', note: 'Keep alongside the crisis panel', by: 'PL', t: '2026-10-16T10:00:00Z' },
+    'acas-helpline': { decision: 'review', note: 'Check the phone number', by: 'AB', t: '2026-10-16T11:00:00Z' },
+    'hopeline247-papyrus': { decision: 'exclude', note: 'Closed', by: 'AB', t: '2026-10-16T11:00:00Z' },
+    'not-a-service': { decision: 'exclude', note: 'x', by: 'AB', t: '2026-10-16T11:00:00Z' },
+  } }));
+  const run = () => execFileSync(process.execPath, [path.join(root, 'scripts/apply-decisions.mjs'), '--input', inp, '--dir', d], { encoding: 'utf8' });
+  const out = run();
+  const read = (id) => JSON.parse(fs.readFileSync(path.join(d, id + '.json'), 'utf8')).listing;
+  check('apply: writes include, with who and when', read('samaritans-helpline').decision === 'include' && read('samaritans-helpline').by === 'PL' && read('samaritans-helpline').date === '2026-10-16' && read('samaritans-helpline').reason === 'Keep alongside the crisis panel', JSON.stringify(read('samaritans-helpline')));
+  check('apply: takes a live service off for review', read('acas-helpline').decision === 'review');
+  check('apply: excludes', read('hopeline247-papyrus').decision === 'exclude');
+  check('apply: never puts an incomplete service live, and says so', read('kbop').decision === 'review' && /details still to be completed[\s\S]*kbop/.test(out), out);
+  check('apply: reports unknown services', out.includes('not-a-service'));
+  check('apply: running again changes nothing', /0 services updated, 3 already up to date/.test(run()), run());
+  fs.rmSync(d, { recursive: true, force: true });
+}
+
 // ----- User feedback -----
 const FB_PASS = 'feedback passcode for tests';
 const mkFbStore = () => {

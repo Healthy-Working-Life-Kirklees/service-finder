@@ -2,7 +2,8 @@
 const { chromium } = require('playwright');
 const fs = require('node:fs');
 const path = require('node:path');
-const DATA = require(path.join(__dirname, '..', 'data', 'services.json')).services;
+const DATA = require(path.join(__dirname, '..', 'data', 'services.json')).services; // the live list
+const ALL = require(path.join(__dirname, '..', 'data', 'services-all.json')).services; // every service
 
 const ON = 'http://127.0.0.1:18480';   // build with MVP tools switched on
 const OFF = 'http://127.0.0.1:18481';  // build with MVP tools off (the wider-test version)
@@ -20,6 +21,7 @@ let log = [];
 let lastChat = null;
 let feedbackFlag = true; // what /health says about feedback
 let fbSent = []; // feedback the page sent
+const decisions = {}; // listing decisions recorded on the All services page
 const mk = (f, status) => {
   const t = new Date().toISOString();
   const it = { id: ++seq, type: f.type || 'Issue', title: f.title, details: f.details || '', area: f.area || 'Other', priority: f.priority || 'Medium', owner: f.owner || '', status: status || 'Open', created: t, updated: t, updates: [] };
@@ -61,6 +63,14 @@ async function worker(route) {
       const { items } = JSON.parse(req.postData());
       items.forEach((x) => mk(x, x.status));
       return json({ imported: items.length });
+    }
+    if (url.pathname === '/log/decisions') return json({ decisions });
+    const dm = url.pathname.match(/^\/log\/decisions\/([a-z0-9-]+)$/);
+    if (dm && req.method() === 'PUT') {
+      const b = JSON.parse(req.postData());
+      const prev = decisions[dm[1]];
+      decisions[dm[1]] = { decision: b.decision, note: b.note, by: b.by, t: new Date().toISOString(), history: prev ? [...prev.history, { decision: prev.decision, note: prev.note, by: prev.by, t: prev.t }] : [] };
+      return json({ id: dm[1], item: decisions[dm[1]] });
     }
     const m = url.pathname.match(/^\/log\/items\/(\d+)$/);
     if (m && req.method() === 'PATCH') {
@@ -235,7 +245,13 @@ async function worker(route) {
   // ---------- all services page ----------
   await page.goto(ON + '/mvp/services.html');
   await page.waitForSelector('.svc');
-  check(`services: lists all ${schemeCount} schemes`, (await page.locator('.svc').count()) === schemeCount);
+  check(`services: lists all ${ALL.length} services, including those not on the live list`, (await page.locator('.svc').count()) === ALL.length, String(await page.locator('.svc').count()));
+  check('services: live list holds only included services', ALL.length > DATA.length && DATA.every((x) => x.listing.decision === 'include'));
+  check('services: not signed in, so no decision controls', (await page.locator('.decide').count()) === 0 && await page.locator('#signin-form').isVisible());
+  await page.selectOption('#f-listing', 'review');
+  check('services: "waiting for review" filter', (await page.locator('.svc').count()) === ALL.filter((x) => x.listing.decision === 'review').length);
+  check('services: waiting-for-review badge and reason shown', (await page.locator('.svc .pill.warn', { hasText: 'Waiting for review' }).count()) > 0 && (await page.locator('.svc .listing').first().textContent()).startsWith('Waiting for review:'));
+  await page.click('#clear');
   await page.fill('#q', 'gambling');
   await page.waitForTimeout(300);
   const gambling = await page.locator('.svc').count();
@@ -246,7 +262,7 @@ async function worker(route) {
   check('services: HWL filter shows the HWL schemes', (await page.locator('.svc').count()) === DATA.filter((x) => x.hwlFunded).length);
   await page.goto(ON + '/mvp/services.html?review=closed');
   await page.waitForSelector('.svc');
-  check('services: filters restored from the address (not open = 1)', (await page.locator('.svc').count()) === 1);
+  check('services: filters restored from the address (not open)', (await page.locator('.svc').count()) === ALL.filter((x) => !x.open).length);
   check('services: edit link points at the scheme file', /\/edit\/main\/data\/services\/[a-z0-9-]+\.json$/.test(await page.locator('.svc a', { hasText: 'Edit on GitHub' }).first().getAttribute('href')));
 
   // ---------- log page ----------
@@ -328,6 +344,7 @@ async function worker(route) {
   await page.locator('#suggested button').first().click();
   for (let i = 0; i < 50 && (await page.locator('#list .entry').count()) !== before + 14; i++) await page.waitForTimeout(200);
   check('log: 2 urgent-support entries added', (await page.locator('#list .entry').count()) === before + 14);
+
   await page.waitForSelector('#suggested:not([hidden])');
   check('log: the October import pack is still offered', (await page.textContent('#suggested')).includes('October 2026 import') && (await page.textContent('#suggested')).includes('22 new entries'), await page.textContent('#suggested'));
   await page.locator('#suggested button').first().click();
@@ -339,6 +356,49 @@ async function worker(route) {
   await page.reload();
   await page.waitForSelector('#list .entry');
   check('log: suggestions are not offered twice', !(await page.locator('#suggested').isVisible()));
+
+  // ---------- listing decisions on the All services page (signed in from the log, same tab) ----------
+  await page.goto(ON + '/mvp/services.html?listing=review&q=samaritans');
+  await page.waitForSelector('#signed-in:not([hidden])');
+  check('decide: signed in via the log passcode in this tab', (await page.textContent('#signed-in-text')).includes('0 decisions'), await page.textContent('#signed-in-text'));
+  await page.waitForSelector('.svc .decide');
+  check('decide: decision controls shown', (await page.locator('#svc-samaritans-helpline .decide input[type=radio]').count()) === 3);
+  await page.fill('#by', '');
+  await page.check('#svc-samaritans-helpline input[value=exclude]');
+  await page.click('#svc-samaritans-helpline .decide button');
+  check('decide: needs a name first', (await page.textContent('#svc-samaritans-helpline .decide .msg[role=status]')).includes('name'));
+  await page.fill('#by', 'TB');
+  await page.click('#svc-samaritans-helpline .decide button');
+  check('decide: exclude needs a reason', (await page.textContent('#svc-samaritans-helpline .decide .msg[role=status]')).includes('why'));
+  await page.fill('#note-samaritans-helpline', 'The crisis panel covers this');
+  await page.click('#svc-samaritans-helpline .decide button');
+  await page.waitForSelector('#svc-samaritans-helpline .pill.blue >> text=waiting to be applied');
+  check('decide: saved and shown as waiting to be applied', decisions['samaritans-helpline'] && decisions['samaritans-helpline'].decision === 'exclude' && decisions['samaritans-helpline'].by === 'TB');
+  check('decide: "Saved." confirmation', (await page.textContent('#svc-samaritans-helpline .decide .msg[role=status]')).includes('Saved'));
+  // an incomplete service: choosing include warns that it can't go live yet
+  await page.goto(ON + '/mvp/services.html?q=kbop');
+  await page.waitForSelector('#svc-kbop .decide');
+  await page.check('#svc-kbop input[value=include]');
+  check('decide: warns when an incomplete service is chosen for the live list', await page.locator('#svc-kbop .decide .msg.info').isVisible());
+  await page.click('#svc-kbop .decide button');
+  await page.waitForSelector('#svc-kbop .pill.blue');
+  await page.goto(ON + '/mvp/services.html?decision=pending');
+  await page.waitForSelector('.svc');
+  check('decide: "waiting to be applied" filter shows both decisions', (await page.locator('.svc').count()) === 2, String(await page.locator('.svc').count()));
+  const sStats = await page.locator('#summary .stat').allTextContents();
+  check('decide: summary counts decisions waiting to be applied', sStats.some((x) => x.startsWith('2') && x.includes('waiting to be applied')), sStats.join(' | '));
+  const [dd] = await Promise.all([page.waitForEvent('download'), page.click('#export-decisions')]);
+  const saved = JSON.parse(fs.readFileSync(await dd.path(), 'utf8'));
+  check('decide: decisions download for apply-decisions', saved.decisions.kbop.decision === 'include' && saved.decisions['samaritans-helpline'].decision === 'exclude');
+  const [dc] = await Promise.all([page.waitForEvent('download'), page.click('#export')]);
+  const csv2 = fs.readFileSync(await dc.path(), 'utf8');
+  check('decide: CSV includes the live list and team decision', csv2.includes('"Live list"') && csv2.includes('"Exclude completely"'));
+  await page.click('#lock');
+  check('decide: sign out hides the controls', (await page.locator('.decide').count()) === 0);
+  await page.goto(ON + '/mvp/log.html');
+  await page.fill('#pass', PASS);
+  await page.click('#unlock');
+  await page.waitForSelector('#app:not([hidden])');
 
   await page.click('#lock');
   check('log: lock returns to the gate', await page.locator('#gate').isVisible());

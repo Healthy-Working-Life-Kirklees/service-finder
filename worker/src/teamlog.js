@@ -3,11 +3,18 @@
 // Stored in one Durable Object (SQLite-backed). Protected by a shared passcode held as the Worker
 // secret TEAM_PASSCODE. If that secret is not set, every /log route returns 404, i.e. the feature is off.
 // Free text only: the page tells people not to enter personal or identifying details.
+//
+// The same store also holds the team's listing decisions (include, review or exclude) for each service, made on
+// the All services page. A decision here doesn't change the live site by itself: scripts/apply-decisions.mjs
+// writes the decisions into data/services/<id>.json, in a pull request, and the live list follows the data.
 
 const TYPES = ['Issue', 'Action', 'Idea', 'Question'];
 const AREAS = ['Matching quality', 'Data accuracy', 'Wording and content', 'Safety', 'Technical', 'Process and governance', 'Other'];
 const PRIORITIES = ['High', 'Medium', 'Low'];
 const STATUSES = ['Open', 'In progress', 'Done', "Won't do"];
+const DECISIONS = ['include', 'review', 'exclude'];
+const ID_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+const MAX_DECISIONS = 2000; // far more services than the data will hold; stops the store being filled with junk
 
 const clean = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 const pick = (v, list, fallback) => (list.includes(v) ? v : fallback);
@@ -81,6 +88,24 @@ export class LogStore {
       return Response.json({ imported: n });
     }
 
+    if (url.pathname === '/decisions/list') {
+      const m = await s.list({ prefix: 'dec:' });
+      const decisions = {};
+      for (const [k, v] of m) decisions[k.slice(4)] = v;
+      return Response.json({ decisions });
+    }
+
+    if (url.pathname === '/decisions/set') {
+      const key = 'dec:' + body.id;
+      const prev = await s.get(key);
+      if (!prev && ((await s.get('decCount')) || 0) >= MAX_DECISIONS) return Response.json({ error: 'Too many decisions stored.' }, { status: 400 });
+      const history = prev ? [...(prev.history || []), { decision: prev.decision, note: prev.note, by: prev.by, t: prev.t }].slice(-20) : [];
+      const item = { decision: body.decision, note: body.note, by: body.by, t: now, history };
+      await s.put(key, item);
+      if (!prev) await s.put('decCount', ((await s.get('decCount')) || 0) + 1);
+      return Response.json({ id: body.id, item });
+    }
+
     if (url.pathname === '/update') {
       const key = pad(body.id);
       const item = await s.get(key);
@@ -146,6 +171,22 @@ export async function handleLog(request, env, url, cors) {
     if (!Array.isArray(body.items) || body.items.length < 1 || body.items.length > 60) return json({ error: 'Nothing to import.' }, 400, cors);
     const items = body.items.map((x) => ({ fields: newItemFields(x), status: pick(x.status, STATUSES, 'Open') })).filter((x) => x.fields.title.length >= 3);
     return json(await call('/import', { items }), 200, cors);
+  }
+
+  if (request.method === 'GET' && path === '/log/decisions') {
+    return json(await call('/decisions/list'), 200, cors);
+  }
+
+  const d = path.match(/^\/log\/decisions\/([a-z0-9-]{1,50})$/);
+  if (request.method === 'PUT' && d) {
+    if (!ID_RE.test(d[1])) return json({ error: 'Unknown service.' }, 400, cors);
+    if (!DECISIONS.includes(body.decision)) return json({ error: 'The decision must be include, review or exclude.' }, 400, cors);
+    const by = clean(body.by, 40);
+    if (!by) return json({ error: 'Please give your name or initials.' }, 400, cors);
+    const note = clean(body.note, 1000);
+    if (body.decision !== 'include' && note.length < 3) return json({ error: 'Please say briefly why (at least 3 characters).' }, 400, cors);
+    const res = await call('/decisions/set', { id: d[1], decision: body.decision, note, by });
+    return json(res, res.error ? 400 : 200, cors);
   }
 
   const m = path.match(/^\/log\/items\/(\d{1,9})$/);

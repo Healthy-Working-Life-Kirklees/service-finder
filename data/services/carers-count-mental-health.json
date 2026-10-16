@@ -62,5 +62,9 @@
     "checkedUrl": "https://carerscountkirklees.org.uk/kirklees-mental-health-service/",
     "evidence": "Page modified June 2026.",
     "confidence": "high"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

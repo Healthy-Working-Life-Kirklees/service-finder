@@ -60,5 +60,9 @@
     "checkedUrl": "https://www.thewelcomecentre.org/pages/need-our-help",
     "evidence": "Page undated; referral routes match current council pages. MECC Link gives 01484 414782, which is the council's LWP line — keep 01484 515086.",
     "confidence": "medium"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

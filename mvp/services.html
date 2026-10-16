@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.workers.dev; base-uri 'none'; form-action 'none'">
   <title>All services | Kirklees HWL Service Finder</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="mvp.css">
@@ -29,7 +29,22 @@
   </header>
 
   <main id="main" class="wrap wide">
-    <p class="mvp-banner"><strong>For the MVP team only.</strong> Every scheme and service the finder knows about, from the same data the AI uses. Use it to check what's there, what's missing and what needs reviewing. To change a service, use its "Edit on GitHub" link and open a pull request.</p>
+    <p class="mvp-banner"><strong>For the MVP team only.</strong> Every scheme and service the finder knows about, including those not yet on the live list. Only services on the live list are shown on the finder and given to the AI. Use this page to decide, for each service, whether to <strong>include</strong> it on the live list, give it <strong>further review</strong>, or <strong>exclude</strong> it completely. To change a service's details, use its "Edit on GitHub" link and open a pull request.</p>
+
+    <section id="review-signin" class="review-signin" aria-labelledby="review-h">
+      <h2 id="review-h" class="mt0">Record decisions</h2>
+      <div id="signin-form">
+        <p>Enter the team passcode (the same one as the issues log) to record a decision on any service. Without it you can still search and read everything.</p>
+        <div class="field"><label for="pass">Team passcode</label><input id="pass" type="password" autocomplete="off"></div>
+        <button id="unlock" class="btn primary small" type="button">Sign in</button>
+      </div>
+      <p id="signin-msg" class="msg err" role="alert" hidden></p>
+      <div class="field mt-sm"><label for="by">Your name or initials</label><input id="by" type="text" maxlength="40" autocomplete="off" aria-describedby="by-hint"><p id="by-hint" class="hint">Saved with each decision you make.</p></div>
+      <div id="signed-in" hidden>
+        <p><span id="signed-in-text"></span> <button id="lock" class="btn secondary small" type="button">Sign out</button></p>
+        <p class="hint">A decision is saved straight away and everyone on the team sees it. It reaches the live finder only after it is applied to the data in a pull request (<code>npm run apply-decisions</code>), so "Waiting to be applied" means the team has decided but the finder hasn't changed yet.</p>
+      </div>
+    </section>
 
     <div id="summary" class="summary"></div>
 
@@ -42,6 +57,22 @@
     <details class="filter-panel" id="filter-panel" open>
       <summary>Filters</summary>
       <div class="filters" id="filters">
+        <div><label for="f-listing">Live list</label>
+          <select id="f-listing">
+            <option value="">All</option>
+            <option value="include">On the live list</option>
+            <option value="review">Waiting for review</option>
+            <option value="exclude">Excluded</option>
+          </select></div>
+        <div><label for="f-decision">Team decision</label>
+          <select id="f-decision">
+            <option value="">All</option>
+            <option value="undecided">Not yet decided by the team</option>
+            <option value="pending">Decided, waiting to be applied</option>
+            <option value="team-include">Team chose: include</option>
+            <option value="team-review">Team chose: further review</option>
+            <option value="team-exclude">Team chose: exclude</option>
+          </select></div>
         <div><label for="f-type">Type</label>
           <select id="f-type">
             <option value="">All</option>
@@ -98,6 +129,7 @@
         <div><label for="f-sort">Sort by</label>
           <select id="f-sort">
             <option value="name">Name (A to Z)</option>
+            <option value="listing">Waiting for review first</option>
             <option value="org">Organisation (A to Z)</option>
             <option value="oldest">Last checked (oldest first)</option>
             <option value="newest">Last checked (newest first)</option>
@@ -109,6 +141,7 @@
       <button id="clear" class="btn secondary small" type="button">Clear search and filters</button>
       <button id="expand" class="btn secondary small" type="button">Show all details</button>
       <button id="export" class="btn secondary small" type="button">Download these as CSV</button>
+      <button id="export-decisions" class="btn secondary small" type="button" hidden>Download the team's decisions</button>
     </div>
 
     <p id="count" class="count" role="status" aria-live="polite"></p>
@@ -123,6 +156,7 @@
     </div>
   </footer>
 
+  <script src="../config.js"></script>
   <script src="services.js" defer></script>
 </body>
 </html>

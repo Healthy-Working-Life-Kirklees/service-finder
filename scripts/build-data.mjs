@@ -1,9 +1,14 @@
-// Combines data/meta.json and every data/services/<id>.json into data/services.json, the single file the
-// page, the Worker and the tests read. Run it before deploying, testing or running the Worker locally:
+// Combines data/meta.json and every data/services/<id>.json into two files:
+//
+//   data/services.json      the live list: only services whose "listing" decision is "include". The page, the
+//                           Worker (and so the AI) and the tests read this one.
+//   data/services-all.json  every service, whatever its decision, for the MVP team's All services page.
+//
+// Run it before deploying, testing or running the Worker locally:
 //
 //   node scripts/build-data.mjs
 //
-// data/services.json is generated, so it is not kept in the repository. Edit the per-scheme files instead.
+// Both files are generated, so they are not kept in the repository. Edit the per-scheme files instead.
 // No dependencies, so it runs anywhere Node does. scripts/check-data.mjs does the detailed checking.
 
 import fs from 'node:fs';
@@ -13,6 +18,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dir = path.join(root, 'data', 'services');
 const out = path.join(root, 'data', 'services.json');
+const outAll = path.join(root, 'data', 'services-all.json');
 
 const meta = JSON.parse(fs.readFileSync(path.join(root, 'data', 'meta.json'), 'utf8'));
 const files = fs.readdirSync(dir).filter((f) => f.endsWith('.json')).sort();
@@ -30,5 +36,7 @@ const services = files.map((f) => {
 // Order by id, so the combined file (and the list the AI sees) only changes when the data does.
 services.sort((a, b) => String(a.id).localeCompare(String(b.id)));
 
-fs.writeFileSync(out, JSON.stringify({ ...meta, count: services.length, services }, null, 2) + '\n');
-console.log(`Built data/services.json from ${services.length} scheme files.`);
+const live = services.filter((s) => s.listing && s.listing.decision === 'include');
+fs.writeFileSync(out, JSON.stringify({ ...meta, count: live.length, services: live }, null, 2) + '\n');
+fs.writeFileSync(outAll, JSON.stringify({ ...meta, count: services.length, services }, null, 2) + '\n');
+console.log(`Built data/services.json (${live.length} on the live list) and data/services-all.json (all ${services.length}).`);

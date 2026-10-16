@@ -62,5 +62,9 @@
     "checkedUrl": "https://www.poppyfactory.org/are-you-looking-for-work/",
     "evidence": "Current service; no 2026 date.",
     "confidence": "medium"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

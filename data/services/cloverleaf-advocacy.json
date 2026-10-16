@@ -1,0 +1,61 @@
+{
+  "id": "cloverleaf-advocacy",
+  "name": "Cloverleaf Advocacy",
+  "organisation": "Cloverleaf Advocacy",
+  "status": "Not verified as running (web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Disability & neurodiversity"
+  ],
+  "whoFor": "To be completed: the October 2026 research did not confirm who this is for.",
+  "age": null,
+  "webpage": "http://www.cloverleaf-advocacy.co.uk",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "any"
+  ],
+  "referralRoutes": [
+    "To be completed"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "To be completed."
+  },
+  "activities": [
+    {
+      "name": "Cloverleaf Advocacy",
+      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Not known",
+  "notes": "Why it wasn't on the main list: Directory March 2025; not checked.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 32",
+    "foundVia": "Web research or directory review (October 2026)",
+    "evidence": "Directory March 2025; not checked.",
+    "confidence": "low",
+    "checkedUrl": "http://www.cloverleaf-advocacy.co.uk"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+  }
+}

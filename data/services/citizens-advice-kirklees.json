@@ -62,5 +62,9 @@
     "checkedUrl": "https://www.kcalc.org.uk",
     "evidence": "Site © 2026. Phone left blank: KCALC says AdviceLine no longer answered from 1 June, but council page (Mar 2026) still lists 0808 278 7896 — check with KCALC.",
     "confidence": "high"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

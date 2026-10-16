@@ -1,0 +1,59 @@
+{
+  "id": "jobs-guarantee-18-21",
+  "name": "Jobs Guarantee (18–21s)",
+  "organisation": "DWP",
+  "status": "Not verified as running (web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Young people",
+    "Finding work"
+  ],
+  "whoFor": "Young people aged 18 to 21.",
+  "age": null,
+  "webpage": "https://www.gov.uk/government/publications/jobs-guarantee/jobs-guarantee-grant-guidance",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "To be completed"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "To be completed."
+  },
+  "activities": [
+    {
+      "name": "Jobs Guarantee (18–21s)",
+      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Not known",
+  "notes": "Why it wasn't on the main list: West Yorkshire not in Phase One; national roll-out 'later in 2026'.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 15",
+    "foundVia": "Web research or directory review (October 2026)",
+    "evidence": "West Yorkshire not in Phase One; national roll-out 'later in 2026'.",
+    "confidence": "low",
+    "checkedUrl": "https://www.gov.uk/government/publications/jobs-guarantee/jobs-guarantee-grant-guidance"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+  }
+}
