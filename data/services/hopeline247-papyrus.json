@@ -1,0 +1,61 @@
+{
+  "id": "hopeline247-papyrus",
+  "name": "HOPELINE247 (Papyrus)",
+  "organisation": "Papyrus",
+  "status": "Closed or not running (web research, October 2026)",
+  "open": false,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Young people"
+  ],
+  "whoFor": "To be completed: the October 2026 research did not confirm who this is for.",
+  "age": null,
+  "webpage": "https://opusllp.com/restructuring-insolvency/case-papyrus-in-administration/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "To be completed"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "To be completed."
+  },
+  "activities": [
+    {
+      "name": "HOPELINE247 (Papyrus)",
+      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Not known",
+  "notes": "Why it wasn't on the main list: Papyrus went into administration 7 Sept 2026; HOPELINE247 no longer running. MECC Link still lists it — do not add.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 22",
+    "foundVia": "Web research or directory review (October 2026)",
+    "evidence": "Papyrus went into administration 7 Sept 2026; HOPELINE247 no longer running. MECC Link still lists it — do not add.",
+    "confidence": "low",
+    "checkedUrl": "https://opusllp.com/restructuring-insolvency/case-papyrus-in-administration/"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "Research found it closed or not running, and advised not listing it. Added so the MVP team can confirm."
+  }
+}

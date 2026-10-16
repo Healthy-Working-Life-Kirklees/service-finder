@@ -9,7 +9,7 @@
     "id", "name", "organisation", "status", "open", "hwlFunded", "level", "audience", "categories",
     "whoFor", "age", "webpage", "email", "phone", "social", "locations", "areas", "eligibility",
     "exclusions", "gate", "healthFocus", "referralRoutes", "selfReferral", "activities", "workExperience",
-    "lastUpdated", "reviewCycle", "provenance"
+    "lastUpdated", "reviewCycle", "provenance", "listing"
   ],
   "$defs": {
     "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
@@ -113,6 +113,18 @@
         "checkedUrl": { "$ref": "#/$defs/url" },
         "evidence": { "$ref": "#/$defs/text" },
         "confidence": { "enum": ["high", "medium", "low"] }
+      }
+    },
+    "listing": {
+      "description": "Whether the service is on the live list. Only 'include' services reach the public page and the AI. The MVP team decides on the All services page; scripts/apply-decisions.mjs writes their decisions here.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "reason"],
+      "properties": {
+        "decision": { "enum": ["include", "review", "exclude"] },
+        "reason": { "$ref": "#/$defs/text" },
+        "by": { "$ref": "#/$defs/text" },
+        "date": { "$ref": "#/$defs/date" }
       }
     }
   }

@@ -1,0 +1,58 @@
+{
+  "id": "iask-immigration-asylum",
+  "name": "Immigration and Asylum Support Kirklees (IASK)",
+  "organisation": "IASK",
+  "status": "Not verified as running (web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Refugees and new arrivals"
+  ],
+  "whoFor": "Asylum seekers, refugees and migrants needing immigration advice (advice only, no employment offer).",
+  "age": null,
+  "webpage": "https://www.i-ask.co.uk",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "To be completed"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "To be completed."
+  },
+  "activities": [
+    {
+      "name": "Immigration and Asylum Support Kirklees (IASK)",
+      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Not known",
+  "notes": "Why it wasn't on the main list: Site © 2023; advice only, no employment offer. Directory Oct 2025, no closure notice; Quakers House, Paddock HD1 4TR.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 6",
+    "foundVia": "Web research or directory review (October 2026)",
+    "evidence": "Site © 2023; advice only, no employment offer. Directory Oct 2025, no closure notice; Quakers House, Paddock HD1 4TR.",
+    "confidence": "low",
+    "checkedUrl": "https://www.i-ask.co.uk"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+  }
+}

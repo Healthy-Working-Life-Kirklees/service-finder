@@ -1,0 +1,65 @@
+{
+  "id": "calm-helpline",
+  "name": "CALM helpline and webchat",
+  "organisation": "Campaign Against Living Miserably",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Men"
+  ],
+  "whoFor": "Adults 18+.",
+  "age": "18+",
+  "webpage": "https://www.thecalmzone.net/suicide-prevention-helpline",
+  "email": null,
+  "phone": "0800 58 58 58",
+  "social": [],
+  "locations": [
+    "Phone and online"
+  ],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "Call, chat or WhatsApp, 5pm–midnight daily"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Call, chat or WhatsApp, 5pm–midnight daily"
+  },
+  "activities": [
+    {
+      "name": "Listening and support",
+      "summary": "Free, anonymous helpline and webchat for anyone finding life hard or thinking about suicide.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "notes": "A crisis or listening line. The finder already shows urgent contacts in its crisis panel and gives no cards when someone mentions suicide or self-harm.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 92",
+    "foundVia": "MECC Link",
+    "checkedUrl": "https://www.thecalmzone.net/suicide-prevention-helpline",
+    "evidence": "© 2026.",
+    "confidence": "high"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "Left out of the October import because the crisis panel covers crisis support. Added so the MVP team can decide."
+  }
+}

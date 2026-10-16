@@ -60,5 +60,9 @@
     "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationdetails.aspx?orgid=4826",
     "evidence": "Directory updated 5 Oct 2026.",
     "confidence": "medium"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

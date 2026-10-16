@@ -1,0 +1,58 @@
+{
+  "id": "cap-job-clubs",
+  "name": "CAP Job Clubs",
+  "organisation": "Christians Against Poverty",
+  "status": "Not verified as running (web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work"
+  ],
+  "whoFor": "To be completed: the October 2026 research did not confirm who this is for.",
+  "age": null,
+  "webpage": "https://capuk.org/get-help/cap-job-clubs",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "To be completed"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "To be completed."
+  },
+  "activities": [
+    {
+      "name": "CAP Job Clubs",
+      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Not known",
+  "notes": "Why it wasn't on the main list: No Kirklees club confirmed.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 36",
+    "foundVia": "Web research or directory review (October 2026)",
+    "evidence": "No Kirklees club confirmed.",
+    "confidence": "low",
+    "checkedUrl": "https://capuk.org/get-help/cap-job-clubs"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+  }
+}

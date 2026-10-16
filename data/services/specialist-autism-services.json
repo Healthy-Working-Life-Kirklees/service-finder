@@ -1,0 +1,61 @@
+{
+  "id": "specialist-autism-services",
+  "name": "Specialist Autism Services employment",
+  "organisation": "Specialist Autism Services",
+  "status": "Not verified as running (web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Disability & neurodiversity",
+    "Finding work"
+  ],
+  "whoFor": "To be completed: the October 2026 research did not confirm who this is for.",
+  "age": null,
+  "webpage": "http://www.specialistautismservices.org",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "learning-disability-autism"
+  ],
+  "referralRoutes": [
+    "To be completed"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "To be completed."
+  },
+  "activities": [
+    {
+      "name": "Specialist Autism Services employment",
+      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Not known",
+  "notes": "Why it wasn't on the main list: Hubs Bradford/Calderdale only.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 40",
+    "foundVia": "Web research or directory review (October 2026)",
+    "evidence": "Hubs Bradford/Calderdale only.",
+    "confidence": "low",
+    "checkedUrl": "http://www.specialistautismservices.org"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+  }
+}

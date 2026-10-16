@@ -11,7 +11,7 @@ build() { # build <dir> <mvp: true|false>
   mkdir -p "$1"
   cp -r "$ROOT/site/." "$1/"
   cp "$ROOT/data/services.json" "$1/services.json"
-  if [ "$2" = true ]; then cp -r "$ROOT/mvp" "$1/mvp"; fi
+  if [ "$2" = true ]; then cp -r "$ROOT/mvp" "$1/mvp"; cp "$ROOT/data/services-all.json" "$1/mvp/services-all.json"; fi
   python3 -c "import json,sys; print('window.FINDER_CONFIG = ' + json.dumps({'apiBase': 'https://mock.workers.dev', 'mvpTools': sys.argv[1] == 'true'}, separators=(',', ':')) + ';')" "$2" > "$1/config.js"
 }
 build "$W/on" true

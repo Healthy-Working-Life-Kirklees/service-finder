@@ -61,5 +61,9 @@
     "checkedUrl": "https://kirkleescollege.ac.uk/wp-content/uploads/2026/07/AdultCourseGuide_Sept26_digital-4.pdf",
     "evidence": "Sept 2026 Adult Course Guide (uploaded July 2026).",
     "confidence": "high"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

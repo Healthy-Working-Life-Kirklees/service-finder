@@ -1,0 +1,62 @@
+{
+  "id": "wy-staff-wellbeing-hub",
+  "name": "West Yorkshire Staff Mental Health and Wellbeing Hub",
+  "organisation": "WY Health & Care Partnership",
+  "status": "Closed or not running (web research, October 2026)",
+  "open": false,
+  "hwlFunded": false,
+  "level": "regional",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Mental health",
+    "Wellbeing",
+    "Staying in work"
+  ],
+  "whoFor": "To be completed: the October 2026 research did not confirm who this is for.",
+  "age": null,
+  "webpage": "https://forumcentral.org.uk/west-yorkshire-staff-mental-health-and-wellbeing-hub-closure-update/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [],
+  "areas": [
+    "Kirklees-wide"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [
+    "mental-health"
+  ],
+  "referralRoutes": [
+    "To be completed"
+  ],
+  "selfReferral": {
+    "allowed": "tbc",
+    "note": "To be completed."
+  },
+  "activities": [
+    {
+      "name": "West Yorkshire Staff Mental Health and Wellbeing Hub",
+      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "Not known",
+  "notes": "Why it wasn't on the main list: Closed March 2026 — do not list.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 19",
+    "foundVia": "Web research or directory review (October 2026)",
+    "evidence": "Closed March 2026 — do not list.",
+    "confidence": "low",
+    "checkedUrl": "https://forumcentral.org.uk/west-yorkshire-staff-mental-health-and-wellbeing-hub-closure-update/"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "Research found it closed or not running, and advised not listing it. Added so the MVP team can confirm."
+  }
+}

@@ -57,5 +57,9 @@
     "checkedUrl": "https://huddersfieldmission.org.uk/pages/16-advice-support",
     "evidence": "Page undated; homepage news June 2026.",
     "confidence": "medium"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

@@ -58,5 +58,9 @@
     "checkedUrl": "https://england.shelter.org.uk/get_help/helpline",
     "evidence": "© 2026.",
     "confidence": "high"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

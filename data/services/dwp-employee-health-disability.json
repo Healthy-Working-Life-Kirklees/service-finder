@@ -58,5 +58,9 @@
     "checkedUrl": "https://www.hse.gov.uk/disability/best-practice/index.htm",
     "evidence": "Site blocks automated checks; HSE (2025) and Acas link to it.",
     "confidence": "medium"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

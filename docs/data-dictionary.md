@@ -1,11 +1,14 @@
 # Scheme data dictionary
 
-This describes the scheme data: everything the Service Finder knows about each scheme or service. Each one is a file in `data/services/`, named after its id (for example `data/services/elevate.json`). The AI is given all of them with every message (without contact details), and the scheme cards on the page are drawn from them. If it isn't in these files, the finder doesn't know about it.
+This describes the scheme data: everything the Service Finder knows about each scheme or service. Each one is a file in `data/services/`, named after its id (for example `data/services/elevate.json`). The AI is given every service on the live list (`"listing": {"decision": "include"}`) with every message (without contact details), and the scheme cards on the page are drawn from them. If it isn't in these files, the finder doesn't know about it.
 
-There are 168 at the moment (15 October 2026):
+There are 215 at the moment (16 October 2026):
 
-- **31 Healthy Working Life schemes**, converted by hand from the "Kirklees HWL Pathways Aug 26 v2.1" document (`"hwlFunded": true`).
-- **137 other local, regional and national services**, imported from the "Kirklees additional services" spreadsheet (v3, web research in October 2026). Crisis helplines and directories in that spreadsheet were left out: the crisis panel covers crisis support, and directories aren't services people can be referred to.
+- **31 Healthy Working Life schemes**, converted by hand from the "Kirklees HWL Pathways Aug 26 v2.1" document (`"hwlFunded": true`). On the live list.
+- **137 other local, regional and national services**, imported from the "Kirklees additional services" spreadsheet (v3, web research in October 2026). On the live list.
+- **47 services waiting for the MVP team to review** (`"decision": "review"`), not on the live list:
+  - the 40 on the spreadsheet's "Not verified or closed" tab: 35 the research couldn't confirm as running, and 5 it found closed. Only what the spreadsheet gave is filled in (name, organisation, link and why it wasn't confirmed, in `notes`). Everything else the research didn't find says "To be completed", and the categories, level, areas and health focus are a first guess from the name. Confidence is `low`.
+  - 7 rows left out of the October import: 3 crisis lines (Samaritans, CALM, Shout) and 4 directories (Kirklees Welcomes, MECC Link, the District Provision Tool, Hub of Hope). Their details are complete, copied from the spreadsheet.
 
 ## Files
 
@@ -14,7 +17,8 @@ There are 168 at the moment (15 October 2026):
 | `data/services/<id>.json` | One scheme. The file name must be the scheme's `id`. |
 | `data/meta.json` | `source`, `converted` and `notes` for the data as a whole. |
 | `data/schema.json` | The rules every scheme file must follow (a JSON Schema). The checks use it, and so can any tool or agent that edits the data. |
-| `data/services.json` | **Generated**, not kept in the repository. `npm run build-data` combines the scheme files into it, sorted by id, for the page, the Worker and the tests. Don't edit it: changes are lost at the next build. |
+| `data/services.json` | **Generated**, not kept in the repository. `npm run build-data` combines the scheme files on the live list (`listing.decision` is `include`) into it, sorted by id, for the page, the Worker and the tests. Don't edit it: changes are lost at the next build. |
+| `data/services-all.json` | **Generated** in the same way, with every service whatever its decision, for the MVP team's All services page. Published only with the MVP pages. |
 
 ## Updating the data
 
@@ -23,7 +27,7 @@ Edit a scheme's file, or add a new one, then run:
     npm run check-data
     npm run build-data
 
-`check-data` checks every file against `data/schema.json`, and also that the file name matches the id, logos exist, `requiresMention` patterns are valid, and no date is in the future. It lists entries overdue for a check without failing.
+`check-data` checks every file against `data/schema.json`, and also that the file name matches the id, logos exist, `requiresMention` patterns are valid, no date is in the future, and nothing on the live list still says "To be completed". It lists live entries overdue for a check without failing, and counts how many services are included, waiting for review and excluded.
 
 Push to a branch and open a pull request. The **Checks** workflow runs the same check. Both deploys (GitHub Pages and the Cloudflare Worker) check and build again when changes reach `main`, and stop if the data has a problem, so the site and the AI always pick up the same data.
 
@@ -113,12 +117,24 @@ Every scheme has every field below, except where it says "optional". An empty li
 | `reviewCycle` | text | How often the entry should be rechecked: `Quarterly`, `Six-monthly` or `Yearly`. At the moment it's `Quarterly` for every scheme. |
 | `provenance` | object | Where the details came from, so they can be rechecked by a person or a maintenance agent. `source` (required): the document, or the spreadsheet and row. Optional: `foundVia` (how the service was found, for example "Kirklees Community Directory"), `checkedUrl` (the page the details were checked against), `evidence` (why it's thought to be current), `confidence` (`high`, `medium` or `low`). Not sent to the AI or shown on cards; the MVP help page shows the source and flags medium confidence. |
 
+### On the live list or not
+
+| Field | Type | What it is |
+|---|---|---|
+| `listing.decision` | text | `include` (on the live list: shown on the finder and given to the AI), `review` (needs further review, not live) or `exclude` (left out completely, not live). Only `include` reaches `services.json`. A service that still says "To be completed" anywhere can't be `include`. |
+| `listing.reason` | text | Why. For the MVP team's decisions, the reason they gave. |
+| `listing.by` | text | Optional. Who made the decision (name or initials, as entered on the All services page). Absent for the starting values set when the service was added. |
+| `listing.date` | date | Optional. When the decision was made, as `YYYY-MM-DD`. |
+
+The MVP team makes these decisions on the All services page, and can also edit most of a service's other fields there; `npm run apply-decisions` writes both into the scheme files (see the README). `open` is separate: it says whether a scheme is taking referrals. An included scheme that isn't open is shown but never recommended.
+
 ## Known quirks
 
 These are worth knowing before you build anything that reads or filters the data.
 
 - **Several fields are free text and can't be reliably filtered:** `age`, `status`, `workExperience`, `cost` and `referralRoutes` are worded differently from scheme to scheme.
-- **`status` and `open` overlap.** `open` is the one the code uses. Only HWL Community Grants is currently `false`.
+- **`status` and `open` overlap.** `open` is the one the code uses. On the live list, only HWL Community Grants is currently `false`. The 5 closed services waiting for review are also `false`.
+- **`listing` and `open` are different things.** `listing` decides whether the finder knows about a service at all; `open` whether it can be recommended.
 - **Some schemes are missing a web page, email or phone.** The cards simply leave out what isn't there.
 - **`areas` mixes towns with `Kirklees-wide` and `Online`** in the same list.
 - **The imported services were filled in partly by hand and partly with AI help.** Contact details, names and descriptions were copied from the spreadsheet exactly. Areas, age, eligibility, gates, health focus, self-referral and the activity name were worked out from the spreadsheet's text. What still needs a person to check is listed in [`import-review-2026-10.md`](import-review-2026-10.md).

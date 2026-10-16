@@ -62,5 +62,9 @@
     "checkedUrl": "https://www.nhs.uk/services/service-directory/kirklees-wellness-service/N11043361",
     "evidence": "NHS directory updated 5 Oct 2026; council pages Apr/Sep 2026.",
     "confidence": "high"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

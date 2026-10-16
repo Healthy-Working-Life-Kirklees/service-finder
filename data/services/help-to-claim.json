@@ -57,5 +57,9 @@
     "checkedUrl": "https://www.citizensadvice.org.uk/about-us/contact-us/contact-us/help-to-claim/",
     "evidence": "Running, links to 2026 UC changes.",
     "confidence": "high"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

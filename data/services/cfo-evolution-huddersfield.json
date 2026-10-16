@@ -88,5 +88,9 @@
     "checkedUrl": "https://www.creatingfutureopportunities.gov.uk/?p=3483",
     "evidence": "Page modified May 2026; runs to at least April 2027.",
     "confidence": "high"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

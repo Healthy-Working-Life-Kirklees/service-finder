@@ -58,5 +58,9 @@
     "checkedUrl": "https://www.properjob.org.uk/lab-dates-quick-look",
     "evidence": "Kirklees 2026/27 dates published. Separate from HWL schemes.",
     "confidence": "high"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "On the live list since the October 2026 import, before the MVP team review."
   }
 }

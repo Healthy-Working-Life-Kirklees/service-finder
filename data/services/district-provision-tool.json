@@ -1,0 +1,61 @@
+{
+  "id": "district-provision-tool",
+  "name": "District Provision Tool",
+  "organisation": "DWP",
+  "status": "Running (checked by web research, October 2026)",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "organisation"
+  ],
+  "categories": [
+    "Finding work"
+  ],
+  "whoFor": "Practitioners.",
+  "age": null,
+  "webpage": "https://www.gov.uk/guidance/district-provision-tool",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [
+    "Online"
+  ],
+  "areas": [
+    "Online"
+  ],
+  "eligibility": [],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Read on GOV.UK"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Read on GOV.UK"
+  },
+  "activities": [
+    {
+      "name": "Directory of services",
+      "summary": "GOV.UK list of national and regional services that help people with barriers to work, written for Jobcentre staff and support workers.",
+      "duration": ""
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "notes": "A directory of other services, not a service people are referred to.",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 98",
+    "foundVia": "Your list",
+    "checkedUrl": "https://www.gov.uk/guidance/district-provision-tool",
+    "evidence": "Updated 1 April 2026; some entries date from 2022.",
+    "confidence": "high"
+  },
+  "listing": {
+    "decision": "review",
+    "reason": "Left out of the October import because it is a directory, not a service. Added so the MVP team can decide."
+  }
+}
