@@ -1,7 +1,7 @@
 name: Apply team changes
 
 # The "button" for the MVP team's changes from the All services page: Actions > Apply team changes > Run workflow.
-# It fetches the team's listing decisions and edits from the Worker, writes them into data/services/, checks the
+# It fetches the team's new services, edits and listing decisions from the Worker, writes them into data/services/, checks the
 # data, and opens a pull request with a summary of what changed. Nothing goes live until that pull request is merged.
 #
 # One-off setup (see the README, "Reviewing which services are live, and editing details"):
@@ -75,7 +75,8 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           ACTOR: ${{ github.actor }}
         run: |
-          if git diff --quiet -- data/services; then
+          # git status, not git diff, so brand-new service files count too.
+          if [ -z "$(git status --porcelain -- data/services)" ]; then
             echo "Nothing to apply: the data already matches the team's decisions and edits." | tee -a "$GITHUB_STEP_SUMMARY"
             exit 0
           fi

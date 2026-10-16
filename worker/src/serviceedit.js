@@ -4,6 +4,8 @@
 // data/schema.json, so they stay in step with the data. The full check against the schema runs again when the
 // change is written into the data (scripts/apply-decisions.mjs) and in the pull request's checks.
 //
+// It also checks a whole new service added there (checkNew).
+//
 // A change is a set of fields with their new values. null means "remove this optional detail" (for example no
 // phone number any more). Fields not in the change are left as they are.
 
@@ -107,5 +109,16 @@ export function makeChecker(schema) {
     return { changes: out };
   }
 
-  return { EDITABLE, checkChanges };
+  // A whole new service added on the All services page: every editable field the schema requires must be there
+  // (an empty list or null where nothing applies). The apply script adds the rest (id, provenance, listing...).
+  const NEEDED = EDITABLE.filter((k) => schema.required.includes(k));
+  function checkNew(input) {
+    if (!input || typeof input !== 'object' || Array.isArray(input)) return { error: 'The new service is missing.' };
+    const missing = NEEDED.filter((k) => !(k in input));
+    if (missing.length) return { error: 'Missing: ' + missing.map((k) => LABEL[k] || k).join(', ') + '.' };
+    const r = checkChanges(input);
+    return r.error ? r : { service: r.changes };
+  }
+
+  return { EDITABLE, checkChanges, checkNew };
 }

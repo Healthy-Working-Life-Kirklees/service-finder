@@ -55,7 +55,7 @@ const CRISIS_RE = new RegExp(
 
 const SERVICES = data.services;
 // Checks changes to a service's details made by the MVP team on the All services page.
-const EDIT_CHECKER = makeChecker(schema);
+const EDIT_CHECKER = { ...makeChecker(schema), liveIds: new Set(SERVICES.map((s) => s.id)) };
 // What Claude is sent about each scheme. Contact details are left out (the page draws them from the data, so the
 // AI never writes them), as are fields only people or the Worker use: requiresMention is applied below by the
 // Worker itself, and provenance, logo and review dates are for maintaining the data. This keeps each request smaller.
@@ -208,7 +208,7 @@ export default {
     // MVP-team issues log: off unless the TEAM_PASSCODE secret is set.
     // Reading the team's listing decisions is also allowed with no Origin at all (not from a browser), so
     // scripts/apply-decisions.mjs can fetch them with the passcode, like the feedback digest does.
-    const scriptRead = !origin && request.method === 'GET' && (url.pathname === '/log/decisions' || url.pathname === '/log/edits');
+    const scriptRead = !origin && request.method === 'GET' && ['/log/decisions', '/log/edits', '/log/new'].includes(url.pathname);
     if (url.pathname.startsWith('/log/')) return originOk || scriptRead ? handleLog(request, env, url, cors, EDIT_CHECKER) : json({ error: 'Not allowed.' }, 403, cors);
     // User feedback: sending is public (with the same checks as /chat); reading needs the FEEDBACK_PASSCODE secret.
     if (url.pathname === '/feedback' || url.pathname.startsWith('/feedback/')) return handleFeedback(request, env, url, cors, originOk, FEEDBACK_DATA);

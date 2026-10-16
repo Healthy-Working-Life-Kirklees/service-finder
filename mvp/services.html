@@ -34,7 +34,7 @@
     <section id="review-signin" class="review-signin" aria-labelledby="review-h">
       <h2 id="review-h" class="mt0">Record decisions</h2>
       <div id="signin-form">
-        <p>Enter the team passcode (the same one as the issues log) to record a decision on any service or edit its details. Without it you can still search and read everything.</p>
+        <p>Enter the team passcode (the same one as the issues log) to record a decision on any service, edit its details, or add a new service. Without it you can still search and read everything.</p>
         <div class="field"><label for="pass">Team passcode</label><input id="pass" type="password" autocomplete="off"></div>
         <button id="unlock" class="btn primary small" type="button">Sign in</button>
       </div>
@@ -42,7 +42,7 @@
       <div class="field mt-sm"><label for="by">Your name or initials</label><input id="by" type="text" maxlength="40" autocomplete="off" aria-describedby="by-hint"><p id="by-hint" class="hint">Saved with each decision you make.</p></div>
       <div id="signed-in" hidden>
         <p><span id="signed-in-text"></span> <button id="lock" class="btn secondary small" type="button">Sign out</button></p>
-        <p class="hint">Decisions and edits are saved straight away and everyone on the team sees them. They reach the live finder only after they are applied to the data (on GitHub: Actions &gt; Apply team changes &gt; Run workflow, then merge the pull request it opens), so "waiting to be applied" means the team has made a change but the finder hasn't changed yet.</p>
+        <p class="hint">Decisions and edits are saved straight away and everyone on the team sees them. They reach the live finder only after they are applied to the data (on GitHub: Actions &gt; Apply team changes &gt; Run workflow, then merge the pull request it opens), so "waiting to be applied" means the team has made a change but the finder hasn't changed yet. New services you add are listed as "New: not yet in the data" and are reviewed and decided on like the rest.</p>
       </div>
     </section>
 
@@ -63,6 +63,7 @@
             <option value="include">On the live list</option>
             <option value="review">Waiting for review</option>
             <option value="exclude">Excluded</option>
+            <option value="new">New: not yet in the data</option>
           </select></div>
         <div><label for="f-decision">Team changes</label>
           <select id="f-decision">
@@ -138,7 +139,10 @@
       </div>
     </details>
 
+    <section id="add-panel" class="add-panel" hidden></section>
+
     <div class="toolbar">
+      <button id="add-service" class="btn primary small" type="button" hidden>Add a service</button>
       <button id="clear" class="btn secondary small" type="button">Clear search and filters</button>
       <button id="expand" class="btn secondary small" type="button">Show all details</button>
       <button id="export" class="btn secondary small" type="button">Download these as CSV</button>

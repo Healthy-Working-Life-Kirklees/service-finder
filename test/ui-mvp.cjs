@@ -23,6 +23,7 @@ let feedbackFlag = true; // what /health says about feedback
 let fbSent = []; // feedback the page sent
 const decisions = {}; // listing decisions recorded on the All services page
 const edits = {}; // edits to details recorded on the All services page
+const added = {}; // new services added on the All services page
 const mk = (f, status) => {
   const t = new Date().toISOString();
   const it = { id: ++seq, type: f.type || 'Issue', title: f.title, details: f.details || '', area: f.area || 'Other', priority: f.priority || 'Medium', owner: f.owner || '', status: status || 'Open', created: t, updated: t, updates: [] };
@@ -67,6 +68,18 @@ async function worker(route) {
     }
     if (url.pathname === '/log/decisions') return json({ decisions });
     if (url.pathname === '/log/edits') return json({ edits });
+    if (url.pathname === '/log/new') return json({ added });
+    const nm = url.pathname.match(/^\/log\/new\/([a-z0-9-]+)$/);
+    if (nm && req.method() === 'PUT') {
+      const b = JSON.parse(req.postData());
+      const t = new Date().toISOString();
+      added[nm[1]] = { service: b.service, note: b.note, by: b.by, checkedUrl: b.checkedUrl || null, created: (added[nm[1]] || {}).created || t, createdBy: (added[nm[1]] || {}).createdBy || b.by, t, history: [] };
+      return json({ id: nm[1], item: added[nm[1]] });
+    }
+    if (nm && req.method() === 'DELETE') {
+      delete added[nm[1]];
+      return json({ id: nm[1], deleted: true });
+    }
     const em = url.pathname.match(/^\/log\/edits\/([a-z0-9-]+)$/);
     if (em && req.method() === 'PUT') {
       const b = JSON.parse(req.postData());
@@ -372,7 +385,7 @@ async function worker(route) {
   // ---------- listing decisions on the All services page (signed in from the log, same tab) ----------
   await page.goto(ON + '/mvp/services.html?listing=review&q=samaritans');
   await page.waitForSelector('#signed-in:not([hidden])');
-  check('decide: signed in via the log passcode in this tab', (await page.textContent('#signed-in-text')).includes('0 decisions and 0 edited services'), await page.textContent('#signed-in-text'));
+  check('decide: signed in via the log passcode in this tab', (await page.textContent('#signed-in-text')).includes('0 decisions, 0 edited services and 0 new services'), await page.textContent('#signed-in-text'));
   await page.waitForSelector('.svc .decide');
   check('decide: decision controls shown', (await page.locator('#svc-samaritans-helpline .decide input[type=radio]').count()) === 3);
   await page.fill('#by', '');
@@ -394,6 +407,53 @@ async function worker(route) {
   check('decide: warns when an incomplete service is chosen for the live list', await page.locator('#svc-kbop .decide .msg.info').isVisible());
   await page.click('#svc-kbop .decide button');
   await page.waitForSelector('#svc-kbop .pill.blue');
+
+  // ---------- adding a new service ----------
+  await page.goto(ON + '/mvp/services.html');
+  await page.waitForSelector('#add-service:not([hidden])');
+  await page.click('#add-service');
+  await page.waitForSelector('#add-panel form');
+  await page.fill('#ed-new-service-name', 'Acas Helpline');
+  check('add: id made from the name', (await page.inputValue('#ed-new-service-newid')) === 'acas-helpline');
+  await page.fill('#ed-new-service-newid', 'batley-job-club');
+  await page.fill('#ed-new-service-organisation', 'Batley Community Centre');
+  await page.fill('#ed-new-service-whoFor', 'Anyone in Batley looking for work.');
+  await page.check('#ed-new-service-categories input[value="Finding work"]');
+  await page.check('#ed-new-service-areas input[value=Batley]');
+  await page.fill('#ed-new-service-referralRoutes', 'Drop in');
+  await page.fill('#ed-new-service-sr-note', 'Just turn up');
+  await page.fill('#ed-new-service-act-name-0', 'Job club');
+  await page.fill('#ed-new-service-act-summary-0', 'CV help and job search.');
+  await page.fill('#ed-new-service-why', 'Suggested by a work coach');
+  await page.click('#add-panel button[type=submit]');
+  check('add: warns about a possible duplicate first', (await page.textContent('#add-panel .msg')).includes('may already be listed') && (await page.textContent('#add-panel .msg')).includes('Acas helpline'), await page.textContent('#add-panel .msg'));
+  await page.fill('#ed-new-service-name', 'Batley Job Club');
+  await page.click('#add-panel button[type=submit]');
+  await page.waitForSelector('#svc-batley-job-club');
+  check('add: saved to the Worker as a whole service', added['batley-job-club'] && added['batley-job-club'].service.areas.join() === 'Batley' && added['batley-job-club'].service.name === 'Batley Job Club');
+  check('add: listed as new, with the "new" filter on', (await page.locator('.svc').count()) === 1 && (await page.inputValue('#f-listing')) === 'new' && (await page.locator('#svc-batley-job-club .pill.blue', { hasText: 'New: not yet in the data' }).count()) === 1);
+  check('add: can be decided on like any other', (await page.locator('#svc-batley-job-club .decide input[type=radio]').count()) === 3);
+  await page.check('#svc-batley-job-club input[value=include]');
+  await page.click('#svc-batley-job-club .decide button');
+  await page.waitForSelector('#svc-batley-job-club .pill.blue >> text=waiting to be applied');
+  check('add: decision recorded for the new service', decisions['batley-job-club'] && decisions['batley-job-club'].decision === 'include');
+  await page.click('#svc-batley-job-club .edit-open button:has-text("Edit details")');
+  await page.waitForSelector('#svc-batley-job-club form');
+  check('add: editing a new service starts from what was saved', (await page.inputValue('#ed-batley-job-club-whoFor')) === 'Anyone in Batley looking for work.');
+  await page.fill('#ed-batley-job-club-phone', '01924 000000');
+  await page.click('#svc-batley-job-club form button[type=submit]');
+  await page.waitForSelector('#svc-batley-job-club .msg.ok');
+  check('add: edits to a new service update it, not a separate edit', added['batley-job-club'].service.phone === '01924 000000' && !edits['batley-job-club']);
+  check('add: summary counts new services', (await page.locator('#summary .stat').allTextContents()).some((x) => x.startsWith('1') && x.includes('new services waiting to be added')));
+  await page.reload();
+  await page.waitForSelector('#svc-batley-job-club');
+  check('add: still there after reloading (from the Worker)', (await page.locator('#svc-batley-job-club').count()) === 1);
+  page.once('dialog', (d) => d.accept());
+  await page.click('#svc-batley-job-club button:has-text("Discard this new service")');
+  await page.waitForSelector('#svc-batley-job-club', { state: 'detached' });
+  check('add: a new service can be discarded', !added['batley-job-club']);
+  delete decisions['batley-job-club'];
+
   await page.goto(ON + '/mvp/services.html?decision=pending');
   await page.waitForSelector('.svc');
   check('decide: "waiting to be applied" filter shows both decisions', (await page.locator('.svc').count()) === 2, String(await page.locator('.svc').count()));

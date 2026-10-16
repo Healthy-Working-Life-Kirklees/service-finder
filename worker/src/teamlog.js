@@ -9,7 +9,8 @@
 // writes the decisions into data/services/<id>.json, in a pull request, and the live list follows the data.
 //
 // It also holds changes to a service's details made on the All services page (one waiting change per service,
-// checked by serviceedit.js). Like decisions, they reach the data through scripts/apply-decisions.mjs.
+// checked by serviceedit.js), and new services the team adds there, waiting to become files in data/services/.
+// Like decisions, they reach the data through scripts/apply-decisions.mjs (Actions > Apply team changes).
 
 const TYPES = ['Issue', 'Action', 'Idea', 'Question'];
 const AREAS = ['Matching quality', 'Data accuracy', 'Wording and content', 'Safety', 'Technical', 'Process and governance', 'Other'];
@@ -125,6 +126,32 @@ export class LogStore {
       await s.put(key, item);
       if (!prev) await s.put('editCount', ((await s.get('editCount')) || 0) + 1);
       return Response.json({ id: body.id, item });
+    }
+
+    if (url.pathname === '/new/list') {
+      const m = await s.list({ prefix: 'new:' });
+      const added = {};
+      for (const [k, v] of m) added[k.slice(4)] = v;
+      return Response.json({ added });
+    }
+
+    if (url.pathname === '/new/set') {
+      const key = 'new:' + body.id;
+      const prev = await s.get(key);
+      if (!prev && ((await s.get('newCount')) || 0) >= 500) return Response.json({ error: 'Too many new services waiting.' }, { status: 400 });
+      const history = prev ? [...(prev.history || []), { note: prev.note, by: prev.by, t: prev.t }].slice(-10) : [];
+      const item = { service: body.service, note: body.note, by: body.by, checkedUrl: body.checkedUrl, created: prev ? prev.created : now, createdBy: prev ? prev.createdBy : body.by, t: now, history };
+      await s.put(key, item);
+      if (!prev) await s.put('newCount', ((await s.get('newCount')) || 0) + 1);
+      return Response.json({ id: body.id, item });
+    }
+
+    if (url.pathname === '/new/delete') {
+      const key = 'new:' + body.id;
+      if (!(await s.get(key))) return Response.json({ error: 'Not found.' }, { status: 404 });
+      await s.delete(key);
+      await s.put('newCount', Math.max(0, ((await s.get('newCount')) || 1) - 1));
+      return Response.json({ id: body.id, deleted: true });
     }
 
     if (url.pathname === '/edits/delete') {
@@ -243,6 +270,32 @@ export async function handleLog(request, env, url, cors, checker) {
     const checkedUrl = clean(body.checkedUrl, 500);
     if (checkedUrl && !/^https?:\/\/\S+$/.test(checkedUrl)) return json({ error: 'Where you checked must be a web address starting with http:// or https://.' }, 400, cors);
     const res = await call('/edits/set', { id: e[1], changes: checked.changes, before, note, by, checked: body.checked === true, checkedUrl: checkedUrl || null });
+    return json(res, res.error ? 400 : 200, cors);
+  }
+
+  if (request.method === 'GET' && path === '/log/new') {
+    return json(await call('/new/list'), 200, cors);
+  }
+
+  const nw = path.match(/^\/log\/new\/([a-z0-9-]{1,50})$/);
+  if (nw && (request.method === 'PUT' || request.method === 'DELETE')) {
+    if (!ID_RE.test(nw[1])) return json({ error: 'The id must be lower-case letters, numbers and single hyphens.' }, 400, cors);
+    const by = clean(body.by, 40);
+    if (!by) return json({ error: 'Please give your name or initials.' }, 400, cors);
+    if (request.method === 'DELETE') {
+      const res = await call('/new/delete', { id: nw[1] });
+      return json(res, res.error ? 404 : 200, cors);
+    }
+    if (!checker) return json({ error: 'Adding services is not available.' }, 503, cors);
+    // A live service already uses this id. (The apply step also checks against every file, live or not.)
+    if (checker.liveIds && checker.liveIds.has(nw[1])) return json({ error: 'A service with that id already exists. Choose another id.' }, 409, cors);
+    const checked = checker.checkNew(body.service);
+    if (checked.error) return json({ error: checked.error }, 400, cors);
+    const note = clean(body.note, 1000);
+    if (note.length < 3) return json({ error: 'Please say briefly where this service came from and why it should be added.' }, 400, cors);
+    const checkedUrl = clean(body.checkedUrl, 500);
+    if (checkedUrl && !/^https?:\/\/\S+$/.test(checkedUrl)) return json({ error: 'Where you checked must be a web address starting with http:// or https://.' }, 400, cors);
+    const res = await call('/new/set', { id: nw[1], service: checked.service, note, by, checkedUrl: checkedUrl || null });
     return json(res, res.error ? 400 : 200, cors);
   }
 

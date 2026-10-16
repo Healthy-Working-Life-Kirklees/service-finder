@@ -148,3 +148,7 @@ button.stat:hover { border-color: var(--blue); }
 .edit .tbc input, .edit .tbc textarea, .edit .tbc select, .edit .act.tbc input, .edit .act.tbc textarea { border-color: #b35c00; background: var(--warn-bg); }
 .edit .row-end { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
 .edit .row-end .msg { margin: 0; }
+.add-panel { margin: 0 0 1rem; }
+.add-panel .edit h2 { margin: 0 0 .3rem; font-size: 1.2rem; }
+.svc.listing-new { border-left-color: var(--blue); }
+.svc .edit-open { display: flex; flex-wrap: wrap; gap: .5rem; }

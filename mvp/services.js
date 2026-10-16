@@ -26,6 +26,8 @@
   let pass = store.get(PASS_KEY);
   let team = null; // { <service id>: { decision, note, by, t, history } } once signed in
   let edits = null; // { <service id>: { changes, before, note, by, t, checked, checkedUrl, history } } once signed in
+  let added = null; // { <new id>: { service, note, by, created, createdBy, t, checkedUrl, history } } once signed in
+  let baseServices = []; // the services in the data; services = these plus new ones waiting to be added
   let choices = {}; // the allowed values for the edit form, from services-all.json
   const editing = new Set(); // services whose edit form is open
 
@@ -66,7 +68,7 @@
   };
   const SELF = { yes: 'Can refer themselves', partly: 'Self-referral: partly', no: 'Needs a referral', tbc: 'Self-referral: to be confirmed' };
   const LEVEL = { local: 'Local', regional: 'Regional', national: 'National' };
-  const LISTING = { include: ['On the live list', 'ok'], review: ['Waiting for review', 'warn'], exclude: ['Excluded', 'bad'] };
+  const LISTING = { include: ['On the live list', 'ok'], review: ['Waiting for review', 'warn'], exclude: ['Excluded', 'bad'], new: ['New: not yet in the data', 'blue'] };
   const CHOICE = { include: 'Include on the live list', review: 'Needs further review', exclude: 'Exclude completely' };
   const when = (iso) => {
     const d = new Date(iso);
@@ -186,7 +188,7 @@
     return words.every((w) => x.text.includes(w));
   }
 
-  const ORDER = { review: 0, include: 1, exclude: 2 };
+  const ORDER = { new: -1, review: 0, include: 1, exclude: 2 };
   const SORTS = {
     listing: (a, b) => ORDER[a.listing] - ORDER[b.listing] || SORTS.name(a, b),
     name: (a, b) => a.s.name.localeCompare(b.s.name, 'en-GB', { sensitivity: 'base' }),
@@ -219,6 +221,7 @@
     const state = teamState(x);
     const pills = el('p', { class: 'badges' },
       el('span', { class: 'pill ' + lClass, text: lText }),
+      x.isNew ? el('span', { class: 'pill', text: 'Added by ' + x.entry.createdBy + ', ' + when(x.entry.created) }) : null,
       state === 'pending' ? el('span', { class: 'pill blue', text: 'Team chose: ' + CHOICE[t.decision].toLowerCase() + ' (waiting to be applied)' }) : null,
       editState(x) === 'pending' ? el('span', { class: 'pill blue', text: 'Details edited by ' + edits[s.id].by + ' (waiting to be applied)' }) : null,
       x.incomplete ? el('span', { class: 'pill warn', text: 'Details to be completed' }) : null,
@@ -274,13 +277,17 @@
       pills,
       L.reason ? el('p', { class: 'listing', text: lText + ': ' + L.reason + (L.by ? ' (' + L.by + (L.date ? ', ' + fmt(L.date) : '') + ')' : '') }) : null,
       team ? decidePanel(x) : null,
-      edits && editState(x) === 'pending' ? waitingChanges(x) : null,
-      edits ? (editing.has(s.id) ? editForm(x) : el('p', { class: 'edit-open' }, el('button', { type: 'button', class: 'btn secondary small', text: 'Edit details', onclick: () => { editing.add(s.id); refreshOne(x); const f = document.getElementById('ed-' + s.id + '-name'); if (f) f.focus(); } }))) : null,
+      x.isNew ? el('div', { class: 'waiting' }, el('p', { class: 'mt0' }, el('strong', { text: 'New service waiting to be added' }), ' (last saved by ' + x.entry.by + ', ' + when(x.entry.t) + '): ' + x.entry.note),
+        el('p', { class: 'hint', text: 'It becomes a file in the data, waiting for review, when the team\'s changes are next applied. If the team has decided to include it, it goes on the live list at the same time.' })) : null,
+      edits && !x.isNew && editState(x) === 'pending' ? waitingChanges(x) : null,
+      edits ? (editing.has(s.id) ? editForm(x, x.isNew ? 'new' : 'edit') : el('p', { class: 'edit-open' },
+        el('button', { type: 'button', class: 'btn secondary small', text: 'Edit details', onclick: () => { editing.add(s.id); refreshOne(x); const f = document.getElementById('ed-' + s.id + '-name'); if (f) f.focus(); } }),
+        x.isNew ? el('button', { type: 'button', class: 'btn secondary small', text: 'Discard this new service', onclick: () => discardNew(x) }) : null)) : null,
       el('p', { class: 'meta', text: 'Last checked ' + fmt(s.lastUpdated) + ' (' + plural(days, 'day', 'days') + ' ago). Areas: ' + list(s.areas).join(', ') + '. ' + list(s.categories).join(', ') + '.' }),
       el('details', {},
         el('summary', { text: 'Full details' }),
         dl,
-        el('p', { class: 'links' },
+        x.isNew ? null : el('p', { class: 'links' },
           el('a', { href: REPO + '/edit/main/' + file, target: '_blank', rel: 'noopener noreferrer', text: 'Edit on GitHub' }),
           el('a', { href: REPO + '/blob/main/' + file, target: '_blank', rel: 'noopener noreferrer', text: 'View the file' }),
           el('a', { href: REPO + '/commits/main/' + file, target: '_blank', rel: 'noopener noreferrer', text: 'Change history' })))
@@ -374,9 +381,10 @@
       discard);
   }
 
-  function editForm(x) {
+  // mode: 'edit' a service in the data, 'new' a new service waiting to be added, or 'add' a brand new one.
+  function editForm(x, mode = 'edit') {
     const s = x.s;
-    const pending = (edits[s.id] && editState(x) === 'pending' && edits[s.id].changes) || {};
+    const pending = (mode === 'edit' && edits[s.id] && editState(x) === 'pending' && edits[s.id].changes) || {};
     const val = (k) => (k in pending ? pending[k] : s[k]);
     const id = (k) => 'ed-' + s.id + '-' + k;
     const tbc = (v) => String(v == null ? '' : JSON.stringify(v)).includes(PLACEHOLDER);
@@ -387,6 +395,13 @@
     const grid = el('div', { class: 'edit-grid' });
 
     for (const k of ['name', 'organisation', 'status']) grid.append(field(k, el('input', { id: id(k), type: 'text', value: val(k) || '' })));
+    let idBox = null;
+    let idTouched = false;
+    if (mode === 'add') {
+      idBox = el('input', { id: id('newid'), type: 'text', maxlength: '50', value: '', oninput: () => { idTouched = true; } });
+      grid.append(el('div', { class: 'field' }, el('label', { for: id('newid'), text: 'Id (used for the file name)' }), idBox, el('p', { class: 'hint', text: 'Made from the name. Lower-case letters, numbers and hyphens.' })));
+      grid.querySelector('#' + CSS.escape(id('name'))).addEventListener('input', (ev) => { if (!idTouched) idBox.value = slug(ev.target.value); });
+    }
     grid.append(field('open', el('select', { id: id('open') }, el('option', { value: 'yes', text: 'Yes' }), el('option', { value: 'no', text: 'No (never recommended)' }))));
     grid.append(field('level', el('select', { id: id('level') }, (choices.level || []).map((v) => el('option', { value: v, text: LEVEL[v] || v })))));
     grid.append(field('reviewCycle', el('select', { id: id('reviewCycle') }, (choices.reviewCycle || []).map((v) => el('option', { value: v, text: v })))));
@@ -422,18 +437,25 @@
     form.append(el('fieldset', { class: 'checks' }, el('legend', { text: 'What it offers' }), acts,
       el('button', { type: 'button', class: 'btn secondary small', text: 'Add another', onclick: () => addAct() })));
 
-    const checkedBox = el('input', { type: 'checkbox', id: id('checked') });
+    const checkedBox = el('input', { type: 'checkbox', id: id('checked'), checked: mode !== 'edit' });
     const where = el('input', { id: id('checked-url'), type: 'url', value: '' });
     const why = el('textarea', { id: id('why'), rows: '2', maxlength: '1000' });
     const msg = el('p', { class: 'msg', role: 'status', hidden: true });
     const say = (text, kind) => { msg.className = 'msg ' + kind; msg.textContent = text; msg.hidden = false; };
+    if (mode !== 'edit') where.value = (added && added[s.id] && added[s.id].checkedUrl) || '';
+    if (mode === 'new' && added[s.id]) why.value = added[s.id].note || '';
+    const cancel = () => {
+      if (mode === 'add') { $('#add-panel').replaceChildren(); $('#add-panel').hidden = true; $('#add-service').focus(); return; }
+      editing.delete(s.id);
+      refreshOne(x);
+    };
     form.append(el('fieldset', { class: 'checks save-box' }, el('legend', { text: 'Save' }),
-      el('label', { class: 'inline' }, checkedBox, 'I have checked these details are current (with the provider or its website)'),
-      el('div', { class: 'field' }, el('label', { for: id('checked-url'), text: 'Where you checked (optional web address)' }), where),
-      el('div', { class: 'field' }, el('label', { for: id('why'), text: 'What changed and why' }), why),
+      mode === 'edit' ? el('label', { class: 'inline' }, checkedBox, 'I have checked these details are current (with the provider or its website)') : null,
+      el('div', { class: 'field' }, el('label', { for: id('checked-url'), text: mode === 'edit' ? 'Where you checked (optional web address)' : 'Where you checked the details (optional web address)' }), where),
+      el('div', { class: 'field' }, el('label', { for: id('why'), text: mode === 'edit' ? 'What changed and why' : 'Where this service came from, and why add it' }), why),
       el('div', { class: 'row-end' },
-        el('button', { type: 'submit', class: 'btn primary small', text: 'Save changes' }),
-        el('button', { type: 'button', class: 'btn secondary small', text: 'Cancel', onclick: () => { editing.delete(s.id); refreshOne(x); } }),
+        el('button', { type: 'submit', class: 'btn primary small', text: mode === 'add' ? 'Add this service for review' : 'Save changes' }),
+        el('button', { type: 'button', class: 'btn secondary small', text: 'Cancel', onclick: cancel }),
         msg)));
 
     form.querySelector('#' + CSS.escape(id('open'))).value = val('open') === false ? 'no' : 'yes';
@@ -458,11 +480,13 @@
       out.selfReferral = srOut;
       out.activities = [...acts.querySelectorAll('.act')].map((r) => ({ name: r.querySelector('.act-name').value.trim(), summary: r.querySelector('.act-summary').value.trim(), duration: r.querySelector('.act-duration').value.trim() }));
 
+      const by = $('#by').value.trim();
+      if (mode !== 'edit') return saveNew(out, by);
+
       // Only what differs from the data is sent, with what the data said, so a later change can be spotted.
       const changes = {};
       const before = {};
       for (const [k, v] of Object.entries(out)) if (norm(s[k]) !== norm(v)) { changes[k] = v; before[k] = s[k] === undefined ? null : s[k]; }
-      const by = $('#by').value.trim();
       for (const k of REQUIRED) if (!out[k]) { q(k).focus(); return say(FIELD_LABEL[k] + " can't be empty.", 'err'); }
       if (!Object.keys(changes).length) return say(edits[s.id] ? 'Nothing differs from the data. Use "Discard these changes" to drop the waiting changes.' : 'Nothing has changed.', 'err');
       if (!by) { $('#by').focus(); return say('Please put your name or initials at the top of the page first.', 'err'); }
@@ -484,8 +508,114 @@
         say(err.message, 'err');
       }
     });
-    return el('section', { class: 'edit', 'aria-label': 'Edit ' + s.name }, el('h4', { text: 'Edit details' }),
-      el('p', { class: 'hint', text: 'Changes are saved for the team straight away and reach the finder once applied. Boxes still marked "' + PLACEHOLDER + '" are highlighted.' }), form);
+
+    // A new service (added now, or waiting to be added): the whole service is saved, not just what changed.
+    let dupeWarned = '';
+    async function saveNew(out, by) {
+      const q = (k) => form.querySelector('#' + CSS.escape(id(k)));
+      for (const k of REQUIRED) if (!out[k]) { q(k).focus(); return say(FIELD_LABEL[k] + " can't be empty.", 'err'); }
+      for (const k of ['categories', 'audience', 'areas']) if (!out[k].length) return say('Choose at least one for ' + FIELD_LABEL[k] + '.', 'err');
+      if (!out.referralRoutes.length) { q('referralRoutes').focus(); return say('Say at least one way to get in.', 'err'); }
+      if (!out.activities.length || out.activities.some((a) => !a.name || !a.summary)) return say('Each thing it offers needs a name and a summary.', 'err');
+      const newId = mode === 'add' ? idBox.value.trim() : s.id;
+      if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(newId) || newId.length > 50) { if (idBox) idBox.focus(); return say('The id must be lower-case letters, numbers and single hyphens (up to 50).', 'err'); }
+      if (mode === 'add' && (services.some((y) => y.s.id === newId))) { idBox.focus(); return say('A service with that id already exists. Choose another id.', 'err'); }
+      if (!by) { $('#by').focus(); return say('Please put your name or initials at the top of the page first.', 'err'); }
+      if (why.value.trim().length < 3) { why.focus(); return say('Please say briefly where this service came from and why it should be added.', 'err'); }
+      if (mode === 'add') {
+        const dupes = possibleDuplicates(out, newId);
+        const key = dupes.map((y) => y.s.id).join();
+        if (dupes.length && dupeWarned !== key) {
+          dupeWarned = key;
+          return say('This may already be listed: ' + dupes.slice(0, 4).map((y) => y.s.name + ' (' + y.s.organisation + ')').join('; ') + '. Check, then press "Add this service for review" again to add it anyway.', 'err');
+        }
+      }
+      const btn = form.querySelector('button[type=submit]');
+      btn.disabled = true;
+      try {
+        const d = await api('PUT', '/log/new/' + encodeURIComponent(newId), { service: out, note: why.value.trim(), by, checkedUrl: where.value.trim() });
+        added[newId] = d.item;
+        editing.delete(newId);
+        rebuild();
+        if (mode === 'add') {
+          $('#add-panel').replaceChildren();
+          $('#add-panel').hidden = true;
+          for (const f of FIELDS) if (f !== 'sort') input[f].value = '';
+          input.listing.value = 'new';
+        }
+        summary();
+        update();
+        const again = document.getElementById('svc-' + newId);
+        if (again) {
+          again.querySelector('.waiting').prepend(el('p', { class: 'msg ok', text: mode === 'add' ? 'Added. The team can now review it, edit it and decide on it like any other service.' : 'Saved.' }));
+          again.scrollIntoView({ block: 'nearest' });
+        }
+      } catch (err) {
+        btn.disabled = false;
+        if (err.status === 401) return signOut('Your session has ended. Please enter the passcode again.');
+        say(err.message, 'err');
+      }
+    }
+
+    const heading = mode === 'add' ? 'Add a service' : 'Edit details';
+    const intro = mode === 'add'
+      ? 'The new service is saved for the team straight away, as "New: not yet in the data". It is reviewed and decided on like any other, and becomes part of the data when the team\'s changes are next applied. It is never put live without a team decision to include it.'
+      : 'Changes are saved for the team straight away and reach the finder once applied. Boxes still marked "' + PLACEHOLDER + '" are highlighted.';
+    return el('section', { class: 'edit', 'aria-label': mode === 'add' ? heading : 'Edit ' + s.name }, el(mode === 'add' ? 'h2' : 'h4', { text: heading }), el('p', { class: 'hint', text: intro }), form);
+  }
+
+  const slug = (t) => String(t || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 50).replace(/-+$/, '');
+  const simple = (t) => String(t || '').toLowerCase().replace(/\b(the|and|of|for|in|ltd|cic|kirklees|service|services)\b/g, ' ').replace(/[^a-z0-9]+/g, ' ').trim();
+  const host = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } };
+  // Services that look like the same thing: the same simplified name, or the same web site (bar big shared sites).
+  function possibleDuplicates(out, newId) {
+    const n = simple(out.name);
+    const h = host(out.webpage);
+    const shared = /^(gov\.uk|nhs\.uk|kirklees\.gov\.uk|facebook\.com|westyorks-ca\.gov\.uk)$/;
+    return services.filter((y) => y.s.id !== newId && ((n && simple(y.s.name) === n) || (n.length > 6 && simple(y.s.name).includes(n)) || (h && !shared.test(h) && host(y.s.webpage) === h)));
+  }
+
+  function blankService() {
+    return {
+      id: 'new-service', name: '', organisation: '', status: 'Live - open to referrals', open: true, hwlFunded: false, level: 'local', audience: ['individual'],
+      categories: [], whoFor: '', age: null, webpage: null, email: null, phone: null, social: [], locations: [], areas: [], eligibility: [], exclusions: [],
+      gate: [], healthFocus: [], referralRoutes: [], selfReferral: { allowed: 'tbc', note: '' }, activities: [{ name: '', summary: '', duration: '' }],
+      workExperience: 'No', reviewCycle: 'Quarterly',
+    };
+  }
+
+  function openAdd() {
+    const panel = $('#add-panel');
+    const x = { s: blankService(), listing: 'new', isNew: true };
+    panel.replaceChildren(editForm(x, 'add'));
+    panel.hidden = false;
+    panel.querySelector('input').focus();
+  }
+
+  async function discardNew(x) {
+    if (!confirm('Discard the new service ' + x.s.name + '? It has not been added to the data yet.')) return;
+    try {
+      await api('DELETE', '/log/new/' + encodeURIComponent(x.s.id), { by: $('#by').value.trim() || 'someone' });
+      delete added[x.s.id];
+      rebuild();
+      summary();
+      update();
+    } catch (err) {
+      if (err.status === 401) return signOut('Your session has ended. Please enter the passcode again.');
+      alert(err.message);
+    }
+  }
+
+  // A new service waiting to be added, shaped like the others so it can be listed, filtered and decided on.
+  function newX(id, entry) {
+    const s = { ...entry.service, id, hwlFunded: false, lastUpdated: String(entry.t).slice(0, 10), listing: { decision: 'review', reason: 'New service added on this page by ' + entry.createdBy + '.' },
+      provenance: { source: 'Added on the All services page by ' + entry.createdBy, evidence: entry.note, ...(entry.checkedUrl ? { checkedUrl: entry.checkedUrl } : {}) } };
+    for (const k of Object.keys(s)) if (s[k] === null && ['cost', 'languages', 'notes'].includes(k)) delete s[k];
+    return { s, isNew: true, entry, listing: 'new', incomplete: JSON.stringify(s).includes(PLACEHOLDER), review: review(s), confidence: confidence(s), gaps: gaps(s), text: haystack(s) };
+  }
+  function rebuild() {
+    const inData = new Set(baseServices.map((x) => x.s.id));
+    services = [...baseServices, ...Object.entries(added || {}).filter(([id]) => !inData.has(id)).map(([id, e]) => newX(id, e))];
   }
 
   function refreshOne(x) {
@@ -515,7 +645,8 @@
     $('#signin-form').hidden = Boolean(team);
     $('#signed-in').hidden = !team;
     $('#export-decisions').hidden = !team;
-    $('#signed-in-text').textContent = team ? 'Signed in' + (by ? ' as ' + by : '') + '. ' + plural(Object.keys(team).length, 'decision', 'decisions') + ' and ' + plural(Object.keys(edits || {}).length, 'edited service', 'edited services') + ' so far.' : '';
+    $('#add-service').hidden = !team;
+    $('#signed-in-text').textContent = team ? 'Signed in' + (by ? ' as ' + by : '') + '. ' + plural(Object.keys(team).length, 'decision', 'decisions') + ', ' + plural(Object.keys(edits || {}).length, 'edited service', 'edited services') + ' and ' + plural(services.filter((y) => y.isNew).length, 'new service', 'new services') + ' so far.' : '';
   }
 
   async function signIn(candidate) {
@@ -523,12 +654,15 @@
     const msg = $('#signin-msg');
     msg.hidden = true;
     try {
-      const [d, e] = await Promise.all([api('GET', '/log/decisions'), api('GET', '/log/edits')]);
+      const [d, e, nw] = await Promise.all([api('GET', '/log/decisions'), api('GET', '/log/edits'), api('GET', '/log/new')]);
       team = d.decisions || {};
       edits = e.edits || {};
+      added = nw.added || {};
+      rebuild();
     } catch (e) {
       team = null;
       edits = null;
+      added = null;
       pass = '';
       store.del(PASS_KEY);
       msg.textContent = e.status === 404 ? 'Decisions are not switched on yet (the team passcode has not been set). Ask Phil.' : e.status === 401 ? 'That passcode is not right.' : e.message;
@@ -546,7 +680,11 @@
   function signOut(message) {
     team = null;
     edits = null;
+    added = null;
     editing.clear();
+    rebuild();
+    $('#add-panel').replaceChildren();
+    $('#add-panel').hidden = true;
     pass = '';
     store.del(PASS_KEY);
     showSignedIn();
@@ -556,7 +694,7 @@
   }
 
   function exportDecisions() {
-    const blob = new Blob([JSON.stringify({ exported: new Date().toISOString(), decisions: team || {}, edits: edits || {} }, null, 2) + '\n'], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify({ exported: new Date().toISOString(), decisions: team || {}, edits: edits || {}, added: added || {} }, null, 2) + '\n'], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = el('a', { href: url, download: 'service-finder-team-changes-' + new Date().toISOString().slice(0, 10) + '.json' });
     document.body.append(a);
@@ -577,6 +715,7 @@
         [n((x) => teamState(x) === 'undecided'), 'not yet decided by the team', { decision: 'undecided' }],
         [n((x) => teamState(x) === 'pending'), 'decided, waiting to be applied', { decision: 'pending' }],
         [n((x) => editState(x) === 'pending'), 'with edited details waiting to be applied', { decision: 'edited' }],
+        [n((x) => x.isNew), 'new services waiting to be added', { listing: 'new' }],
       ] : []),
       [n((x) => x.s.hwlFunded), 'Healthy Working Life schemes', { type: 'hwl' }],
       [n((x) => !x.s.hwlFunded), 'other services', { type: 'other' }],
@@ -654,7 +793,8 @@
     .catch(() => getJson('../services.json'))
     .then((d) => {
       choices = d.choices || {};
-      services = list(d.services).map((s) => ({ s, listing: listing(s), incomplete: JSON.stringify(s).includes(PLACEHOLDER), review: review(s), confidence: confidence(s), gaps: gaps(s), text: haystack(s) }));
+      baseServices = list(d.services).map((s) => ({ s, listing: listing(s), incomplete: JSON.stringify(s).includes(PLACEHOLDER), review: review(s), confidence: confidence(s), gaps: gaps(s), text: haystack(s) }));
+      rebuild();
       const all = services.map((x) => x.s);
       fill(input.area, all.flatMap((s) => list(s.areas)));
       fill(input.category, all.flatMap((s) => list(s.categories)));
@@ -693,6 +833,7 @@
   });
   $('#export').addEventListener('click', exportCsv);
   $('#export-decisions').addEventListener('click', exportDecisions);
+  $('#add-service').addEventListener('click', openAdd);
   $('#by').value = store.get(BY_KEY);
   $('#by').addEventListener('change', () => { store.set(BY_KEY, $('#by').value.trim()); showSignedIn(); });
   $('#unlock').addEventListener('click', () => { if ($('#pass').value) signIn($('#pass').value); });
