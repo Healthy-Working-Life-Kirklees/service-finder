@@ -12,16 +12,16 @@
     "employer"
   ],
   "categories": [
-    "Health linked to work",
     "Finding work",
-    "Staying in work",
-    "MSK"
+    "Health linked to work",
+    "MSK",
+    "Staying in work"
   ],
   "whoFor": "Kirklees residents aged 18 and over with a health condition or disability affecting their ability to get or keep a job.",
   "age": "18+",
   "webpage": "https://www.locala.org.uk/services/wellness-to-work",
   "email": "wellnesstowork@locala.org.uk",
-  "phone": "01234 56789",
+  "phone": "0300 304 5555",
   "social": [],
   "locations": [
     "Princess Royal Health Centre, Greenhead Rd, Huddersfield HD1 4EW",
@@ -29,9 +29,16 @@
     "Dewsbury Health Centre, Wellington Road, Dewsbury WF13 1HN"
   ],
   "areas": [
-    "Huddersfield",
     "Batley",
-    "Dewsbury"
+    "Colne Valley",
+    "Dewsbury",
+    "Holme Valley",
+    "Huddersfield",
+    "Kirkburton",
+    "Mirfield",
+    "Spen Valley",
+    "Kirklees-wide",
+    "Online"
   ],
   "eligibility": [
     "Aged 18 or over, living in Kirklees, with a health condition or disability affecting ability to get or keep a job",

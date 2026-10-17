@@ -55,7 +55,9 @@
     "checkedUrl": "https://www.mencap.org.uk/advice-and-support/employment-services"
   },
   "listing": {
-    "decision": "review",
-    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+    "decision": "exclude",
+    "reason": "Work and health specific but not available in Kirklees",
+    "by": "PL",
+    "date": "2026-10-16"
   }
 }
