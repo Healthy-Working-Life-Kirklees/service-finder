@@ -483,6 +483,8 @@ async function worker(route) {
   await page.click('#svc-kbop form.edit-form button[type=submit]');
   await page.waitForSelector('#svc-kbop .waiting');
   const sent = edits.kbop;
+  check('edit: ticking an area keeps the existing order and adds it last', JSON.stringify(sent.changes.areas) === JSON.stringify([...ALL.find((x) => x.id === 'kbop').areas, 'Batley']), JSON.stringify(sent.changes.areas));
+  check('edit: categories untouched are not sent (order kept)', !('categories' in sent.changes));
   check('edit: only the changed fields are sent, with what the data said', sent && Object.keys(sent.changes).sort().join() === 'activities,areas,phone,whoFor' && sent.before.phone === null && sent.checked === true && sent.by === 'TB', JSON.stringify(sent && sent.changes));
   check('edit: waiting changes shown, old and new', (await page.textContent('#svc-kbop .waiting')).includes('01484 000000') && (await page.locator('#svc-kbop .waiting del').count()) === 4);
   check('edit: badge says it is waiting to be applied', (await page.locator('#svc-kbop .pill.blue', { hasText: 'Details edited by TB' }).count()) === 1);
