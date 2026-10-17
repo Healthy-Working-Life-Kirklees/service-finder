@@ -80,7 +80,10 @@ jobs:
             echo "Nothing to apply: the data already matches the team's decisions and edits." | tee -a "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          branch="team-changes/$(date -u +%Y-%m-%d)-${GITHUB_RUN_NUMBER}"
+          # A new branch for every run and every re-run (GITHUB_RUN_ATTEMPT), so a re-run never collides with a
+          # branch an earlier attempt already pushed. Each run applies everything the team has saved, so the newest
+          # branch always includes what older ones had.
+          branch="team-changes/$(date -u +%Y-%m-%d)-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$branch"
@@ -93,5 +96,19 @@ jobs:
             echo "---"
             echo "Opened by the [Apply team changes]($RUN_URL) workflow, run by @$ACTOR. The data check and Worker tests passed in that run. Merge to put these changes live."
           } > "$RUNNER_TEMP/body.md"
-          url=$(gh pr create --base main --head "$branch" --title "Apply the MVP team's decisions and edits ($(date -u '+%-d %b %Y'))" --body-file "$RUNNER_TEMP/body.md")
-          echo "Pull request: $url" | tee -a "$GITHUB_STEP_SUMMARY"
+          if url=$(gh pr create --base main --head "$branch" --title "Apply the MVP team's decisions and edits ($(date -u '+%-d %b %Y'))" --body-file "$RUNNER_TEMP/body.md"); then
+            echo "Pull request: $url" | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            # Usually because Settings > Actions > General > Workflow permissions doesn't allow GitHub Actions to
+            # create pull requests. The changes are safely on the branch, so say how to open the pull request by hand.
+            compare="${{ github.server_url }}/${{ github.repository }}/compare/main...${branch}?expand=1"
+            {
+              echo "### The changes are on branch \`$branch\`, but the pull request couldn't be opened"
+              echo
+              echo "Open it yourself here: $compare (paste in the summary above as its description)."
+              echo
+              echo "To let this button open pull requests itself next time: Settings > Actions > General > Workflow permissions > tick **Allow GitHub Actions to create and approve pull requests** > Save."
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::The pull request couldn't be opened. The changes are on branch $branch: open a pull request from $compare. To fix this for next time, tick 'Allow GitHub Actions to create and approve pull requests' in Settings > Actions > General."
+            exit 1
+          fi
