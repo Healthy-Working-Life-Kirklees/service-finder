@@ -55,7 +55,9 @@
     "confidence": "medium"
   },
   "listing": {
-    "decision": "review",
-    "reason": "Left out of the October import because it is a directory, not a service. Added so the MVP team can decide."
+    "decision": "exclude",
+    "reason": "Its a directory not a service",
+    "by": "PL",
+    "date": "2026-10-16"
   }
 }
