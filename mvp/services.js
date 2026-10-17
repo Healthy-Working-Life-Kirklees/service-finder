@@ -473,7 +473,12 @@
       out.open = q('open').value === 'yes';
       out.level = q('level').value;
       out.reviewCycle = q('reviewCycle').value;
-      for (const k of CHECK_FIELDS) out[k] = [...q(k).querySelectorAll('input:checked')].map((i) => i.value);
+      // Keep the order the service already has (categories are most important first); newly ticked ones go last.
+      for (const k of CHECK_FIELDS) {
+        const ticked = [...q(k).querySelectorAll('input:checked')].map((i) => i.value);
+        const had = list(val(k)).filter((v) => ticked.includes(v));
+        out[k] = [...had, ...ticked.filter((v) => !had.includes(v))];
+      }
       for (const k of LINE_FIELDS) out[k] = q(k).value.split('\n').map((l) => l.trim()).filter(Boolean);
       const srOut = { allowed: q('sr-allowed').value, note: q('sr-note').value.trim() };
       if (q('sr-url').value.trim()) srOut.url = q('sr-url').value.trim();
