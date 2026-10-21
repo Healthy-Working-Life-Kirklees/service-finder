@@ -149,7 +149,7 @@ const brandFoot = `Healthy Working Life Kirklees &middot; Service Finder &middot
 
 function indexRow(s) {
   const c = coverage(s);
-  return `<li class="row"><span class="nm">${s.hwlFunded ? '<span class="hwl" title="Healthy Working Life scheme">&#9679;</span>' : ''}${esc(s.name)}<span class="og"> &middot; ${esc(s.organisation)}</span></span><span class="ar ar-${c.key}">${c.label}</span><span class="dots"></span><span class="pg">${pageOf.get(s.id)}</span></li>`;
+  return `<li class="row"><a href="#${esc(s.id)}"><span class="nm">${s.hwlFunded ? '<span class="hwl" title="Healthy Working Life scheme">&#9679;</span>' : ''}${esc(s.name)}<span class="og"> &middot; ${esc(s.organisation)}</span></span><span class="ar ar-${c.key}">${c.label}</span><span class="dots"></span><span class="pg">${pageOf.get(s.id)}</span></a></li>`;
 }
 function indexPages(pages, startNo, { title, kicker, intro, cls }) {
   return pages.map((items, i) => {
@@ -159,7 +159,7 @@ function indexPages(pages, startNo, { title, kicker, intro, cls }) {
     const body = items.map((it) => it.type === 'h'
       ? `<li class="grp"><span>${esc(it.text)}</span>${it.count != null ? `<span class="cnt">${it.count} service${it.count === 1 ? '' : 's'}</span>` : ''}</li>`
       : indexRow(it.s)).join('');
-    return `<section class="page index ${cls}"><div class="brandbar"><span class="hwl-logo" role="img" aria-label="Healthy Working Life"></span></div>${head}<ul class="ix">${body}</ul>${footer(startNo + i, brandFoot)}</section>`;
+    return `<section class="page index ${cls}" id="p${startNo + i}"><div class="brandbar"><span class="hwl-logo" role="img" aria-label="Healthy Working Life"></span><a class="bb-text" href="#p1">Service Finder</a></div>${head}<ul class="ix">${body}</ul>${footer(startNo + i, brandFoot)}</section>`;
   }).join('\n');
 }
 
@@ -206,7 +206,7 @@ async function servicePage(s, n) {
 
   return `<section class="page svc cov-${c.key}" id="${esc(s.id)}">
   <div class="tab"><span>${c.label}</span></div>
-  <div class="brandbar"><span class="hwl-logo" role="img" aria-label="Healthy Working Life"></span><span class="bb-text">Service Finder</span><span class="bb-cov">${c.label}</span></div>
+  <div class="brandbar"><span class="hwl-logo" role="img" aria-label="Healthy Working Life"></span><a class="bb-text" href="#p1">Service Finder</a><span class="bb-cov">${c.label}</span></div>
   <header class="svc-head">${thumb}<div class="ttl"><h2>${esc(s.name)}</h2><p class="org">${esc(s.organisation)}</p><div class="badges">${badges}</div></div></header>
   <div class="fit"><div class="svc-body">
     <div class="main">
@@ -230,8 +230,8 @@ async function servicePage(s, n) {
 
 function dividerPage(sec) {
   const first = pageOf.get(sec.list[0].id), last = pageOf.get(sec.list.at(-1).id);
-  return `<section class="page divider cov-${sec.key}">
-  <div class="brandbar"><span class="hwl-logo" role="img" aria-label="Healthy Working Life"></span><span class="bb-text">Service Finder</span></div>
+  return `<section class="page divider cov-${sec.key}" id="p${sec.divider}">
+  <div class="brandbar"><span class="hwl-logo" role="img" aria-label="Healthy Working Life"></span><a class="bb-text" href="#p1">Service Finder</a></div>
   <div class="dv-main"><p class="kicker">Section ${SECTIONS.indexOf(SECTION[sec.key]) + 1} of ${SECTIONS.length}</p><h1>${sec.title}</h1>
   <p class="dv-intro">${sec.intro}</p><p class="dv-count">${sec.list.length} services, A to Z, on pages ${first} to ${last}.</p></div>
   ${footer(sec.divider, brandFoot)}
@@ -240,11 +240,11 @@ function dividerPage(sec) {
 
 async function cover() {
   const hwlCount = services.filter((s) => s.hwlFunded).length;
-  const row = (label, page) => `<li><span>${label}</span><span class="dots"></span><span>${page}</span></li>`;
+  const row = (label, page) => `<li><a href="#p${page}"><span>${label}</span><span class="dots"></span><span>${page}</span></a></li>`;
   const online = SHOW_SITE_LINK
     ? `${await qr(SITE_URL)}<div><strong>The latest version is online</strong><span>${esc(shortUrl(SITE_URL))}</span></div>`
     : ''; // space kept for the web address and QR code once the site is public
-  return `<section class="page cover">
+  return `<section class="page cover" id="p1">
   <img class="cover-logo" src="${hwlLogo}" alt="Healthy Working Life">
   <div class="cover-main">
     <p class="kicker">Kirklees &middot; Printed directory &middot; ${edition}</p>

@@ -123,3 +123,9 @@ h1, h2, h3, h4, .kicker, .badge { font-family: var(--hf); }
 .compact .side { padding: 3mm 3.5mm !important; }
 .compact .qr svg { width: 16mm; height: 16mm; }
 .compact .whofor { font-size: 1.05em; }
+
+/* links: index entries go to the service's page, contents rows to the index or
+   section, and "Service Finder" in the brand bar back to the contents on the cover */
+a { color: inherit; text-decoration: none; }
+.ix li.row > a { flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; gap: 3mm; }
+.contents li > a { flex: 1; display: flex; align-items: baseline; gap: 2mm; }
