@@ -206,7 +206,7 @@ async function servicePage(s, n) {
 
   return `<section class="page svc cov-${c.key}" id="${esc(s.id)}">
   <div class="tab"><span>${c.label}</span></div>
-  <div class="brandbar"><span class="hwl-logo" role="img" aria-label="Healthy Working Life"></span><a class="bb-text" href="#p1">Service Finder</a><span class="bb-cov">${c.label}</span></div>
+  <div class="brandbar"><span class="hwl-logo" role="img" aria-label="Healthy Working Life"></span><a class="bb-text" href="#p1">Service Finder</a><span class="bb-cov">${c.label}</span><button type="button" class="print-one" data-print-page aria-label="Print the page for ${esc(s.name)}">Print this page</button></div>
   <header class="svc-head">${thumb}<div class="ttl"><h2>${esc(s.name)}</h2><p class="org">${esc(s.organisation)}</p><div class="badges">${badges}</div></div></header>
   <div class="fit"><div class="svc-body">
     <div class="main">
@@ -320,6 +320,22 @@ ${parts.join('\n')}
     if (box.scrollHeight > box.clientHeight + 1) box.closest('.page').setAttribute('data-overflow', 'yes');
   });
   document.documentElement.setAttribute('data-fitted', 'yes');
+
+  // "Print this page" on each service: print just that page, then put the directory back.
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-print-page]');
+    if (!btn) return;
+    var page = btn.closest('.page');
+    document.body.classList.add('printing-one');
+    page.classList.add('print-target');
+    var done = function () {
+      document.body.classList.remove('printing-one');
+      page.classList.remove('print-target');
+      window.removeEventListener('afterprint', done);
+    };
+    window.addEventListener('afterprint', done);
+    window.print();
+  });
 })();
 </script>
 </body></html>`;

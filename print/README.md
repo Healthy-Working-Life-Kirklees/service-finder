@@ -20,7 +20,7 @@ Which section a service goes in (`sectionOf` in `scripts/build-print.mjs`):
 - Only South Kirklees towns (Huddersfield, Colne Valley, Holme Valley, Kirkburton): South Kirklees.
 - Anything else (towns in both halves, or Kirklees-wide with no town, including regional services): All Kirklees.
 
-In the PDF and the HTML, every index entry links to that service's page, the contents on the cover link to each index and section, and "Service Finder" at the top of each page links back to the contents.
+In the PDF and the HTML, every index entry links to that service's page, the contents on the cover link to each index and section, and "Service Finder" at the top of each page links back to the contents. In the HTML (not the PDF), each service page also has a "Print this page" button that prints just that service; it doesn't show on paper.
 
 Long entries are shrunk to fit one page by a small script in the page. `render-print.py` lists any page that still doesn't fit.
 
