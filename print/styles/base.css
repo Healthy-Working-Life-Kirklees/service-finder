@@ -1,0 +1,141 @@
+/* Shared page geometry for every print design. The designs restyle colours and type,
+   but keep the heights marked FIXED: scripts/build-print.mjs relies on them to work out
+   index page numbers (29 rows on a first index page, 36 on the rest, rows 6.4mm). */
+@page { size: A4; margin: 0; }
+:root {
+  --teal: #0b6b6b; --dark: #0b5c5c; --text: #17303a; --grey: #4f5f5e; --light: #e4f3f1;
+  --border: #e0d5bf; --cream: #f9f0e1; --mint: #f4faf9; --accent: #3db0ae; --slate: #5a6e8c;
+  --warn-bg: #fff4d6; --warn: #7a5900;
+  --hf: "DM Sans", "Segoe UI", Arial, sans-serif; --bf: "Noto Sans", "Segoe UI", Arial, sans-serif;
+}
+* { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+html, body { margin: 0; padding: 0; }
+body { font-family: var(--bf); color: var(--text); font-size: 10.5pt; line-height: 1.42; background: #8a9594; }
+h1, h2, h3, h4, .kicker, .badge { font-family: var(--hf); }
+
+.page {
+  width: 210mm; height: 297mm; position: relative; overflow: hidden; background: #fff;
+  padding: 30mm 15mm 20mm; display: flex; flex-direction: column;
+  break-after: page; page-break-after: always; margin: 0 auto;
+}
+@media screen { .page { margin: 8mm auto; box-shadow: 0 2px 12px rgba(0,0,0,.25); } }
+.page:last-child { break-after: auto; page-break-after: auto; }
+
+/* FIXED: brand bar is 22mm, out of the flow */
+.brandbar { position: absolute; top: 0; left: 0; right: 0; height: 22mm; padding: 0 15mm; display: flex; align-items: center; gap: 4mm; }
+.brandbar .hwl-logo { height: 13mm; width: 16.7mm; display: block; flex: none; }
+.bb-text { font-family: var(--hf); font-weight: 700; font-size: 12pt; }
+.bb-cov { margin-left: auto; font-family: var(--hf); font-weight: 700; font-size: 9pt; }
+.tab { display: none; }
+
+.pfoot { position: absolute; left: 15mm; right: 15mm; bottom: 8mm; display: flex; justify-content: space-between; align-items: baseline; font-size: 8.5pt; color: var(--grey); }
+.pf-num { font-family: var(--hf); font-weight: 700; font-size: 11pt; color: var(--text); }
+
+/* ---------- index pages ---------- */
+.ix-head { height: 16mm; overflow: hidden; margin: 0; }          /* FIXED */
+.ix-head.first { height: 44mm; }                                  /* FIXED */
+.ix-head .kicker { margin: 0 0 1mm; font-size: 9.5pt; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.ix-head h1 { margin: 0 0 3mm; font-size: 24pt; line-height: 1.1; }
+.ix-head h1.cont { font-size: 15pt; }
+.ix-head h1.cont span { font-weight: 500; font-size: 11pt; }
+.ix-intro { font-size: 9.6pt; line-height: 1.4; }
+.ix-intro p { margin: 0 0 1.8mm; }
+.legend .hwl, .hwl { color: var(--accent); }
+.ix { list-style: none; margin: 0; padding: 0; }
+.ix li { height: 6.4mm; display: flex; align-items: center; gap: 3mm; white-space: nowrap; overflow: hidden; } /* FIXED */
+.ix li.grp { height: 12.8mm; align-items: flex-end; padding-bottom: 1.4mm; font-family: var(--hf); font-weight: 700; font-size: 12pt; }
+.ix li.grp .cnt { margin-left: auto; font-size: 8.5pt; font-weight: 500; }
+.ix .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; font-weight: 600; font-size: 9.6pt; }
+.ix .nm .hwl { margin-right: 1.2mm; }
+.ix .og { font-weight: 400; color: var(--grey); }
+.ix .ar { flex: none; width: 27mm; text-align: center; font-family: var(--hf); font-size: 7.6pt; font-weight: 700; padding: .3mm 0; border-radius: 1.2mm; }
+.ix .dots { display: none; }
+.ix .pg { flex: none; width: 9mm; text-align: right; font-family: var(--hf); font-weight: 700; font-size: 10pt; }
+
+/* ---------- service pages ---------- */
+.svc-head { display: flex; gap: 5mm; align-items: center; margin: 0 0 5mm; flex: none; }
+.thumb { flex: none; width: 32mm; height: 23mm; border-radius: 2.5mm; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.thumb.logo { background: #fff; border: .3mm solid var(--border); padding: 2mm; }
+.thumb.logo img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+.thumb span { font-family: var(--hf); font-weight: 700; font-size: 26pt; color: rgba(255,255,255,.9); }
+.thumb-0 { background: linear-gradient(135deg, #b9aee0 0%, #d9c8f0 40%, #8fa6c8 75%, #4d6a8c 100%); }
+.thumb-1 { background: linear-gradient(135deg, #b7c9d6 0%, #e7b9a0 55%, #f2c7a8 100%); }
+.thumb-2 { background: linear-gradient(135deg, #c5d2b8 0%, #a9bd9c 60%, #92a887 100%); }
+.thumb-3 { background: linear-gradient(135deg, #f1d3a8 0%, #e9b7b0 55%, #c9a6c8 100%); }
+.thumb-4 { background: linear-gradient(135deg, #a9d6d4 0%, #8dbcc9 50%, #7a9fc2 100%); }
+.ttl { flex: 1; min-width: 0; }
+.ttl h2 { margin: 0 0 .6mm; font-size: 21pt; line-height: 1.12; }
+.ttl .org { margin: 0 0 2.5mm; font-size: 11pt; }
+.badges { display: flex; flex-wrap: wrap; gap: 1.5mm; }
+.badge { font-size: 8.4pt; font-weight: 700; padding: .5mm 2mm; border-radius: 1.5mm; border: .3mm solid var(--border); background: #f4f1ea; color: var(--text); }
+.badge.live { background: #d9efe2; border-color: #b6dcc6; color: #00562a; }
+.badge.notopen { background: var(--warn-bg); border-color: #ecd49a; color: var(--warn); }
+.badge.self { background: #dff0ef; border-color: #bfe0dd; color: var(--dark); }
+.badge.hwlb { background: var(--dark); border-color: var(--dark); color: #fff; }
+
+.fit { flex: 1; min-height: 0; overflow: hidden; }
+.svc-body { display: grid; grid-template-columns: 1fr 64mm; gap: 6mm; align-items: start; }
+.svc-body h3 { margin: 4mm 0 1.2mm; font-size: 11.5pt; }
+.svc-body .main > :first-child, .svc-body .side > :first-child { margin-top: 0; }
+.svc-body ul { margin: 0; padding-left: 4.5mm; }
+.svc-body li { margin: 0 0 1mm; overflow-wrap: anywhere; }
+.svc-body p { margin: 0 0 1.5mm; overflow-wrap: anywhere; }
+.whofor { font-size: 1.12em; line-height: 1.4; font-weight: 600; }
+.dur { color: var(--grey); }
+.areas span { font-weight: 700; }
+.contact { margin: 0; }
+.contact .ct { margin: 0 0 1.6mm; }
+.contact dt { font-family: var(--hf); font-weight: 700; font-size: 8.4pt; text-transform: uppercase; letter-spacing: .04em; color: var(--grey); }
+.contact dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.selfnote { font-style: italic; color: var(--grey); }
+.qr { display: flex; align-items: center; gap: 3mm; margin-top: 4mm; }
+.qr svg { width: 20mm; height: 20mm; flex: none; }
+.qr span { font-size: 8.4pt; color: var(--grey); }
+.checked { flex: none; margin-top: 3mm; font-size: 8.6pt; color: var(--grey); }
+.checked strong { color: var(--warn); }
+
+/* ---------- cover ---------- */
+.cover { padding: 20mm 18mm 22mm; }
+.cover-logo { width: 62mm; height: auto; display: block; }
+.cover-main { flex: 1; }
+.cover .kicker { margin: 12mm 0 2mm; font-size: 10pt; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.cover h1 { margin: 0; font-size: 46pt; line-height: 1.02; }
+.cover .lede { margin: 4mm 0 9mm; font-size: 15pt; line-height: 1.3; max-width: 150mm; }
+.contents { list-style: none; margin: 0 0 9mm; padding: 0; }
+.contents li { display: flex; align-items: baseline; gap: 2mm; padding: 2.2mm 0; font-size: 11pt; font-weight: 600; }
+.contents li .dots { flex: 1; border-bottom: .35mm dotted currentColor; opacity: .45; transform: translateY(-1mm); }
+.contents li span:last-child { font-family: var(--hf); font-weight: 700; }
+.howto h2 { margin: 0 0 2mm; font-size: 13pt; }
+.howto ul { margin: 0; padding-left: 5mm; }
+.howto li { margin: 0 0 1.4mm; }
+.cover-online { display: flex; align-items: center; gap: 5mm; position: relative; z-index: 1; }
+.cover-online svg { width: 24mm; height: 24mm; }
+.cover-online strong { display: block; font-family: var(--hf); font-size: 12pt; }
+.cover-online span { font-size: 9.5pt; }
+.cover-band { display: none; }
+
+
+/* long entries (set by the fitting script) */
+.compact .svc-head { margin-bottom: 3mm; }
+.compact .svc-body { grid-template-columns: 1fr 56mm !important; gap: 5mm; line-height: 1.32; }
+.compact .svc-body h3 { margin-top: 2.6mm; }
+.compact .svc-body li { margin-bottom: .5mm; }
+.compact .side { padding: 3mm 3.5mm !important; }
+.compact .qr svg { width: 16mm; height: 16mm; }
+.compact .whofor { font-size: 1.05em; }
+
+/* links: index entries go to the service's page, contents rows to the index or
+   section, and "Service Finder" in the brand bar back to the contents on the cover */
+a { color: inherit; text-decoration: none; }
+.ix li.row > a { flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; gap: 3mm; }
+.contents li > a { flex: 1; display: flex; align-items: baseline; gap: 2mm; }
+
+/* "Print this page" button on each service page: on screen only */
+.print-one { margin-left: 4mm; font-family: var(--hf); font-weight: 700; font-size: 9pt; padding: 1.4mm 3.5mm; border-radius: 1.5mm; border: .4mm solid var(--teal); background: var(--teal); color: #fff; cursor: pointer; }
+.print-one:hover { background: var(--dark); }
+.print-one:focus-visible { outline: .8mm solid #ffeb3b; outline-offset: .5mm; }
+@media print {
+  .print-one { display: none; }
+  body.printing-one .page:not(.print-target) { display: none; }
+  body.printing-one .page.print-target { margin: 0; box-shadow: none; break-after: auto; page-break-after: auto; }
+}

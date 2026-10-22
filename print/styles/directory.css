@@ -1,0 +1,64 @@
+/* Clear print: white paper, bigger text, black type with teal rules only and outlined
+   badges. Uses the least ink and reads well on a black and white printer or photocopier. */
+.design-c body, body.design-c { font-size: 11.4pt; line-height: 1.45; }
+.design-c .page { color: #111; }
+.design-c .brandbar { border-bottom: .6mm solid var(--teal); margin: 0 15mm; padding: 0; }
+.design-c .bb-text { color: var(--teal); font-weight: 500; }
+.design-c .bb-cov { color: #111; font-size: 10pt; text-transform: uppercase; letter-spacing: .05em; }
+.design-c .pfoot { color: #333; border-top: .25mm solid #bbb; padding-top: 2mm; }
+.design-c .pf-num { color: #111; font-size: 13pt; }
+
+.design-c .svc-head { padding-bottom: 4mm; border-bottom: .3mm solid #bbb; }
+.design-c .thumb { width: 28mm; height: 20mm; }
+.design-c .thumb:not(.logo) { background: #fff !important; border: .5mm solid var(--teal); }
+.design-c .thumb:not(.logo) span { color: var(--teal); }
+.design-c .thumb.logo { border-color: #ccc; }
+.design-c .ttl h2 { color: #111; font-size: 24pt; }
+.design-c .ttl .org { color: #333; font-size: 12pt; }
+.design-c .badge, .design-c .badge.live, .design-c .badge.self, .design-c .badge.notopen, .design-c .badge.hwlb { background: #fff; border: .35mm solid #555; color: #111; font-size: 9pt; }
+.design-c .badge.live::before, .design-c .badge.self::before { content: "\2713\00a0"; color: var(--teal); }
+.design-c .badge.notopen { border-style: dashed; }
+.design-c .badge.hwlb { border-color: var(--teal); border-width: .6mm; color: var(--dark); }
+.design-c .svc-body { grid-template-columns: 1fr 66mm; gap: 7mm; }
+.design-c .svc-body h3 { color: #111; font-size: 12.5pt; padding-left: 3mm; border-left: 1.4mm solid var(--teal); line-height: 1.15; margin-top: 5mm; }
+.design-c .whofor { font-size: 1.1em; }
+.design-c .side { border: .4mm solid #999; border-radius: 2mm; padding: 4mm; }
+.design-c .contact dt { color: #333; }
+.design-c .contact dd { font-size: 1.05em; }
+.design-c .selfnote, .design-c .dur, .design-c .qr span, .design-c .checked { color: #333; }
+.design-c .checked strong { color: #111; }
+
+/* index */
+.design-c .ix-head .kicker { color: var(--teal); }
+.design-c .ix-head h1 { color: #111; }
+.design-c .ix li.row { border-bottom: .25mm dotted #999; }
+.design-c .ix .nm { font-size: 10pt; }
+.design-c .ix .og { color: #444; }
+.design-c .ix li.grp { color: #111; border-bottom: .6mm solid var(--teal); font-size: 13pt; }
+.design-c .ar { border: .3mm solid #777; color: #111; font-weight: 500; }
+.design-c .ar-north, .design-c .ar-south, .design-c .ar-both { font-weight: 700; border-width: .5mm; border-color: var(--teal); }
+.design-c .hwl { color: var(--teal); }
+
+/* cover */
+.design-c .cover-logo { width: 54mm; }
+.design-c .cover .kicker { color: var(--teal); }
+.design-c .cover h1 { color: #111; font-size: 50pt; border-bottom: 1.6mm solid var(--teal); padding-bottom: 4mm; display: inline-block; }
+.design-c .cover .contents li { border-bottom: .3mm solid #bbb; font-size: 12pt; }
+.design-c .cover .howto { border: .4mm solid #999; border-radius: 2mm; padding: 4mm 5mm; }
+.design-c .cover .howto li { font-size: 11pt; }
+
+/* cover contents in two lists, and space kept for the web address and QR code */
+.design-c .contents-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 9mm; margin: 0 0 8mm; }
+.design-c .contents-wrap .contents { margin: 0; }
+.design-c .cover .contents li { font-size: 10.5pt; }
+.design-c .cover .contents li.ch { display: block; font-family: var(--hf); font-weight: 700; font-size: 9.5pt; color: var(--teal); text-transform: uppercase; letter-spacing: .05em; border-bottom: .6mm solid var(--teal); padding-bottom: 1.2mm; }
+.design-c .cover-online { min-height: 24mm; }
+
+/* section divider pages */
+.design-c .divider { justify-content: center; }
+.design-c .dv-main { border-left: 3mm solid var(--teal); padding: 6mm 0 6mm 9mm; margin-bottom: 30mm; }
+.design-c .dv-main .kicker { margin: 0 0 3mm; color: var(--teal); font-size: 10pt; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.design-c .dv-main h1 { margin: 0 0 6mm; font-size: 40pt; line-height: 1.05; color: #111; }
+.design-c .dv-intro { margin: 0 0 4mm; font-size: 13pt; max-width: 140mm; }
+.design-c .dv-count { margin: 0; font-family: var(--hf); font-weight: 700; font-size: 12pt; }
+.design-c .ar-national { font-weight: 500; }

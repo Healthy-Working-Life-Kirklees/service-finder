@@ -6,9 +6,11 @@
     "build-data": "node scripts/build-data.mjs",
     "check-data": "node scripts/check-data.mjs",
     "feedback-digest": "node scripts/feedback-digest.mjs",
-    "apply-decisions": "node scripts/apply-decisions.mjs"
+    "apply-decisions": "node scripts/apply-decisions.mjs",
+    "build-print": "node scripts/build-print.mjs"
   },
   "devDependencies": {
-    "ajv": "^8.17.1"
+    "ajv": "^8.17.1",
+    "qrcode": "^1.5.4"
   }
 }
