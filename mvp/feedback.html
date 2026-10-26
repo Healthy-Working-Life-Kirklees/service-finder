@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.workers.dev; base-uri 'none'; form-action 'none'">
+  <title>User feedback | Kirklees HWL Service Finder</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="mvp.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to the content</a>
+
+  <nav class="teambar" aria-label="MVP team">
+    <div class="wrap">
+      <strong>MVP team only</strong>
+      <a href="../">Service Finder</a>
+      <a href="help.html">Help</a>
+      <a href="services.html">All services</a>
+      <a href="log.html">Issues and actions log</a>
+      <a href="feedback.html" aria-current="page">User feedback</a>
+    </div>
+  </nav>
+
+  <header class="site-header">
+    <div class="wrap">
+      <h1>User feedback<br><span>Kirklees Healthy Working Life Service Finder</span></h1>
+    </div>
+  </header>
+
+  <main id="main" class="wrap wide">
+    <p class="mvp-banner"><strong>For the review team only.</strong> This is what people sent from the finder: "Was this helpful?", problems with a listing, and what's missing. It never includes their conversation. Contact details are removed from comments automatically, but a comment could still mention a name, so treat it as confidential and don't copy comments anywhere public. Feedback is a lead, not a fact: check with the service before changing a listing.</p>
+
+    <!-- passcode gate -->
+    <section id="gate" class="gate">
+      <h2 class="mt0">Enter the feedback passcode</h2>
+      <div class="field">
+        <label for="pass">Passcode</label>
+        <input id="pass" type="password" autocomplete="off">
+      </div>
+      <button id="unlock" class="btn primary" type="button">Open the feedback</button>
+      <p id="gate-msg" class="msg err" role="alert" hidden></p>
+      <p>This is the feedback passcode, not the issues log one. Don't have it? Ask Phil. It's kept in your browser tab only until you close it.</p>
+    </section>
+
+    <!-- the feedback -->
+    <section id="app" hidden>
+      <div class="toolbar">
+        <button id="refresh" class="btn secondary small" type="button">Refresh</button>
+        <button id="export" class="btn secondary small" type="button">Download everything as CSV</button>
+        <button id="lock" class="btn secondary small" type="button">Lock</button>
+      </div>
+
+      <p id="status-msg" class="msg" role="status" hidden></p>
+
+      <div class="filters">
+        <div>
+          <label for="period">Period</label>
+          <select id="period">
+            <option value="7">Last 7 days</option>
+            <option value="30" selected>Last 30 days</option>
+            <option value="90">Last 90 days</option>
+            <option value="all">Everything (up to 12 months)</option>
+          </select>
+        </div>
+      </div>
+
+      <h2 class="mt0">At a glance</h2>
+      <div id="summary" class="summary"></div>
+
+      <div class="fb-overview">
+        <section aria-labelledby="h-helpful" class="fb-panel">
+          <h3 id="h-helpful" class="mt0">Was this helpful?</h3>
+          <div id="helpful"></div>
+        </section>
+        <section aria-labelledby="h-reasons" class="fb-panel">
+          <h3 id="h-reasons" class="mt0">Why people said No</h3>
+          <div id="reasons"></div>
+        </section>
+        <section aria-labelledby="h-services" class="fb-panel">
+          <h3 id="h-services" class="mt0">Services with problem reports</h3>
+          <div id="services"></div>
+        </section>
+        <section aria-labelledby="h-missing" class="fb-panel">
+          <h3 id="h-missing" class="mt0">What's missing</h3>
+          <div id="missing"></div>
+        </section>
+      </div>
+
+      <h2>Feedback to read</h2>
+      <div class="filters">
+        <div>
+          <label for="flt-kind">Show</label>
+          <select id="flt-kind">
+            <option value="read" selected>Everything except plain "Yes" answers</option>
+            <option value="all">Everything</option>
+            <option value="no">"No" answers</option>
+            <option value="yes">"Yes" answers</option>
+            <option value="card">Problems with a listing</option>
+            <option value="gap">What's missing</option>
+          </select>
+        </div>
+        <div>
+          <label for="flt-status">Status</label>
+          <select id="flt-status">
+            <option value="">All</option>
+            <option value="New" selected>New</option>
+            <option value="Reviewed">Reviewed</option>
+            <option value="Actioned">Actioned</option>
+            <option value="Not actioned">Not actioned</option>
+          </select>
+        </div>
+        <div><label for="flt-q">Search</label><input id="flt-q" type="search" autocomplete="off" placeholder="Service, comment or note"></div>
+      </div>
+
+      <p id="count" class="count" role="status"></p>
+      <div id="list" class="entries"></div>
+      <div class="toolbar mt-sm"><button id="more" class="btn secondary small" type="button" hidden>Show more</button></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><strong>In an emergency call 999.</strong> For urgent mental health support in Kirklees, call the 24-hour Single Point of Access team on <a href="tel:01924316830">01924 316830</a> or call NHS 111.</p>
+    </div>
+  </footer>
+
+  <script src="../config.js"></script>
+  <script src="feedback.js" defer></script>
+</body>
+</html>

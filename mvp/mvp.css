@@ -157,3 +157,17 @@ button.stat:hover { border-color: var(--blue); }
 .how ol { margin: .5rem 0 .3rem; }
 .how li { max-width: 75ch; }
 .how ul { margin: .2rem 0; }
+
+/* ---------- user feedback ---------- */
+.fb-overview { display: grid; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); gap: 1rem; margin: 0 0 1rem; }
+.fb-panel { background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: .7rem .9rem; min-width: 0; }
+.fb-panel h3 { font-size: 1.05rem; color: var(--dark-blue); }
+.fb-panel table.data { font-size: .92rem; }
+.fb-panel .scroll { margin: 0; }
+td.num-cell { text-align: right; white-space: nowrap; width: 1%; }
+.entry.fb-no { border-left-color: #b35c00; }
+.entry.fb-card { border-left-color: #d5281b; }
+.fb-entry .facts { grid-template-columns: minmax(8rem, 11rem) 1fr; }
+.fb-entry .comment { white-space: pre-wrap; }
+.fb-entry .controls .grow { flex: 1 1 18rem; }
+.fb-entry .controls textarea { width: 100%; }
