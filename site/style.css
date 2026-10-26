@@ -381,7 +381,8 @@ main > .page-title + .notice { margin-top: 0; }
 
 /* Emergency footer: always visible at the bottom of the screen. It sits in the normal page flow and
    sticks to the bottom, so nothing is hidden underneath it at the end of the page. */
-.site-footer { position: sticky; bottom: 0; z-index: 5; box-shadow: 0 -2px 8px rgba(23, 48, 58, .08); padding: .7rem 0; }
+/* Only on the main page (the one with #footer-spot); the team pages keep an ordinary footer. */
+#footer-spot + .site-footer { position: sticky; bottom: 0; z-index: 5; box-shadow: 0 -2px 8px rgba(23, 48, 58, .08); padding: .7rem 0; }
 /* Keep anything that gets keyboard focus, such as the message box, clear of the footer. */
 html { scroll-padding-bottom: 7rem; }
 @media (max-width: 760px) {
