@@ -31,14 +31,41 @@ const mk = (f, status) => {
   return it;
 };
 
+// Stored feedback for the User feedback review page.
+const FB_PASS = 'fb-test-pass';
+const fbToday = new Date().toISOString().slice(0, 10);
+const fbBase = { date: fbToday, schemeIds: [], recordLastUpdated: null, helpful: null, reasons: [], text: '', missedService: null, gapCategories: [], gapArea: null, lang: 'en', mode: 'public', redacted: false, status: 'New', note: '' };
+const fbStore = [
+  { ...fbBase, id: 1, kind: 'reply', helpful: true, schemeIds: ['my-way-forward'] },
+  { ...fbBase, id: 2, kind: 'reply', helpful: true, schemeIds: ['my-way-forward'] },
+  { ...fbBase, id: 3, kind: 'reply', helpful: true, schemeIds: ['my-way-forward'], mode: 'staff' },
+  { ...fbBase, id: 4, kind: 'reply', helpful: false, schemeIds: ['my-way-forward'], reasons: ['none-fit'], text: 'Nothing near me' },
+  { ...fbBase, id: 5, kind: 'card', schemeIds: ['my-way-forward'], recordLastUpdated: '2026-08-03', reasons: ['contact-wrong'] },
+  { ...fbBase, id: 6, kind: 'gap', reasons: ['missing-service'], missedService: { name: 'A test service', website: '', area: '' } },
+];
+
 async function worker(route) {
   const req = route.request();
   const url = new URL(req.url());
-  const cors = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type, x-team-passcode', 'access-control-allow-methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS' };
+  const cors = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type, x-team-passcode, x-feedback-passcode', 'access-control-allow-methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS' };
   const json = (obj, status = 200) => route.fulfill({ status, headers: { ...cors, 'content-type': 'application/json' }, body: JSON.stringify(obj) });
   if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: cors });
 
   if (url.pathname === '/health') return json({ ok: true, aiConfigured: true, teamLog: true, feedback: feedbackFlag });
+  // Reading feedback (the User feedback review page), with its own passcode.
+  if (url.pathname.startsWith('/feedback/')) {
+    if (req.headers()['x-feedback-passcode'] !== FB_PASS) return json({ error: 'Wrong passcode.' }, 401);
+    if (url.pathname === '/feedback/items' && req.method() === 'GET') return json({ items: fbStore, statuses: ['New', 'Reviewed', 'Actioned', 'Not actioned'] });
+    if (url.pathname === '/feedback/export.csv') return route.fulfill({ status: 200, headers: { ...cors, 'content-type': 'text/csv' }, body: '"id","date"\r\n"1","2026-10-01"\r\n' });
+    const m = url.pathname.match(/^\/feedback\/items\/(\d+)$/);
+    if (m && req.method() === 'PATCH') {
+      const item = fbStore.find((x) => x.id === Number(m[1]));
+      if (!item) return json({ error: 'Not found.' }, 404);
+      Object.assign(item, JSON.parse(req.postData()));
+      return json({ item });
+    }
+    return json({ error: 'Not found.' }, 404);
+  }
   if (url.pathname === '/feedback' && req.method() === 'POST') {
     fbSent.push(JSON.parse(req.postData()));
     return json({ ok: true, redacted: false }, 201);
@@ -124,7 +151,7 @@ async function worker(route) {
   // ---------- main page (MVP tools ON) ----------
   await page.goto(ON + '/');
   check('main: team bar shown when MVP tools are on', (await page.locator('.teambar a').allTextContents()).join('|').includes('Help'));
-  check('main: team bar links point at /mvp/', (await page.locator('.teambar a').evaluateAll((a) => a.map((x) => x.getAttribute('href')))).join() === 'mvp/help.html,mvp/services.html,mvp/log.html');
+  check('main: team bar links point at /mvp/', (await page.locator('.teambar a').evaluateAll((a) => a.map((x) => x.getAttribute('href')))).join() === 'mvp/help.html,mvp/services.html,mvp/log.html,mvp/feedback.html');
   await page.fill('#message', 'I am 20 and anxious in Dewsbury');
   await page.click('#send');
   await page.waitForSelector('.card');
@@ -516,6 +543,29 @@ async function worker(route) {
   await page.reload();
   check('log: still locked after reload', await page.locator('#gate').isVisible() && !(await page.locator('#app').isVisible()));
 
+  // ---------- User feedback review page ----------
+  await page.goto(ON + '/mvp/feedback.html');
+  check('review: team bar marks the page', (await page.locator('.teambar a[aria-current="page"]').textContent()) === 'User feedback');
+  await page.fill('#pass', 'wrong');
+  await page.click('#unlock');
+  await page.waitForTimeout(200);
+  check('review: wrong passcode refused', (await page.textContent('#gate-msg')).includes('not right') && !(await page.locator('#app').isVisible()));
+  await page.fill('#pass', FB_PASS);
+  await page.click('#unlock');
+  await page.waitForSelector('#app:not([hidden])');
+  const fbStats = await page.locator('#summary .stat b').allTextContents();
+  check('review: totals (75% helpful, 3 yes, 1 no, 1 listing problem, 1 missing)', fbStats.slice(0, 5).join() === '75%,3,1,1,1', fbStats.join());
+  check('review: list hides plain Yes answers', (await page.locator('#list .entry').count()) === 3);
+  check('review: shows scheme names, not ids', (await page.textContent('#list')).includes('My Way Forward'));
+  await page.locator('#list .entry').first().locator('select').selectOption('Actioned');
+  await page.waitForTimeout(200);
+  check('review: status change is saved', fbStore.find((x) => x.id === 6).status === 'Actioned');
+  const fbDl = page.waitForEvent('download');
+  await page.click('#export');
+  check('review: CSV download', (await fbDl).suggestedFilename().endsWith('.csv'));
+  await page.click('#lock');
+  check('review: lock returns to the gate', await page.locator('#gate').isVisible());
+
   // ---------- feedback switched off on the Worker ----------
   feedbackFlag = false;
   await page.goto(ON + '/');
@@ -565,7 +615,7 @@ async function worker(route) {
 
   // ---------- phone-width layout ----------
   await page.setViewportSize({ width: 375, height: 800 });
-  for (const [name, path] of [['main', '/'], ['help', '/mvp/help.html'], ['services', '/mvp/services.html'], ['log (gate)', '/mvp/log.html']]) {
+  for (const [name, path] of [['main', '/'], ['help', '/mvp/help.html'], ['services', '/mvp/services.html'], ['feedback (gate)', '/mvp/feedback.html'], ['log (gate)', '/mvp/log.html']]) {
     await page.goto(ON + path);
     await page.waitForTimeout(300);
     const over = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
