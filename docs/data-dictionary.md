@@ -55,6 +55,7 @@ Every scheme has every field below, except where it says "optional". An empty li
 | `name` | text | The scheme's name as it appears on the card. |
 | `organisation` | text | Who runs it, as it appears under the name. |
 | `logo` | text | Optional. The file name of the organisation's logo in `site/img/logos/`, for example `proper-job.webp`. Shown at the top left of the card. Several schemes can share one logo. Without it the card shows a coloured block instead. Keep logos small (about 320 pixels wide is plenty). `shared-goods.webp` is already in the folder, ready for when Shared Goods Charity's scheme is added. |
+| `mapLinks` | true / false | Optional. Cards show a **Get directions** and **Show on map** button (Google Maps) next to every location that has a full postcode. Set this to `false` for a service whose address shouldn't be pointed to, for example a confidential venue: the address text still shows, without the buttons. Leave it out normally. |
 | `status` | text | The scheme's status in words, for example "Live - open to referrals". For the imported services it says they were found running by web research in October 2026. |
 | `open` | true / false | Whether the scheme is live. **This is the one that matters.** The Worker only ever recommends schemes where this is `true`, and cards for others say "Not open yet". |
 | `hwlFunded` | true / false | `true` for the Healthy Working Life programme's own schemes. When an HWL scheme and another service fit about as well, the AI lists the HWL scheme first. |
