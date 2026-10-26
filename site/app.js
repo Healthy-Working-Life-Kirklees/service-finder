@@ -412,6 +412,27 @@
   // Feedback links (feedback.js). They appear once the Worker's /health says feedback is on.
   if (window.FEEDBACK) window.FEEDBACK.init({ el, announce, api: API, mode, services: () => services });
 
+  // ---------- floating emergency footer ----------
+  // The footer floats at the bottom of the screen when the page opens, fades out once the person scrolls
+  // down, and is always shown in its own place at the very end of the page. It also comes back if they
+  // scroll to the top, or if keyboard focus moves into it. While faded it is only made transparent, so
+  // screen readers can still read it at any time.
+  (() => {
+    const footer = document.querySelector('.site-footer');
+    const spot = document.getElementById('footer-spot');
+    if (!footer || !spot || !('IntersectionObserver' in window)) return;
+    let atEnd = false;
+    const update = () => {
+      const show = window.scrollY < 40 || atEnd || footer.matches(':focus-within');
+      footer.classList.toggle('footer-faded', !show);
+    };
+    new IntersectionObserver(([e]) => { atEnd = e.isIntersecting; update(); }).observe(spot);
+    window.addEventListener('scroll', update, { passive: true });
+    footer.addEventListener('focusin', update);
+    footer.addEventListener('focusout', () => setTimeout(update, 0));
+    update();
+  })();
+
   fetch('services.json')
     .then((r) => r.json())
     .then((d) => { services = new Map(d.services.map((s) => [s.id, s])); })

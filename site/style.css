@@ -338,3 +338,69 @@ html.high-contrast .fb-field input,
 html.high-contrast .fb-field select,
 html.high-contrast .fb-field textarea { border-color: #000; }
 html.high-contrast .fb-tick input[type=checkbox] { accent-color: #000; }
+
+/* ---------- Header: partner logo, title, language and accessibility options on one line ---------- */
+.site-header .header-row { max-width: 84rem; display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1.25rem; padding-top: .6rem; padding-bottom: .6rem; }
+.brand-logo { flex: none; display: block; height: 3rem; width: auto; }
+.site-header .header-row h1 { flex: 1 1 14rem; font-size: 1.25rem; }
+.header-tools { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; font-size: .95rem; }
+.header-tools .a11y-group > span { font-weight: 600; }
+@media (max-width: 760px) {
+  .brand-logo { order: 1; height: 2.6rem; }
+  .header-tools { order: 3; flex-basis: 100%; }
+}
+
+/* Landing page: notice, pictures, then the heading. */
+.hero { margin-top: 0; }
+.hero-title { font-size: clamp(1.6rem, 3vw, 2.25rem); line-height: 1.25; max-width: 44rem; }
+html:lang(ur) .hero-title { font-size: clamp(1.4rem, 2.6vw, 1.9rem); line-height: 1.9; }
+
+/* About the programme, under the privacy note. */
+.programme { max-width: 52rem; margin: 2.5rem auto 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); color: var(--text); font-size: .95rem; }
+.programme p { margin: 0 0 .75rem; }
+.programme p:last-child { margin-bottom: 0; }
+html.high-contrast .programme { border-top: 2px solid #000; }
+main > .notice:first-child { margin-top: 1.5rem; }
+.brand-logo { height: 3.5rem; }
+@media (max-width: 760px) {
+  .brand-logo { height: 3rem; }
+  /* On a phone the A / A+ / A++ buttons speak for themselves; the label stays for screen readers. */
+  .header-tools .a11y-group > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .header-tools { gap: .5rem .6rem; }
+}
+
+/* Header: partner logo on the left, language and accessibility options on the right. */
+.site-header .header-row { justify-content: space-between; }
+.header-tools { margin-inline-start: auto; justify-content: flex-end; }
+
+/* Page title, centred at the top of the landing block. */
+.page-title { margin: 1.75rem 0 1rem; text-align: center; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.2; color: var(--dark-blue); }
+html:lang(ur) .page-title { line-height: 1.9; }
+main > .page-title + .notice { margin-top: 0; }
+.form textarea::placeholder { line-height: 1.5; }
+
+/* Emergency footer: always visible at the bottom of the screen. It sits in the normal page flow and
+   sticks to the bottom, so nothing is hidden underneath it at the end of the page. */
+.site-footer { position: sticky; bottom: 0; z-index: 5; box-shadow: 0 -2px 8px rgba(23, 48, 58, .08); padding: .7rem 0; }
+/* Keep anything that gets keyboard focus, such as the message box, clear of the footer. */
+html { scroll-padding-bottom: 7rem; }
+@media (max-width: 760px) {
+  .site-header .header-row { justify-content: flex-start; }
+  .header-tools { margin-inline-start: 0; justify-content: flex-start; }
+  .site-footer { font-size: .9rem; padding: .5rem 0; }
+}
+@media (max-width: 760px) {
+  /* Phone: the contrast button shows just its icon so all the controls fit on one row. Its name is still read out. */
+  .contrast-btn .contrast-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .contrast-btn svg { width: 22px; height: 22px; }
+}
+/* The partner logo keeps its own size (it does not grow with the text size buttons) and never overflows. */
+.brand-logo { height: auto; width: min(343px, 100%); }
+@media (max-width: 760px) { .brand-logo { height: auto; width: min(294px, 100%); } }
+/* Floating footer fades out while scrolling (app.js). Transparent only, so it stays readable by screen readers. */
+.site-footer { transition: opacity .35s ease; }
+.site-footer.footer-faded { opacity: 0; pointer-events: none; }
+#footer-spot { height: 1px; margin-top: -1px; }
+@media (prefers-reduced-motion: reduce) { .site-footer { transition: none; } }
+/* Phone numbers never split across two lines. */
+a[href^="tel:"] { white-space: nowrap; }

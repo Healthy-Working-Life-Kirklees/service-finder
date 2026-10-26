@@ -18,6 +18,11 @@
 
   const STRINGS = {
     en: {
+      logoAlt: 'West Yorkshire Combined Authority, Tracy Brabin Mayor of West Yorkshire, and Healthy Working Life',
+      programmeHeading: 'About Healthy Working Life',
+      programmeA: 'This activity is part of Healthy Working Life, a joint programme of the West Yorkshire Combined Authority and NHS West Yorkshire Integrated Care Board.',
+      programmeB: 'Healthy Working Life aims to deliver the region’s work and health plan and its vision for West Yorkshire to have the healthiest residents and workforce in England by 2040.',
+      programmeC: 'Created in consultation with residents and employers, Healthy Working Life will transform lives by offering personalised support to people with sickness or disability so they can stay in or return to secure, well-paid work.',
       resultsHeading: 'Suggested services',
       servicesOne: '1 service is suggested below.',
       servicesMany: '{n} services are suggested below.',
@@ -44,7 +49,7 @@
       modeSelf: "I'm looking for support for myself",
       modeStaff: "I'm helping someone else (staff or partner)",
       messageLabel: "Describe the person's situation",
-      placeholder: 'Example: A 45-year-old in Kirklees, currently unemployed, struggling with low mood and looking for local support groups or activities to help improve their wellbeing...',
+      placeholder: "Please describe the person's situation: approximate age, location, employment situation, health or wellbeing needs, and what they hope to achieve. Please do not include names or any personally identifiable information.",
       send: 'Find support',
       sending: 'Looking...',
       reset: 'Start again',
@@ -169,6 +174,11 @@
     },
 
     pl: {
+      logoAlt: 'West Yorkshire Combined Authority, Tracy Brabin – burmistrzyni West Yorkshire, oraz Healthy Working Life',
+      programmeHeading: 'O programie Healthy Working Life',
+      programmeA: 'To działanie jest częścią Healthy Working Life – wspólnego programu West Yorkshire Combined Authority oraz NHS West Yorkshire Integrated Care Board.',
+      programmeB: 'Celem Healthy Working Life jest realizacja regionalnego planu dotyczącego pracy i zdrowia oraz wizji, zgodnie z którą do 2040 roku mieszkańcy i pracownicy West Yorkshire mają być najzdrowsi w Anglii.',
+      programmeC: 'Program Healthy Working Life, przygotowany we współpracy z mieszkańcami i pracodawcami, ma zmieniać życie ludzi, oferując spersonalizowane wsparcie osobom chorym lub z niepełnosprawnością, tak aby mogły utrzymać stabilną, dobrze płatną pracę lub do niej wrócić.',
       resultsHeading: 'Proponowane usługi',
       servicesOne: 'Poniżej proponujemy 1 usługę.',
       servicesMany: 'Liczba proponowanych usług poniżej: {n}.',
@@ -195,7 +205,7 @@
       modeSelf: 'Szukam wsparcia dla siebie',
       modeStaff: 'Pomagam komuś innemu (pracownik lub partner)',
       messageLabel: 'Opisz sytuację tej osoby',
-      placeholder: 'Przykład: osoba w wieku 45 lat z Kirklees, obecnie bez pracy, zmaga się z obniżonym nastrojem i szuka lokalnych grup wsparcia lub zajęć, które pomogą poprawić samopoczucie...',
+      placeholder: 'Opisz sytuację tej osoby: przybliżony wiek, miejsce zamieszkania, sytuację zawodową, potrzeby związane ze zdrowiem lub samopoczuciem oraz to, co chce osiągnąć. Prosimy nie podawać imion i nazwisk ani żadnych danych, które pozwalają kogoś zidentyfikować.',
       send: 'Znajdź wsparcie',
       sending: 'Szukam...',
       reset: 'Zacznij od nowa',
@@ -320,6 +330,11 @@
     },
 
     ur: {
+      logoAlt: 'West Yorkshire Combined Authority، Tracy Brabin (میئر آف ویسٹ یارکشائر)، اور Healthy Working Life',
+      programmeHeading: 'Healthy Working Life کے بارے میں',
+      programmeA: 'یہ سرگرمی Healthy Working Life کا حصہ ہے، جو West Yorkshire Combined Authority اور NHS West Yorkshire Integrated Care Board کا مشترکہ پروگرام ہے۔',
+      programmeB: 'Healthy Working Life کا مقصد علاقے کے کام اور صحت کے منصوبے کو عملی جامہ پہنانا اور اس وژن کو پورا کرنا ہے کہ 2040 تک ویسٹ یارکشائر کے رہائشی اور افرادی قوت انگلینڈ میں سب سے زیادہ صحت مند ہوں۔',
+      programmeC: 'رہائشیوں اور آجروں کی مشاورت سے تیار کیا گیا Healthy Working Life پروگرام بیماری یا معذوری کا سامنا کرنے والے افراد کو ذاتی نوعیت کی مدد فراہم کر کے زندگیاں بدلے گا، تاکہ وہ محفوظ اور اچھی تنخواہ والی ملازمت میں رہ سکیں یا اس میں واپس آ سکیں۔',
       resultsHeading: 'تجویز کردہ سروسز',
       servicesOne: 'نیچے 1 سروس تجویز کی گئی ہے۔',
       servicesMany: 'نیچے {n} سروسز تجویز کی گئی ہیں۔',
@@ -346,7 +361,7 @@
       modeSelf: 'مجھے اپنے لیے مدد چاہیے',
       modeStaff: 'یہ کسی اور کے لیے ہے (عملہ یا پارٹنر)',
       messageLabel: 'اس شخص کی صورتحال بیان کریں',
-      placeholder: 'مثال: کرکلیز میں رہنے والا ایک 45 سالہ شخص، جو اس وقت بے روزگار ہے، اداسی کا شکار ہے اور اپنی بہبود بہتر بنانے کے لیے مقامی سپورٹ گروپس یا سرگرمیاں تلاش کر رہا ہے...',
+      placeholder: 'براہِ کرم اس شخص کی صورتحال بیان کریں: اندازاً عمر، علاقہ، روزگار کی صورتحال، صحت یا بہبود سے متعلق ضروریات، اور وہ کیا حاصل کرنا چاہتے ہیں۔ براہِ کرم نام یا ایسی کوئی معلومات نہ لکھیں جس سے کسی کی شناخت ہو سکے۔',
       send: 'مدد تلاش کریں',
       sending: 'تلاش جاری ہے...',
       reset: 'دوبارہ شروع کریں',
@@ -490,6 +505,7 @@
     for (const n of document.querySelectorAll('[data-i18n]')) n.textContent = t(n.dataset.i18n);
     for (const n of document.querySelectorAll('[data-i18n-placeholder]')) n.placeholder = t(n.dataset.i18nPlaceholder);
     for (const n of document.querySelectorAll('[data-i18n-label]')) n.setAttribute('aria-label', t(n.dataset.i18nLabel));
+    for (const n of document.querySelectorAll('[data-i18n-alt]')) n.alt = t(n.dataset.i18nAlt);
     const select = document.getElementById('lang-select');
     if (select) select.value = current;
   }

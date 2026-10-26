@@ -12,19 +12,16 @@
   <a class="skip" href="#message" data-i18n="skip">Skip to the message box</a>
 
   <header class="site-header">
-    <div class="wrap">
-      <svg class="logo" width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 19h5v9H2z"/><path d="M7 21c3-1 6 0 8 0h5c2 0 2 3 0 3h-6"/><path d="M13 24l11-1c2-.2 4-1.6 6-3.6"/><path d="M20 12.5c-2-1.5-4-3.2-4-5.2A3 3 0 0 1 20 5.7a3 3 0 0 1 4 1.6c0 2-2 3.7-4 5.2z"/></svg>
-      <h1 data-i18n="siteName">Healthy Working Life Support Finder</h1>
-      <div class="lang-switch">
-        <label for="lang-select">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20a15 15 0 0 1 0-20z"/></svg>
-          <span class="visually-hidden" data-i18n="langNav">Language</span>
-        </label>
-        <select id="lang-select"></select>
-      </div>
-    </div>
-    <div class="a11y-bar">
-      <div class="wrap">
+    <div class="wrap header-row">
+      <img class="brand-logo" src="img/hwl-partner-logo.webp" width="343" height="56" alt="West Yorkshire Combined Authority, Tracy Brabin Mayor of West Yorkshire, and Healthy Working Life" data-i18n-alt="logoAlt">
+      <div class="header-tools">
+        <div class="lang-switch">
+          <label for="lang-select">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20a15 15 0 0 1 0-20z"/></svg>
+            <span class="visually-hidden" data-i18n="langNav">Language</span>
+          </label>
+          <select id="lang-select"></select>
+        </div>
         <div class="a11y-group" role="group" aria-labelledby="size-label">
           <span id="size-label" data-i18n="textSize">Text size</span>
           <button type="button" class="size-btn" data-size="1" aria-pressed="true"><span aria-hidden="true">A</span><span class="visually-hidden" data-i18n="sizeNormal">Standard</span></button>
@@ -33,17 +30,14 @@
         </div>
         <button type="button" id="contrast-toggle" class="contrast-btn" aria-pressed="false">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
-          <span data-i18n="contrast">High contrast</span>
+          <span class="contrast-label" data-i18n="contrast">High contrast</span>
         </button>
       </div>
     </div>
   </header>
 
   <main class="wrap">
-    <div class="intro">
-      <p class="eyebrow" data-i18n="eyebrow">Welcome to Healthy Working Life Support Finder</p>
-      <h2 data-i18n="introHeading">Describe a person’s situation to find relevant employment and health support services.</h2>
-    </div>
+    <h1 class="page-title" data-i18n="siteName">Healthy Working Life Support Finder</h1>
 
     <p class="notice" role="note">
       <strong data-i18n="noticeStrong">Prototype for testing.</strong> <span data-i18n="noticeRest">The service details come from the Healthy Working Life scheme pathways document and may be out of date. Always check with the service before referring.</span>
@@ -51,8 +45,7 @@
 
     <section id="hero" class="hero">
       <div id="people" class="people" aria-hidden="true"></div>
-      <h2 class="hero-title" data-i18n="heroTitle">How can we help this person?</h2>
-      <p class="hero-text" data-i18n="heroText">Please describe the person's situation: approximate age, location, employment situation, health or wellbeing needs, and what they hope to achieve. Please do not include names or any personally identifiable information.</p>
+      <h2 class="hero-title" data-i18n="introHeading">Describe a person’s situation to find relevant employment and health support services.</h2>
     </section>
 
     <section id="log" class="log" aria-label="Conversation" data-i18n-label="logLabel"></section>
@@ -67,7 +60,7 @@
 
     <form id="form" class="form" autocomplete="off">
       <label for="message" data-i18n="messageLabel">Describe the person's situation</label>
-      <textarea id="message" rows="5" maxlength="1500" dir="auto" data-i18n-placeholder="placeholder" placeholder="Example: A 45-year-old in Kirklees, currently unemployed, struggling with low mood and looking for local support groups or activities to help improve their wellbeing..." autocomplete="off"></textarea>
+      <textarea id="message" rows="5" maxlength="1500" dir="auto" data-i18n-placeholder="placeholder" placeholder="Please describe the person's situation: approximate age, location, employment situation, health or wellbeing needs, and what they hope to achieve. Please do not include names or any personally identifiable information." autocomplete="off"></textarea>
       <div class="actions">
         <button type="submit" id="send" class="btn primary">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
@@ -82,8 +75,17 @@
     <p class="privacy" data-i18n="privacy">
       Please don't type names, addresses, dates of birth or NHS numbers. Your messages are passed through a Cloudflare service to Claude, an AI service from Anthropic, to find matches. This prototype does not save them, and the conversation is gone when you close or refresh the page.
     </p>
+
+    <section class="programme" aria-labelledby="programme-heading">
+      <h2 id="programme-heading" class="visually-hidden" data-i18n="programmeHeading">About Healthy Working Life</h2>
+      <p data-i18n="programmeA">This activity is part of Healthy Working Life, a joint programme of the West Yorkshire Combined Authority and NHS West Yorkshire Integrated Care Board.</p>
+      <p data-i18n="programmeB">Healthy Working Life aims to deliver the region’s work and health plan and its vision for West Yorkshire to have the healthiest residents and workforce in England by 2040.</p>
+      <p data-i18n="programmeC">Created in consultation with residents and employers, Healthy Working Life will transform lives by offering personalised support to people with sickness or disability so they can stay in or return to secure, well-paid work.</p>
+    </section>
   </main>
 
+  <!-- Marks where the footer sits at the end of the page (used to show the floating footer there). -->
+  <div id="footer-spot" aria-hidden="true"></div>
   <footer class="site-footer">
     <div class="wrap">
       <p><strong data-i18n="footerStrong">In an emergency call 999.</strong> <span data-i18n="footerA">For urgent mental health support in Kirklees, call the 24-hour Single Point of Access team on </span><a href="tel:01924316830">01924 316830</a><span data-i18n="footerB"> or call NHS 111.</span></p>
