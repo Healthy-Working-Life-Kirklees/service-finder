@@ -405,3 +405,18 @@ html { scroll-padding-bottom: 7rem; }
 @media (prefers-reduced-motion: reduce) { .site-footer { transition: none; } }
 /* Phone numbers never split across two lines. */
 a[href^="tel:"] { white-space: nowrap; }
+
+/* Where a service is: addresses with directions and map links. */
+.badge.place { display: inline-flex; align-items: center; gap: .25rem; }
+.badge.place .pin { width: 14px; height: 14px; }
+.place-labels { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 .4rem; }
+.card ul.places { list-style: none; padding: 0; margin: 0; }
+.places li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .4rem 1rem; padding: .45rem 0; border-bottom: 1px solid var(--border); }
+.places li:last-child { border-bottom: 0; }
+.place-text { display: flex; gap: .45rem; align-items: flex-start; flex: 1 1 18rem; }
+.place-text .pin { flex: none; margin-top: .2rem; color: var(--blue); }
+.place-links { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .9rem; }
+.place-links .btn { text-decoration: none; }
+.map-link { font-weight: 600; }
+.place-more { color: var(--grey); font-size: .95rem; }
+html.high-contrast .place-text .pin { color: #000; }

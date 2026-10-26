@@ -96,6 +96,74 @@
     return box;
   }
 
+  // ---------- where a service is: addresses with map and directions links ----------
+  // A location line counts as an address when it has a full UK postcode. The link text sent to Google Maps is the
+  // line up to and including the postcode, so notes after it ("near the train station") are left off.
+  const POSTCODE_RE = /\b[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}\b/i;
+  const PLACES_SHOWN = 2;
+  const pinSvg = () => {
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('width', '18'); svg.setAttribute('height', '18'); svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none'); svg.setAttribute('stroke', 'currentColor'); svg.setAttribute('stroke-width', '2');
+    svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('class', 'pin');
+    const path = document.createElementNS(ns, 'path');
+    path.setAttribute('d', 'M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z');
+    const dot = document.createElementNS(ns, 'circle');
+    dot.setAttribute('cx', '12'); dot.setAttribute('cy', '9.5'); dot.setAttribute('r', '2.5');
+    svg.append(path, dot);
+    return svg;
+  };
+
+  function places(s) {
+    const lines = s.locations || [];
+    const addresses = lines.filter((x) => POSTCODE_RE.test(x)).map((x) => {
+      const m = x.match(POSTCODE_RE);
+      return { text: x, query: x.slice(0, m.index + m[0].length) };
+    });
+    const areas = s.areas || [];
+    const all = lines.join(' ').toLowerCase();
+    const labels = [];
+    if (areas.includes('Kirklees-wide')) labels.push(t('placeAcross'));
+    if (areas.includes('Online') || /\bonline\b/.test(all)) labels.push(t('placeOnline'));
+    if (/\bphone\b/.test(all)) labels.push(t('placePhone'));
+    return { addresses, labels, others: lines.filter((x) => !POSTCODE_RE.test(x)) };
+  }
+
+  // The short place shown with the badges: the first town, or "Across Kirklees" / "Online".
+  function placeBadge(s) {
+    const towns = (s.areas || []).filter((a) => a !== 'Kirklees-wide' && a !== 'Online');
+    const p = places(s);
+    const text = towns.length ? towns[0] + (towns.length > 1 ? ' +' + (towns.length - 1) : '') : p.labels[0];
+    return text ? el('span', { class: 'badge place' }, pinSvg(), el('span', { ...(towns.length ? EN : {}), text })) : null;
+  }
+
+  function whereBlock(s) {
+    const p = places(s);
+    if (!p.addresses.length && !p.labels.length && !p.others.length) return null;
+    const list = el('ul', { class: 'places' });
+    // Services can turn the map links off for a place that shouldn't be shown (for example a confidential venue).
+    const links = s.mapLinks !== false;
+    for (const a of p.addresses.slice(0, PLACES_SHOWN)) {
+      const q = encodeURIComponent(a.query);
+      list.append(el('li', {},
+        el('span', { class: 'place-text' }, pinSvg(), el('span', { ...EN, text: a.text })),
+        links ? el('span', { class: 'place-links' },
+          el('a', { class: 'btn secondary small', href: 'https://www.google.com/maps/dir/?api=1&destination=' + q, target: '_blank', rel: 'noopener noreferrer', 'aria-label': t('directionsTo', { place: a.query }) }, t('placeDirections')),
+          el('a', { class: 'map-link', href: 'https://www.google.com/maps/search/?api=1&query=' + q, target: '_blank', rel: 'noopener noreferrer', 'aria-label': t('mapOf', { place: a.query }) }, t('placeMap'))
+        ) : null));
+    }
+    if (p.addresses.length > PLACES_SHOWN) list.append(el('li', { class: 'place-more', text: t('placeMore', { n: p.addresses.length - PLACES_SHOWN }) }));
+    if (!p.addresses.length) {
+      for (const x of p.others.slice(0, 2)) list.append(el('li', {}, el('span', { class: 'place-text no-pin', ...EN, text: x })));
+    }
+    return [
+      el('h4', { text: t('where') }),
+      p.labels.length ? el('p', { class: 'place-labels' }, p.labels.map((l) => el('span', { class: 'badge', text: l }))) : null,
+      list,
+    ];
+  }
+
   function card(rec) {
     const s = services.get(rec.id);
     if (!s) return null;
@@ -110,7 +178,8 @@
       s.selfReferral && s.selfReferral.allowed === 'no' ? el('span', { class: 'badge', text: t('selfNo') }) : null,
       s.level === 'regional' ? el('span', { class: 'badge', text: t('levelRegional') }) : null,
       s.level === 'national' ? el('span', { class: 'badge', text: t('levelNational') }) : null,
-      s.age ? el('span', { class: 'badge' }, t('age'), el('span', { ...EN, text: s.age })) : null
+      s.age ? el('span', { class: 'badge' }, t('age'), el('span', { ...EN, text: s.age })) : null,
+      placeBadge(s)
     );
 
     const contact = el('ul', { class: 'contact' });
@@ -134,6 +203,7 @@
       el('p', { ...EN, class: 'whofor', text: s.whoFor }),
       el('h4', { text: t('contact') }),
       contact,
+      whereBlock(s),
       el('h4', { text: t('howIn') }),
       el('ul', {}, (s.referralRoutes || []).map(routeNode)),
       el('details', { open: staff }, el('summary', { text: t('whoJoin') }),
