@@ -23,6 +23,7 @@
     "name": { "$ref": "#/$defs/text" },
     "organisation": { "$ref": "#/$defs/text" },
     "logo": { "type": "string", "pattern": "^[\\w.-]+\\.(png|jpe?g|webp|svg)$" },
+    "mapLinks": { "type": "boolean" },
     "status": { "$ref": "#/$defs/text" },
     "open": { "type": "boolean" },
     "hwlFunded": { "type": "boolean" },
