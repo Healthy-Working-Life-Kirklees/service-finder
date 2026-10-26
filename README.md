@@ -170,6 +170,8 @@ The code is in `site/feedback.js` (the page) and `worker/src/feedback.js` (the W
 
 **Switch on and off:** feedback is on unless `FEEDBACK_ENABLED` in `worker/wrangler.toml` is `"false"`. To switch it off, change it to `"false"` and merge (the Worker redeploys). Sending then returns 404, `/health` says `feedback: false`, and the page hides all the feedback links. Change it back to `"true"` to switch it on again. Entries already stored are kept, and can still be read.
 
+**The User feedback page (for the review team):** `mvp/feedback.html`, linked from the "MVP team only" bar. It is deployed with the other MVP pages (when `MVP_TOOLS` is `true`) and needs the `FEEDBACK_PASSCODE` below, which is kept in the browser tab only until it is closed. It shows, for the last 7, 30 or 90 days or everything: how many people said results were helpful (split by who it was for and by language), why people said No, which services have problem reports, and what people said was missing. Below that is the feedback to read (plain "Yes" answers are hidden by default), with a status and a reviewer note on each entry, and a button to download everything as CSV. The code is `mvp/feedback.js`; it uses the same routes as below, so the Worker needs no change.
+
 **Reading the feedback (one-off setup):** Cloudflare dashboard > Workers & Pages > hwl-service-finder > Settings > Variables and Secrets: add a **secret** called `FEEDBACK_PASSCODE` (a long passphrase, 16+ characters). Share it only with the people who do the triage. Without it the read routes return 404, but people can still send feedback. The routes, with the passcode in an `X-Feedback-Passcode` header:
 
 - `GET /feedback/items`, optionally `?status=New` and `?since=YYYY-MM-DD`
