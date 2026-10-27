@@ -547,7 +547,8 @@
 
   // ---------- wiring ----------
   // Example questions alternate between someone looking for support for themselves and someone helping another
-  // person. Picking one also sets "Who is this for?" to match, so the reply is worded for the right person.
+  // person. Like a typed message, an example only searches once "Who is this for?" has been chosen; until then
+  // the page asks for the choice. The person's own choice is used, whichever example they pick.
   function showChips() {
     const self = t('chipsSelf');
     const staff = t('chipsStaff');
@@ -556,12 +557,7 @@
       if (self[i]) items.push(['public', self[i]]);
       if (staff[i]) items.push(['staff', staff[i]]);
     }
-    chipsEl.replaceChildren(...items.map(([m, q]) => el('button', { type: 'button', class: 'chip', text: q, onclick: () => { setMode(m); send(q); } })));
-  }
-  function setMode(m) {
-    const radio = document.querySelector('input[name=mode][value=' + m + ']');
-    if (radio) radio.checked = true;
-    clearModeError();
+    chipsEl.replaceChildren(...items.map(([, q]) => el('button', { type: 'button', class: 'chip', text: q, onclick: () => send(q) })));
   }
   showChips();
   // Switching language changes the fixed text (i18n.js does that) and the example questions. Messages and
