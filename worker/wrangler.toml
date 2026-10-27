@@ -12,6 +12,10 @@ MAX_PER_DAY = "100"
 # then hides the feedback links. MAX_FEEDBACK_PER_DAY is a global cap on feedback entries a day.
 FEEDBACK_ENABLED = "true"
 MAX_FEEDBACK_PER_DAY = "300"
+# Anonymous usage counts (worker/src/usage.js): daily tallies only, nothing that identifies anyone. Set
+# USAGE_ENABLED to "false" to stop counting. MAX_USAGE_PER_DAY caps how many counts are added in a day.
+USAGE_ENABLED = "true"
+MAX_USAGE_PER_DAY = "20000"
 # ANTHROPIC_API_KEY, TEAM_PASSCODE and FEEDBACK_PASSCODE are secrets: add them in the Cloudflare dashboard
 # (Workers > hwl-service-finder > Settings > Variables and Secrets). Never put them in this file.
 
@@ -82,4 +86,21 @@ name = "FEEDBACK_READ_LIMITER"
 namespace_id = "7304"
 [ratelimits.simple]
 limit = 30
+period = 60
+
+# Anonymous usage counts (daily tallies only). Read with the FEEDBACK_PASSCODE on the review page.
+[[durable_objects.bindings]]
+name = "USAGE_STORE"
+class_name = "UsageStore"
+
+[[migrations]]
+tag = "v4"
+new_sqlite_classes = ["UsageStore"]
+
+# Per-IP limit for usage events from the page (page visits and link clicks).
+[[ratelimits]]
+name = "USAGE_LIMITER"
+namespace_id = "7305"
+[ratelimits.simple]
+limit = 60
 period = 60
