@@ -36,6 +36,10 @@ The page is public, so these matter:
 
 If the repo name or organisation changes, update `ALLOWED_ORIGIN` in `worker/wrangler.toml`.
 
+## "Who is this for?"
+
+There is no default: the person has to choose "for myself" or "helping someone else" before searching, so the reply is worded for the right person. If they don't, the page asks them to and sends nothing. The example questions choose for them, and Start again clears the choice. After every set of results there is an "other options" button; the prompt tells the AI not to repeat services already shown.
+
 ## Updating the data or prompt
 
 Each scheme is its own file in `data/services/`, named after its id (for example `data/services/elevate.json`). To change a scheme, edit its file. To add one, add a file. The rules every file must follow are in `data/schema.json`, and the field-by-field guide is [`docs/data-dictionary.md`](docs/data-dictionary.md).
@@ -148,6 +152,22 @@ How it works:
 
 The log must never hold personal or identifying information.
 
+## Anonymous usage counts
+
+The Worker keeps **daily tallies only**, for the review team to see how the finder is used: page visits, conversations started, searches (and whether they found services, found none, asked a question or showed urgent support), which services were shown, which links on a card were opened (referral, website, phone, email, directions, map), "Copy details", Listen, text size and high contrast, "other options", and the answers to "Did you get in touch?". The code is `worker/src/usage.js` (Worker) and `site/usage.js` (page).
+
+**What is not collected:** IP addresses, any user or session id, cookies or browser storage, times of day, browser details, or anything anyone typed. Each count is just a date, the kind of event, and where relevant a scheme id, the kind of link or answer, the page language and "who is this for". The Worker checks every event against fixed lists and the scheme ids and rejects anything else. Searches are counted by the Worker itself when it answers, not by the page. The privacy note under the chat box says these counts are kept.
+
+**Unique users:** the site deliberately doesn't recognise returning visitors, so it can't count unique people. "Conversations started" (a first message) is the nearest honest measure; "page visits" counts every page load.
+
+**"Did you get in touch?":** when someone comes back to the page after opening a card's referral, website, phone or email link, that card asks (once) "Did you get in touch with ...?" (staff: "Did you make a referral to ...?") with Yes / Not yet / No. Nothing stops them on the way out.
+
+**Where and how long:** its own Durable Object (`UsageStore`, binding `USAGE_STORE`). Tallies older than 24 months are deleted. A daily cap (`MAX_USAGE_PER_DAY`, 20,000 by default) and a per-address limit (`USAGE_LIMITER`, 60 a minute) stop the counts being flooded.
+
+**Reading:** on the Feedback and usage page with the `FEEDBACK_PASSCODE`, or `GET /usage/days` (optionally `?since=YYYY-MM-DD`) and `GET /usage/export.csv` with the passcode in an `X-Feedback-Passcode` header.
+
+**Switch off:** set `USAGE_ENABLED` in `worker/wrangler.toml` to `"false"` and merge. The page then sends nothing.
+
 ## User feedback
 
 People who use the finder are often the first to notice that a listing is out of date, and coaches and frontline staff know services we haven't heard of. The page gives them three short ways to tell us:
@@ -170,7 +190,7 @@ The code is in `site/feedback.js` (the page) and `worker/src/feedback.js` (the W
 
 **Switch on and off:** feedback is on unless `FEEDBACK_ENABLED` in `worker/wrangler.toml` is `"false"`. To switch it off, change it to `"false"` and merge (the Worker redeploys). Sending then returns 404, `/health` says `feedback: false`, and the page hides all the feedback links. Change it back to `"true"` to switch it on again. Entries already stored are kept, and can still be read.
 
-**The User feedback page (for the review team):** `mvp/feedback.html`, linked from the "MVP team only" bar. It is deployed with the other MVP pages (when `MVP_TOOLS` is `true`) and needs the `FEEDBACK_PASSCODE` below, which is kept in the browser tab only until it is closed. It shows, for the last 7, 30 or 90 days or everything: how many people said results were helpful (split by who it was for and by language), why people said No, which services have problem reports, and what people said was missing. Below that is the feedback to read (plain "Yes" answers are hidden by default), with a status and a reviewer note on each entry, and a button to download everything as CSV. The code is `mvp/feedback.js`; it uses the same routes as below, so the Worker needs no change.
+**The Feedback and usage page (for the review team):** `mvp/feedback.html`, linked from the "MVP team only" bar. The top part shows the anonymous usage counts with charts (see [Anonymous usage counts](#anonymous-usage-counts)); the rest is the feedback. It is deployed with the other MVP pages (when `MVP_TOOLS` is `true`) and needs the `FEEDBACK_PASSCODE` below, which is kept in the browser tab only until it is closed. It shows, for the last 7, 30 or 90 days or everything: how many people said results were helpful (split by who it was for and by language), why people said No, which services have problem reports, and what people said was missing. Below that is the feedback to read (plain "Yes" answers are hidden by default), with a status and a reviewer note on each entry, and a button to download everything as CSV. The code is `mvp/feedback.js`; it uses the same routes as below, so the Worker needs no change.
 
 **Reading the feedback (one-off setup):** Cloudflare dashboard > Workers & Pages > hwl-service-finder > Settings > Variables and Secrets: add a **secret** called `FEEDBACK_PASSCODE` (a long passphrase, 16+ characters). Share it only with the people who do the triage. Without it the read routes return 404, but people can still send feedback. The routes, with the passcode in an `X-Feedback-Passcode` header:
 
