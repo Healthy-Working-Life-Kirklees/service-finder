@@ -17,11 +17,14 @@ import schema from '../../data/schema.json';
 import { handleLog } from './teamlog.js';
 import { makeChecker } from './serviceedit.js';
 import { handleFeedback, feedbackOn } from './feedback.js';
+import { handleUsage, usageOn, addUsage, chatKeys } from './usage.js';
 
 // The team issues log lives in its own Durable Object class (see teamlog.js).
 export { LogStore } from './teamlog.js';
 // User feedback has its own store, separate from the team log (see feedback.js).
 export { FeedbackStore } from './feedback.js';
+// Anonymous daily usage counts, also separate (see usage.js).
+export { UsageStore } from './usage.js';
 
 const MODE_NOTES = {
   public:
@@ -188,7 +191,7 @@ function respondTool(questionsLeft) {
 
 // ---------- worker ----------
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const allowed = env.ALLOWED_ORIGIN || '';
     const origin = request.headers.get('Origin') || '';
@@ -204,7 +207,7 @@ export default {
       : { Vary: 'Origin' };
 
     if (request.method === 'OPTIONS') return new Response(null, { status: originOk ? 204 : 403, headers: cors });
-    if (url.pathname === '/health') return json({ ok: true, aiConfigured: Boolean(env.ANTHROPIC_API_KEY), teamLog: Boolean(env.TEAM_PASSCODE), feedback: feedbackOn(env) }, 200, cors);
+    if (url.pathname === '/health') return json({ ok: true, aiConfigured: Boolean(env.ANTHROPIC_API_KEY), teamLog: Boolean(env.TEAM_PASSCODE), feedback: feedbackOn(env), usage: usageOn(env) }, 200, cors);
     // MVP-team issues log: off unless the TEAM_PASSCODE secret is set.
     // Reading the team's listing decisions is also allowed with no Origin at all (not from a browser), so
     // scripts/apply-decisions.mjs can fetch them with the passcode, like the feedback digest does.
@@ -212,6 +215,8 @@ export default {
     if (url.pathname.startsWith('/log/')) return originOk || scriptRead ? handleLog(request, env, url, cors, EDIT_CHECKER) : json({ error: 'Not allowed.' }, 403, cors);
     // User feedback: sending is public (with the same checks as /chat); reading needs the FEEDBACK_PASSCODE secret.
     if (url.pathname === '/feedback' || url.pathname.startsWith('/feedback/')) return handleFeedback(request, env, url, cors, originOk, FEEDBACK_DATA);
+    // Anonymous usage counts: the page sends events; reading the tallies needs the FEEDBACK_PASSCODE secret.
+    if (url.pathname === '/usage' || url.pathname.startsWith('/usage/')) return handleUsage(request, env, url, cors, originOk, ID_SET);
     if (url.pathname !== '/chat' || request.method !== 'POST') return json({ error: 'Not found.' }, 404, cors);
     if (!originOk) return json({ error: 'Not allowed.' }, 403, cors);
     if (!env.ANTHROPIC_API_KEY) return json({ error: 'The AI service is not configured yet.' }, 503, cors);
@@ -352,6 +357,12 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
             .filter((x) => x && ID_SET.has(x.service_id) && OPEN_SET.has(x.service_id) && (!MENTION.has(x.service_id) || MENTION.get(x.service_id).test(userText)) && !seen.has(x.service_id) && seen.add(x.service_id))
             .slice(0, 5)
             .map((x) => ({ id: x.service_id, why: clean(x.reason, 600), fit: x.fit === 'strong' ? 'strong' : 'possible', check_first: clean(x.check_first, 400) }));
+
+    // Anonymous usage counts for this answer (search, results or not, services shown). Nothing from the
+    // conversation is counted. Done after the reply is sent where the platform allows it.
+    const counting = addUsage(env, chatKeys({ lang, mode, firstMessage: messages.filter((m) => m.role === 'user').length === 1, status, urgent, ids: recommendations.map((x) => x.id) }));
+    if (ctx && typeof ctx.waitUntil === 'function') ctx.waitUntil(counting);
+    else await counting;
 
     return json(
       {

@@ -261,7 +261,7 @@ function json(obj, status, cors) {
 }
 
 // Compare passcodes without leaking timing: hash both, then compare the hashes (the same method as the team log).
-async function safeEqual(a, b) {
+export async function safeEqual(a, b) {
   const enc = new TextEncoder();
   const [da, db] = await Promise.all([crypto.subtle.digest('SHA-256', enc.encode(a)), crypto.subtle.digest('SHA-256', enc.encode(b))]);
   const x = new Uint8Array(da);
