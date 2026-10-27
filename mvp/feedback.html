@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.workers.dev; base-uri 'none'; form-action 'none'">
-  <title>User feedback | Kirklees HWL Service Finder</title>
+  <title>Feedback and usage | Kirklees HWL Service Finder</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="mvp.css">
 </head>
@@ -19,18 +19,18 @@
       <a href="help.html">Help</a>
       <a href="services.html">All services</a>
       <a href="log.html">Issues and actions log</a>
-      <a href="feedback.html" aria-current="page">User feedback</a>
+      <a href="feedback.html" aria-current="page">Feedback and usage</a>
     </div>
   </nav>
 
   <header class="site-header">
     <div class="wrap">
-      <h1>User feedback<br><span>Kirklees Healthy Working Life Service Finder</span></h1>
+      <h1>Feedback and usage<br><span>Kirklees Healthy Working Life Service Finder</span></h1>
     </div>
   </header>
 
   <main id="main" class="wrap wide">
-    <p class="mvp-banner"><strong>For the review team only.</strong> This is what people sent from the finder: "Was this helpful?", problems with a listing, and what's missing. It never includes their conversation. Contact details are removed from comments automatically, but a comment could still mention a name, so treat it as confidential and don't copy comments anywhere public. Feedback is a lead, not a fact: check with the service before changing a listing.</p>
+    <p class="mvp-banner"><strong>For the review team only.</strong> The first part shows anonymous usage counts. The rest is what people sent from the finder: "Was this helpful?", problems with a listing, and what's missing. None of it includes anyone's conversation. Contact details are removed from comments automatically, but a comment could still mention a name, so treat it as confidential and don't copy comments anywhere public. Feedback is a lead, not a fact: check with the service before changing a listing.</p>
 
     <!-- passcode gate -->
     <section id="gate" class="gate">
@@ -66,7 +66,10 @@
         </div>
       </div>
 
-      <h2 class="mt0">At a glance</h2>
+      <h2 class="mt0">How the finder is used</h2>
+      <div id="usage" class="usage"></div>
+
+      <h2>Feedback at a glance</h2>
       <div id="summary" class="summary"></div>
 
       <div class="fb-overview">
@@ -127,6 +130,7 @@
   </footer>
 
   <script src="../config.js"></script>
+  <script src="usage-view.js" defer></script>
   <script src="feedback.js" defer></script>
 </body>
 </html>

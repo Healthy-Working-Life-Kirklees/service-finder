@@ -135,6 +135,7 @@
     $('#pass').value = '';
     await loadNames();
     render();
+    if (window.USAGE_VIEW) window.USAGE_VIEW.load(pass, names);
   }
 
   function lock() {
@@ -151,6 +152,7 @@
       items = d.items || [];
       say('');
       render();
+      if (window.USAGE_VIEW) window.USAGE_VIEW.load(pass, names);
     } catch (e) {
       if (e.status === 401) return showGate('Your session has ended. Please enter the passcode again.');
       say(e.message, 'err');
@@ -357,7 +359,7 @@
   $('#refresh').addEventListener('click', load);
   $('#export').addEventListener('click', exportCsv);
   $('#lock').addEventListener('click', lock);
-  $('#period').addEventListener('change', () => { shown = PAGE; render(); });
+  $('#period').addEventListener('change', () => { shown = PAGE; render(); if (window.USAGE_VIEW) window.USAGE_VIEW.render(); });
   for (const id of ['#flt-kind', '#flt-status']) $(id).addEventListener('change', () => { shown = PAGE; renderList(inPeriod()); });
   $('#flt-q').addEventListener('input', () => { shown = PAGE; renderList(inPeriod()); });
   $('#more').addEventListener('click', () => { shown += PAGE; renderList(inPeriod()); });
