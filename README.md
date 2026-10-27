@@ -38,7 +38,7 @@ If the repo name or organisation changes, update `ALLOWED_ORIGIN` in `worker/wra
 
 ## "Who is this for?"
 
-There is no default: the person has to choose "for myself" or "helping someone else" before searching, so the reply is worded for the right person. If they don't, the page asks them to and sends nothing. The example questions choose for them, and Start again clears the choice. After every set of results there is an "other options" button; the prompt tells the AI not to repeat services already shown.
+There is no default: the person has to choose "for myself" or "helping someone else" before searching, so the reply is worded for the right person. If they don't, the page asks them to and sends nothing. The example questions work the same way: they only search once a choice is made, and use the person's choice. Start again clears the choice. After every set of results there is an "other options" button; the prompt tells the AI not to repeat services already shown.
 
 ## Updating the data or prompt
 
