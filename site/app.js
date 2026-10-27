@@ -40,7 +40,23 @@
   }
 
   const isUrl = (u) => typeof u === 'string' && /^https?:\/\//i.test(u);
-  const mode = () => document.querySelector('input[name=mode]:checked').value;
+  // "Who is this for?" has no default: the person has to choose, so results aren't worded for the wrong person.
+  const mode = () => { const r = document.querySelector('input[name=mode]:checked'); return r ? r.value : null; };
+  const modeError = $('#mode-error');
+  function needMode() {
+    if (mode()) return false;
+    modeError.textContent = t('modeError');
+    modeError.hidden = false;
+    document.querySelector('fieldset.mode').classList.add('invalid');
+    document.querySelector('input[name=mode]').focus();
+    return true;
+  }
+  function clearModeError() {
+    modeError.hidden = true;
+    modeError.textContent = '';
+    document.querySelector('fieldset.mode').classList.remove('invalid');
+  }
+  for (const r of document.querySelectorAll('input[name=mode]')) r.addEventListener('change', clearModeError);
 
   function link(href, text) {
     return isUrl(href) ? el('a', { href, target: '_blank', rel: 'noopener noreferrer', text }) : document.createTextNode(text);
@@ -191,7 +207,7 @@
     const stale = ageInDays(s.lastUpdated) > STALE_DAYS;
     const staff = mode() === 'staff';
 
-    const node = el('article', { class: 'card' },
+    const node = el('article', { class: 'card', 'data-scheme': s.id },
       el('div', { class: 'card-head' },
         thumb(s),
         el('div', { class: 'card-title' },
@@ -205,7 +221,7 @@
       contact,
       whereBlock(s),
       el('h4', { text: t('howIn') }),
-      el('ul', {}, (s.referralRoutes || []).map(routeNode)),
+      el('ul', { class: 'routes' }, (s.referralRoutes || []).map(routeNode)),
       el('details', { open: staff }, el('summary', { text: t('whoJoin') }),
         el('ul', {}, (s.eligibility || []).map((x) => el('li', { ...EN, text: x }))),
         s.exclusions && s.exclusions.length ? el('h4', { text: t('whoNot') }) : null,
@@ -256,6 +272,7 @@
     try {
       await navigator.clipboard.writeText(copyText(s));
       btn.textContent = t('copied');
+      if (window.USAGE) window.USAGE.track('copy', { s: s.id });
     } catch {
       btn.textContent = t('copyFailed');
     }
@@ -343,6 +360,7 @@
   async function send(text) {
     text = text.trim();
     if (!text || busy) return;
+    if (needMode()) return;
     setBusy(true);
     chipsEl.hidden = true;
     // Only the latest reply offers "other options".
@@ -402,10 +420,12 @@
         logEl.append(el('h2', { class: 'visually-hidden', text: t('resultsHeading') }));
         const cardsEl = el('div', { class: 'cards' }, recs);
         logEl.append(cardsEl);
-        // When only one service comes back, offer a quick way to ask for others.
-        if (recs.length === 1 && !data.safety_concern) {
-          const ask = t(mode() === 'staff' ? 'otherOptionsStaff' : 'otherOptionsSelf');
-          logEl.append(el('div', { class: 'more-options' }, el('button', { type: 'button', class: 'chip', text: ask, onclick: () => send(ask) })));
+        // After every set of results, offer a quick way to ask for different services. The AI is told not to
+        // repeat services already shown. With one card the wording asks about that one; with more, about others.
+        if (!data.safety_concern) {
+          const staffMode = mode() === 'staff';
+          const ask = recs.length === 1 ? t(staffMode ? 'otherOptionsStaff' : 'otherOptionsSelf') : t(staffMode ? 'moreOptionsStaff' : 'moreOptionsSelf');
+          logEl.append(el('div', { class: 'more-options' }, el('button', { type: 'button', class: 'chip', text: ask, onclick: () => { if (window.USAGE) window.USAGE.track('other'); send(ask); } })));
         }
       }
       // Feedback under a result reply (feedback.js): "Was this helpful?" when it has cards, and "Tell us what's
@@ -443,10 +463,87 @@
     if (window.ACCESS) window.ACCESS.stop();
     history = [];
     logEl.replaceChildren();
+    // Start again clears "Who is this for?" too, so the next person chooses for themselves.
+    for (const r of document.querySelectorAll('input[name=mode]')) r.checked = false;
+    clearModeError();
     input.value = '';
     welcome();
     input.focus();
   }
+
+  // ---------- anonymous usage counts (usage.js) ----------
+  // Which kind of link was opened on a card. Only the scheme id and the kind are counted.
+  function linkKind(a) {
+    if (a.closest('.places')) return a.classList.contains('map-link') ? 'map' : 'directions';
+    const href = a.getAttribute('href') || '';
+    if (href.startsWith('tel:')) return 'phone';
+    if (href.startsWith('mailto:')) return 'email';
+    if (a.closest('.routes')) return 'referral';
+    if (a.closest('.contact')) return 'website';
+    return null;
+  }
+  // Links that mean the person may be getting in touch: after one of these, we ask "Did you get in touch?"
+  // when they come back to this page.
+  const CONTACT_KINDS = new Set(['referral', 'website', 'phone', 'email']);
+  const pendingAsk = new Map(); // scheme id -> card
+  const asked = new Set();
+  let away = false;
+
+  function onLinkOpen(e) {
+    const a = e.target.closest('a');
+    const cardEl = a && a.closest('.card');
+    if (!cardEl || (e.type === 'auxclick' && e.button !== 1)) return;
+    const kind = linkKind(a);
+    if (!kind) return;
+    const id = cardEl.dataset.scheme;
+    if (window.USAGE) window.USAGE.track('link', { s: id, k: kind });
+    if (CONTACT_KINDS.has(kind) && !asked.has(id)) pendingAsk.set(id, cardEl);
+  }
+  logEl.addEventListener('click', onLinkOpen);
+  logEl.addEventListener('auxclick', onLinkOpen);
+
+  // Listen buttons: counted when someone starts listening (the button's own handler has already run).
+  logEl.addEventListener('click', (e) => {
+    const b = e.target.closest('.listen');
+    if (b && b.getAttribute('aria-pressed') === 'true' && window.USAGE) window.USAGE.track('listen', { k: b.closest('.card') ? 'card' : 'reply' });
+  });
+
+  // "Did you get in touch?" Asked once per service, on the card, when the person comes back to this page after
+  // opening one of its contact or referral links. Nothing blocks them on the way out.
+  function askContact(id, cardEl) {
+    const s = services.get(id);
+    if (!s || !cardEl.isConnected) return;
+    const qId = 'ask-' + id + '-' + Date.now();
+    const question = t(mode() === 'staff' ? 'askReferred' : 'askContacted', { name: s.name });
+    const box = el('div', { class: 'contact-ask', role: 'group', 'aria-labelledby': qId },
+      el('p', { id: qId, class: 'contact-q', dir: 'auto', text: question }),
+      el('div', { class: 'contact-btns' }, ['yes', 'notyet', 'no'].map((k) => el('button', {
+        type: 'button', class: 'btn secondary small', text: t('ask_' + k),
+        onclick: () => {
+          if (window.USAGE) window.USAGE.track('contacted', { s: id, k });
+          box.replaceChildren(el('p', { class: 'contact-thanks', text: t('askThanks') }));
+          announce(t('askThanks'));
+        },
+      })))
+    );
+    cardEl.append(box);
+    box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    announce(question);
+  }
+  function leave() { if (pendingAsk.size) away = true; }
+  function comeBack() {
+    if (!away || document.hidden) return;
+    away = false;
+    for (const [id, cardEl] of pendingAsk) {
+      pendingAsk.delete(id);
+      if (asked.has(id)) continue;
+      asked.add(id);
+      askContact(id, cardEl);
+    }
+  }
+  document.addEventListener('visibilitychange', () => (document.hidden ? leave() : comeBack()));
+  window.addEventListener('blur', leave);
+  window.addEventListener('focus', comeBack);
 
   // ---------- wiring ----------
   // Example questions alternate between someone looking for support for themselves and someone helping another
@@ -464,6 +561,7 @@
   function setMode(m) {
     const radio = document.querySelector('input[name=mode][value=' + m + ']');
     if (radio) radio.checked = true;
+    clearModeError();
   }
   showChips();
   // Switching language changes the fixed text (i18n.js does that) and the example questions. Messages and
@@ -480,7 +578,7 @@
   $('#reset').addEventListener('click', reset);
 
   // Feedback links (feedback.js). They appear once the Worker's /health says feedback is on.
-  if (window.FEEDBACK) window.FEEDBACK.init({ el, announce, api: API, mode, services: () => services });
+  if (window.FEEDBACK) window.FEEDBACK.init({ el, announce, api: API, mode: () => mode() || 'public', services: () => services });
 
   // ---------- floating emergency footer ----------
   // The footer floats at the bottom of the screen when the page opens, fades out once the person scrolls
@@ -511,7 +609,7 @@
   // MVP team links: only present when the deploy switched the MVP tools on.
   if (window.FINDER_CONFIG && window.FINDER_CONFIG.mvpTools) {
     document.body.prepend(el('nav', { class: 'teambar', 'aria-label': 'MVP team' },
-      el('div', { class: 'wrap' }, el('strong', { text: 'MVP team only' }), el('a', { href: 'mvp/help.html', text: 'Help' }), el('a', { href: 'mvp/services.html', text: 'All services' }), el('a', { href: 'mvp/log.html', text: 'Issues and actions log' }), el('a', { href: 'mvp/feedback.html', text: 'User feedback' }))));
+      el('div', { class: 'wrap' }, el('strong', { text: 'MVP team only' }), el('a', { href: 'mvp/help.html', text: 'Help' }), el('a', { href: 'mvp/services.html', text: 'All services' }), el('a', { href: 'mvp/log.html', text: 'Issues and actions log' }), el('a', { href: 'mvp/feedback.html', text: 'Feedback and usage' }))));
   }
 
   welcome();

@@ -52,9 +52,11 @@
     <!-- Screen reader announcements: a short version of each reply, not the whole conversation (see announce() in app.js). -->
     <div id="sr-status" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
 
-    <fieldset class="mode">
+    <fieldset class="mode" aria-describedby="mode-hint mode-error">
       <legend data-i18n="modeLegend">Who is this for?</legend>
-      <label><input type="radio" name="mode" value="public" checked> <span data-i18n="modeSelf">I'm looking for support for myself</span></label>
+      <p id="mode-hint" class="mode-hint" data-i18n="modeHint">Please choose one. It helps us word the results for the right person.</p>
+      <p id="mode-error" class="mode-error" role="alert" hidden></p>
+      <label><input type="radio" name="mode" value="public"> <span data-i18n="modeSelf">I'm looking for support for myself</span></label>
       <label><input type="radio" name="mode" value="staff"> <span data-i18n="modeStaff">I'm helping someone else (staff or partner)</span></label>
     </fieldset>
 
@@ -73,7 +75,7 @@
     <div id="chips" class="chips" aria-label="Example questions" data-i18n-label="chipsLabel"></div>
 
     <p class="privacy" data-i18n="privacy">
-      Please don't type names, addresses, dates of birth or NHS numbers. Your messages are passed through a Cloudflare service to Claude, an AI service from Anthropic, to find matches. This prototype does not save them, and the conversation is gone when you close or refresh the page. “Get directions” and “Show on map” open Google Maps, which has its own privacy policy.
+      Please don't type names, addresses, dates of birth or NHS numbers. Your messages are passed through a Cloudflare service to Claude, an AI service from Anthropic, to find matches. This prototype does not save them, and the conversation is gone when you close or refresh the page. “Get directions” and “Show on map” open Google Maps, which has its own privacy policy. We also keep anonymous counts, such as how many searches are made and which links are opened. These don't identify you.
     </p>
 
     <section class="programme" aria-labelledby="programme-heading">
@@ -96,6 +98,7 @@
 
   <script src="config.js"></script>
   <script src="i18n.js"></script>
+  <script src="usage.js"></script>
   <script src="access.js"></script>
   <script src="feedback.js"></script>
   <script src="app.js" defer></script>

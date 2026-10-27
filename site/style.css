@@ -420,3 +420,15 @@ a[href^="tel:"] { white-space: nowrap; }
 .map-link { font-weight: 600; }
 .place-more { color: var(--grey); font-size: .95rem; }
 html.high-contrast .place-text .pin { color: #000; }
+
+/* "Who is this for?" must be chosen before searching. */
+fieldset.mode .mode-hint { flex-basis: 100%; margin: 0 0 .1rem; font-size: .95rem; color: var(--grey); }
+fieldset.mode .mode-error { flex-basis: 100%; margin: 0 0 .3rem; padding: .4rem .7rem; border-radius: 6px; background: var(--crisis-bg); color: var(--crisis); font-weight: 700; }
+fieldset.mode.invalid { border-inline-start: 4px solid #d5281b; padding-inline-start: .8rem; }
+
+/* "Did you get in touch?" on a card, after coming back from one of its links. */
+.contact-ask { margin-top: .8rem; padding: .6rem .8rem; border-radius: 8px; background: var(--light); border: 1px solid #c5e3df; }
+.contact-q { margin: 0 0 .5rem; font-weight: 700; }
+.contact-btns { display: flex; flex-wrap: wrap; gap: .5rem; }
+.contact-thanks { margin: 0; }
+html.high-contrast .contact-ask { background: #fff; border: 2px solid #000; }

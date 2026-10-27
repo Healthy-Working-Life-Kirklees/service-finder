@@ -35,10 +35,15 @@
   }
 
   for (const b of document.querySelectorAll('[data-size]')) {
-    b.addEventListener('click', () => { size = Number(b.dataset.size); apply(); saveToUrl(); });
+    b.addEventListener('click', () => {
+      size = Number(b.dataset.size);
+      apply();
+      saveToUrl();
+      if (size > 1 && window.USAGE) window.USAGE.track('a11y', { k: size === 2 ? 'size-large' : 'size-larger' });
+    });
   }
   const contrastBtn = document.getElementById('contrast-toggle');
-  if (contrastBtn) contrastBtn.addEventListener('click', () => { contrast = !contrast; apply(); saveToUrl(); });
+  if (contrastBtn) contrastBtn.addEventListener('click', () => { contrast = !contrast; apply(); saveToUrl(); if (contrast && window.USAGE) window.USAGE.track('a11y', { k: 'contrast' }); });
   apply();
 
   // ---------- read aloud ----------
