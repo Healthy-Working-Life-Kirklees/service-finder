@@ -732,5 +732,86 @@ check('digest: lists listings missing useful details', /missing useful details[\
 check('digest: counts kinds of support by category and compares with the data', /\| Carers \| 1 \| Dewsbury \(1\) \| \d+ \|/.test(digest), digest);
 check('digest: helpful counts by mode and language', /\| staff \| pl \| 1 \| 1 \|/.test(digest), digest);
 
+// ----- Anonymous usage counts -----
+const mkUsageStore = () => {
+  const mem = new Map();
+  const storage = {
+    get: async (k) => mem.get(k),
+    put: async (k, v) => { mem.set(k, v); },
+    delete: async (ks) => { for (const k of [].concat(ks)) mem.delete(k); },
+    list: async ({ prefix }) => new Map([...mem.entries()].filter(([k]) => k.startsWith(prefix)).sort(([a], [b]) => a.localeCompare(b))),
+  };
+  return new mod.UsageStore({ storage });
+};
+let usageStore = mkUsageStore();
+const usEnv = (extra = {}) => ({
+  ...fbEnv(),
+  USAGE_STORE: { idFromName: () => 'u', get: () => ({ fetch: (u, init) => usageStore.fetch(new Request(u, init)) }) },
+  ...extra,
+});
+const usPost = async (body, { e = usEnv(), origin = O, raw = null } = {}) => {
+  const headers = { 'content-type': 'text/plain;charset=UTF-8' };
+  if (origin) headers.Origin = origin;
+  const res = await worker.fetch(new Request('https://w/usage', { method: 'POST', headers, body: raw !== null ? raw : JSON.stringify(body) }), e);
+  return res.status;
+};
+const usDays = async (pass = FB_PASS, q = '') => {
+  const res = await worker.fetch(new Request('https://w/usage/days' + q, { headers: { Origin: O, 'x-feedback-passcode': pass } }), usEnv());
+  return { status: res.status, body: await res.json() };
+};
+const todayCounts = async () => ((await usDays()).body.days.find((d) => d.date === new Date().toISOString().slice(0, 10)) || { counts: {} }).counts;
+const openId = [...new Set(JSON.parse(fs.readFileSync(path.join(root, 'data/services.json'), 'utf8')).services.filter((x) => x.open && !x.requiresMention).map((x) => x.id))][0];
+
+h = await (await worker.fetch(new Request('https://w/health'), usEnv())).json();
+check('usage: /health says usage is on by default', h.usage === true, JSON.stringify(h));
+h = await (await worker.fetch(new Request('https://w/health'), usEnv({ USAGE_ENABLED: 'false' }))).json();
+check('usage: /health says off when USAGE_ENABLED is "false"', h.usage === false);
+
+// A search is counted by the Worker itself, with the services shown, and nothing from the conversation.
+reply = ok([{ type: 'tool_use', id: 'tu1', name: 'respond', input: { status: 'results', message: 'Here you go.', urgent_support: false, matches: [{ service_id: openId, fit: 'strong', reason: 'r', check_first: '' }] } }]);
+await worker.fetch(new Request('https://w/chat', { method: 'POST', headers: { Origin: O, 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'staff', lang: 'pl', messages: [{ role: 'user', content: 'Secret words about my health' }] }) }), usEnv());
+let uc = await todayCounts();
+check('usage: a search counts search, conversation, results and services shown', uc['search|pl|staff'] === 1 && uc['conversation|pl|staff'] === 1 && uc['results|pl|staff'] === 1 && uc['shown|' + openId + '|pl|staff'] === 1, JSON.stringify(uc));
+check('usage: nothing typed is stored', !JSON.stringify(uc).includes('Secret') && !JSON.stringify(uc).includes('health'));
+reply = ok([{ type: 'tool_use', id: 'tu2', name: 'respond', input: { status: 'results', message: 'Nothing fits, sorry.', urgent_support: false, matches: [] } }]);
+await worker.fetch(new Request('https://w/chat', { method: 'POST', headers: { Origin: O, 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'public', lang: 'en', messages: [{ role: 'user', content: 'a' }, { role: 'assistant', content: 'b' }, { role: 'user', content: 'c' }] }) }), usEnv());
+uc = await todayCounts();
+check('usage: a later message is a search but not a new conversation; no results counted', uc['search|en|public'] === 1 && !uc['conversation|en|public'] && uc['no-results|en|public'] === 1, JSON.stringify(uc));
+
+// Events from the page
+check('usage: link event accepted (204)', (await usPost({ e: 'link', s: openId, k: 'referral', lang: 'en', mode: 'public' })) === 204);
+check('usage: visit event accepted', (await usPost({ e: 'visit', lang: 'ur' })) === 204);
+check('usage: contacted answer accepted', (await usPost({ e: 'contacted', s: openId, k: 'notyet', lang: 'en', mode: 'staff' })) === 204);
+check('usage: accessibility event accepted', (await usPost({ e: 'a11y', k: 'contrast', lang: 'en' })) === 204);
+uc = await todayCounts();
+check('usage: page events counted with fixed values only', uc['link|' + openId + '|referral|en|public'] === 1 && uc['visit|ur|none'] === 1 && uc['contacted|' + openId + '|notyet|en|staff'] === 1 && uc['a11y|contrast|en|none'] === 1, JSON.stringify(uc));
+check('usage: unknown scheme refused', (await usPost({ e: 'link', s: 'not-a-scheme', k: 'referral' })) === 400);
+check('usage: unknown event refused', (await usPost({ e: 'typed', text: 'hello' })) === 400);
+check('usage: extra field refused', (await usPost({ e: 'visit', text: 'my name is' })) === 400);
+check('usage: unknown link kind refused', (await usPost({ e: 'link', s: openId, k: 'facebook' })) === 400);
+check('usage: wrong origin refused', (await usPost({ e: 'visit' }, { origin: 'https://evil.example' })) === 403);
+check('usage: too large refused', (await usPost(null, { raw: '{"e":"visit","x":"' + 'a'.repeat(600) + '"}' })) === 413);
+check('usage: switched off -> 404', (await usPost({ e: 'visit' }, { e: usEnv({ USAGE_ENABLED: 'false' }) })) === 404);
+
+// Reading
+check('usage: reading needs the passcode', (await usDays('wrong')).status === 401);
+const csvRes = await worker.fetch(new Request('https://w/usage/export.csv', { headers: { 'x-feedback-passcode': FB_PASS } }), usEnv());
+const csvText = await csvRes.text();
+check('usage: CSV export has a header and a row per count', csvRes.status === 200 && csvText.startsWith('"date","event","scheme","detail","lang","mode","count"') && csvText.includes('"link","' + openId + '","referral","en","public","1"'), csvText.slice(0, 300));
+check('usage: bad since date refused', (await usDays(FB_PASS, '?since=yesterday')).status === 400);
+
+// Daily cap
+usageStore = mkUsageStore();
+const capEnv = usEnv({ MAX_USAGE_PER_DAY: '2' });
+await usPost({ e: 'visit' }, { e: capEnv }); await usPost({ e: 'visit' }, { e: capEnv }); await usPost({ e: 'visit' }, { e: capEnv });
+uc = await todayCounts();
+check('usage: daily cap stops counting', uc['visit|en|none'] === 2, JSON.stringify(uc));
+
+// Retention: old days are deleted
+usageStore = mkUsageStore();
+const oldDay = '2020-01-01';
+await usageStore.ctx.storage.put('d:' + oldDay, { date: oldDay, counts: { 'visit|en|none': 5 }, total: 5 });
+check('usage: tallies older than 24 months are deleted', !(await usDays()).body.days.some((d) => d.date === oldDay));
+
 console.log(`passed=${pass} failed=${fail}`);
 process.exit(fail ? 1 : 0);
