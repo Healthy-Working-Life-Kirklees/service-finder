@@ -21,6 +21,7 @@ let log = [];
 let lastChat = null;
 let feedbackFlag = true; // what /health says about feedback
 let fbSent = []; // feedback the page sent
+let usageSent = []; // anonymous usage events the page sent
 const decisions = {}; // listing decisions recorded on the All services page
 const edits = {}; // edits to details recorded on the All services page
 const added = {}; // new services added on the All services page
@@ -44,6 +45,12 @@ const fbStore = [
   { ...fbBase, id: 6, kind: 'gap', reasons: ['missing-service'], missedService: { name: 'A test service', website: '', area: '' } },
 ];
 
+// "Who is this for?" has no default any more. The tests search as someone looking for themselves unless a
+// choice is already made.
+async function chooseMode(page, mode = 'public') {
+  await page.evaluate((m) => { if (!document.querySelector('input[name=mode]:checked')) document.querySelector('input[name=mode][value=' + m + ']').checked = true; }, mode);
+}
+
 async function worker(route) {
   const req = route.request();
   const url = new URL(req.url());
@@ -51,7 +58,8 @@ async function worker(route) {
   const json = (obj, status = 200) => route.fulfill({ status, headers: { ...cors, 'content-type': 'application/json' }, body: JSON.stringify(obj) });
   if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: cors });
 
-  if (url.pathname === '/health') return json({ ok: true, aiConfigured: true, teamLog: true, feedback: feedbackFlag });
+  if (url.pathname === '/health') return json({ ok: true, aiConfigured: true, teamLog: true, feedback: feedbackFlag, usage: true });
+  if (url.pathname === '/usage' && req.method() === 'POST') { usageSent.push(JSON.parse(req.postData())); return route.fulfill({ status: 204, headers: cors }); }
   // Reading feedback (the User feedback review page), with its own passcode.
   if (url.pathname.startsWith('/feedback/')) {
     if (req.headers()['x-feedback-passcode'] !== FB_PASS) return json({ error: 'Wrong passcode.' }, 401);
@@ -152,9 +160,17 @@ async function worker(route) {
   await page.goto(ON + '/');
   check('main: team bar shown when MVP tools are on', (await page.locator('.teambar a').allTextContents()).join('|').includes('Help'));
   check('main: team bar links point at /mvp/', (await page.locator('.teambar a').evaluateAll((a) => a.map((x) => x.getAttribute('href')))).join() === 'mvp/help.html,mvp/services.html,mvp/log.html,mvp/feedback.html');
+  check('main: "Who is this for?" has no default', (await page.locator('input[name=mode]:checked').count()) === 0);
   await page.fill('#message', 'I am 20 and anxious in Dewsbury');
   await page.click('#send');
+  await page.waitForTimeout(200);
+  check('main: searching without choosing asks for the choice and sends nothing', (await page.locator('#mode-error').isVisible()) && (await page.locator('.bubble.user').count()) === 0);
+  await page.check('input[name=mode][value=public]');
+  check('main: choosing hides the prompt', !(await page.locator('#mode-error').isVisible()));
+  await page.click('#send');
   await page.waitForSelector('.card');
+  check('main: "other options" offered under the results', (await page.locator('.more-options .chip').count()) === 1);
+  check('usage: page visit sent with no identifiers', usageSent.some((e) => e.e === 'visit') && usageSent.every((e) => Object.keys(e).every((k) => ['e', 's', 'k', 'lang', 'mode'].includes(k))), JSON.stringify(usageSent));
   check('main: scheme card rendered from the data file', (await page.locator('.card h3').first().textContent()) === 'My Way Forward');
   check('main: overdue warning on the stale entry', (await page.locator('.card .stale').count()) === 1);
 
@@ -197,6 +213,7 @@ async function worker(route) {
   check('feedback: Yes sends straight away with only the ids, mode and language', sentYes.kind === 'reply' && sentYes.helpful === true && sentYes.schemeIds.join() === 'my-way-forward' && Object.keys(sentYes).sort().join() === 'helpful,kind,lang,mode,schemeIds', JSON.stringify(sentYes));
   check('feedback: thank-you after Yes has focus', await page.evaluate(() => document.activeElement.classList.contains('fb-thanks')));
   await page.fill('#message', 'crisis');
+  await chooseMode(page);
   await page.click('#send');
   await page.waitForSelector('.crisis');
   check('main: crisis panel shown when flagged', (await page.locator('.crisis').count()) === 1);
@@ -205,16 +222,19 @@ async function worker(route) {
   check('main: "what I have understood" line shown', (await page.locator('.bubble .understood').first().textContent()).includes('aged 20; anxious'));
   check('main: mental health crisis panel has the Single Point of Access number', (await page.locator('.crisis').first().textContent()).includes('01924 316830'));
   await page.fill('#message', 'there is abuse at home');
+  await chooseMode(page);
   await page.click('#send');
   await page.waitForFunction(() => document.querySelectorAll('.crisis').length === 2);
   const abuse = await page.locator('.crisis').nth(1).textContent();
   check('main: domestic abuse panel has 999 and NHS 111, and no mental health number', abuse.includes('999') && abuse.includes('NHS 111') && !abuse.includes('01924'), abuse);
   await page.fill('#message', 'I am unsure what I need');
+  await chooseMode(page);
   await page.click('#send');
   await page.waitForFunction(() => document.body.textContent.includes('Which town are you nearest to?'));
   await page.waitForFunction(() => !document.querySelector('#send').disabled);
   check('feedback: no helpful buttons or feedback links under a reply that asks questions', (await page.locator('.fb-reply').count()) === 1 && (await page.locator('.fb-helpful').count()) === 0);
   await page.fill('#message', 'Dewsbury');
+  await chooseMode(page);
   await page.click('#send');
   await page.waitForFunction(() => document.querySelectorAll('.bubble.assistant').length >= 5 && !document.querySelector('#send').disabled);
   check('main: follow-up questions asked are recorded in the history sent back', lastChat.messages.some((m) => m.role === 'assistant' && m.content.includes('(Follow-up questions asked: 1)')), JSON.stringify(lastChat.messages));
@@ -255,6 +275,7 @@ async function worker(route) {
   const sentGap = lastSent();
   check('feedback: gap entry sent, with the website given https://', sentGap.kind === 'gap' && sentGap.reasons.join() === 'missing-service' && sentGap.missedService.name === 'Batley Job Club' && sentGap.missedService.website === 'https://www.example.org/job-club' && sentGap.missedService.area === 'Batley' && sentGap.mode === 'public', JSON.stringify(sentGap));
   await page.fill('#message', 'My name is Jane Smith and I need work');
+  await chooseMode(page);
   await page.click('#send');
   await page.waitForSelector('.pii-note');
   check('main: reminder about identifying details shown when flagged', (await page.locator('.pii-note').textContent()).includes("Please don't type names"));
@@ -545,7 +566,7 @@ async function worker(route) {
 
   // ---------- User feedback review page ----------
   await page.goto(ON + '/mvp/feedback.html');
-  check('review: team bar marks the page', (await page.locator('.teambar a[aria-current="page"]').textContent()) === 'User feedback');
+  check('review: team bar marks the page', (await page.locator('.teambar a[aria-current="page"]').textContent()) === 'Feedback and usage');
   await page.fill('#pass', 'wrong');
   await page.click('#unlock');
   await page.waitForTimeout(200);
@@ -571,6 +592,7 @@ async function worker(route) {
   await page.goto(ON + '/');
   await page.waitForTimeout(300);
   await page.fill('#message', 'I am 20 and anxious in Dewsbury');
+  await chooseMode(page);
   await page.click('#send');
   await page.waitForSelector('.card');
   check('feedback off: no card link, no helpful buttons, no Tell us links', (await page.locator('.fb-card, .fb-reply, .fb-helpful').count()) === 0);
@@ -581,6 +603,7 @@ async function worker(route) {
   await page.goto(ON + '/?lang=ur');
   await page.waitForSelector('#fb-footer .fb-gap-link');
   await page.fill('#message', 'I am 20 and anxious in Dewsbury');
+  await chooseMode(page);
   await page.click('#send');
   await page.waitForSelector('.card .fb-card .linkish');
   await page.locator('.card .fb-card .linkish').first().click();
@@ -600,7 +623,8 @@ async function worker(route) {
     await page.goto(ON + '/' + q);
     await page.waitForSelector('#fb-footer .fb-gap-link');
     await page.fill('#message', 'I am 20 and anxious in Dewsbury');
-    await page.click('#send');
+    await chooseMode(page);
+  await page.click('#send');
     await page.waitForSelector('.card .fb-card .linkish');
     await page.locator('.card .fb-card .linkish').first().click();
     await page.locator('.fb-reply .fb-helpful button').nth(1).click();
