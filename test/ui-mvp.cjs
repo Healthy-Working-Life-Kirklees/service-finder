@@ -51,6 +51,15 @@ async function chooseMode(page, mode = 'public') {
   await page.evaluate((m) => { if (!document.querySelector('input[name=mode]:checked')) document.querySelector('input[name=mode][value=' + m + ']').checked = true; }, mode);
 }
 
+// Before the first cards in a conversation the page asks "Have we understood you?". This says yes, so the
+// cards show. It does nothing when the cards are already showing.
+async function showCards(page) {
+  await page.waitForSelector('.check-summary .check-actions .btn.primary, .card');
+  const yes = page.locator('.check-summary .check-actions .btn.primary');
+  if (await yes.count()) await yes.click();
+  await page.waitForSelector('.card');
+}
+
 async function worker(route) {
   const req = route.request();
   const url = new URL(req.url());
@@ -85,7 +94,7 @@ async function worker(route) {
     lastChat = body;
     if (/crisis/i.test(last)) return json({ status: 'results', message: 'I am sorry you feel like this.', recommendations: [], safety_concern: true, urgent_types: ['mental_health_crisis'], pii_detected: false, understood_needs: [], follow_up_questions: [] });
     if (/abuse/i.test(last)) return json({ status: 'results', message: 'I am so sorry. You deserve to be safe.', recommendations: [], safety_concern: true, urgent_types: ['domestic_abuse'], pii_detected: false, understood_needs: [], follow_up_questions: [] });
-    if (/unsure/i.test(last)) return json({ status: 'needs_more_info', message: 'Which town are you nearest to?', recommendations: [], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: ['needs support'], follow_up_questions: ['Which town are you nearest to?'] });
+    if (/unsure/i.test(last)) return json({ status: 'needs_more_info', message: 'Which town are you nearest to?', recommendations: [], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: ['needs support'], follow_up_questions: ['Which town are you nearest to?'], question_options: [{ question: 'Which town are you nearest to?', options: ['Batley', 'Dewsbury', 'Huddersfield'] }] });
     if (/Jane Smith/.test(last)) return json({ status: 'results', message: 'Here is a match.', recommendations: [], safety_concern: false, urgent_types: [], pii_detected: true, understood_needs: [], follow_up_questions: [] });
     return json({ status: 'results', message: 'Here is a match.', recommendations: [{ id: 'my-way-forward', why: 'Fits your age and situation.', fit: 'possible', check_first: 'Check they are not claiming Universal Credit with a job-search requirement.' }], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: ['aged 20', 'anxious'], follow_up_questions: [] });
   }
@@ -168,7 +177,15 @@ async function worker(route) {
   await page.check('input[name=mode][value=public]');
   check('main: choosing hides the prompt', !(await page.locator('#mode-error').isVisible()));
   await page.click('#send');
+  await page.waitForSelector('.check-summary');
+  check('check: summary shown before any cards', (await page.locator('.card').count()) === 0 && (await page.locator('.check-summary h2').textContent()) === 'Have we understood you?' && (await page.locator('.check-list li').allTextContents()).join('|') === 'aged 20|anxious');
+  check('check: no feedback buttons while the summary waits', (await page.locator('.fb-reply').count()) === 0);
+  await page.waitForTimeout(300);
+  check('check: summary announced to screen readers', (await page.textContent('#sr-status')).includes('Have we understood you?'));
+  await page.locator('.check-summary .btn.primary').click();
   await page.waitForSelector('.card');
+  check('check: "Yes" shows the cards with no second call to the AI', (await page.locator('.check-actions').count()) === 0 && (await page.locator('.check-done').textContent()) === 'Thanks for checking.' && lastChat.messages.length === 1);
+  check('usage: summary "yes" counted', usageSent.some((e) => e.e === 'summary' && e.k === 'yes'));
   check('main: "other options" offered under the results', (await page.locator('.more-options .chip').count()) === 1);
   check('usage: page visit sent with no identifiers', usageSent.some((e) => e.e === 'visit') && usageSent.every((e) => Object.keys(e).every((k) => ['e', 's', 'k', 'lang', 'mode'].includes(k))), JSON.stringify(usageSent));
   check('main: scheme card rendered from the data file', (await page.locator('.card h3').first().textContent()) === 'My Way Forward');
@@ -219,7 +236,7 @@ async function worker(route) {
   check('main: crisis panel shown when flagged', (await page.locator('.crisis').count()) === 1);
   check('feedback: no helpful buttons or feedback links under an urgent support reply', (await page.locator('.fb-reply').count()) === 1);
   check('main: card shows the fit badge and the check-first line', (await page.locator('.card .badge.fit-possible').first().textContent()) === 'Worth checking' && (await page.locator('.card .check').first().textContent()).startsWith('Check first:'));
-  check('main: "what I have understood" line shown', (await page.locator('.bubble .understood').first().textContent()).includes('aged 20; anxious'));
+  check('main: what was understood is in the summary, not repeated under the confirmed results', (await page.locator('.check-list').first().textContent()).includes('anxious') && (await page.locator('.bubble .understood').count()) === 0);
   check('main: mental health crisis panel has the Single Point of Access number', (await page.locator('.crisis').first().textContent()).includes('01924 316830'));
   await page.fill('#message', 'there is abuse at home');
   await chooseMode(page);
@@ -233,10 +250,17 @@ async function worker(route) {
   await page.waitForFunction(() => document.body.textContent.includes('Which town are you nearest to?'));
   await page.waitForFunction(() => !document.querySelector('#send').disabled);
   check('feedback: no helpful buttons or feedback links under a reply that asks questions', (await page.locator('.fb-reply').count()) === 1 && (await page.locator('.fb-helpful').count()) === 0);
-  await page.fill('#message', 'Dewsbury');
-  await chooseMode(page);
-  await page.click('#send');
-  await page.waitForFunction(() => document.querySelectorAll('.bubble.assistant').length >= 5 && !document.querySelector('#send').disabled);
+  const qBox = page.locator('.answer-box').last();
+  check('answers: the question is a labelled group of tappable answers plus "Prefer not to say"', (await qBox.locator('fieldset legend').textContent()) === 'Which town are you nearest to?' && (await qBox.locator('input[type=radio]').count()) === 4 && (await qBox.locator('label.answer-option').last().textContent()) === 'Prefer not to say');
+  check('answers: the question is not repeated in the message above', !(await page.locator('.bubble.assistant').last().locator(':scope > p').allTextContents()).join(' ').includes('Which town'));
+  await qBox.locator('.answer-continue').click();
+  check('answers: Continue with nothing picked asks for an answer and sends nothing', await qBox.locator('.answer-error').isVisible() && lastChat.messages[lastChat.messages.length - 1].content === 'I am unsure what I need');
+  await qBox.locator('label.answer-option', { hasText: 'Dewsbury' }).click();
+  await qBox.locator('.answer-continue').click();
+  await page.waitForFunction(() => document.querySelectorAll('.bubble.assistant').length >= 6 && !document.querySelector('#send').disabled);
+  check('answers: the tapped answer is sent with its question', lastChat.messages[lastChat.messages.length - 1].content === 'Which town are you nearest to? Dewsbury', JSON.stringify(lastChat.messages.slice(-1)));
+  check('answers: the old question keeps only the picked answer and can no longer be changed', (await qBox.locator('fieldset[disabled]').count()) === 1 && (await qBox.locator('.answer-continue').count()) === 0);
+  check('usage: tapped answer counted', usageSent.some((e) => e.e === 'answers' && e.k === 'tapped'));
   check('main: follow-up questions asked are recorded in the history sent back', lastChat.messages.some((m) => m.role === 'assistant' && m.content.includes('(Follow-up questions asked: 1)')), JSON.stringify(lastChat.messages));
 
   // ---------- feedback: "No", then "It missed a service I know about" ----------
@@ -594,7 +618,7 @@ async function worker(route) {
   await page.fill('#message', 'I am 20 and anxious in Dewsbury');
   await chooseMode(page);
   await page.click('#send');
-  await page.waitForSelector('.card');
+  await showCards(page);
   check('feedback off: no card link, no helpful buttons, no Tell us links', (await page.locator('.fb-card, .fb-reply, .fb-helpful').count()) === 0);
   check('feedback off: footer link hidden', !(await page.locator('#fb-footer').isVisible()) && (await page.locator('#fb-footer .fb-gap-link').count()) === 0);
   feedbackFlag = true;
@@ -605,6 +629,7 @@ async function worker(route) {
   await page.fill('#message', 'I am 20 and anxious in Dewsbury');
   await chooseMode(page);
   await page.click('#send');
+  await showCards(page);
   await page.waitForSelector('.card .fb-card .linkish');
   await page.locator('.card .fb-card .linkish').first().click();
   await page.locator('#fb-footer .fb-gap-link').click();
@@ -613,9 +638,31 @@ async function worker(route) {
   const dirs = await page.evaluate(() => [...document.querySelectorAll('form.fb-card-form, #fb-footer form.fb-gap-form')].map((f) => getComputedStyle(f).direction));
   check('feedback in Urdu: the forms are laid out right to left', dirs.length === 2 && dirs.every((d) => d === 'rtl'), dirs.join());
   check('feedback in Urdu: the wording is in Urdu and the scheme name stays in English', (await page.locator('.card .fb-card .linkish').first().textContent()) === 'اس اندراج میں مسئلے کی اطلاع دیں' && (await urCard.locator('legend [lang="en"]').textContent()) === 'My Way Forward');
+  const newKeys = ['answerHint', 'answerPreferNot', 'answerContinue', 'answerNeedOne', 'checkTitleSelf', 'checkTitleStaff', 'checkIntro', 'checkYes', 'checkNo', 'checkFix', 'checkThanks'];
+  const untranslated = await page.evaluate((keys) => keys.filter((k) => /[A-Za-z]{3}/.test(window.I18N.t(k))), newKeys);
+  check('answers and check in Urdu: all the new wording is translated', untranslated.length === 0, untranslated.join());
   const tickBox = await urCard.locator('input[type=checkbox]').first().boundingBox();
   const tickText = await urCard.locator('.fb-tick label span').first().boundingBox();
   check('feedback in Urdu: tick boxes sit on the right of their labels', tickBox.x > tickText.x, JSON.stringify([tickBox, tickText]));
+
+  // ---------- "Have we understood you?": something's not right ----------
+  await page.goto(ON + '/');
+  await page.fill('#message', 'I am 20 and anxious in Dewsbury');
+  await chooseMode(page);
+  await page.click('#send');
+  await page.waitForSelector('.check-summary');
+  await page.locator('.check-summary .check-actions .btn.secondary').click();
+  check('check: "Something\'s not right" asks what was wrong and moves to the message box', await page.locator('.check-fix').isVisible() && await page.evaluate(() => document.activeElement.id === 'message'));
+  await page.fill('#message', 'I am 40, not 20');
+  await page.click('#send');
+  await page.waitForSelector('.check-summary >> nth=1');
+  const fixed = lastChat.messages;
+  check('check: the correction is sent with a note that the summary was not right, and no services were shown', fixed.length === 3 && fixed[1].role === 'assistant' && fixed[1].content.includes('aged 20; anxious') && fixed[1].content.includes('no services were shown') && !fixed[1].content.includes('Services shown') && fixed[2].content === 'I am 40, not 20', JSON.stringify(fixed));
+  check('check: the first summary can no longer be answered, and the new one is checked again', (await page.locator('.check-summary').first().locator('.check-actions, .check-fix').count()) === 0 && (await page.locator('.check-summary').nth(1).locator('.check-actions').count()) === 1 && (await page.locator('.card').count()) === 0);
+  check('usage: summary "changed" counted', usageSent.some((e) => e.e === 'summary' && e.k === 'changed'));
+  await page.locator('.check-summary').nth(1).locator('.btn.primary').click();
+  await page.waitForSelector('.card');
+  check('check: after a yes, cards show', (await page.locator('.card').count()) === 1);
 
   // ---------- feedback forms at the largest text size, high contrast, phone width ----------
   await page.setViewportSize({ width: 375, height: 800 });
@@ -625,6 +672,7 @@ async function worker(route) {
     await page.fill('#message', 'I am 20 and anxious in Dewsbury');
     await chooseMode(page);
   await page.click('#send');
+    await showCards(page);
     await page.waitForSelector('.card .fb-card .linkish');
     await page.locator('.card .fb-card .linkish').first().click();
     await page.locator('.fb-reply .fb-helpful button').nth(1).click();

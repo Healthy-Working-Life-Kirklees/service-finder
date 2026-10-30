@@ -18,6 +18,12 @@
   let services = new Map();
   let history = [];
   let busy = false;
+  // Tap-to-answer follow-up questions on the latest reply: { box, questions, picked: Map(index -> answer) }.
+  let pendingQuestions = null;
+  // "Have we understood you?": results held back until the person checks the summary.
+  // { data, box } while waiting; checked is true once they have said yes in this conversation.
+  let pendingCheck = null;
+  let checked = false;
 
   // Page text comes from i18n.js. The example questions are in there too.
   const t = (key, vars) => window.I18N.t(key, vars);
@@ -357,6 +363,130 @@
     sendLabel.textContent = v ? t('sending') : t('send');
   }
 
+  // ---------- tap-to-answer follow-up questions ----------
+  // Each question is a group of radio buttons styled as large tap targets: the model's answers plus
+  // "Prefer not to say". Picking answers and pressing Continue sends them as the person's next message,
+  // together with anything typed in the message box. Typing alone still works as before.
+  let questionSet = 0;
+  function questionBox(qs) {
+    const n = ++questionSet;
+    const picked = new Map();
+    const error = el('p', { class: 'answer-error', role: 'alert', hidden: true });
+    const groups = qs.map((q, i) => {
+      const name = 'q' + n + '-' + i;
+      const choices = [...q.options, t('answerPreferNot')];
+      return el('fieldset', { class: 'answer-q' },
+        el('legend', { dir: 'auto', text: q.question }),
+        el('div', { class: 'answer-options' }, choices.map((c, j) => el('label', { class: 'answer-option' },
+          el('input', { type: 'radio', name, value: c, onchange: () => { picked.set(i, c); error.hidden = true; } }),
+          el('span', { dir: 'auto', text: c })
+        )))
+      );
+    });
+    const box = el('div', { class: 'answer-box' },
+      groups,
+      el('p', { class: 'answer-hint', text: t('answerHint') }),
+      error,
+      el('button', { type: 'button', class: 'btn primary small answer-continue', text: t('answerContinue'), onclick: () => {
+        const text = withAnswers(input.value);
+        if (!text.trim()) { error.textContent = t('answerNeedOne'); error.hidden = false; return; }
+        send(text);
+      } })
+    );
+    pendingQuestions = { box, questions: qs, picked };
+    return box;
+  }
+
+  // The person's message with any tapped answers in front of it, one line per question.
+  let answerKind = null; // tapped, typed or both: counted (anonymously) when the answer is sent
+  function withAnswers(typed) {
+    const lines = [];
+    if (pendingQuestions) {
+      const tapped = pendingQuestions.picked.size > 0;
+      const wrote = Boolean(typed && typed.trim());
+      answerKind = tapped && wrote ? 'both' : tapped ? 'tapped' : wrote ? 'typed' : null;
+      pendingQuestions.questions.forEach((q, i) => {
+        if (pendingQuestions.picked.has(i)) lines.push(q.question + ' ' + pendingQuestions.picked.get(i));
+      });
+    }
+    if (typed && typed.trim()) lines.push(typed.trim());
+    return lines.join('\n').slice(0, 1500);
+  }
+
+  // Once a reply has been sent, the old questions stay on screen (showing what was picked) but can't be changed.
+  function closeQuestions() {
+    if (!pendingQuestions) return;
+    if (answerKind && window.USAGE) window.USAGE.track('answers', { k: answerKind });
+    answerKind = null;
+    for (const f of pendingQuestions.box.querySelectorAll('fieldset')) f.disabled = true;
+    const btn = pendingQuestions.box.querySelector('.answer-continue');
+    const hint = pendingQuestions.box.querySelector('.answer-hint');
+    if (btn) btn.remove();
+    if (hint) hint.remove();
+    pendingQuestions = null;
+  }
+
+  // A question that is already written out in the message is taken out of the message when it is shown as
+  // a set of answers below, so the person doesn't read it twice.
+  function withoutQuestions(message, qs) {
+    let out = String(message);
+    for (const q of qs) if (q.options.length && out.includes(q.question)) out = out.split(q.question).join(' ');
+    out = out.replace(/[ \t]+/g, ' ').replace(/\s*\b(And|And also|Also|I|Oraz)\s*$/u, '').replace(/\s*اور\s*$/u, '').trim();
+    return out;
+  }
+
+  // ---------- "Have we understood you?" ----------
+  // Before the first set of cards in a conversation, the page shows what the AI took from the conversation
+  // and asks the person to check it. The results are already here, so saying yes shows them straight away
+  // (no second call to the AI). Saying something is wrong puts them back in the message box; their
+  // correction is sent with a note that the summary was not right, and the AI looks again.
+  function checkBox(data) {
+    const staff = mode() === 'staff';
+    const titleId = 'check-' + Date.now();
+    const yes = el('button', { type: 'button', class: 'btn primary', text: t('checkYes'), onclick: () => confirmCheck() });
+    const no = el('button', { type: 'button', class: 'btn secondary', text: t('checkNo'), onclick: () => {
+      const fix = box.querySelector('.check-fix');
+      fix.hidden = false;
+      announce(fix.textContent);
+      input.focus();
+    } });
+    const box = el('div', { class: 'bubble assistant check-summary', role: 'group', 'aria-labelledby': titleId },
+      el('h2', { id: titleId, class: 'check-title', text: t(staff ? 'checkTitleStaff' : 'checkTitleSelf') }),
+      el('p', { text: t('checkIntro') }),
+      el('ul', { class: 'check-list' }, data.understood_needs.map((x) => el('li', { dir: 'auto', text: x }))),
+      el('div', { class: 'check-actions' }, yes, no),
+      el('p', { class: 'check-fix', hidden: true, text: t('checkFix') })
+    );
+    if (window.ACCESS) box.append(el('div', { class: 'bubble-tools' }, window.ACCESS.listenButton(() => [...box.querySelectorAll('h2, p:not([hidden]), li')].map((p) => p.textContent).join(' '), window.I18N.locale)));
+    return box;
+  }
+
+  function confirmCheck() {
+    if (!pendingCheck) return;
+    const { data, box } = pendingCheck;
+    pendingCheck = null;
+    checked = true;
+    box.querySelector('.check-actions').replaceWith(el('p', { class: 'check-done', text: t('checkThanks') }));
+    const fix = box.querySelector('.check-fix');
+    if (fix) fix.remove();
+    if (window.USAGE) window.USAGE.track('summary', { k: 'yes' });
+    showReply(data);
+  }
+
+  // The person has written something new while the summary was waiting: record in the history that the
+  // summary was shown and not confirmed, so the AI knows to look again, and close the check.
+  function closeCheck() {
+    if (!pendingCheck) return;
+    const { data, box } = pendingCheck;
+    pendingCheck = null;
+    const actions = box.querySelector('.check-actions');
+    if (actions) actions.remove();
+    const fix = box.querySelector('.check-fix');
+    if (fix) fix.remove();
+    if (window.USAGE) window.USAGE.track('summary', { k: 'changed' });
+    history.push({ role: 'assistant', content: 'Here is what I understood: ' + data.understood_needs.join('; ') + '.\n\n(Summary shown to the person to check. They said something was not right, so no services were shown yet.)' });
+  }
+
   async function send(text) {
     text = text.trim();
     if (!text || busy) return;
@@ -367,6 +497,8 @@
     for (const n of logEl.querySelectorAll('.more-options')) n.remove();
     document.body.classList.add('chatting');
     updatePlaceholder();
+    closeQuestions();
+    closeCheck();
     bubble('user', text);
     input.value = '';
     history.push({ role: 'user', content: text });
@@ -397,21 +529,57 @@
         return;
       }
 
-      const b = bubble('assistant', data.message);
+      data.understood_needs = Array.isArray(data.understood_needs) ? data.understood_needs.filter((x) => typeof x === 'string' && x.trim()) : [];
+      const hasCards = (data.recommendations || []).some((x) => services.has(x.id));
+      // First results in this conversation: check the summary with the person before showing the cards.
+      if (!checked && hasCards && !data.safety_concern && data.status === 'results' && data.understood_needs.length) {
+        const box = checkBox(data);
+        logEl.append(box);
+        if (data.pii_detected) box.append(el('p', { class: 'pii-note', text: t('pii') }));
+        pendingCheck = { data, box };
+        announce([...box.querySelectorAll('h2, p:not([hidden]), li')].map((n) => n.textContent.trim()).join(' '));
+        box.scrollIntoView({ block: 'start', behavior: 'smooth' });
+        return;
+      }
+      showReply(data);
+    } catch {
+      thinking.remove();
+      history.pop();
+      input.value = text;
+      announce(bubble('error', t('network')).textContent);
+    } finally {
+      setBusy(false);
+      // Put the cursor back in the message box without scrolling down to it.
+      input.focus({ preventScroll: true });
+    }
+  }
+
+  // Shows a reply from the AI (its message, any questions, and the scheme cards) and adds it to the history.
+  function showReply(data) {
+    {
+      // Follow-up questions. With answer options they are shown as tap-to-answer groups under the message.
+      // Without, they are listed under the message if the AI only said it had questions without writing them.
+      const asked = Array.isArray(data.question_options) && data.question_options.length
+        ? data.question_options.filter((q) => q && typeof q.question === 'string' && q.question.trim()).map((q) => ({ question: q.question.trim(), options: Array.isArray(q.options) ? q.options.filter((o) => typeof o === 'string' && o.trim()) : [] }))
+        : (Array.isArray(data.follow_up_questions) ? data.follow_up_questions : []).filter((q) => typeof q === 'string' && q.trim()).map((q) => ({ question: q.trim(), options: [] }));
+      const tappable = asked.filter((q) => q.options.length);
+      const questions = asked.map((q) => q.question);
+      const message = tappable.length ? withoutQuestions(data.message, tappable) : data.message;
+      const b = message ? bubble('assistant', message) : el('div', { class: 'bubble assistant' });
+      if (!message) logEl.append(b);
       if (data.safety_concern) b.append(crisisPanel(data.urgent_types));
-      // Follow-up questions. The AI is asked to put them in its message too, but it sometimes only says it has
-      // questions, so any question that isn't already in the message is listed under it.
-      const questions = Array.isArray(data.follow_up_questions) ? data.follow_up_questions.filter((q) => typeof q === 'string' && q.trim()) : [];
       const squash = (x) => x.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
-      const missing = questions.filter((q) => !squash(data.message).includes(squash(q)));
-      if (missing.length) b.append(el('ol', { class: 'questions', dir: 'auto' }, missing.map((q) => el('li', { text: q.trim() }))));
-      const needs = Array.isArray(data.understood_needs) ? data.understood_needs : [];
-      if (needs.length && !data.safety_concern) b.append(el('p', { class: 'understood', dir: 'auto', text: t('understood') + needs.join(t('listSep')) + t('end') }));
+      const missing = asked.filter((q) => !q.options.length && !squash(data.message).includes(squash(q.question))).map((q) => q.question);
+      if (missing.length) b.append(el('ol', { class: 'questions', dir: 'auto' }, missing.map((q) => el('li', { text: q }))));
+      if (tappable.length && !data.safety_concern) b.append(questionBox(tappable));
+      const needs = data.understood_needs || [];
+      // Once the summary has been checked, it isn't repeated under the results.
+      if (needs.length && !data.safety_concern && !(data.status === 'results' && checked)) b.append(el('p', { class: 'understood', dir: 'auto', text: t('understood') + needs.join(t('listSep')) + t('end') }));
       if (data.pii_detected) b.append(el('p', { class: 'pii-note', text: t('pii') }));
-      // Listen button: reads the whole reply, including any urgent support panel, in the page's language.
+      // Listen button: reads the whole reply, including any urgent support panel and questions, in the page's language.
       if (window.ACCESS) {
         const reply = b;
-        b.append(el('div', { class: 'bubble-tools' }, window.ACCESS.listenButton(() => [...reply.querySelectorAll('p, li')].map((p) => p.textContent).join(' '), window.I18N.locale)));
+        b.append(el('div', { class: 'bubble-tools' }, window.ACCESS.listenButton(() => [...reply.querySelectorAll('p:not([hidden]), li, legend, .answer-option span')].map((p) => p.textContent).join(' '), window.I18N.locale)));
       }
       // The chat message comes first, with the scheme cards underneath it.
       const recs = (data.recommendations || []).map(card).filter(Boolean);
@@ -437,7 +605,7 @@
       // Screen readers hear the reply (and any questions) and how many services
       // were suggested, but not the cards themselves; they can move through those with their heading keys.
       // The urgent support panel is left out here because it announces itself (role=alert).
-      const replyText = [...b.querySelectorAll('p, li')].filter((n) => !n.closest('.bubble-tools, .crisis')).map((n) => n.textContent.trim()).join(' ');
+      const replyText = [...b.querySelectorAll('p:not([hidden]), li, legend')].filter((n) => !n.closest('.bubble-tools, .crisis')).map((n) => n.textContent.trim()).join(' ');
       announce(replyText + (recs.length ? ' ' + (recs.length === 1 ? t('servicesOne') : t('servicesMany', { n: recs.length })) : ''));
       // Keep the reader at the start of the reply, with the cards below it, rather than at the end of the cards.
       b.scrollIntoView({ block: 'start', behavior: 'smooth' });
@@ -445,23 +613,17 @@
       // Remember which services were shown so follow-up questions make sense.
       const shown = (data.recommendations || []).map((x) => x.id).join(', ');
       // The Worker counts the "(Follow-up questions asked: N)" marker to keep to its limit on questions.
-      const asked = questions.length;
-      history.push({ role: 'assistant', content: data.message + (missing.length ? '\n\n' + missing.join('\n') : '') + (shown ? '\n\n(Services shown: ' + shown + ')' : '') + (asked ? '\n\n(Follow-up questions asked: ' + asked + ')' : '') });
-    } catch {
-      thinking.remove();
-      history.pop();
-      input.value = text;
-      announce(bubble('error', t('network')).textContent);
-    } finally {
-      setBusy(false);
-      // Put the cursor back in the message box without scrolling down to it.
-      input.focus({ preventScroll: true });
+      const askedCount = questions.length;
+      history.push({ role: 'assistant', content: data.message + (missing.length ? '\n\n' + missing.join('\n') : '') + (shown ? '\n\n(Services shown: ' + shown + ')' : '') + (askedCount ? '\n\n(Follow-up questions asked: ' + askedCount + ')' : '') });
     }
   }
 
   function reset() {
     if (window.ACCESS) window.ACCESS.stop();
     history = [];
+    pendingQuestions = null;
+    pendingCheck = null;
+    checked = false;
     logEl.replaceChildren();
     // Start again clears "Who is this for?" too, so the next person chooses for themselves.
     for (const r of document.querySelectorAll('input[name=mode]')) r.checked = false;
@@ -567,9 +729,10 @@
     updatePlaceholder();
     if (!busy) sendLabel.textContent = t('send');
   });
-  form.addEventListener('submit', (e) => { e.preventDefault(); send(input.value); });
+  // A typed message also carries any answers tapped on the latest questions.
+  form.addEventListener('submit', (e) => { e.preventDefault(); send(withAnswers(input.value)); });
   input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(input.value); }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(withAnswers(input.value)); }
   });
   $('#reset').addEventListener('click', reset);
 

@@ -62,10 +62,12 @@ The Worker sends Claude every scheme with each message, but without contact deta
 
 ### What the Worker sends back to the page
 
-`{ status, message, recommendations: [{ id, why, fit, check_first }], safety_concern, urgent_types, pii_detected, understood_needs, follow_up_questions }`
+`{ status, message, recommendations: [{ id, why, fit, check_first }], safety_concern, urgent_types, pii_detected, understood_needs, follow_up_questions, question_options: [{ question, options }] }`
 
 - `status` is `results` or `needs_more_info`. A reply that asks questions has no cards.
 - At most two follow-up questions are asked in a whole chat. The page adds `(Follow-up questions asked: N)` to the history after a reply that asked questions, and the Worker counts it.
+- `question_options` has the same questions with two to four short answers each. The page shows them as tap-to-answer buttons and adds "Prefer not to say" itself; the person can still type instead. A question with fewer than two usable answers comes back with `options: []` and is shown as plain text.
+- Before the first cards in a chat, the page shows `understood_needs` as "Have we understood you?". The cards are held in the page until the person says yes, so that costs no extra AI call. If they say something is wrong, their correction is sent with a note in the history that the summary was not right and no services were shown.
 - When `safety_concern` is true there are never cards or questions. The crisis wording backstop in the Worker sets it even if the model doesn't.
 
 ### Urgent support contacts

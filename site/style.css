@@ -432,3 +432,44 @@ fieldset.mode.invalid { border-inline-start: 4px solid #d5281b; padding-inline-s
 .contact-btns { display: flex; flex-wrap: wrap; gap: .5rem; }
 .contact-thanks { margin: 0; }
 html.high-contrast .contact-ask { background: #fff; border: 2px solid #000; }
+
+/* ---------- Tap-to-answer follow-up questions ---------- */
+/* Each question is a fieldset of radio buttons drawn as large white tap targets in the HWL teal. The radio
+   itself stays in place (and visible) so keyboards, screen readers and high contrast all behave normally. */
+.answer-box { margin: .85rem 0 0; display: flex; flex-direction: column; gap: .85rem; }
+.answer-q { border: 0; margin: 0; padding: 0; min-width: 0; }
+.answer-q legend { font-family: var(--heading-font); font-weight: 700; font-size: 1.05rem; padding: 0; margin: 0 0 .5rem; }
+.answer-options { display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: .5rem; }
+.answer-option { display: flex; align-items: center; gap: .65rem; min-height: 3rem; padding: .55rem .9rem; background: #fff; color: var(--text); border: 2px solid #c5e3df; border-radius: 10px; cursor: pointer; line-height: 1.3; }
+.answer-option:hover { border-color: var(--blue); }
+.answer-option input { flex: none; width: 1.2rem; height: 1.2rem; margin: 0; accent-color: var(--blue); }
+.answer-option:has(input:checked) { border-color: var(--blue); background: #fff; box-shadow: inset 0 0 0 1px var(--blue); font-weight: 600; }
+.answer-option:has(input:focus-visible) { outline: 3px solid var(--focus); box-shadow: 0 0 0 5px #000; }
+.answer-q:disabled .answer-option { cursor: default; opacity: .75; }
+.answer-q:disabled .answer-option:has(input:checked) { opacity: 1; }
+.answer-q:disabled .answer-option:not(:has(input:checked)) { display: none; }
+.bubble p.answer-hint { font-size: .95rem; color: var(--grey); margin: 0; }
+.bubble p.answer-error { color: var(--crisis); font-weight: 700; margin: 0; }
+.answer-continue { align-self: flex-start; }
+
+/* ---------- "Have we understood you?" ---------- */
+.bubble.check-summary { border-inline-start: 6px solid var(--accent); }
+.check-title { font-size: 1.3rem; margin: 0 0 .35rem; }
+.check-list { margin: .5rem 0 1rem; padding: 0; list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+.check-list li { background: #fff; border-radius: 8px; padding: .55rem .9rem; font-weight: 600; border: 1px solid #c5e3df; }
+.check-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+.bubble p.check-fix { margin: .85rem 0 0; font-weight: 600; color: var(--dark-blue); }
+.bubble p.check-done { color: var(--grey); font-size: .95rem; margin: 0; }
+
+@media (max-width: 600px) {
+  .answer-options { grid-template-columns: 1fr; }
+  .check-actions .btn { width: 100%; justify-content: center; }
+}
+
+html.high-contrast .answer-option,
+html.high-contrast .check-list li { border: 2px solid #000; background: #fff; color: #000; }
+html.high-contrast .answer-option:has(input:checked) { background: #000; color: #fff; box-shadow: none; }
+html.high-contrast .answer-option input { accent-color: #000; }
+html.high-contrast .bubble.check-summary { border-inline-start-width: 8px; border-inline-start-color: #000; }
+html.high-contrast .bubble p.check-fix { color: #000; }
+html.high-contrast .answer-option:has(input:checked) input { accent-color: #fff; }

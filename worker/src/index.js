@@ -91,8 +91,30 @@ const URGENT_TYPES = ['medical', 'mental_health_crisis', 'domestic_abuse', 'chil
 // Covers English, Polish and Urdu wording.
 const QUESTION_WORD_RE = /question|pytani|pytań|سوال/i;
 const QUESTION_MARK_RE = /[?؟]/;
+
+// A follow-up question comes from the model as { question, options } so the page can show the answers as
+// buttons. A plain string is still accepted (older replies, or the model ignoring the schema): it is shown
+// with no buttons and the person types their answer. Options are short, at most four, with no duplicates.
+// The page adds "Prefer not to say" itself, so the model's own version of that is dropped.
+const MAX_OPTIONS = 4;
+const OWN_OPTION_RE = /^(prefer not to say|i'?d rather not say|rather not say|other|something else|wol(ę|e) nie m(ó|o)wi(ć|c)|inne|کچھ اور|نہیں بتانا چاہت)/i;
+function questionText(q) {
+  if (typeof q === 'string') return q.trim();
+  return q && typeof q.question === 'string' ? q.question.trim() : '';
+}
+function cleanQuestion(q) {
+  const question = questionText(q).slice(0, 300);
+  if (!question) return null;
+  const seen = new Set();
+  const options = (q && Array.isArray(q.options) ? q.options : [])
+    .map((o) => String(o == null ? '' : o).replace(/\s+/g, ' ').trim().slice(0, 80))
+    .filter((o) => o && !OWN_OPTION_RE.test(o) && !seen.has(o.toLowerCase()) && seen.add(o.toLowerCase()))
+    .slice(0, MAX_OPTIONS);
+  return { question, options: options.length >= 2 ? options : [] };
+}
+
 function promisesMissingQuestions(input) {
-  const qs = Array.isArray(input.follow_up_questions) ? input.follow_up_questions.filter((q) => typeof q === 'string' && q.trim()) : [];
+  const qs = Array.isArray(input.follow_up_questions) ? input.follow_up_questions.filter((q) => questionText(q)) : [];
   if (qs.length || input.urgent_support === true) return false;
   if (input.status === 'needs_more_info') return true;
   const msg = String(input.message || '');
@@ -179,7 +201,19 @@ function respondTool(questionsLeft) {
   };
   const required = ['status', 'message', 'urgent_support', 'urgent_types', 'pii_detected', 'understood_needs', 'matches'];
   if (questionsLeft > 0) {
-    properties.follow_up_questions = { type: 'array', maxItems: questionsLeft, items: { type: 'string' }, description: 'Each question you are asking, written out in full (the same wording as in message). Required whenever status is needs_more_info. Empty when you are giving results.' };
+    properties.follow_up_questions = {
+      type: 'array',
+      maxItems: questionsLeft,
+      description: 'Each question you are asking, with answers the person can tap. Required whenever status is needs_more_info. Empty when you are giving results.',
+      items: {
+        type: 'object',
+        properties: {
+          question: { type: 'string', description: 'The question written out in full (the same wording as in message).' },
+          options: { type: 'array', minItems: 2, maxItems: MAX_OPTIONS, items: { type: 'string' }, description: 'Two to four short answers (a few words each) covering the likely replies, in the language of the page. Do not include "Prefer not to say" or "Something else": the page adds those.' },
+        },
+        required: ['question', 'options'],
+      },
+    };
     required.push('follow_up_questions');
   }
   return {
@@ -343,7 +377,7 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
 
     // Follow-up questions: at most the number left, and only when the model is really asking.
     // A reply with questions and no cards is a question reply, even if the model labelled it "results".
-    let questions = list(input.follow_up_questions).map((q) => clean(q, 300)).filter(Boolean).slice(0, Math.max(questionsLeft, 0));
+    let questions = list(input.follow_up_questions).map(cleanQuestion).filter(Boolean).slice(0, Math.max(questionsLeft, 0));
     const asking = input.status === 'needs_more_info' || !list(input.matches).some((x) => x && OPEN_SET.has(x.service_id));
     let status = asking && questions.length && !urgent ? 'needs_more_info' : 'results';
     if (status === 'results') questions = [];
@@ -373,7 +407,9 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
         urgent_types: urgent ? urgentTypes : [],
         pii_detected: input.pii_detected === true,
         understood_needs: urgent ? [] : list(input.understood_needs).map((x) => clean(x, 100)).filter(Boolean).slice(0, 5),
-        follow_up_questions: questions,
+        // The questions as plain text (as before), and the same questions with their tap-to-answer options.
+        follow_up_questions: questions.map((q) => q.question),
+        question_options: questions,
       },
       200,
       cors

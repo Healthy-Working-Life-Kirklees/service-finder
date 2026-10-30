@@ -88,7 +88,7 @@
     const dates = periodDates();
     const inPeriod = new Set(dates);
     const byDay = new Map(dates.map((d) => [d, {}]));
-    const t = { ev: {}, links: {}, linkByScheme: {}, shown: {}, contacted: {}, contactedByScheme: {}, a11y: {}, listen: {}, lang: {}, mode: {}, copy: 0 };
+    const t = { ev: {}, links: {}, linkByScheme: {}, shown: {}, contacted: {}, contactedByScheme: {}, summary: {}, answers: {}, a11y: {}, listen: {}, lang: {}, mode: {}, copy: 0 };
     const add = (o, k, n) => { o[k] = (o[k] || 0) + n; };
     for (const day of days) {
       if (!inPeriod.has(day.date)) continue;
@@ -103,6 +103,8 @@
         if (ev === 'link') { add(t.links, p[2], n); add(t.linkByScheme, p[1], n); }
         if (ev === 'shown') add(t.shown, p[1], n);
         if (ev === 'contacted') { add(t.contacted, p[2], n); t.contactedByScheme[p[1]] = t.contactedByScheme[p[1]] || {}; add(t.contactedByScheme[p[1]], p[2], n); }
+        if (ev === 'summary') add(t.summary, p[1], n);
+        if (ev === 'answers') add(t.answers, p[1], n);
         if (ev === 'a11y') add(t.a11y, p[1], n);
         if (ev === 'listen') add(t.listen, p[1], n);
         if (ev === 'copy') t.copy += n;
@@ -233,6 +235,15 @@
           { label: 'No services suggested', value: ev('no-results'), extra: pct(ev('no-results'), searches) },
           { label: 'A follow-up question', value: ev('question'), extra: pct(ev('question'), searches) },
           { label: 'Urgent support shown', value: ev('urgent'), extra: pct(ev('urgent'), searches) },
+        ]),
+        hbars('"Have we understood you?" check', [
+          { label: 'Yes, show the support', value: t.summary.yes || 0, extra: pct(t.summary.yes || 0, (t.summary.yes || 0) + (t.summary.changed || 0)) },
+          { label: 'Changed something first', value: t.summary.changed || 0, extra: pct(t.summary.changed || 0, (t.summary.yes || 0) + (t.summary.changed || 0)) },
+        ], { note: 'Shown before the first services in a conversation.' }),
+        hbars('How follow-up questions were answered', [
+          { label: 'Tapped an answer', value: t.answers.tapped || 0 },
+          { label: 'Typed an answer', value: t.answers.typed || 0 },
+          { label: 'Tapped and typed', value: t.answers.both || 0 },
         ]),
         hbars('Links opened on service cards', Object.keys(LINK_LABELS).map((k) => ({ label: LINK_LABELS[k], value: t.links[k] || 0 }))),
         hbars('"Did you get in touch?" answers', ['yes', 'notyet', 'no'].map((k) => ({ label: ANSWER_LABELS[k], value: t.contacted[k] || 0, extra: pct(t.contacted[k] || 0, answers) })),

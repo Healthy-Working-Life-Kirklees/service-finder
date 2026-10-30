@@ -20,6 +20,8 @@ export const LINK_KINDS = ['referral', 'website', 'phone', 'email', 'directions'
 export const A11Y_KINDS = ['size-large', 'size-larger', 'contrast'];
 export const LISTEN_KINDS = ['reply', 'card'];
 export const CONTACT_ANSWERS = ['yes', 'notyet', 'no'];
+export const SUMMARY_ANSWERS = ['yes', 'changed'];
+export const ANSWER_KINDS = ['tapped', 'typed', 'both'];
 const RETENTION_MONTHS = 24;
 const MAX_BODY = 512;
 
@@ -33,6 +35,8 @@ export const PAGE_EVENTS = {
   a11y: ['k'], // text size or high contrast switched on
   other: [], // "Are there other options?" pressed
   contacted: ['s', 'k'], // "Did you get in touch?": scheme, yes / not yet / no
+  summary: ['k'], // "Have we understood you?": yes, or the person changed something
+  answers: ['k'], // how follow-up questions were answered: tapped, typed or both
 };
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -60,7 +64,7 @@ export function eventKeys(body, ids) {
   if (mode !== 'none' && !MODES.includes(mode)) return { error: 'Unknown mode.' };
   const needScheme = PAGE_EVENTS[e].includes('s');
   if (needScheme && (typeof body.s !== 'string' || !ids.has(body.s))) return { error: 'Unknown scheme.' };
-  const kinds = { link: LINK_KINDS, listen: LISTEN_KINDS, a11y: A11Y_KINDS, contacted: CONTACT_ANSWERS }[e];
+  const kinds = { link: LINK_KINDS, listen: LISTEN_KINDS, a11y: A11Y_KINDS, contacted: CONTACT_ANSWERS, summary: SUMMARY_ANSWERS, answers: ANSWER_KINDS }[e];
   if (kinds && !kinds.includes(body.k)) return { error: 'Unknown kind.' };
   const parts = [e];
   if (needScheme) parts.push(body.s);

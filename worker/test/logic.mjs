@@ -145,6 +145,34 @@ reply = tool(reply0({ status: 'results', follow_up_questions: ['Stray question?'
 r = await call('claude-sonnet-5-5');
 check('questions: stray question dropped from a results reply', r.body.status === 'results' && r.body.follow_up_questions.length === 0 && r.body.recommendations.length === 1);
 
+// ----- tap-to-answer options on follow-up questions -----
+reply = tool(reply0({ status: 'results', follow_up_questions: [] }));
+r = await call('claude-sonnet-5-5');
+{
+  const fq = sent.tools[0].input_schema.properties.follow_up_questions;
+  check('options: schema asks for { question, options } with 2-4 options', fq.items.type === 'object' && fq.items.required.join() === 'question,options' && fq.items.properties.options.minItems === 2 && fq.items.properties.options.maxItems === 4, JSON.stringify(fq.items));
+}
+reply = tool(reply0({ status: 'needs_more_info', message: 'Which town are you nearest to? Are you working at the moment?', matches: [], follow_up_questions: [
+  { question: 'Which town are you nearest to?', options: ['Batley', 'Dewsbury', ' batley ', 'Huddersfield', 'Prefer not to say', 'Somewhere else in Kirklees', 'Holmfirth'] },
+  { question: 'Are you working at the moment?', options: ['Working', 'x'.repeat(200), 'Other'] },
+] }));
+r = await call('claude-sonnet-5-5');
+{
+  const qo = r.body.question_options || [];
+  check('options: plain question list still returned for the page', r.body.follow_up_questions.join('|') === 'Which town are you nearest to?|Are you working at the moment?', JSON.stringify(r.body.follow_up_questions));
+  check('options: duplicates and "Prefer not to say" dropped, capped at 4', qo[0] && qo[0].options.join('|') === 'Batley|Dewsbury|Huddersfield|Somewhere else in Kirklees', JSON.stringify(qo[0]));
+  check('options: long options cut to 80 characters, "Other" dropped', qo[1] && qo[1].options.length === 2 && qo[1].options[1].length === 80 && !qo[1].options.includes('Other'), JSON.stringify(qo[1]));
+}
+reply = tool(reply0({ status: 'needs_more_info', message: 'Which town?', matches: [], follow_up_questions: [{ question: 'Which town?', options: ['Batley'] }] }));
+r = await call('claude-sonnet-5-5');
+check('options: a single option is not enough -> question kept, no buttons', r.body.status === 'needs_more_info' && r.body.question_options[0].options.length === 0, JSON.stringify(r.body.question_options));
+reply = tool(reply0({ status: 'needs_more_info', message: 'Which town?', matches: [], follow_up_questions: ['Which town?'] }));
+r = await call('claude-sonnet-5-5');
+check('options: a plain-text question from the model still works', r.body.status === 'needs_more_info' && r.body.follow_up_questions[0] === 'Which town?' && r.body.question_options[0].options.length === 0, JSON.stringify(r.body));
+reply = tool(reply0({ urgent_support: true, urgent_types: ['medical'], status: 'needs_more_info', matches: [], follow_up_questions: [{ question: 'Where are you?', options: ['Batley', 'Dewsbury'] }] }));
+r = await call('claude-sonnet-5-5');
+check('options: urgent support -> no questions and no options', r.body.status === 'results' && r.body.question_options.length === 0 && r.body.follow_up_questions.length === 0, JSON.stringify(r.body));
+
 // ----- questions promised but missing (the "Two quick questions..." bug) -----
 // A sequence of replies, one per call to the model; counts the calls.
 let calls = 0;
@@ -785,6 +813,10 @@ check('usage: contacted answer accepted', (await usPost({ e: 'contacted', s: ope
 check('usage: accessibility event accepted', (await usPost({ e: 'a11y', k: 'contrast', lang: 'en' })) === 204);
 uc = await todayCounts();
 check('usage: page events counted with fixed values only', uc['link|' + openId + '|referral|en|public'] === 1 && uc['visit|ur|none'] === 1 && uc['contacted|' + openId + '|notyet|en|staff'] === 1 && uc['a11y|contrast|en|none'] === 1, JSON.stringify(uc));
+check('usage: summary check and answer kind accepted', (await usPost({ e: 'summary', k: 'changed', lang: 'en', mode: 'public' })) === 204 && (await usPost({ e: 'answers', k: 'tapped', lang: 'pl', mode: 'staff' })) === 204);
+uc = await todayCounts();
+check('usage: summary and answers counted', uc['summary|changed|en|public'] === 1 && uc['answers|tapped|pl|staff'] === 1, JSON.stringify(uc));
+check('usage: unknown summary or answer kind refused', (await usPost({ e: 'summary', k: 'maybe' })) === 400 && (await usPost({ e: 'answers', k: 'Batley' })) === 400);
 check('usage: unknown scheme refused', (await usPost({ e: 'link', s: 'not-a-scheme', k: 'referral' })) === 400);
 check('usage: unknown event refused', (await usPost({ e: 'typed', text: 'hello' })) === 400);
 check('usage: extra field refused', (await usPost({ e: 'visit', text: 'my name is' })) === 400);
