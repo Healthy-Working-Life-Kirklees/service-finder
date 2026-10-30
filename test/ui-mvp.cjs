@@ -94,7 +94,7 @@ async function worker(route) {
     lastChat = body;
     if (/crisis/i.test(last)) return json({ status: 'results', message: 'I am sorry you feel like this.', recommendations: [], safety_concern: true, urgent_types: ['mental_health_crisis'], pii_detected: false, understood_needs: [], follow_up_questions: [] });
     if (/abuse/i.test(last)) return json({ status: 'results', message: 'I am so sorry. You deserve to be safe.', recommendations: [], safety_concern: true, urgent_types: ['domestic_abuse'], pii_detected: false, understood_needs: [], follow_up_questions: [] });
-    if (/unsure/i.test(last)) return json({ status: 'needs_more_info', message: 'Which town are you nearest to?', recommendations: [], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: ['needs support'], follow_up_questions: ['Which town are you nearest to?'], question_options: [{ question: 'Which town are you nearest to?', options: ['Batley', 'Dewsbury', 'Huddersfield'] }] });
+    if (/unsure/i.test(last)) return json({ status: 'needs_more_info', message: 'Thanks, I can help. One quick question.', recommendations: [], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: ['needs support'], follow_up_questions: ['Which town are you nearest to?'], question_options: [{ question: 'Which town are you nearest to?', options: ['Batley', 'Dewsbury', 'Huddersfield'] }] });
     if (/Jane Smith/.test(last)) return json({ status: 'results', message: 'Here is a match.', recommendations: [], safety_concern: false, urgent_types: [], pii_detected: true, understood_needs: [], follow_up_questions: [] });
     return json({ status: 'results', message: 'Here is a match.', recommendations: [{ id: 'my-way-forward', why: 'Fits your age and situation.', fit: 'possible', check_first: 'Check they are not claiming Universal Credit with a job-search requirement.' }], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: ['aged 20', 'anxious'], follow_up_questions: [] });
   }
@@ -178,7 +178,7 @@ async function worker(route) {
   check('main: choosing hides the prompt', !(await page.locator('#mode-error').isVisible()));
   await page.click('#send');
   await page.waitForSelector('.check-summary');
-  check('check: summary shown before any cards', (await page.locator('.card').count()) === 0 && (await page.locator('.check-summary h2').textContent()) === 'Have we understood you?' && (await page.locator('.check-list li').allTextContents()).join('|') === 'aged 20|anxious');
+  check('check: summary shown before any cards', (await page.locator('.card').count()) === 0 && (await page.locator('.check-summary h2').textContent()) === 'Have we understood you?' && (await page.locator('.check-list li').allTextContents()).join('|') === 'Aged 20|Anxious');
   check('check: no feedback buttons while the summary waits', (await page.locator('.fb-reply').count()) === 0);
   await page.waitForTimeout(300);
   check('check: summary announced to screen readers', (await page.textContent('#sr-status')).includes('Have we understood you?'));
@@ -236,7 +236,7 @@ async function worker(route) {
   check('main: crisis panel shown when flagged', (await page.locator('.crisis').count()) === 1);
   check('feedback: no helpful buttons or feedback links under an urgent support reply', (await page.locator('.fb-reply').count()) === 1);
   check('main: card shows the fit badge and the check-first line', (await page.locator('.card .badge.fit-possible').first().textContent()) === 'Worth checking' && (await page.locator('.card .check').first().textContent()).startsWith('Check first:'));
-  check('main: what was understood is in the summary, not repeated under the confirmed results', (await page.locator('.check-list').first().textContent()).includes('anxious') && (await page.locator('.bubble .understood').count()) === 0);
+  check('main: what was understood is in the summary, not repeated under the confirmed results', (await page.locator('.check-list').first().textContent()).includes('Anxious') && (await page.locator('.bubble .understood').count()) === 0);
   check('main: mental health crisis panel has the Single Point of Access number', (await page.locator('.crisis').first().textContent()).includes('01924 316830'));
   await page.fill('#message', 'there is abuse at home');
   await chooseMode(page);
@@ -258,6 +258,8 @@ async function worker(route) {
   await qBox.locator('label.answer-option', { hasText: 'Dewsbury' }).click();
   await qBox.locator('.answer-continue').click();
   await page.waitForFunction(() => document.querySelectorAll('.bubble.assistant').length >= 6 && !document.querySelector('#send').disabled);
+  check('answers: the question asked is kept in the history for the AI, even though it was only shown with buttons', lastChat.messages.some((m) => m.role === 'assistant' && m.content.startsWith('Thanks, I can help. One quick question.') && m.content.includes('Which town are you nearest to?')), JSON.stringify(lastChat.messages));
+  check('answers: no "what I have understood" line under a question', (await page.locator('.bubble.assistant').filter({ has: page.locator('.answer-box') }).locator('.understood').count()) === 0);
   check('answers: the tapped answer is sent with its question', lastChat.messages[lastChat.messages.length - 1].content === 'Which town are you nearest to? Dewsbury', JSON.stringify(lastChat.messages.slice(-1)));
   check('answers: the old question keeps only the picked answer and can no longer be changed', (await qBox.locator('fieldset[disabled]').count()) === 1 && (await qBox.locator('.answer-continue').count()) === 0);
   check('usage: tapped answer counted', usageSent.some((e) => e.e === 'answers' && e.k === 'tapped'));

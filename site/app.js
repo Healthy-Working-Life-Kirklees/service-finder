@@ -453,12 +453,18 @@
     const box = el('div', { class: 'bubble assistant check-summary', role: 'group', 'aria-labelledby': titleId },
       el('h2', { id: titleId, class: 'check-title', text: t(staff ? 'checkTitleStaff' : 'checkTitleSelf') }),
       el('p', { text: t('checkIntro') }),
-      el('ul', { class: 'check-list' }, data.understood_needs.map((x) => el('li', { dir: 'auto', text: x }))),
+      el('ul', { class: 'check-list' }, data.understood_needs.map((x) => el('li', { dir: 'auto', text: capitalise(x) }))),
       el('div', { class: 'check-actions' }, yes, no),
       el('p', { class: 'check-fix', hidden: true, text: t('checkFix') })
     );
     if (window.ACCESS) box.append(el('div', { class: 'bubble-tools' }, window.ACCESS.listenButton(() => [...box.querySelectorAll('h2, p:not([hidden]), li')].map((p) => p.textContent).join(' '), window.I18N.locale)));
     return box;
+  }
+
+  // Summary lines are written as short phrases ("off work sick"); each starts with a capital on screen.
+  function capitalise(x) {
+    const s = String(x).trim();
+    return s.charAt(0).toLocaleUpperCase(window.I18N.locale) + s.slice(1);
   }
 
   function confirmCheck() {
@@ -573,8 +579,9 @@
       if (missing.length) b.append(el('ol', { class: 'questions', dir: 'auto' }, missing.map((q) => el('li', { text: q }))));
       if (tappable.length && !data.safety_concern) b.append(questionBox(tappable));
       const needs = data.understood_needs || [];
-      // Once the summary has been checked, it isn't repeated under the results.
-      if (needs.length && !data.safety_concern && !(data.status === 'results' && checked)) b.append(el('p', { class: 'understood', dir: 'auto', text: t('understood') + needs.join(t('listSep')) + t('end') }));
+      // Shown only under results that didn't go through the summary check (for example, no services found).
+      // Not under questions (the check comes next) and not once the summary has been checked.
+      if (needs.length && !data.safety_concern && data.status === 'results' && !checked) b.append(el('p', { class: 'understood', dir: 'auto', text: t('understood') + needs.join(t('listSep')) + t('end') }));
       if (data.pii_detected) b.append(el('p', { class: 'pii-note', text: t('pii') }));
       // Listen button: reads the whole reply, including any urgent support panel and questions, in the page's language.
       if (window.ACCESS) {
@@ -614,7 +621,8 @@
       const shown = (data.recommendations || []).map((x) => x.id).join(', ');
       // The Worker counts the "(Follow-up questions asked: N)" marker to keep to its limit on questions.
       const askedCount = questions.length;
-      history.push({ role: 'assistant', content: data.message + (missing.length ? '\n\n' + missing.join('\n') : '') + (shown ? '\n\n(Services shown: ' + shown + ')' : '') + (askedCount ? '\n\n(Follow-up questions asked: ' + askedCount + ')' : '') });
+      const notInMessage = asked.filter((q) => !squash(data.message).includes(squash(q.question))).map((q) => q.question);
+      history.push({ role: 'assistant', content: data.message + (notInMessage.length ? '\n\n' + notInMessage.join('\n') : '') + (shown ? '\n\n(Services shown: ' + shown + ')' : '') + (askedCount ? '\n\n(Follow-up questions asked: ' + askedCount + ')' : '') });
     }
   }
 

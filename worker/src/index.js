@@ -178,7 +178,7 @@ function respondTool(questionsLeft) {
       enum: questionsLeft > 0 ? ['results', 'needs_more_info'] : ['results'],
       description: 'results = you are giving your answer (matches may be empty). needs_more_info = you are asking a follow-up question and returning no matches.',
     },
-    message: { type: 'string', description: 'Your reply to the person in plain text (no markdown). Short. If you are asking questions, write each one out in full here. Never say you have questions without writing them.' },
+    message: { type: 'string', description: 'Your reply to the person in plain text (no markdown). Short. If you are asking questions, this is a one or two sentence lead-in only: the questions go in follow_up_questions, which the page shows under it with answer buttons.' },
     urgent_support: { type: 'boolean', description: 'True only if the text suggests a medical emergency, suicidal thoughts, self-harm, abuse, domestic violence, or anyone at risk of serious harm.' },
     urgent_types: { type: 'array', items: { type: 'string', enum: URGENT_TYPES }, description: 'The kinds of urgent support. Empty unless urgent_support is true.' },
     pii_detected: { type: 'boolean', description: 'True if the text contains a name, address, phone number, date of birth or NHS number.' },
@@ -208,7 +208,7 @@ function respondTool(questionsLeft) {
       items: {
         type: 'object',
         properties: {
-          question: { type: 'string', description: 'The question written out in full (the same wording as in message).' },
+          question: { type: 'string', description: 'The question written out in full. Shown to the person under your message.' },
           options: { type: 'array', minItems: 2, maxItems: MAX_OPTIONS, items: { type: 'string' }, description: 'Two to four short answers (a few words each) covering the likely replies, in the language of the page. Do not include "Prefer not to say" or "Something else": the page adds those.' },
         },
         required: ['question', 'options'],
@@ -350,7 +350,7 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
             messages: [
               ...messages,
               { role: 'assistant', content: out.content },
-              { role: 'user', content: [{ type: 'tool_result', tool_use_id: block.id, is_error: true, content: 'Your reply says you have questions but does not include them. Call respond again. If you are asking, write each question out in full in "message" and list them in "follow_up_questions", with status "needs_more_info". If you do not need to ask, give your results instead and do not mention questions.' }] },
+              { role: 'user', content: [{ type: 'tool_result', tool_use_id: block.id, is_error: true, content: 'Your reply says you have questions but does not include them. Call respond again. If you are asking, put each question, with its answer options, in "follow_up_questions", with status "needs_more_info". If you do not need to ask, give your results instead and do not mention questions.' }] },
             ],
           }),
           signal: AbortSignal.timeout(40_000),
