@@ -102,6 +102,17 @@ A bar under the header lets people choose a larger text size (A, A+, A++) and sw
 - Each AI reply and each scheme card has a **Listen** button that reads it aloud using the voices built into the person's own device (the browser's speech synthesis). There is no extra service or cost. Device voices are preferred; some browsers (for example Chrome on a desktop) also offer online voices, which send the text to the browser maker to be spoken, and are only used when the device has no voice of its own for that language.
 - Replies are read in the page's language and cards in English. If a device has no voice for a language (Urdu voices are often missing), the Listen buttons for that language are hidden.
 
+## Preview site (trying changes before they go live)
+
+Pushing to the `experimental` branch deploys a separate preview through `.github/workflows/preview.yml`. It is one Cloudflare Worker, `hwl-service-finder-preview` (`[env.preview]` in `worker/wrangler.toml`), that serves both the pages and `/chat`, so the live GitHub Pages site and the live Worker are not touched. The preview's address is on the run's summary page in the Actions tab, and every page shows a "Preview version" label.
+
+- It has its own daily cap (`MAX_PER_DAY` = 60), team log, feedback and usage counts, kept apart from live.
+- It accepts requests only from its own address (`ALLOW_SELF_ORIGIN`). The live Worker never sets this.
+- Secrets belong to each Worker. The workflow copies `ANTHROPIC_API_KEY` (or `PREVIEW_ANTHROPIC_API_KEY`, if you want a separate key with its own spend limit) and `TEAM_PASSCODE` from GitHub secrets when they exist. Otherwise add them to `hwl-service-finder-preview` in the Cloudflare dashboard.
+- The Admin section is built in, as on the live site, and signs in with the preview Worker's own `TEAM_PASSCODE`.
+- To preview another branch, run the workflow by hand and pick the branch. There is one preview at a time.
+- Anyone with the address can use it, so share it only with testers. To lock it down, put Cloudflare Access in front of the preview Worker.
+
 ## Local test of the Worker
 
     npm install && npm run build-data
@@ -182,7 +193,7 @@ The Worker keeps **daily tallies only**, for the review team to see how the find
 
 **What is not collected:** IP addresses, any user or session id, cookies or browser storage, times of day, browser details, or anything anyone typed. Each count is just a date, the kind of event, and where relevant a scheme id, the kind of link or answer, the page language and "who is this for". The Worker checks every event against fixed lists and the scheme ids and rejects anything else. Searches are counted by the Worker itself when it answers, not by the page. The privacy note under the chat box says these counts are kept.
 
-**AI token use and cost (for the pilot budget):** the Worker also adds up, per day and per model, the AI calls it made and the tokens Anthropic reports for them (input, output, cache reads and cache writes), plus a count of searches where the AI call failed (`ai-error`). These are daily totals only and can't be linked to a search or a person. The Feedback and usage page turns them into an estimated cost, cost per conversation and per search, and how much of the input came from the cheaper prompt cache. The prices are in `PRICES` at the top of `mvp/usage-view.js` (Anthropic list prices, US dollars); update them if Anthropic's prices or the model change. It's an estimate for trends: the Anthropic Console's Cost page (KHWL organisation, filtered by workspace) is the official figure. In the CSV export the token totals are rows with event `ai-calls`, `ai-input-tokens`, `ai-output-tokens`, `ai-cache-read-tokens` and `ai-cache-write-tokens`, and the model in the detail column.
+**AI token use and cost (for the pilot budget):** the Worker also adds up, per day and per model, the AI calls it made and the tokens Anthropic reports for them (input, output, cache reads and cache writes), plus a count of searches where the AI call failed (`ai-error`). These are daily totals only and can't be linked to a search or a person. The Feedback and usage page turns them into an estimated cost, cost per conversation and per search, and how much of the input came from the cheaper prompt cache. The prices are in `PRICES` at the top of `admin/usage-view.js` (Anthropic list prices, US dollars); update them if Anthropic's prices or the model change. It's an estimate for trends: the Anthropic Console's Cost page (KHWL organisation, filtered by workspace) is the official figure. In the CSV export the token totals are rows with event `ai-calls`, `ai-input-tokens`, `ai-output-tokens`, `ai-cache-read-tokens` and `ai-cache-write-tokens`, and the model in the detail column.
 
 **Unique users:** the site deliberately doesn't recognise returning visitors, so it can't count unique people. "Conversations started" (a first message) is the nearest honest measure; "page visits" counts every page load.
 

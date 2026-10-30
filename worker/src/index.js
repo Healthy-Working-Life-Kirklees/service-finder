@@ -231,7 +231,12 @@ export default {
     // ALLOWED_ORIGIN can list more than one address, separated by commas (the site's own domain and GitHub Pages).
     const allowed = String(env.ALLOWED_ORIGIN || '').split(',').map((x) => x.trim()).filter(Boolean);
     const origin = request.headers.get('Origin') || '';
-    const originOk = allowed.includes(origin);
+    // The preview Worker (see [env.preview] in wrangler.toml) serves its own pages, so it accepts requests from
+    // its own address. The live Worker never sets ALLOW_SELF_ORIGIN and only accepts ALLOWED_ORIGIN.
+    // Browsers leave Origin off same-site GET requests, so Sec-Fetch-Site (set by the browser) is accepted too.
+    const sameSite = origin ? origin === url.origin : request.headers.get('Sec-Fetch-Site') === 'same-origin';
+    const selfOk = env.ALLOW_SELF_ORIGIN === 'true' && sameSite;
+    const originOk = allowed.includes(origin) || selfOk;
     const cors = originOk
       ? {
           'Access-Control-Allow-Origin': origin,

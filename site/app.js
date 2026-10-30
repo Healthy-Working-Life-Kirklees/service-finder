@@ -792,5 +792,12 @@
     .then((d) => { services = new Map(d.services.map((s) => [s.id, s])); })
     .catch(() => bubble('error', t('loadFailed')));
 
+  // On the preview site (see the preview workflow), a label so testers know this isn't the live version.
+  if (window.FINDER_CONFIG && window.FINDER_CONFIG.preview) {
+    const notice = document.querySelector('.notice');
+    const bar = el('p', { class: 'preview-bar', role: 'note', 'data-i18n': 'previewBar', text: t('previewBar') });
+    if (notice) notice.before(bar);
+  }
+
   welcome();
 })();
