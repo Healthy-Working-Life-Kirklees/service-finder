@@ -25,14 +25,14 @@
 
 ## Decisions, constraints & rationale
 
-- Static site (plain HTML/CSS/JS in `site/` folder) — no build step
+- Vite dev server now set up: `npm run dev` serves `site/` folder on port 5173
+- Static site (plain HTML/CSS/JS in `site/` folder) — no build step needed
 - Backend: Cloudflare Worker handles AI matching via Claude
 - Privacy: messages route through Cloudflare to Claude AI and are not saved
 - Service cards include: name, organisation, fit badges, why-matches note, contact details, Google Maps links, referral routes, expandable sections
 
 ## Open questions & assumptions
 
-- Vite dev server not yet set up for live preview — proposed but user hasn't confirmed
 - User hasn't indicated specific changes yet
 - Deployment target/environment unconfirmed
 - Whether the `site/` folder is the sole frontend codebase or if other assets exist
