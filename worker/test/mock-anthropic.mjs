@@ -17,8 +17,12 @@ http
       const last = body.messages[body.messages.length - 1].content;
       const crisis = /crisis/i.test(last);
       const base = { status: 'results', urgent_support: false, urgent_types: [], pii_detected: false, understood_needs: ['mock need'], follow_up_questions: [] };
-      const input = crisis
-        ? { ...base, message: 'I am sorry you are going through this.', urgent_support: true, urgent_types: ['mental_health_crisis'], understood_needs: [], matches: [{ service_id: 'wellness-to-work', fit: 'strong', reason: 'should be dropped', check_first: '' }] }
+      // "bad back" asks a follow-up question with tap-to-answer options (once; the answer then gets results).
+      const asking = /bad back/i.test(last) && body.tools[0].input_schema.properties.follow_up_questions;
+      const input = asking
+        ? { ...base, status: 'needs_more_info', message: 'Thanks. Are you working at the moment?', understood_needs: [], matches: [], follow_up_questions: [{ question: 'Are you working at the moment?', options: ['Working', 'Off work sick', 'Not working'] }] }
+        : crisis
+        ?{ ...base, message: 'I am sorry you are going through this.', urgent_support: true, urgent_types: ['mental_health_crisis'], understood_needs: [], matches: [{ service_id: 'wellness-to-work', fit: 'strong', reason: 'should be dropped', check_first: '' }] }
         : {
             ...base,
             message: 'Mock reply.',

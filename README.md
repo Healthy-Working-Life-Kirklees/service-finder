@@ -97,6 +97,17 @@ A bar under the header lets people choose a larger text size (A, A+, A++) and sw
 - Each AI reply and each scheme card has a **Listen** button that reads it aloud using the voices built into the person's own device (the browser's speech synthesis). There is no extra service or cost. Device voices are preferred; some browsers (for example Chrome on a desktop) also offer online voices, which send the text to the browser maker to be spoken, and are only used when the device has no voice of its own for that language.
 - Replies are read in the page's language and cards in English. If a device has no voice for a language (Urdu voices are often missing), the Listen buttons for that language are hidden.
 
+## Preview site (trying changes before they go live)
+
+Pushing to the `experimental` branch deploys a separate preview through `.github/workflows/preview.yml`. It is one Cloudflare Worker, `hwl-service-finder-preview` (`[env.preview]` in `worker/wrangler.toml`), that serves both the pages and `/chat`, so the live GitHub Pages site and the live Worker are not touched. The preview's address is on the run's summary page in the Actions tab, and every page shows a "Preview version" label.
+
+- It has its own daily cap (`MAX_PER_DAY` = 60), team log, feedback and usage counts, kept apart from live.
+- It accepts requests only from its own address (`ALLOW_SELF_ORIGIN`). The live Worker never sets this.
+- Secrets belong to each Worker. The workflow copies `ANTHROPIC_API_KEY` (or `PREVIEW_ANTHROPIC_API_KEY`, if you want a separate key with its own spend limit), `TEAM_PASSCODE` and `FEEDBACK_PASSCODE` from GitHub secrets when they exist. Otherwise add them to `hwl-service-finder-preview` in the Cloudflare dashboard.
+- The MVP tools follow the same `MVP_TOOLS` repository variable as the live site.
+- To preview another branch, run the workflow by hand and pick the branch. There is one preview at a time.
+- Anyone with the address can use it, so share it only with testers. To lock it down, put Cloudflare Access in front of the preview Worker.
+
 ## Local test of the Worker
 
     npm install && npm run build-data

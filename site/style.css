@@ -473,3 +473,7 @@ html.high-contrast .answer-option input { accent-color: #000; }
 html.high-contrast .bubble.check-summary { border-inline-start-width: 8px; border-inline-start-color: #000; }
 html.high-contrast .bubble p.check-fix { color: #000; }
 html.high-contrast .answer-option:has(input:checked) input { accent-color: #fff; }
+
+/* Preview site only (FINDER_CONFIG.preview): a plain label above the prototype notice. */
+.preview-bar { max-width: 52rem; margin: 0 auto 1rem; padding: .6rem 1rem; background: #fff; border: 2px dashed var(--blue); border-radius: 10px; color: var(--dark-blue); font-weight: 700; text-align: center; }
+html.high-contrast .preview-bar { border-color: #000; color: #000; }

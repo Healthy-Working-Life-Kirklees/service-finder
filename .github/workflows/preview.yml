@@ -1,0 +1,110 @@
+name: Deploy preview
+
+# A separate preview of the finder, for trying out changes before they go to main. Every push to the
+# "experimental" branch builds the pages and deploys them, with the AI, as one Cloudflare Worker called
+# hwl-service-finder-preview ([env.preview] in worker/wrangler.toml). The live site and live Worker are not
+# touched. The preview's address is shown on the run's summary page in the Actions tab.
+#
+# To preview a different branch, run this workflow by hand (Actions > Deploy preview > Run workflow) and
+# pick the branch. There is one preview at a time: each deploy replaces the last.
+on:
+  push:
+    branches: [experimental]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: preview
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            worker/package-lock.json
+
+      # Same checks as the live deploys: a problem in the data or a failing test stops the preview.
+      - name: Check and build the scheme data
+        run: |
+          npm ci
+          npm run check-data
+          npm run build-data
+      - name: Worker logic tests
+        run: node worker/test/logic.mjs
+
+      # The pages are served by the preview Worker itself, so the page talks to its own address.
+      - name: Assemble the preview pages
+        env:
+          MVP_TOOLS: ${{ vars.MVP_TOOLS }}
+        run: |
+          OUT=worker/preview-site
+          rm -rf "$OUT" && mkdir -p "$OUT"
+          cp -r site/. "$OUT/"
+          cp data/services.json "$OUT/services.json"
+          MVP=false
+          if [ "$MVP_TOOLS" = "true" ]; then
+            MVP=true
+            cp -r mvp "$OUT/mvp"
+            cp data/services-all.json "$OUT/mvp/services-all.json"
+            rm -f "$OUT/mvp/README.md"
+          fi
+          printf 'window.FINDER_CONFIG = {apiBase: location.origin, mvpTools: %s, preview: true};' "$MVP" > "$OUT/config.js"
+
+      - name: Install
+        working-directory: worker
+        run: npm ci
+
+      - name: Deploy
+        id: deploy
+        working-directory: worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler deploy --env preview | tee deploy.log
+          URL=$(grep -oE 'https://[a-z0-9.-]+\.workers\.dev' deploy.log | head -1)
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+
+      # Secrets belong to each Worker, so the preview needs its own. If the repository has GitHub secrets
+      # with these names they are copied across; otherwise add them in the Cloudflare dashboard.
+      - name: Copy secrets to the preview Worker
+        working-directory: worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          ANTHROPIC_API_KEY: ${{ secrets.PREVIEW_ANTHROPIC_API_KEY || secrets.ANTHROPIC_API_KEY }}
+          TEAM_PASSCODE: ${{ secrets.TEAM_PASSCODE }}
+          FEEDBACK_PASSCODE: ${{ secrets.FEEDBACK_PASSCODE }}
+        run: |
+          for NAME in ANTHROPIC_API_KEY TEAM_PASSCODE FEEDBACK_PASSCODE; do
+            if [ -n "${!NAME}" ]; then
+              printf '%s' "${!NAME}" | npx wrangler secret put "$NAME" --env preview >/dev/null
+              echo "$NAME copied to the preview Worker."
+            else
+              echo "$NAME is not a GitHub secret, so it was not copied. Add it to hwl-service-finder-preview in the Cloudflare dashboard if needed."
+            fi
+          done
+
+      - name: Show the preview address
+        env:
+          URL: ${{ steps.deploy.outputs.url }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          {
+            echo "### Preview deployed"
+            echo ""
+            echo "Branch: \`$BRANCH\`"
+            echo ""
+            echo "Open: $URL"
+            echo ""
+            echo "If the page says the AI isn't configured, add ANTHROPIC_API_KEY to hwl-service-finder-preview in the Cloudflare dashboard."
+          } >> "$GITHUB_STEP_SUMMARY"

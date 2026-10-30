@@ -229,7 +229,12 @@ export default {
     const url = new URL(request.url);
     const allowed = env.ALLOWED_ORIGIN || '';
     const origin = request.headers.get('Origin') || '';
-    const originOk = Boolean(allowed) && origin === allowed;
+    // The preview Worker (see [env.preview] in wrangler.toml) serves its own pages, so it accepts requests from
+    // its own address. The live Worker never sets ALLOW_SELF_ORIGIN and only accepts ALLOWED_ORIGIN.
+    // Browsers leave Origin off same-site GET requests, so Sec-Fetch-Site (set by the browser) is accepted too.
+    const sameSite = origin ? origin === url.origin : request.headers.get('Sec-Fetch-Site') === 'same-origin';
+    const selfOk = env.ALLOW_SELF_ORIGIN === 'true' && sameSite;
+    const originOk = (Boolean(allowed) && origin === allowed) || selfOk;
     const cors = originOk
       ? {
           'Access-Control-Allow-Origin': origin,

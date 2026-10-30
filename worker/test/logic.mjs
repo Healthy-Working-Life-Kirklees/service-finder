@@ -145,6 +145,20 @@ reply = tool(reply0({ status: 'results', follow_up_questions: ['Stray question?'
 r = await call('claude-sonnet-5-5');
 check('questions: stray question dropped from a results reply', r.body.status === 'results' && r.body.follow_up_questions.length === 0 && r.body.recommendations.length === 1);
 
+// ----- preview Worker: accepts its own address only when ALLOW_SELF_ORIGIN is set -----
+{
+  const PV = 'https://hwl-service-finder-preview.example.workers.dev';
+  const pvChat = async (e, headers) => (await worker.fetch(new Request(PV + '/chat', { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify({ messages: [U('hello')] }) }), { ...env('claude-sonnet-5-5'), ...e })).status;
+  reply = tool(reply0());
+  check('preview: the live Worker refuses a request from its own address', (await pvChat({}, { Origin: PV })) === 403);
+  check('preview: with ALLOW_SELF_ORIGIN, its own address is accepted', (await pvChat({ ALLOWED_ORIGIN: '', ALLOW_SELF_ORIGIN: 'true' }, { Origin: PV })) === 200);
+  check('preview: other sites are still refused', (await pvChat({ ALLOWED_ORIGIN: '', ALLOW_SELF_ORIGIN: 'true' }, { Origin: 'https://evil.example' })) === 403);
+  check('preview: the GitHub Pages site is refused by the preview (ALLOWED_ORIGIN empty)', (await pvChat({ ALLOWED_ORIGIN: '', ALLOW_SELF_ORIGIN: 'true' }, { Origin: O })) === 403);
+  check('preview: a same-site request with no Origin is accepted (Sec-Fetch-Site)', (await pvChat({ ALLOWED_ORIGIN: '', ALLOW_SELF_ORIGIN: 'true' }, { 'Sec-Fetch-Site': 'same-origin' })) === 200);
+  check('preview: no Origin and a cross-site marker is refused', (await pvChat({ ALLOWED_ORIGIN: '', ALLOW_SELF_ORIGIN: 'true' }, { 'Sec-Fetch-Site': 'cross-site' })) === 403);
+  check('preview: the live Worker ignores Sec-Fetch-Site', (await pvChat({}, { 'Sec-Fetch-Site': 'same-origin' })) === 403);
+}
+
 // ----- tap-to-answer options on follow-up questions -----
 reply = tool(reply0({ status: 'results', follow_up_questions: [] }));
 r = await call('claude-sonnet-5-5');

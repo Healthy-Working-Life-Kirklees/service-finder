@@ -104,3 +104,95 @@ namespace_id = "7305"
 [ratelimits.simple]
 limit = 60
 period = 60
+
+# ---------------------------------------------------------------------------------------------------------
+# PREVIEW: a separate Worker for trying out changes before they go live.
+#
+# Deployed by .github/workflows/preview.yml whenever the "experimental" branch is pushed, as its own Worker
+# called hwl-service-finder-preview. It serves the preview pages itself (from worker/preview-site/, built by
+# the workflow) as well as /chat, so the pages and the AI share one address and nothing on GitHub Pages or
+# the live Worker changes. It has its own daily cap, team log, feedback and usage counts.
+#
+# Secrets are per Worker, so the preview needs its own ANTHROPIC_API_KEY (and TEAM_PASSCODE /
+# FEEDBACK_PASSCODE if the MVP tools are wanted there). The workflow copies them from the GitHub secrets
+# of the same names when they exist; otherwise add them in the Cloudflare dashboard
+# (Workers > hwl-service-finder-preview > Settings > Variables and Secrets).
+#
+# Most settings below repeat the ones above because Cloudflare doesn't carry them into an environment.
+# ---------------------------------------------------------------------------------------------------------
+[env.preview]
+workers_dev = true
+
+[env.preview.assets]
+directory = "./preview-site"
+not_found_handling = "none"
+
+[env.preview.vars]
+# The preview's pages come from the Worker itself, so it accepts requests from its own address only.
+ALLOWED_ORIGIN = ""
+ALLOW_SELF_ORIGIN = "true"
+ANTHROPIC_MODEL = "claude-sonnet-5-5"
+# Lower than live: this is for a small group of testers.
+MAX_PER_DAY = "60"
+FEEDBACK_ENABLED = "true"
+MAX_FEEDBACK_PER_DAY = "100"
+USAGE_ENABLED = "true"
+MAX_USAGE_PER_DAY = "5000"
+
+[env.preview.observability]
+enabled = false
+
+[[env.preview.ratelimits]]
+name = "IP_LIMITER"
+namespace_id = "7311"
+[env.preview.ratelimits.simple]
+limit = 10
+period = 60
+
+[[env.preview.ratelimits]]
+name = "LOG_LIMITER"
+namespace_id = "7312"
+[env.preview.ratelimits.simple]
+limit = 60
+period = 60
+
+[[env.preview.ratelimits]]
+name = "FEEDBACK_LIMITER"
+namespace_id = "7313"
+[env.preview.ratelimits.simple]
+limit = 5
+period = 60
+
+[[env.preview.ratelimits]]
+name = "FEEDBACK_READ_LIMITER"
+namespace_id = "7314"
+[env.preview.ratelimits.simple]
+limit = 30
+period = 60
+
+[[env.preview.ratelimits]]
+name = "USAGE_LIMITER"
+namespace_id = "7315"
+[env.preview.ratelimits.simple]
+limit = 60
+period = 60
+
+[[env.preview.durable_objects.bindings]]
+name = "CAP_COUNTER"
+class_name = "DailyCap"
+
+[[env.preview.durable_objects.bindings]]
+name = "LOG_STORE"
+class_name = "LogStore"
+
+[[env.preview.durable_objects.bindings]]
+name = "FEEDBACK_STORE"
+class_name = "FeedbackStore"
+
+[[env.preview.durable_objects.bindings]]
+name = "USAGE_STORE"
+class_name = "UsageStore"
+
+[[env.preview.migrations]]
+tag = "v1"
+new_sqlite_classes = ["DailyCap", "LogStore", "FeedbackStore", "UsageStore"]

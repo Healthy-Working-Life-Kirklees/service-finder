@@ -30,7 +30,7 @@ Local Worker with a mock Anthropic API (no key, no spend):
 
 There is no linter or single-test runner. `logic.mjs` is one script of `check(...)` calls; to focus on one case, run it and read the PASS/FAIL lines. Ask before running `live_chat.py`, as it costs money and hits the per-IP limit of 10 requests a minute.
 
-Deploys happen on push to `main` via `.github/workflows/`: `pages.yml` (site/, mvp/, data/) and `worker.yml` (worker/, data/, prompt/). A change to `data/` redeploys both.
+Deploys happen on push to `main` via `.github/workflows/`: `pages.yml` (site/, mvp/, data/) and `worker.yml` (worker/, data/, prompt/). A change to `data/` redeploys both. Pushes to `experimental` deploy a separate preview instead (`preview.yml`: one Worker, `[env.preview]` in `worker/wrangler.toml`, serving the pages and `/chat` together); it never touches the live site or Worker.
 
 ## Architecture that spans files
 
