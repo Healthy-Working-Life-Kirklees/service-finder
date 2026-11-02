@@ -8,6 +8,7 @@ on:
       - "mvp/**"
       - "data/**"
       - "scripts/**"
+      - "print/**"
       - "package.json"
       - "package-lock.json"
       - ".github/workflows/pages.yml"
@@ -51,6 +52,8 @@ jobs:
           cp -r site/. _site/
           # The live list only: services whose listing decision is "include".
           cp data/services.json _site/services.json
+          # The printable directory (directory.html), built from the same live list. See print/README.md.
+          node scripts/build-print.mjs --site _site
           # The help page and issues log are for the MVP team only. They are included only when the
           # repository variable MVP_TOOLS is exactly "true". Leave it unset or "false" for the wider test.
           MVP=false

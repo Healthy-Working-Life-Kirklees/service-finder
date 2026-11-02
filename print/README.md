@@ -7,6 +7,18 @@ An A4 print version of the Service Finder, one service per page, built from the 
 
 Or open the HTML file in Chrome or Edge and print to A4 with "Background graphics" on.
 
+## On the website
+
+The site has its own copy at `directory.html`, linked from the main page under the example questions ("Browse or print the full directory of services"). The Pages workflow builds it on every deploy with
+
+    node scripts/build-print.mjs --site _site
+
+so it always matches the live list. The website version uses the site's fonts and logos (`site/fonts/`, `site/img/logos/`) and keeps its script and styles in `directory.js` and `directory.css`, because the site's security policy blocks inline ones. It has a bar at the top with a link back to the finder and a "Print the whole directory" button; the bar doesn't print. On a phone the A4 pages are scaled down to fit the screen.
+
+To try it locally: `mkdir -p _site && cp -r site/. _site/ && node scripts/build-print.mjs --site _site`, then serve `_site/` (for example `npx serve _site`). `_site/` is git-ignored.
+
+The page is in English only, like the scheme details. The link text on the main page is translated; the Polish and Urdu wording is a first draft for the translator to check.
+
 What's in it:
 
 - A cover with contents.

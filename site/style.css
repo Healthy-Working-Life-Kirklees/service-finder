@@ -432,3 +432,10 @@ fieldset.mode.invalid { border-inline-start: 4px solid #d5281b; padding-inline-s
 .contact-btns { display: flex; flex-wrap: wrap; gap: .5rem; }
 .contact-thanks { margin: 0; }
 html.high-contrast .contact-ask { background: #fff; border: 2px solid #000; }
+
+/* Link to the printable directory (directory.html), under the example questions */
+.directory-link { display: flex; align-items: center; gap: .5rem; margin: 1.25rem 0 0; font-family: var(--heading-font); font-weight: 700; color: var(--dark-blue); }
+.directory-link svg { flex: none; }
+.directory-link a { color: var(--blue); text-underline-offset: .15em; }
+.directory-link a:hover { color: var(--dark-blue); text-decoration-thickness: 2px; }
+html.high-contrast .directory-link, html.high-contrast .directory-link a { color: #000; }

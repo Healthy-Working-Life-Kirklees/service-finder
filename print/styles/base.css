@@ -139,3 +139,24 @@ a { color: inherit; text-decoration: none; }
   body.printing-one .page:not(.print-target) { display: none; }
   body.printing-one .page.print-target { margin: 0; box-shadow: none; break-after: auto; page-break-after: auto; }
 }
+
+/* ---------- on screen only: the bar at the top, and fitting the pages to the window ---------- */
+.screen-bar { display: none; }
+@media screen {
+  body { padding-top: 1px; }
+  .screen-bar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; gap: 2mm 5mm; padding: 2.5mm 4mm; background: var(--dark); color: #fff; font-family: var(--hf); font-size: 11pt; box-shadow: 0 1px 6px rgba(0,0,0,.25); }
+  .screen-bar a { color: #fff; font-weight: 700; text-decoration: underline; text-underline-offset: .15em; }
+  .sb-title { flex: 1; min-width: 50mm; opacity: .9; }
+  .sb-print { font: inherit; font-weight: 700; padding: 1.6mm 4mm; border-radius: 1.5mm; border: .4mm solid #fff; background: #fff; color: var(--dark); cursor: pointer; }
+  .sb-print:hover { background: var(--light); }
+  .screen-bar a:focus-visible, .sb-print:focus-visible { outline: .8mm solid #ffeb3b; outline-offset: .5mm; }
+  .page { zoom: var(--screen-scale, 1); }
+  /* jumping to a page from an index leaves it clear of the bar (set on the root, so zoom doesn't shrink it) */
+  html { scroll-padding-top: 5.5rem; }
+}
+@media screen and (max-width: 640px) {
+  .screen-bar { gap: 2mm 3mm; padding: 2mm 3mm; font-size: 10.5pt; }
+  .sb-title { display: none; }
+  .sb-print { margin-left: auto; padding: 1.2mm 3mm; }
+}
+@media print { .screen-bar { display: none !important; } }
