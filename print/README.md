@@ -9,7 +9,7 @@ Or open the HTML file in Chrome or Edge and print to A4 with "Background graphic
 
 ## On the website
 
-The site has its own copy at `directory.html`, linked from the main page under the example questions ("Browse or print the full directory of services"). The Pages workflow builds it on every deploy with
+The site has its own copy at `directory.html`, linked from the "Printable directory" button in the main page's top bar, before the language selector (on a phone, a printer icon at the end of the logo row). The Pages workflow builds it on every deploy with
 
     node scripts/build-print.mjs --site _site
 
