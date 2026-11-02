@@ -23,7 +23,8 @@
   "phone": "07946 531169",
   "social": [],
   "locations": [
-    "Various locations in Huddersfield (to be confirmed), with online support"
+    "Various locations in Huddersfield (to be confirmed), with online support",
+    "3M Buckley Innovation Centre, Firth Street, Huddersfield, HD1 3BD"
   ],
   "areas": [
     "Online",
@@ -59,7 +60,7 @@
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
-    "evidence": "Checked by PL on 2026-11-02: Changed Areas to Kirklees wide"
+    "evidence": "Checked by PL on 2026-11-02: added address"
   },
   "listing": {
     "decision": "include",
