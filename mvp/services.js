@@ -15,8 +15,10 @@
   const $ = (s) => document.querySelector(s);
   const cfg = window.FINDER_CONFIG || {};
   const API = String(cfg.apiBase || '').replace(/\/$/, '');
-  const PASS_KEY = 'hwlLogPass'; // shared with the log page, so signing in on one signs in on both
-  const BY_KEY = 'hwlLogBy';
+  // One passcode for all the MVP pages, shared through team-auth.js.
+  const AUTH = window.TEAM_AUTH || { PASS_KEY: 'hwlTeamPass', BY_KEY: 'hwlLogBy', refresh: () => {} };
+  const PASS_KEY = AUTH.PASS_KEY;
+  const BY_KEY = AUTH.BY_KEY;
   const PLACEHOLDER = 'To be completed';
   const store = {
     get: (k) => { try { return sessionStorage.getItem(k) || ''; } catch { return ''; } },
@@ -763,12 +765,14 @@
       added = null;
       pass = '';
       store.del(PASS_KEY);
-      msg.textContent = e.status === 404 ? 'Decisions are not switched on yet (the team passcode has not been set). Ask Phil.' : e.status === 401 ? 'That passcode is not right.' : e.message;
+    AUTH.refresh();
+      msg.textContent = e.status === 404 ? 'The MVP team pages have not been switched on yet (the TEAM_PASSCODE secret is not set). Ask Phil.' : e.status === 401 ? 'That passcode is not right.' : e.message;
       msg.hidden = false;
       showSignedIn();
       return;
     }
     store.set(PASS_KEY, pass);
+    AUTH.refresh();
     $('#pass').value = '';
     showSignedIn();
     summary();
@@ -789,6 +793,7 @@
     $('#add-panel').hidden = true;
     pass = '';
     store.del(PASS_KEY);
+    AUTH.refresh();
     showSignedIn();
     if (message) { $('#signin-msg').textContent = message; $('#signin-msg').hidden = false; }
     summary();
@@ -937,7 +942,7 @@
   $('#export-decisions').addEventListener('click', exportDecisions);
   $('#add-service').addEventListener('click', openAdd);
   $('#by').value = store.get(BY_KEY);
-  $('#by').addEventListener('change', () => { store.set(BY_KEY, $('#by').value.trim()); showSignedIn(); });
+  $('#by').addEventListener('change', () => { store.set(BY_KEY, $('#by').value.trim()); AUTH.refresh(); showSignedIn(); });
   $('#unlock').addEventListener('click', () => { if ($('#pass').value) signIn($('#pass').value); });
   $('#pass').addEventListener('keydown', (e) => { if (e.key === 'Enter' && $('#pass').value) signIn($('#pass').value); });
   $('#lock').addEventListener('click', () => signOut(''));

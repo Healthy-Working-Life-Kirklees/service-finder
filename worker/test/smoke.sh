@@ -30,7 +30,7 @@ check "crisis: type reported"           "mental_health_crisis" "$(echo "$R" | py
 R=$(curl -s -X POST $B/chat -H "Origin: $O" -H "$J" -d '{"mode":"staff","messages":[{"role":"user","content":"I support someone anxious in Dewsbury"}]}')
 check "fit and check_first passed on"   "strong,possible,Check the health criteria." "$(echo "$R" | python3 -c 'import sys,json;r=json.load(sys.stdin)["recommendations"];print(r[0]["fit"]+","+r[1]["fit"]+","+r[1]["check_first"])')"
 
-# User feedback (on by default; the read routes are off unless FEEDBACK_PASSCODE is set)
+# User feedback (on by default; the read routes are off unless TEAM_PASSCODE is set)
 check "health says feedback is on"      "True" "$(curl -s $B/health | python3 -c 'import sys,json;print(json.load(sys.stdin)["feedback"])')"
 FB='{"kind":"card","schemeIds":["wellness-to-work"],"recordLastUpdated":"2026-09-08","reasons":["contact-wrong"],"text":"Rang 07700 900123, no answer","lang":"en","mode":"public"}'
 check "feedback: card entry stored"     201 "$(code -X POST $B/feedback -H "Origin: $O" -H "$J" -d "$FB")"

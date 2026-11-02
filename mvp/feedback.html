@@ -34,14 +34,14 @@
 
     <!-- passcode gate -->
     <section id="gate" class="gate">
-      <h2 class="mt0">Enter the feedback passcode</h2>
+      <h2 class="mt0">Sign in to the MVP team pages</h2>
       <div class="field">
-        <label for="pass">Passcode</label>
+        <label for="pass">Team passcode</label>
         <input id="pass" type="password" autocomplete="off">
       </div>
-      <button id="unlock" class="btn primary" type="button">Open the feedback</button>
+      <button id="unlock" class="btn primary" type="button">Sign in</button>
       <p id="gate-msg" class="msg err" role="alert" hidden></p>
-      <p>This is the feedback passcode, not the issues log one. Don't have it? Ask Phil. It's kept in your browser tab only until you close it.</p>
+      <p>One passcode for all the MVP team pages: All services, the issues log, and feedback and usage. You stay signed in on these pages until you close this browser tab. Don't have it? Ask Phil.</p>
     </section>
 
     <!-- the feedback -->
@@ -49,7 +49,7 @@
       <div class="toolbar">
         <button id="refresh" class="btn secondary small" type="button">Refresh</button>
         <button id="export" class="btn secondary small" type="button">Download everything as CSV</button>
-        <button id="lock" class="btn secondary small" type="button">Lock</button>
+        <button id="lock" class="btn secondary small" type="button">Sign out</button>
       </div>
 
       <p id="status-msg" class="msg" role="status" hidden></p>
@@ -123,7 +123,7 @@
     </section>
   </main>
 
-
+  <script src="team-auth.js"></script>
   <script src="../config.js"></script>
   <script src="usage-view.js" defer></script>
   <script src="feedback.js" defer></script>

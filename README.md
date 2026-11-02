@@ -126,7 +126,7 @@ For each service, the MVP team decides one of three things on the All services p
 
 How it works:
 
-1. Open **All services**, enter the team passcode (the same one as the issues log; signing in on either page signs in on both, for that browser tab) and your name or initials.
+1. Open **All services**, enter the team passcode and your name or initials (see [One sign-in for the MVP pages](#one-sign-in-for-the-mvp-pages)).
 2. Filter to what you want to work through. "Live list: Waiting for review" shows the 47 services added for review. "Team changes: Not yet decided by the team" shows everything nobody has decided on yet.
 3. For each service, choose include, further review or exclude, add a reason, and save. Decisions are stored on the Worker with the team log, so everyone sees them straight away, and a changed decision keeps the earlier ones as history. Nothing about a person is stored, only the service, the decision, the reason, the name or initials given and the time.
 4. **Editing details.** "Edit details" on any service opens a form with its details: name, contact details, who it's for, areas, categories, eligibility, how to get in, self-referral, what it offers and so on. Boxes still saying "To be completed" are highlighted. Say what changed and why, and tick "I have checked these details are current" if you checked them with the provider or its website (that sets the "last checked" date when applied). Only the fields that differ from the data are saved, with what the data said at the time. The changes show on the service, old and new, until they are applied, and can be discarded. One set of waiting changes is kept per service; editing again replaces it. The Worker checks every value against the same rules as the data (`worker/src/serviceedit.js`, using `data/schema.json`). The id, logo, trigger words (`requiresMention`), HWL flag and listing decision can't be changed this way.
@@ -150,6 +150,12 @@ How it works:
 
    It holds back, and lists in the summary: a new service whose id is already taken, or with the same name and organisation as one already in the data; an edit to a field that has been changed in the data since the edit was made (so nobody's change is overwritten), an edit that wouldn't pass the data check, and a service chosen for the live list whose details still say "To be completed".
 
+### One sign-in for the MVP pages
+
+There is **one team passcode**, the Worker secret `TEAM_PASSCODE`, for every MVP page: All services (decisions, edits, new services, Apply changes now), the issues and actions log, and feedback and usage. Sign in once on any of them and the others open without asking again. The passcode and your name or initials are kept in that browser tab only (sessionStorage) until it's closed, and "Sign out" in the "MVP team only" bar, or on any page, signs you out of all of them. The shared code is `mvp/team-auth.js`, loaded before each page's own script. The Worker checks the same secret on `/log/*`, `/feedback/*` (reading) and `/usage/*` (reading); it accepts it in an `X-Team-Passcode` header, or `X-Feedback-Passcode` for older scripts.
+
+Until November 2026 feedback and usage had a separate `FEEDBACK_PASSCODE`. It is no longer used: delete it from the Worker's secrets.
+
 **Switch on:**
 1. Cloudflare dashboard > Workers & Pages > hwl-service-finder > Settings > Variables and Secrets: add a **secret** called `TEAM_PASSCODE` (a long passphrase, 16+ characters). Share it with the team directly, not by chat or email to people outside the team.
 2. GitHub repo > Settings > Secrets and variables > Actions > Variables: add `MVP_TOOLS` = `true`.
@@ -157,7 +163,7 @@ How it works:
 
 **Switch off (for the wider test):**
 1. Set `MVP_TOOLS` to `false` (or delete it) and re-run the Pages deploy. The pages and the links disappear.
-2. Delete the `TEAM_PASSCODE` secret. The log, decision, edit and new-service routes then return 404.
+2. Delete the `TEAM_PASSCODE` secret. The log, decision, edit, new-service, feedback-reading and usage-reading routes then return 404 (people can still send feedback).
 3. Apply any outstanding new services, decisions and edits first (Actions > Apply team changes), as they are stored with the log.
 4. Export the log first if you want to keep it (Download as CSV on the log page).
 
@@ -175,7 +181,7 @@ The Worker keeps **daily tallies only**, for the review team to see how the find
 
 **Where and how long:** its own Durable Object (`UsageStore`, binding `USAGE_STORE`). Tallies older than 24 months are deleted. A daily cap (`MAX_USAGE_PER_DAY`, 20,000 by default) and a per-address limit (`USAGE_LIMITER`, 60 a minute) stop the counts being flooded.
 
-**Reading:** on the Feedback and usage page with the `FEEDBACK_PASSCODE`, or `GET /usage/days` (optionally `?since=YYYY-MM-DD`) and `GET /usage/export.csv` with the passcode in an `X-Feedback-Passcode` header.
+**Reading:** on the Feedback and usage page, signed in with the team passcode, or `GET /usage/days` (optionally `?since=YYYY-MM-DD`) and `GET /usage/export.csv` with the team passcode in an `X-Team-Passcode` header.
 
 **Switch off:** set `USAGE_ENABLED` in `worker/wrangler.toml` to `"false"` and merge. The page then sends nothing.
 
@@ -201,9 +207,9 @@ The code is in `site/feedback.js` (the page) and `worker/src/feedback.js` (the W
 
 **Switch on and off:** feedback is on unless `FEEDBACK_ENABLED` in `worker/wrangler.toml` is `"false"`. To switch it off, change it to `"false"` and merge (the Worker redeploys). Sending then returns 404, `/health` says `feedback: false`, and the page hides all the feedback links. Change it back to `"true"` to switch it on again. Entries already stored are kept, and can still be read.
 
-**The Feedback and usage page (for the review team):** `mvp/feedback.html`, linked from the "MVP team only" bar. The top part shows the anonymous usage counts with charts (see [Anonymous usage counts](#anonymous-usage-counts)); the rest is the feedback. It is deployed with the other MVP pages (when `MVP_TOOLS` is `true`) and needs the `FEEDBACK_PASSCODE` below, which is kept in the browser tab only until it is closed. It shows, for the last 7, 30 or 90 days or everything: how many people said results were helpful (split by who it was for and by language), why people said No, which services have problem reports, and what people said was missing. Below that is the feedback to read (plain "Yes" answers are hidden by default), with a status and a reviewer note on each entry, and a button to download everything as CSV. The code is `mvp/feedback.js`; it uses the same routes as below, so the Worker needs no change.
+**The Feedback and usage page (for the review team):** `mvp/feedback.html`, linked from the "MVP team only" bar. The top part shows the anonymous usage counts with charts (see [Anonymous usage counts](#anonymous-usage-counts)); the rest is the feedback. It is deployed with the other MVP pages (when `MVP_TOOLS` is `true`) and needs the team passcode, like the other MVP pages. It shows, for the last 7, 30 or 90 days or everything: how many people said results were helpful (split by who it was for and by language), why people said No, which services have problem reports, and what people said was missing. Below that is the feedback to read (plain "Yes" answers are hidden by default), with a status and a reviewer note on each entry, and a button to download everything as CSV. The code is `mvp/feedback.js`; it uses the same routes as below, so the Worker needs no change.
 
-**Reading the feedback (one-off setup):** Cloudflare dashboard > Workers & Pages > hwl-service-finder > Settings > Variables and Secrets: add a **secret** called `FEEDBACK_PASSCODE` (a long passphrase, 16+ characters). Share it only with the people who do the triage. Without it the read routes return 404, but people can still send feedback. The routes, with the passcode in an `X-Feedback-Passcode` header:
+**Reading the feedback:** uses the team passcode (`TEAM_PASSCODE`; see [One sign-in for the MVP pages](#one-sign-in-for-the-mvp-pages)). Without it the read routes return 404, but people can still send feedback. The routes, with the passcode in an `X-Team-Passcode` header:
 
 - `GET /feedback/items`, optionally `?status=New` and `?since=YYYY-MM-DD`
 - `PATCH /feedback/items/<id>` with `{"status": "Actioned", "note": "Fixed in PR 23"}`
@@ -211,7 +217,7 @@ The code is in `site/feedback.js` (the page) and `worker/src/feedback.js` (the W
 
 **The digest:** a Markdown summary of the `New` entries, for the weekly triage (and later for the maintenance agent). It only reads; it changes nothing.
 
-    WORKER_URL=https://hwl-service-finder.<subdomain>.workers.dev FEEDBACK_PASSCODE='...' npm run feedback-digest > digest.md
+    WORKER_URL=https://hwl-service-finder.<subdomain>.workers.dev TEAM_PASSCODE='...' npm run feedback-digest > digest.md
 
 It has two parts. **What's wrong**: reports grouped by scheme, most reported first, with the reasons, the comments and the path to the scheme's file, and schemes with 2 or more reports in 30 days flagged at the top. **What's missing**: suggested services (grouped and counted, and checked against the names and websites of existing schemes, with likely duplicates marked), listings missing useful details, and the kinds of support people couldn't find, counted by category and area and compared with how many open schemes the data has for each category, so thin areas stand out. Then a count of Yes and No by mode and language. `--input <file>` works from a saved copy of `/feedback/items` instead.
 
@@ -222,7 +228,7 @@ It has two parts. **What's wrong**: reports grouped by scheme, most reported fir
 3. For a problem with a listing, change `data/services/<id>.json` (and its `lastUpdated` and `provenance`) in a pull request. For a suggested service, research it, and if it checks out add a new scheme file in a pull request (see `docs/data-dictionary.md`). Nothing is ever applied to the data automatically.
 4. Mark each entry `Actioned` (with the pull request in the note) or `Not actioned` (with the reason), or `Reviewed` if it needs more time. For example:
 
-        curl -X PATCH "$WORKER_URL/feedback/items/12" -H "X-Feedback-Passcode: $FEEDBACK_PASSCODE" -H 'content-type: application/json' -d '{"status":"Actioned","note":"PR 31"}'
+        curl -X PATCH "$WORKER_URL/feedback/items/12" -H "X-Team-Passcode: $TEAM_PASSCODE" -H 'content-type: application/json' -d '{"status":"Actioned","note":"PR 31"}'
 
 **Before the wider test, the information governance lead should review this approach** (what is collected, the removal of personal details, the 12-month retention, and who holds the passcode).
 

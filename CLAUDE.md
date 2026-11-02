@@ -40,7 +40,7 @@ Deploys happen on push to `main` via `.github/workflows/`: `pages.yml` (site/, m
 - **Model-dependent request shape.** For `claude-(sonnet|opus)-5*` the Worker sets `thinking: { type: 'between_tools' }` and does not force `tool_choice`; other models get a forced tool call. The model is `ANTHROPIC_MODEL` in `worker/wrangler.toml`. If the model answers in plain text, the Worker shows it as a message with no cards.
 - **Bundler imports.** The Worker imports `.json` and `.md` directly (wrangler `[[rules]]` Text rule). `logic.mjs` rewrites those two exact import lines into file reads and writes `worker/src/.under-test.mjs` (git-ignored). If you change those import lines, update the `.replace(...)` calls in `logic.mjs` too.
 - **Site config is generated.** `site/config.js` in the repo is a placeholder. The Pages workflow (and `test/run-ui.sh`) overwrite it with `{ apiBase, mvpTools }` from the `WORKER_URL` and `MVP_TOOLS` repo variables.
-- **MVP team log.** `worker/src/teamlog.js` is a separate Durable Object (`LogStore`) behind `/log/*`. Every route returns 404 unless the `TEAM_PASSCODE` secret is set. `mvp/` pages are only deployed when `MVP_TOOLS` is exactly `true`.
+- **MVP team log.** `worker/src/teamlog.js` is a separate Durable Object (`LogStore`) behind `/log/*`. Every route returns 404 unless the `TEAM_PASSCODE` secret is set. That one passcode also protects reading feedback (`/feedback/*`) and usage (`/usage/*`); the MVP pages share one sign-in through `mvp/team-auth.js`. `mvp/` pages are only deployed when `MVP_TOOLS` is exactly `true`.
 - **Spend and abuse layers:** origin check (`ALLOWED_ORIGIN`), per-IP rate limit, `DailyCap` Durable Object (`MAX_PER_DAY`), then the Anthropic Console spend limit.
 
 ## Rules for this repo

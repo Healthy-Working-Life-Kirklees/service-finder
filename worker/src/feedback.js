@@ -8,7 +8,7 @@
 //   PATCH /feedback/items/:id       passcode: change the status or add a short reviewer note
 //   GET   /feedback/export.csv      passcode: everything as CSV
 //
-// The read routes are protected by the Worker secret FEEDBACK_PASSCODE. If it is not set they return 404, but
+// The read routes are protected by the Worker secret TEAM_PASSCODE, the one MVP team passcode. If it is not set they return 404, but
 // people can still send feedback. Sending is on unless the variable FEEDBACK_ENABLED is "false".
 //
 // What is stored is deliberately small: no IP address, no user agent, no time of day, nothing from the
@@ -323,16 +323,18 @@ export async function handleFeedback(request, env, url, cors, originOk, ctx) {
   }
 
   // ----- reading and triage (passcode) -----
-  // Off unless the FEEDBACK_PASSCODE secret is set. A browser on another site is refused; the digest script,
+  // Off unless the TEAM_PASSCODE secret is set. A browser on another site is refused; the digest script,
   // which sends no Origin, is allowed with the passcode.
-  if (!env.FEEDBACK_PASSCODE || !env.FEEDBACK_STORE) return json({ error: 'Not found.' }, 404, cors);
+  if (!env.TEAM_PASSCODE || !env.FEEDBACK_STORE) return json({ error: 'Not found.' }, 404, cors);
   if (request.headers.get('Origin') && !originOk) return json({ error: 'Not allowed.' }, 403, cors);
   if (env.FEEDBACK_READ_LIMITER) {
     const { success } = await env.FEEDBACK_READ_LIMITER.limit({ key: ip });
     if (!success) return json({ error: 'Too many requests. Please wait a minute.' }, 429, cors);
   }
-  const pass = request.headers.get('X-Feedback-Passcode') || '';
-  if (!(await safeEqual(pass, env.FEEDBACK_PASSCODE))) return json({ error: 'Wrong passcode.' }, 401, cors);
+  // The one MVP team passcode (TEAM_PASSCODE), the same as the log and All services pages. The old
+  // X-Feedback-Passcode header name is still accepted, for scripts written before the passcodes were merged.
+  const pass = request.headers.get('X-Team-Passcode') || request.headers.get('X-Feedback-Passcode') || '';
+  if (!(await safeEqual(pass, env.TEAM_PASSCODE))) return json({ error: 'Wrong passcode.' }, 401, cors);
 
   if (request.method === 'GET' && (path === '/feedback/items' || path === '/feedback/export.csv')) {
     const status = url.searchParams.get('status');
