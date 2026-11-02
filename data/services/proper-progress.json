@@ -17,7 +17,7 @@
     "Wellbeing"
   ],
   "whoFor": "Adults who are not working or looking for work because of barriers such as poor physical or mental health, isolation, caring responsibilities, low confidence, disability or language barriers.",
-  "age": "Adults",
+  "age": "18+",
   "webpage": null,
   "email": "mollie@properjob.org.uk",
   "phone": "01484 514687 / 07716 639494",
@@ -29,11 +29,21 @@
     "Huddersfield"
   ],
   "eligibility": [
-    "Economically inactive adult (not working and not looking for work)"
+    "Aged 18 or over",
+    "Lives in Kirklees",
+    "Economically inactive (not working and not looking for work)",
+    "Has the right to work in the UK",
+    "Has a health condition or disability"
   ],
   "exclusions": [],
-  "gate": [],
-  "healthFocus": [],
+  "gate": [
+    "Lives in Kirklees",
+    "Is economically inactive (not working and not looking for work)",
+    "Has the right to work in the UK"
+  ],
+  "healthFocus": [
+    "any"
+  ],
   "referralRoutes": [
     "Email engagement@properjob.org.uk",
     "Phone 01484 514687 or 07716 639494 (contact: Mollie Wood)"
@@ -68,7 +78,8 @@
   "lastUpdated": "2026-10-01",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
+    "evidence": "Eligibility set to the Healthy Working Life grant funding criteria by the programme team (2 November 2026): Kirklees resident, economically inactive, right to work in the UK, health condition or disability, 18+ unless the scheme says otherwise."
   },
   "listing": {
     "decision": "include",

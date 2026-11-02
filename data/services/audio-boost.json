@@ -17,7 +17,7 @@
     "Health linked to work"
   ],
   "whoFor": "Women (cis and trans) and gender-diverse people in Kirklees who are not in work or claiming Universal Credit and are living with a health condition, who want skills and confidence for work in the audio sector.",
-  "age": "Adults",
+  "age": "18+",
   "webpage": "https://yorkshiresoundwomen.com/",
   "email": "info@yorkshiresoundwomen.com",
   "phone": "07946 531169",
@@ -32,12 +32,18 @@
   ],
   "eligibility": [
     "Women (cis and trans) and gender-diverse people",
+    "Aged 18 or over",
     "Lives in Kirklees",
-    "Not in work or claiming Universal Credit",
-    "Living with a health condition"
+    "Economically inactive (not working and not looking for work)",
+    "Has the right to work in the UK",
+    "Has a health condition or disability"
   ],
   "exclusions": [],
-  "gate": [],
+  "gate": [
+    "Lives in Kirklees",
+    "Is economically inactive (not working and not looking for work)",
+    "Has the right to work in the UK"
+  ],
   "healthFocus": [
     "any"
   ],
@@ -60,7 +66,7 @@
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
-    "evidence": "Checked by PL on 2026-11-02: added address"
+    "evidence": "Checked by PL on 2026-11-02: added address Eligibility set to the Healthy Working Life grant funding criteria by the programme team (2 November 2026): Kirklees resident, economically inactive, right to work in the UK, health condition or disability, 18+ unless the scheme says otherwise."
   },
   "listing": {
     "decision": "include",

@@ -17,7 +17,7 @@
     "Volunteering"
   ],
   "whoFor": "Economically inactive adults in Dewsbury, Ravensthorpe and nearby who face health, disability, confidence, language, digital or isolation barriers.",
-  "age": "Adults",
+  "age": "18+",
   "webpage": null,
   "email": "shokran.sharaf@rccl.org",
   "phone": "07786 061121",
@@ -30,14 +30,20 @@
     "Dewsbury"
   ],
   "eligibility": [
-    "Economically inactive (not working and not looking for work)",
+    "Aged 18 or over",
     "Lives in Kirklees, in a high-deprivation ward",
-    "Has a health condition - physical, mental health or learning difficulties"
+    "Economically inactive (not working and not looking for work)",
+    "Has the right to work in the UK",
+    "Has a health condition or disability"
   ],
   "exclusions": [
     "People who have been in contact with employment services in the past six months"
   ],
-  "gate": [],
+  "gate": [
+    "Lives in Kirklees",
+    "Is economically inactive (not working and not looking for work)",
+    "Has the right to work in the UK"
+  ],
   "healthFocus": [
     "any"
   ],
@@ -62,7 +68,8 @@
   "lastUpdated": "2026-10-01",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
+    "evidence": "Eligibility set to the Healthy Working Life grant funding criteria by the programme team (2 November 2026): Kirklees resident, economically inactive, right to work in the UK, health condition or disability, 18+ unless the scheme says otherwise."
   },
   "listing": {
     "decision": "include",

@@ -16,8 +16,8 @@
     "Returning to learning",
     "Finding work"
   ],
-  "whoFor": "Economically inactive people, particularly those with health issues (though it is not limited to them), who want to rebuild routines and confidence and prepare for volunteering, work or study.",
-  "age": "Adults",
+  "whoFor": "Support to rebuild routines and confidence and prepare for volunteering, work or study.",
+  "age": "18+",
   "webpage": null,
   "email": "info@shapingcarekirklees.org",
   "phone": "07597 122074",
@@ -29,11 +29,21 @@
     "Huddersfield"
   ],
   "eligibility": [
-    "Economically inactive (not working and not looking for work)"
+    "Aged 18 or over",
+    "Lives in Kirklees",
+    "Economically inactive (not working and not looking for work)",
+    "Has the right to work in the UK",
+    "Has a health condition or disability"
   ],
   "exclusions": [],
-  "gate": [],
-  "healthFocus": [],
+  "gate": [
+    "Lives in Kirklees",
+    "Is economically inactive (not working and not looking for work)",
+    "Has the right to work in the UK"
+  ],
+  "healthFocus": [
+    "any"
+  ],
   "referralRoutes": [
     "Email info@shapingcarekirklees.org or phone 07597 122074 (contact: Griffith Gay)"
   ],
@@ -52,7 +62,8 @@
   "lastUpdated": "2026-10-01",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
+    "evidence": "Eligibility set to the Healthy Working Life grant funding criteria by the programme team (2 November 2026): Kirklees resident, economically inactive, right to work in the UK, health condition or disability, 18+ unless the scheme says otherwise."
   },
   "listing": {
     "decision": "include",

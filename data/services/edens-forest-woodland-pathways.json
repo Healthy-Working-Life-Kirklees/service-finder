@@ -28,11 +28,21 @@
     "Huddersfield"
   ],
   "eligibility": [
-    "Adult living in Kirklees"
+    "Aged 18 or over",
+    "Lives in Kirklees",
+    "Economically inactive (not working and not looking for work)",
+    "Has the right to work in the UK",
+    "Has a health condition or disability"
   ],
   "exclusions": [],
-  "gate": [],
-  "healthFocus": [],
+  "gate": [
+    "Lives in Kirklees",
+    "Is economically inactive (not working and not looking for work)",
+    "Has the right to work in the UK"
+  ],
+  "healthFocus": [
+    "any"
+  ],
   "referralRoutes": [
     "Email info@edensforestcic.org"
   ],
@@ -52,7 +62,7 @@
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
-    "evidence": "Checked by LO on 2026-11-02: Age range 18+"
+    "evidence": "Checked by LO on 2026-11-02: Age range 18+ Eligibility set to the Healthy Working Life grant funding criteria by the programme team (2 November 2026): Kirklees resident, economically inactive, right to work in the UK, health condition or disability, 18+ unless the scheme says otherwise."
   },
   "listing": {
     "decision": "include",

@@ -30,11 +30,20 @@
   ],
   "eligibility": [
     "Aged 18+",
-    "Economically inactive (not working and not looking for work)"
+    "Lives in Kirklees",
+    "Economically inactive (not working and not looking for work)",
+    "Has the right to work in the UK",
+    "Has a health condition or disability"
   ],
   "exclusions": [],
-  "gate": [],
-  "healthFocus": [],
+  "gate": [
+    "Lives in Kirklees",
+    "Is economically inactive (not working and not looking for work)",
+    "Has the right to work in the UK"
+  ],
+  "healthFocus": [
+    "any"
+  ],
   "referralRoutes": [
     "Contact Lisa Newbold by email or phone"
   ],
@@ -53,7 +62,8 @@
   "lastUpdated": "2026-09-14",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
+    "evidence": "Eligibility set to the Healthy Working Life grant funding criteria by the programme team (2 November 2026): Kirklees resident, economically inactive, right to work in the UK, health condition or disability, 18+ unless the scheme says otherwise."
   },
   "listing": {
     "decision": "include",

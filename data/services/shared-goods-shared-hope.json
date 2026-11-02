@@ -32,13 +32,20 @@
   "eligibility": [
     "Refugee living in Kirklees",
     "Aged 18 or over",
-    "Economically inactive (not working and not looking for work)"
+    "Economically inactive (not working and not looking for work)",
+    "Has the right to work in the UK",
+    "Has a health condition or disability"
   ],
   "exclusions": [],
   "gate": [
-    "Is a refugee"
+    "Is a refugee",
+    "Lives in Kirklees",
+    "Is economically inactive (not working and not looking for work)",
+    "Has the right to work in the UK"
   ],
-  "healthFocus": [],
+  "healthFocus": [
+    "any"
+  ],
   "referralRoutes": [
     "Self-referral: contact Shared Goods Charity by phone or email (contact: Christina Simpkin)"
   ],
@@ -57,7 +64,8 @@
   "lastUpdated": "2026-11-02",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "HWL grant-funded scheme details supplied by the programme team, row 20 (2 November 2026)"
+    "source": "HWL grant-funded scheme details supplied by the programme team, row 20 (2 November 2026)",
+    "evidence": "Eligibility set to the Healthy Working Life grant funding criteria by the programme team (2 November 2026): Kirklees resident, economically inactive, right to work in the UK, health condition or disability, 18+ unless the scheme says otherwise."
   },
   "listing": {
     "decision": "include",
