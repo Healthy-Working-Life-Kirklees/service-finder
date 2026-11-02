@@ -30,11 +30,15 @@
     "Kirklees-wide"
   ],
   "eligibility": [
-    "Adult (18+) living in Kirklees"
+    "Adult (18+) living in Kirklees",
+    "Economically Inactive",
+    "Health condition or disability"
   ],
   "exclusions": [],
   "gate": [],
-  "healthFocus": [],
+  "healthFocus": [
+    "any"
+  ],
   "referralRoutes": [
     "Google form (link not yet given in the pathways document)"
   ],
@@ -50,13 +54,16 @@
     }
   ],
   "workExperience": "Volunteering opportunities as part of the programme",
-  "lastUpdated": "2026-10-12",
+  "lastUpdated": "2026-11-02",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
+    "evidence": "Checked by LO on 2026-11-02: Added health focus - any health condition or disability"
   },
   "listing": {
     "decision": "include",
-    "reason": "Healthy Working Life scheme, on the live list from the start."
+    "reason": "Included by the MVP team.",
+    "by": "LO",
+    "date": "2026-11-02"
   }
 }
