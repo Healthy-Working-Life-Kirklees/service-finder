@@ -51,9 +51,9 @@ const HF = ['any', 'mental-health', 'severe-mental-illness', 'musculoskeletal-pa
 check('data: ids are unique', new Set(svc.map((x) => x.id)).size === svc.length);
 check('data: every scheme has audience, gate and healthFocus in the agreed vocabulary', svc.every((x) => Array.isArray(x.audience) && x.audience.length && x.audience.every((a) => AUD.includes(a)) && Array.isArray(x.gate) && x.gate.every((g) => typeof g === 'string' && g) && Array.isArray(x.healthFocus) && x.healthFocus.every((h) => HF.includes(h))), svc.filter((x) => !(Array.isArray(x.gate) && Array.isArray(x.healthFocus))).map((x) => x.id).join());
 check('data: only the College hub is student-only', svc.filter((x) => x.audience.includes('student')).map((x) => x.id).join() === 'health-wellbeing-hub' && !svc.find((x) => x.id === 'health-wellbeing-hub').audience.includes('individual'));
-check('data: HWL schemes with a gate are the four expected', svc.filter((x) => x.hwlFunded && x.gate.length).map((x) => x.id).join() === 'health-wellbeing-hub,ips-cgl,ips-smi,talking-therapies-employment');
+check('data: HWL schemes with a gate are the five expected', svc.filter((x) => x.hwlFunded && x.gate.length).map((x) => x.id).join() === 'health-wellbeing-hub,ips-cgl,ips-smi,shared-goods-shared-hope,talking-therapies-employment');
 check('data: every substance-use or severe mental illness scheme needs the person to mention it', svc.filter((x) => x.healthFocus.includes('substance-use') || x.healthFocus.includes('severe-mental-illness')).every((x) => x.requiresMention), svc.filter((x) => (x.healthFocus.includes('substance-use') || x.healthFocus.includes('severe-mental-illness')) && !x.requiresMention).map((x) => x.id).join());
-check('data: the 31 HWL schemes are all marked hwlFunded and local', svc.filter((x) => x.hwlFunded).length === 31 && svc.filter((x) => x.hwlFunded).every((x) => x.level === 'local'));
+check('data: the 32 HWL schemes are all marked hwlFunded and local', svc.filter((x) => x.hwlFunded).length === 32 && svc.filter((x) => x.hwlFunded).every((x) => x.level === 'local'));
 
 // A well-formed model reply in the new shape; override only what each test cares about.
 const reply0 = (o = {}) => ({
