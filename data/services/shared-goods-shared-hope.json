@@ -1,0 +1,66 @@
+{
+  "id": "shared-goods-shared-hope",
+  "name": "Shared Hope",
+  "organisation": "Shared Goods Charity",
+  "logo": "shared-goods.webp",
+  "status": "Live - six-month programme for 10 people, 1 October 2026 to 31 March 2027",
+  "open": true,
+  "hwlFunded": true,
+  "level": "local",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Refugees and new arrivals",
+    "Wellbeing",
+    "Mental health",
+    "ESOL",
+    "Finding work"
+  ],
+  "whoFor": "Refugees in Kirklees aged 18 and over who are not working or looking for work and face barriers such as trauma, poor mental health, isolation or limited English, and want support with wellbeing, settling in and moving towards work.",
+  "age": "18+",
+  "webpage": null,
+  "email": "Christinasimpkin@sharedgoodscharity.org",
+  "phone": "07825 547938",
+  "social": [],
+  "locations": [
+    "Packhorse Shopping Centre, King Street, Huddersfield, HD1 2RT"
+  ],
+  "areas": [
+    "Huddersfield"
+  ],
+  "eligibility": [
+    "Refugee living in Kirklees",
+    "Aged 18 or over",
+    "Economically inactive (not working and not looking for work)"
+  ],
+  "exclusions": [],
+  "gate": [
+    "Is a refugee"
+  ],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Self-referral: contact Shared Goods Charity by phone or email (contact: Christina Simpkin)"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Contact Shared Goods Charity directly by phone or email"
+  },
+  "activities": [
+    {
+      "name": "Shared Hope",
+      "summary": "A face-to-face pre-employment programme for refugees facing several barriers to settling in, wellbeing and work, including trauma, poor mental health, social isolation and limited English. Each person gets tailored support.",
+      "duration": "Six months, about 40 hours of tailored support each. Runs 1 October 2026 to 31 March 2027, 10 places"
+    }
+  ],
+  "workExperience": "Not stated",
+  "lastUpdated": "2026-11-02",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "HWL grant-funded scheme details supplied by the programme team, row 20 (2 November 2026)"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "Healthy Working Life grant-funded scheme, details supplied by the programme team (2 November 2026)."
+  }
+}
