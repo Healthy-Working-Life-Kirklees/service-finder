@@ -26,8 +26,8 @@
     "Various locations in Huddersfield (to be confirmed), with online support"
   ],
   "areas": [
-    "Huddersfield",
-    "Online"
+    "Online",
+    "Kirklees-wide"
   ],
   "eligibility": [
     "Women (cis and trans) and gender-diverse people",
@@ -55,13 +55,16 @@
     }
   ],
   "workExperience": "No",
-  "lastUpdated": "2026-10-12",
+  "lastUpdated": "2026-11-02",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
+    "evidence": "Checked by PL on 2026-11-02: Changed Areas to Kirklees wide"
   },
   "listing": {
     "decision": "include",
-    "reason": "Healthy Working Life scheme, on the live list from the start."
+    "reason": "checked",
+    "by": "PL",
+    "date": "2026-11-02"
   }
 }
