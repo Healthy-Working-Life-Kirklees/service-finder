@@ -13,7 +13,7 @@ The site has its own copy at `directory.html`, linked from the main page under t
 
     node scripts/build-print.mjs --site _site
 
-so it always matches the live list. The website version uses the site's fonts and logos (`site/fonts/`, `site/img/logos/`) and keeps its script and styles in `directory.js` and `directory.css`, because the site's security policy blocks inline ones. It has a bar at the top with a link back to the finder and a "Print the whole directory" button; the bar doesn't print. On a phone the A4 pages are scaled down to fit the screen.
+so it always matches the live list. The website version uses the site's fonts and logos (`site/fonts/`, `site/img/logos/`) and keeps its script and styles in `directory.js` and `directory.css`, because the site's security policy blocks inline ones. It has a bar at the top with a link back to the finder, a search box and a "Print the whole directory" button; the bar doesn't print. The search looks through each service's name, organisation, page text, categories and areas (words match from their start, every word has to match, name matches come first), and choosing a result jumps to its page. It's in the standalone HTML file too. On a phone the A4 pages are scaled down to fit the screen.
 
 To try it locally: `mkdir -p _site && cp -r site/. _site/ && node scripts/build-print.mjs --site _site`, then serve `_site/` (for example `npx serve _site`). `_site/` is git-ignored.
 
@@ -32,7 +32,7 @@ Which section a service goes in (`sectionOf` in `scripts/build-print.mjs`):
 - Only South Kirklees towns (Huddersfield, Colne Valley, Holme Valley, Kirkburton): South Kirklees.
 - Anything else (towns in both halves, or Kirklees-wide with no town, including regional services): All Kirklees.
 
-In the PDF and the HTML, every index entry links to that service's page, the contents on the cover link to each index and section, and "Service Finder" at the top of each page links back to the contents. In the HTML (not the PDF), each service page also has a "Print this page" button that prints just that service; it doesn't show on paper.
+In the PDF and the HTML, every index entry links to that service's page, the contents on the cover link to each index and section, and the logo and "Service Finder" at the top of each page link back to the contents. In the HTML (not the PDF), each service page also has a "Print this page" button that prints just that service; it doesn't show on paper.
 
 Long entries are shrunk to fit one page by a small script in the page. `render-print.py` lists any page that still doesn't fit.
 

@@ -174,7 +174,7 @@ function indexPages(pages, startNo, { title, kicker, intro, cls }) {
     const body = items.map((it) => it.type === 'h'
       ? `<li class="grp"><span>${esc(it.text)}</span>${it.count != null ? `<span class="cnt">${it.count} service${it.count === 1 ? '' : 's'}</span>` : ''}</li>`
       : indexRow(it.s)).join('');
-    return `<section class="page index ${cls}" id="p${startNo + i}"><div class="brandbar"><span class="hwl-logo" role="img" aria-label="Healthy Working Life"></span><a class="bb-text" href="#p1">Service Finder</a></div>${head}<ul class="ix">${body}</ul>${footer(startNo + i, brandFoot)}</section>`;
+    return `<section class="page index ${cls}" id="p${startNo + i}"><div class="brandbar"><a class="bb-logo" href="#p1" aria-label="Healthy Working Life: back to the contents"><span class="hwl-logo" aria-hidden="true"></span></a><a class="bb-text" href="#p1">Service Finder</a></div>${head}<ul class="ix">${body}</ul>${footer(startNo + i, brandFoot)}</section>`;
   }).join('\n');
 }
 
@@ -219,9 +219,9 @@ async function servicePage(s, n) {
   const qrBlock = s.webpage ? `<div class="qr">${await qr(s.webpage)}<span>Scan to open the website</span></div>` : '';
   const stale = ageDays(s.lastUpdated) > STALE_DAYS;
 
-  return `<section class="page svc cov-${c.key}" id="${esc(s.id)}">
+  return `<section class="page svc cov-${c.key}" id="${esc(s.id)}" data-keywords="${esc([...(s.categories || []), ...(s.areas || []).map((a) => a === 'Kirklees-wide' ? 'All Kirklees' : a)].join(' '))}">
   <div class="tab"><span>${c.label}</span></div>
-  <div class="brandbar"><span class="hwl-logo" role="img" aria-label="Healthy Working Life"></span><a class="bb-text" href="#p1">Service Finder</a><span class="bb-cov">${c.label}</span><button type="button" class="print-one" data-print-page aria-label="Print the page for ${esc(s.name)}">Print this page</button></div>
+  <div class="brandbar"><a class="bb-logo" href="#p1" aria-label="Healthy Working Life: back to the contents"><span class="hwl-logo" aria-hidden="true"></span></a><a class="bb-text" href="#p1">Service Finder</a><span class="bb-cov">${c.label}</span><button type="button" class="print-one" data-print-page aria-label="Print the page for ${esc(s.name)}">Print this page</button></div>
   <header class="svc-head">${thumb}<div class="ttl"><h2>${esc(s.name)}</h2><p class="org">${esc(s.organisation)}</p><div class="badges">${badges}</div></div></header>
   <div class="fit"><div class="svc-body">
     <div class="main">
@@ -246,7 +246,7 @@ async function servicePage(s, n) {
 function dividerPage(sec) {
   const first = pageOf.get(sec.list[0].id), last = pageOf.get(sec.list.at(-1).id);
   return `<section class="page divider cov-${sec.key}" id="p${sec.divider}">
-  <div class="brandbar"><span class="hwl-logo" role="img" aria-label="Healthy Working Life"></span><a class="bb-text" href="#p1">Service Finder</a></div>
+  <div class="brandbar"><a class="bb-logo" href="#p1" aria-label="Healthy Working Life: back to the contents"><span class="hwl-logo" aria-hidden="true"></span></a><a class="bb-text" href="#p1">Service Finder</a></div>
   <div class="dv-main"><p class="kicker">Section ${SECTIONS.indexOf(SECTION[sec.key]) + 1} of ${SECTIONS.length}</p><h1>${sec.title}</h1>
   <p class="dv-intro">${sec.intro}</p><p class="dv-count">${sec.list.length} services, A to Z, on pages ${first} to ${last}.</p></div>
   ${footer(sec.divider, brandFoot)}
@@ -318,6 +318,12 @@ async function build() {
   const screenBar = `<nav class="screen-bar" aria-label="Directory">
   ${SITE_DIR ? '<a class="sb-back" href="./">&larr; Back to the Support Finder</a>' : ''}
   <span class="sb-title">Printable directory &middot; ${services.length} services &middot; ${edition}</span>
+  <div class="sb-search" role="search">
+    <label for="dir-search" class="visually-hidden">Search the directory</label>
+    <input type="search" id="dir-search" placeholder="Search services, e.g. debt, Dewsbury" autocomplete="off" spellcheck="false" aria-controls="dir-results" aria-describedby="dir-count" aria-expanded="false">
+    <p id="dir-count" class="visually-hidden" role="status" aria-live="polite"></p>
+    <ul id="dir-results" class="sb-results" hidden></ul>
+  </div>
   <button type="button" class="sb-print" data-print-all>Print the whole directory</button>
 </nav>`;
   const head = `<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -389,6 +395,90 @@ const PAGE_JS = `// Shrink the text on any service page whose content doesn't fi
   document.addEventListener('click', function (e) {
     if (e.target.closest('[data-print-all]')) window.print();
   });
+
+  // Search (on screen only). Looks through each service's name, organisation, page text,
+  // categories and areas. Name matches come first. Choosing a result jumps to its page.
+  var input = document.getElementById('dir-search');
+  var list = document.getElementById('dir-results');
+  var count = document.getElementById('dir-count');
+  if (input && list) {
+    var norm = function (t) { return (t || '').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); };
+    var entries = [].map.call(document.querySelectorAll('.page.svc'), function (pg) {
+      return {
+        id: pg.id,
+        name: pg.querySelector('h2').textContent,
+        org: pg.querySelector('.org').textContent,
+        section: (pg.querySelector('.bb-cov') || {}).textContent || '',
+        page: (pg.querySelector('.pf-num') || {}).textContent || '',
+        n: norm(pg.querySelector('h2').textContent),
+        o: norm(pg.querySelector('.org').textContent),
+        k: norm(pg.getAttribute('data-keywords')),
+        all: norm(pg.querySelector('.fit').textContent)
+      };
+    });
+    var MAX = 30;
+    var close = function () { list.hidden = true; input.setAttribute('aria-expanded', 'false'); };
+    var run = function () {
+      var words = norm(input.value).split(' ').filter(Boolean);
+      list.textContent = '';
+      if (!words.length) { close(); count.textContent = ''; return; }
+      var hits = [];
+      entries.forEach(function (x) {
+        var score = 0;
+        for (var i = 0; i < words.length; i++) {
+          var w = words[i];
+          // Words match from their start ("esol" finds ESOL, not "Resolution").
+          var s = x.n.indexOf(w) === 0 ? 8 : (' ' + x.n).indexOf(' ' + w) > -1 ? 6
+            : (' ' + x.o).indexOf(' ' + w) > -1 ? 3 : (' ' + x.k).indexOf(' ' + w) > -1 ? 3 : (' ' + x.all).indexOf(' ' + w) > -1 ? 1 : 0;
+          if (!s) return; // every word has to match somewhere
+          score += s;
+        }
+        hits.push({ x: x, score: score });
+      });
+      hits.sort(function (a, b) { return b.score - a.score || a.x.name.localeCompare(b.x.name); });
+      count.textContent = hits.length ? hits.length + (hits.length === 1 ? ' service found' : ' services found') : 'No services found';
+      if (!hits.length) {
+        var none = document.createElement('li');
+        none.className = 'sb-none';
+        none.textContent = 'No services match. Try a shorter word, a town, or a topic such as debt or carers.';
+        list.appendChild(none);
+      }
+      hits.slice(0, MAX).forEach(function (h) {
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = '#' + h.x.id;
+        var nm = document.createElement('span'); nm.className = 'r-name'; nm.textContent = h.x.name;
+        var meta = document.createElement('span'); meta.className = 'r-meta'; meta.textContent = h.x.org + ' \\u00b7 ' + h.x.section;
+        var pgn = document.createElement('span'); pgn.className = 'r-page'; pgn.textContent = 'p. ' + h.x.page;
+        a.appendChild(nm); a.appendChild(meta); a.appendChild(pgn);
+        li.appendChild(a); list.appendChild(li);
+      });
+      if (hits.length > MAX) {
+        var more = document.createElement('li');
+        more.className = 'sb-none';
+        more.textContent = 'Showing the best ' + MAX + ' of ' + hits.length + '. Add another word to narrow it down.';
+        list.appendChild(more);
+      }
+      list.hidden = false;
+      input.setAttribute('aria-expanded', 'true');
+    };
+    var links = function () { return [].slice.call(list.querySelectorAll('a')); };
+    input.addEventListener('input', run);
+    input.addEventListener('focus', function () { if (input.value) run(); });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown') { var l = links(); if (l.length) { e.preventDefault(); l[0].focus(); } }
+      else if (e.key === 'Enter') { var f = links()[0]; if (f) { e.preventDefault(); f.click(); } }
+      else if (e.key === 'Escape') { close(); }
+    });
+    list.addEventListener('keydown', function (e) {
+      var l = links(), i = l.indexOf(document.activeElement);
+      if (e.key === 'ArrowDown' && i < l.length - 1) { e.preventDefault(); l[i + 1].focus(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); (i > 0 ? l[i - 1] : input).focus(); }
+      else if (e.key === 'Escape') { close(); input.focus(); }
+    });
+    list.addEventListener('click', function (e) { if (e.target.closest('a')) close(); });
+    document.addEventListener('click', function (e) { if (!e.target.closest('.sb-search')) close(); });
+  }
 
   // "Print this page" on each service: print just that page, then put the directory back.
   document.addEventListener('click', function (e) {
