@@ -46,7 +46,7 @@
           Give a reason for further review or exclude, then save. You can change a decision later; earlier ones are kept.</li>
         <li><strong>Correct or complete details.</strong> "Edit details" opens a form with the service's details. Boxes still saying "To be completed" are highlighted: a service can't go live until they're filled in. Say what changed and why, and tick "I have checked these details are current" if you checked them with the provider or its website. Your changes show on the service, old and new, until they're applied, and can be discarded.</li>
         <li><strong>Add a missing service.</strong> "Add a service" (above the list) opens an empty form. Say where the service came from and why it should be added. The page warns you if it looks like one already listed. It then appears as "New: not yet in the data", and the team reviews, edits and decides on it like any other. A new service never goes live unless the team decides to include it.</li>
-        <li><strong>Going live.</strong> Everything is saved for the team straight away, but the finder itself only changes when the team's changes are applied: Phil runs <strong>Apply team changes</strong> on GitHub and merges the pull request it opens. Until then you'll see "waiting to be applied". Changes that clash with something changed since, or that break the data rules, are held back and listed for Phil to sort out.</li>
+        <li><strong>Going live.</strong> Everything is saved for the team straight away, but the finder itself only changes when the team's changes are applied. Press <strong>Apply changes now</strong> (under the sign-in box): the changes are checked, and if they pass they go live on the finder, the AI and the printable directory in about 3 minutes. If the check fails, nothing goes live and the page says so. Until then you'll see "waiting to be applied". Changes that clash with something changed since, or that break the data rules, are held back and listed for Phil to sort out.</li>
       </ol>
       <p>Please don't put personal or identifying information in reasons or notes. To see a service's file and its history, open its "Full details" and use the GitHub links.</p>
     </details>
@@ -62,7 +62,13 @@
       <div class="field mt-sm"><label for="by">Your name or initials</label><input id="by" type="text" maxlength="40" autocomplete="off" aria-describedby="by-hint"><p id="by-hint" class="hint">Saved with each decision, edit and new service.</p></div>
       <div id="signed-in" hidden>
         <p><span id="signed-in-text"></span> <button id="lock" class="btn secondary small" type="button">Sign out</button></p>
-        <p class="hint">Everything you save is shared with the team straight away. It reaches the live finder when the team's changes are applied (Phil: Actions &gt; Apply team changes on GitHub, then merge), so "waiting to be applied" means saved but not live yet. See "How to use this page" above.</p>
+        <p class="hint" id="apply-hint">Everything you save is shared with the team straight away. It reaches the live finder when the team's changes are applied (Phil: Actions &gt; Apply team changes on GitHub, then merge), so "waiting to be applied" means saved but not live yet. See "How to use this page" above.</p>
+        <!-- "Apply changes now" (worker/src/applynow.js). Shown only when the Worker has the GH_ACTIONS_TOKEN secret. -->
+        <div id="apply-now" class="apply-now" hidden>
+          <p class="hint mt0">Everything you save is shared with the team straight away, but the live finder only changes when the changes are applied. "Waiting to be applied" means saved but not live yet.</p>
+          <p class="apply-row"><button id="apply-btn" class="btn primary small" type="button">Apply changes now</button> <span id="apply-pending"></span></p>
+          <p id="apply-status" class="msg info" role="status" aria-live="polite" hidden></p>
+        </div>
       </div>
     </section>
 

@@ -12,6 +12,8 @@
 // checked by serviceedit.js), and new services the team adds there, waiting to become files in data/services/.
 // Like decisions, they reach the data through scripts/apply-decisions.mjs (Actions > Apply team changes).
 
+import { handleApply } from './applynow.js';
+
 const TYPES = ['Issue', 'Action', 'Idea', 'Question'];
 const AREAS = ['Matching quality', 'Data accuracy', 'Wording and content', 'Safety', 'Technical', 'Process and governance', 'Other'];
 const PRIORITIES = ['High', 'Medium', 'Low'];
@@ -208,6 +210,9 @@ export async function handleLog(request, env, url, cors, checker) {
   }
 
   const path = url.pathname;
+
+  // "Apply changes now" (applynow.js): starts the Apply team changes workflow, and reports how it's going.
+  if (path === '/log/apply' || path === '/log/apply/status') return handleApply(request, env, path, body, cors);
 
   if (request.method === 'GET' && path === '/log/items') {
     return json(await call('/list'), 200, cors);

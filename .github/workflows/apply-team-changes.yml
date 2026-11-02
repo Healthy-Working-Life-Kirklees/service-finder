@@ -1,8 +1,13 @@
 name: Apply team changes
+run-name: "Apply team changes${{ inputs.auto_merge && ' and put them live' || '' }}${{ inputs.requested_by && format(' (from the All services page, {0})', inputs.requested_by) || '' }}"
 
 # The "button" for the MVP team's changes from the All services page: Actions > Apply team changes > Run workflow.
 # It fetches the team's new services, edits and listing decisions from the Worker, writes them into data/services/, checks the
 # data, and opens a pull request with a summary of what changed. Nothing goes live until that pull request is merged.
+#
+# "Apply changes now" on the All services page runs this with auto_merge on (through the Worker, worker/src/applynow.js):
+# if the data check and tests pass, the pull request is merged straight away and both deploys are started, so the
+# changes are live in a few minutes. If anything fails, nothing is merged. Run from here, it still waits for you to merge.
 #
 # One-off setup (see the README, "Reviewing which services are live, and editing details"):
 #   - Settings > Secrets and variables > Actions > Secrets: add TEAM_PASSCODE (the same value as the Worker secret).
@@ -16,10 +21,19 @@ on:
         description: "Preview only: show what would change, without opening a pull request"
         type: boolean
         default: false
+      auto_merge:
+        description: "Put the changes live straight away if the checks pass (merge and deploy). The All services page button uses this."
+        type: boolean
+        default: false
+      requested_by:
+        description: "Who asked (filled in by the All services page)"
+        type: string
+        default: ""
 
 permissions:
   contents: write
   pull-requests: write
+  actions: write   # to start the deploys after an automatic merge
 
 concurrency:
   group: apply-team-changes
@@ -74,6 +88,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           ACTOR: ${{ github.actor }}
+          AUTO_MERGE: ${{ inputs.auto_merge }}
+          REQUESTED_BY: ${{ inputs.requested_by }}
         run: |
           # git status, not git diff, so brand-new service files count too.
           if [ -z "$(git status --porcelain -- data/services)" ]; then
@@ -88,16 +104,33 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$branch"
           git add data/services
-          git commit -q -m "Apply the MVP team's decisions and edits ($(date -u +%Y-%m-%d))" -m "Run by $ACTOR from the Apply team changes workflow."
+          if [ -n "$REQUESTED_BY" ]; then who="Requested by $REQUESTED_BY on the All services page."; else who="Run by $ACTOR from the Apply team changes workflow."; fi
+          git commit -q -m "Apply the MVP team's decisions and edits ($(date -u +%Y-%m-%d))" -m "$who"
           git push -q origin "$branch"
           {
             cat "$RUNNER_TEMP/summary.md"
             echo
             echo "---"
-            echo "Opened by the [Apply team changes]($RUN_URL) workflow, run by @$ACTOR. The data check and Worker tests passed in that run. Merge to put these changes live."
+            if [ "$AUTO_MERGE" = "true" ]; then
+              echo "Opened and merged by the [Apply team changes]($RUN_URL) workflow: \"Apply changes now\" on the All services page, requested by ${REQUESTED_BY:-someone on the team}. The data check and Worker tests passed in that run."
+            else
+              echo "Opened by the [Apply team changes]($RUN_URL) workflow, run by @$ACTOR. The data check and Worker tests passed in that run. Merge to put these changes live."
+            fi
           } > "$RUNNER_TEMP/body.md"
           if url=$(gh pr create --base main --head "$branch" --title "Apply the MVP team's decisions and edits ($(date -u '+%-d %b %Y'))" --body-file "$RUNNER_TEMP/body.md"); then
             echo "Pull request: $url" | tee -a "$GITHUB_STEP_SUMMARY"
+            if [ "$AUTO_MERGE" = "true" ]; then
+              # The checks above passed, so merge now. A merge made with this workflow's token doesn't start other
+              # workflows by itself, so start both deploys (the site and the Worker both carry the live list).
+              if ! gh pr merge "$url" --merge --delete-branch; then
+                echo "::error::The pull request couldn't be merged automatically (has main changed?). It's open for review: $url"
+                echo "### Not merged: the pull request is open for review" >> "$GITHUB_STEP_SUMMARY"
+                exit 1
+              fi
+              gh workflow run pages.yml --ref main
+              gh workflow run worker.yml --ref main
+              echo "Merged, and the site and Worker deploys have started. The changes will be live in a few minutes." | tee -a "$GITHUB_STEP_SUMMARY"
+            fi
           else
             # Usually because Settings > Actions > General > Workflow permissions doesn't allow GitHub Actions to
             # create pull requests. The changes are safely on the branch, so say how to open the pull request by hand.
