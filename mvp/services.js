@@ -679,6 +679,9 @@
     const ours = a && Date.parse(a.created) >= applyAsked - 30000;
     if (applyAsked && !ours) { applyMessage('Starting…'); return true; }
     if (!a) return false;
+    // Only describe runs started with this button. A run started on GitHub's Actions tab just opens a pull request,
+    // so a later deploy (from merging something else) mustn't be read as "the team's changes are live".
+    if (!/put them live/.test(a.title || '')) { $('#apply-status').hidden = true; $('#apply-btn').disabled = a.status !== 'completed'; return a.status !== 'completed'; }
     // On opening the page, only mention a finished run from the last 12 hours.
     if (!applyAsked && a.status === 'completed' && Date.now() - Date.parse(a.updated) > 12 * 3600e3) { $('#apply-status').hidden = true; return false; }
     const busy = (r) => r && r.status !== 'completed';
