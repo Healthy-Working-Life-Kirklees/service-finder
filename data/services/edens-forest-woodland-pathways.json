@@ -15,7 +15,7 @@
     "Mental health"
   ],
   "whoFor": "Adults in Kirklees who want to improve wellbeing, build confidence, reconnect with others and take small steps towards future opportunities. Particularly helpful for people with low confidence, anxiety, health conditions, caring responsibilities, or who feel stuck or unsure of next steps.",
-  "age": "Adults",
+  "age": "18+",
   "webpage": null,
   "email": "info@edensforestcic.org",
   "phone": "07734 898650 / 07934 450806",
@@ -48,10 +48,11 @@
     }
   ],
   "workExperience": "No",
-  "lastUpdated": "2026-10-12",
+  "lastUpdated": "2026-11-02",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
+    "evidence": "Checked by LO on 2026-11-02: Age range 18+"
   },
   "listing": {
     "decision": "include",
