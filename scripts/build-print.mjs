@@ -7,6 +7,13 @@
 // The output is one self-contained HTML file (fonts, logos and QR codes embedded) in
 // print/out/. Open it in Chrome or Edge and print to A4 with "Background graphics" on,
 // or run scripts/render-print.py to make the PDF.
+//
+//   node scripts/build-print.mjs --site _site
+//
+// Writes the version for the website instead: directory.html, directory.css,
+// directory.js and img/hwl-logo.png into the assembled site folder. It uses the site's
+// own fonts and logos and has no inline script or style, so it works under the
+// site's Content Security Policy. The Pages workflow runs this on every deploy.
 import fs from 'node:fs';
 import path from 'node:path';
 import QRCode from 'qrcode';
@@ -22,6 +29,11 @@ const SOUTH = ['Colne Valley', 'Holme Valley', 'Huddersfield', 'Kirkburton'];
 // The Service Finder isn't public yet. Set this to true to put its web address and
 // QR code back on the cover (the space for them is kept).
 const SHOW_SITE_LINK = false;
+
+// --site <folder>: build the website version into that folder (see the top of this file).
+const siteArg = process.argv.indexOf('--site');
+const SITE_DIR = siteArg > -1 ? path.resolve(process.argv[siteArg + 1] || '') : null;
+if (siteArg > -1 && !process.argv[siteArg + 1]) throw new Error('--site needs a folder, for example --site _site');
 
 // ---------- data ----------
 const dir = path.join(ROOT, 'data', 'services');
@@ -122,12 +134,15 @@ const b64 = (p) => fs.readFileSync(p).toString('base64');
 const fontFaces = [
   ['DM Sans', 500, 'dm-sans-latin-500-normal'], ['DM Sans', 700, 'dm-sans-latin-700-normal'],
   ['Noto Sans', 400, 'noto-sans-latin-400-normal'], ['Noto Sans', 600, 'noto-sans-latin-600-normal'], ['Noto Sans', 700, 'noto-sans-latin-700-normal'],
-].map(([fam, w, f]) => `@font-face{font-family:"${fam}";font-weight:${w};font-style:normal;src:url(data:font/woff2;base64,${b64(path.join(ROOT, 'site/fonts', f + '.woff2'))}) format("woff2");}`).join('\n');
-const hwlLogo = `data:image/png;base64,${b64(path.join(ROOT, 'print/assets/hwl-logo.png'))}`;
+].map(([fam, w, f]) => {
+  const src = SITE_DIR ? `fonts/${f}.woff2` : `data:font/woff2;base64,${b64(path.join(ROOT, 'site/fonts', f + '.woff2'))}`;
+  return `@font-face{font-family:"${fam}";font-weight:${w};font-style:normal;src:url(${src}) format("woff2");}`;
+}).join('\n');
+const hwlLogo = SITE_DIR ? 'img/hwl-logo.png' : `data:image/png;base64,${b64(path.join(ROOT, 'print/assets/hwl-logo.png'))}`;
 const logoCache = new Map();
 function orgLogo(file) {
   if (!file) return null;
-  if (!logoCache.has(file)) logoCache.set(file, `data:image/webp;base64,${b64(path.join(ROOT, 'site/img/logos', file))}`);
+  if (!logoCache.has(file)) logoCache.set(file, SITE_DIR ? `img/logos/${file}` : `data:image/webp;base64,${b64(path.join(ROOT, 'site/img/logos', file))}`);
   return logoCache.get(file);
 }
 const qrCache = new Map();
@@ -276,7 +291,7 @@ async function cover() {
 }
 
 async function build() {
-  const css = fs.readFileSync(path.join(ROOT, 'print', 'styles', 'base.css'), 'utf8') + '\n' + fs.readFileSync(path.join(ROOT, 'print', 'styles', 'directory.css'), 'utf8');
+  const styles = fs.readFileSync(path.join(ROOT, 'print', 'styles', 'base.css'), 'utf8') + '\n' + fs.readFileSync(path.join(ROOT, 'print', 'styles', 'directory.css'), 'utf8');
   const parts = [await cover()];
   const tagNote = '<p class="legend"><span class="hwl">&#9679;</span> Healthy Working Life scheme</p>';
   parts.push(indexPages(fullPages, fullStart, {
@@ -300,13 +315,54 @@ async function build() {
     for (const s of sec.list) parts.push(await servicePage(s, pageOf.get(s.id)));
   }
 
+  const screenBar = `<nav class="screen-bar" aria-label="Directory">
+  ${SITE_DIR ? '<a class="sb-back" href="./">&larr; Back to the Support Finder</a>' : ''}
+  <span class="sb-title">Printable directory &middot; ${services.length} services &middot; ${edition}</span>
+  <button type="button" class="sb-print" data-print-all>Print the whole directory</button>
+</nav>`;
+  const head = `<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Healthy Working Life Support Finder: printable directory</title>`;
+  const body = `<body class="design-c">
+${screenBar}
+${parts.join('\n')}`;
+  const css = `${fontFaces}\n.hwl-logo{background:url(${hwlLogo}) center/contain no-repeat;}\n${styles}`;
+  const summary = `${totalPages} pages: ${services.length} services (${bySection.map((x) => `${x.label} ${x.list.length}`).join(', ')}); indexes ${fullPages.length} + ${kirkleesPages.length} + ${northPages.length} + ${southPages.length}`;
+
+  if (SITE_DIR) {
+    // Same security policy as the main page, so no inline script or style.
+    const csp = `default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'`;
+    const html = `<!doctype html>
+<html lang="en-GB"><head>${head}
+<meta http-equiv="Content-Security-Policy" content="${csp}">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="directory.css">
+<script src="directory.js" defer></script></head>
+${body}
+</body></html>`;
+    fs.mkdirSync(path.join(SITE_DIR, 'img'), { recursive: true });
+    fs.writeFileSync(path.join(SITE_DIR, 'directory.html'), html);
+    fs.writeFileSync(path.join(SITE_DIR, 'directory.css'), css);
+    fs.writeFileSync(path.join(SITE_DIR, 'directory.js'), PAGE_JS);
+    fs.copyFileSync(path.join(ROOT, 'print/assets/hwl-logo.png'), path.join(SITE_DIR, 'img/hwl-logo.png'));
+    console.log(`${summary} -> ${path.relative(ROOT, SITE_DIR) || '.'}/directory.html`);
+    return;
+  }
+
   const html = `<!doctype html>
-<html lang="en-GB"><head><meta charset="utf-8"><title>Service Finder: printed directory</title>
-<style>${fontFaces}\n.hwl-logo{background:url(${hwlLogo}) center/contain no-repeat;}\n${css}</style></head>
-<body class="design-c">
-${parts.join('\n')}
-<script>
-// Shrink the text on any service page whose content doesn't fit on one A4 page.
+<html lang="en-GB"><head>${head}
+<style>${css}</style></head>
+${body}
+<script>${PAGE_JS}</script>
+</body></html>`;
+  fs.mkdirSync(OUT, { recursive: true });
+  const file = path.join(OUT, 'service-finder-directory.html');
+  fs.writeFileSync(file, html);
+  console.log(`${summary} -> ${path.relative(ROOT, file)}`);
+}
+
+// The page's own script: fits long services onto one page, the print buttons, and on
+// screen, scales the A4 pages down to fit a narrow window.
+const PAGE_JS = `// Shrink the text on any service page whose content doesn't fit on one A4 page.
 (function () {
   document.querySelectorAll('.page.svc .fit').forEach(function (box) {
     var size = 100;
@@ -320,6 +376,19 @@ ${parts.join('\n')}
     if (box.scrollHeight > box.clientHeight + 1) box.closest('.page').setAttribute('data-overflow', 'yes');
   });
   document.documentElement.setAttribute('data-fitted', 'yes');
+
+  // On screen, scale the A4 pages down to fit a narrow window (phones). Printing ignores this.
+  var A4_PX = 210 * 96 / 25.4;
+  function fitScreen() {
+    var scale = Math.min(1, (document.documentElement.clientWidth - 16) / A4_PX);
+    document.documentElement.style.setProperty('--screen-scale', String(scale));
+  }
+  fitScreen();
+  window.addEventListener('resize', fitScreen);
+
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-print-all]')) window.print();
+  });
 
   // "Print this page" on each service: print just that page, then put the directory back.
   document.addEventListener('click', function (e) {
@@ -337,12 +406,6 @@ ${parts.join('\n')}
     window.print();
   });
 })();
-</script>
-</body></html>`;
-  fs.mkdirSync(OUT, { recursive: true });
-  const file = path.join(OUT, 'service-finder-directory.html');
-  fs.writeFileSync(file, html);
-  console.log(`${totalPages} pages: ${services.length} services (${bySection.map((x) => `${x.label} ${x.list.length}`).join(', ')}); indexes ${fullPages.length} + ${kirkleesPages.length} + ${northPages.length} + ${southPages.length} -> ${path.relative(ROOT, file)}`);
-}
+`;
 
 await build();
