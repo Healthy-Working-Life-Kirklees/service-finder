@@ -1,5 +1,5 @@
 // User feedback review page (MVP team only). Reads what people sent from the finder through the Worker's
-// /feedback/items route, which needs the FEEDBACK_PASSCODE secret. The team can see the totals, read the
+// /feedback/items route, which needs the team passcode (TEAM_PASSCODE), the same one as the other MVP pages. The team can see the totals, read the
 // comments, set a status, add a note, and download everything as CSV. Nothing here is stored in the browser
 // except the passcode, in this tab only (sessionStorage), like the issues log.
 (() => {
@@ -8,7 +8,9 @@
   const cfg = window.FINDER_CONFIG || {};
   const API = String(cfg.apiBase || '').replace(/\/$/, '');
   const $ = (s) => document.querySelector(s);
-  const PASS_KEY = 'hwlFeedbackPass';
+  // One passcode for all the MVP pages, shared through team-auth.js.
+  const AUTH = window.TEAM_AUTH || { PASS_KEY: 'hwlTeamPass', BY_KEY: 'hwlLogBy', refresh: () => {} };
+  const PASS_KEY = AUTH.PASS_KEY;
   const STATUSES = ['New', 'Reviewed', 'Actioned', 'Not actioned'];
   const PAGE = 50;
 
@@ -83,7 +85,7 @@
     try {
       res = await fetch(API + path, {
         method,
-        headers: { 'content-type': 'application/json', 'x-feedback-passcode': pass },
+        headers: { 'content-type': 'application/json', 'x-team-passcode': pass },
         body: body ? JSON.stringify(body) : undefined,
       });
     } catch {
@@ -126,10 +128,12 @@
     } catch (e) {
       pass = '';
       store.del(PASS_KEY);
-      showGate(e.status === 404 ? "Reading feedback hasn't been switched on yet (the FEEDBACK_PASSCODE secret isn't set). Ask Phil." : e.status === 401 ? 'That passcode is not right.' : e.message);
+    AUTH.refresh();
+      showGate(e.status === 404 ? 'The MVP team pages have not been switched on yet (the TEAM_PASSCODE secret is not set). Ask Phil.' : e.status === 401 ? 'That passcode is not right.' : e.message);
       return;
     }
     store.set(PASS_KEY, pass);
+    AUTH.refresh();
     $('#gate').hidden = true;
     $('#app').hidden = false;
     $('#pass').value = '';
@@ -142,6 +146,7 @@
     pass = '';
     items = [];
     store.del(PASS_KEY);
+    AUTH.refresh();
     $('#list').replaceChildren();
     showGate('');
   }

@@ -33,7 +33,7 @@ const mk = (f, status) => {
 };
 
 // Stored feedback for the User feedback review page.
-const FB_PASS = 'fb-test-pass';
+const FB_PASS = PASS; // one team passcode for every MVP page
 const fbToday = new Date().toISOString().slice(0, 10);
 const fbBase = { date: fbToday, schemeIds: [], recordLastUpdated: null, helpful: null, reasons: [], text: '', missedService: null, gapCategories: [], gapArea: null, lang: 'en', mode: 'public', redacted: false, status: 'New', note: '' };
 const fbStore = [
@@ -60,9 +60,9 @@ async function worker(route) {
 
   if (url.pathname === '/health') return json({ ok: true, aiConfigured: true, teamLog: true, feedback: feedbackFlag, usage: true });
   if (url.pathname === '/usage' && req.method() === 'POST') { usageSent.push(JSON.parse(req.postData())); return route.fulfill({ status: 204, headers: cors }); }
-  // Reading feedback (the User feedback review page), with its own passcode.
+  // Reading feedback (the User feedback review page), with the team passcode.
   if (url.pathname.startsWith('/feedback/')) {
-    if (req.headers()['x-feedback-passcode'] !== FB_PASS) return json({ error: 'Wrong passcode.' }, 401);
+    if (req.headers()['x-team-passcode'] !== FB_PASS) return json({ error: 'Wrong passcode.' }, 401);
     if (url.pathname === '/feedback/items' && req.method() === 'GET') return json({ items: fbStore, statuses: ['New', 'Reviewed', 'Actioned', 'Not actioned'] });
     if (url.pathname === '/feedback/export.csv') return route.fulfill({ status: 200, headers: { ...cors, 'content-type': 'text/csv' }, body: '"id","date"\r\n"1","2026-10-01"\r\n' });
     const m = url.pathname.match(/^\/feedback\/items\/(\d+)$/);
@@ -584,6 +584,24 @@ async function worker(route) {
   const fbDl = page.waitForEvent('download');
   await page.click('#export');
   check('review: CSV download', (await fbDl).suggestedFilename().endsWith('.csv'));
+
+  // ---------- one sign-in for every MVP page ----------
+  check('one sign-in: team bar says signed in', (await page.textContent('.teambar .team-auth')).includes('Signed in'));
+  await page.goto(ON + '/mvp/log.html');
+  check('one sign-in: the log opens without asking again', await page.waitForSelector('#app:not([hidden])', { timeout: 5000 }).then(() => true, () => false) && !(await page.locator('#gate').isVisible()));
+  await page.goto(ON + '/mvp/services.html');
+  check('one sign-in: All services is signed in without asking again', await page.waitForSelector('#signed-in:not([hidden])', { timeout: 5000 }).then(() => true, () => false));
+  await page.goto(ON + '/mvp/help.html');
+  check('one sign-in: the help page shows it too', (await page.textContent('.teambar .team-auth')).includes('Signed in'));
+  await page.click('.teambar .team-auth button');
+  await page.waitForLoadState('load');
+  check('one sign-in: signing out in the team bar says not signed in', (await page.textContent('.teambar .team-auth')).includes('Not signed in'));
+  await page.goto(ON + '/mvp/feedback.html');
+  check('one sign-in: ...and signs out of every page', await page.locator('#gate').isVisible() && !(await page.locator('#app').isVisible()));
+  check('one sign-in: the sign-in box explains it is one passcode for all pages', (await page.textContent('#gate')).includes('One passcode for all the MVP team pages'));
+  await page.fill('#pass', FB_PASS);
+  await page.click('#unlock');
+  await page.waitForSelector('#app:not([hidden])');
   await page.click('#lock');
   check('review: lock returns to the gate', await page.locator('#gate').isVisible());
 

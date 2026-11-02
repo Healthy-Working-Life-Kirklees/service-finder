@@ -50,7 +50,7 @@
     const box = $('#usage');
     if (!API || !box) return;
     try {
-      const res = await fetch(API + '/usage/days', { headers: { 'x-feedback-passcode': pass } });
+      const res = await fetch(API + '/usage/days', { headers: { 'x-team-passcode': pass } });
       if (res.status === 404) { days = []; box.replaceChildren(el('p', { class: 'msg info', text: "Usage counting isn't switched on yet. Once the Worker update is live, counts start from that day." })); return; }
       const d = await res.json();
       if (!res.ok) throw new Error(d.error || 'Could not load the usage counts.');
@@ -62,7 +62,7 @@
   }
 
   async function exportCsv() {
-    const res = await fetch(API + '/usage/export.csv', { headers: { 'x-feedback-passcode': pass } });
+    const res = await fetch(API + '/usage/export.csv', { headers: { 'x-team-passcode': pass } });
     if (!res.ok) return;
     const a = el('a', { href: URL.createObjectURL(await res.blob()), download: 'service-finder-usage-' + new Date().toISOString().slice(0, 10) + '.csv' });
     document.body.append(a); a.click(); a.remove();

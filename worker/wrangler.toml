@@ -19,7 +19,7 @@ MAX_USAGE_PER_DAY = "20000"
 # "Apply changes now" on the All services page (worker/src/applynow.js) starts the Apply team changes workflow
 # in this repository. It's off until the GH_ACTIONS_TOKEN secret is set (see the README).
 GH_REPO = "Healthy-Working-Life-Kirklees/service-finder"
-# ANTHROPIC_API_KEY, TEAM_PASSCODE, FEEDBACK_PASSCODE and GH_ACTIONS_TOKEN are secrets: add them in the Cloudflare dashboard
+# ANTHROPIC_API_KEY, TEAM_PASSCODE and GH_ACTIONS_TOKEN are secrets: add them in the Cloudflare dashboard
 # (Workers > hwl-service-finder > Settings > Variables and Secrets). Never put them in this file.
 
 # No Workers Logs: nothing about a conversation should be kept anywhere.
@@ -91,7 +91,7 @@ namespace_id = "7304"
 limit = 30
 period = 60
 
-# Anonymous usage counts (daily tallies only). Read with the FEEDBACK_PASSCODE on the review page.
+# Anonymous usage counts (daily tallies only). Read with the team passcode (TEAM_PASSCODE) on the Feedback and usage page.
 [[durable_objects.bindings]]
 name = "USAGE_STORE"
 class_name = "UsageStore"

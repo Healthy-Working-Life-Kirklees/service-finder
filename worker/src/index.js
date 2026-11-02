@@ -213,9 +213,9 @@ export default {
     // scripts/apply-decisions.mjs can fetch them with the passcode, like the feedback digest does.
     const scriptRead = !origin && request.method === 'GET' && ['/log/decisions', '/log/edits', '/log/new'].includes(url.pathname);
     if (url.pathname.startsWith('/log/')) return originOk || scriptRead ? handleLog(request, env, url, cors, EDIT_CHECKER) : json({ error: 'Not allowed.' }, 403, cors);
-    // User feedback: sending is public (with the same checks as /chat); reading needs the FEEDBACK_PASSCODE secret.
+    // User feedback: sending is public (with the same checks as /chat); reading needs the team passcode (TEAM_PASSCODE).
     if (url.pathname === '/feedback' || url.pathname.startsWith('/feedback/')) return handleFeedback(request, env, url, cors, originOk, FEEDBACK_DATA);
-    // Anonymous usage counts: the page sends events; reading the tallies needs the FEEDBACK_PASSCODE secret.
+    // Anonymous usage counts: the page sends events; reading the tallies needs the team passcode (TEAM_PASSCODE).
     if (url.pathname === '/usage' || url.pathname.startsWith('/usage/')) return handleUsage(request, env, url, cors, originOk, ID_SET);
     if (url.pathname !== '/chat' || request.method !== 'POST') return json({ error: 'Not found.' }, 404, cors);
     if (!originOk) return json({ error: 'Not allowed.' }, 403, cors);

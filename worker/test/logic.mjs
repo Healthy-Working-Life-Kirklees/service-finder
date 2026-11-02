@@ -477,7 +477,7 @@ check('new: discard', r.status === 200 && Object.keys((await logCall('GET', '/lo
 }
 
 // ----- User feedback -----
-const FB_PASS = 'feedback passcode for tests';
+const FB_PASS = PASS; // one team passcode for every MVP area
 const mkFbStore = () => {
   const mem = new Map();
   const storage = {
@@ -493,7 +493,7 @@ let fbStore = mkFbStore();
 let limiterHits = 0;
 const fbEnv = (extra = {}) => ({
   ...env('claude-sonnet-5-5'),
-  FEEDBACK_PASSCODE: FB_PASS,
+  TEAM_PASSCODE: FB_PASS,
   FEEDBACK_STORE: { idFromName: () => 'x', get: () => ({ fetch: (u, init) => fbStore.fetch(new Request(u, init)) }) },
   ...extra,
 });
@@ -649,14 +649,14 @@ r = await send(cardFb(), { e: fbEnv({ MAX_FEEDBACK_PER_DAY: '3' }) });
 check('feedback: daily cap resets on a new day', r.status === 201);
 
 // Read routes
-r = await fbCall('GET', '/feedback/items', null, { pass: FB_PASS, e: fbEnv({ FEEDBACK_PASSCODE: undefined }) });
-check('feedback: read routes 404 with no FEEDBACK_PASSCODE set', r.status === 404);
-r = await fbCall('GET', '/feedback/export.csv', null, { pass: 'x', e: fbEnv({ FEEDBACK_PASSCODE: undefined }) });
-check('feedback: CSV 404 with no FEEDBACK_PASSCODE set', r.status === 404);
-r = await fbCall('PATCH', '/feedback/items/1', { status: 'Reviewed' }, { pass: 'x', e: fbEnv({ FEEDBACK_PASSCODE: undefined }) });
-check('feedback: PATCH 404 with no FEEDBACK_PASSCODE set', r.status === 404);
-r = await send(cardFb(), { e: fbEnv({ FEEDBACK_PASSCODE: undefined }) });
-check('feedback: sending still works with no FEEDBACK_PASSCODE set', r.status === 201);
+r = await fbCall('GET', '/feedback/items', null, { pass: FB_PASS, e: fbEnv({ TEAM_PASSCODE: undefined }) });
+check('feedback: read routes 404 with no TEAM_PASSCODE set', r.status === 404);
+r = await fbCall('GET', '/feedback/export.csv', null, { pass: 'x', e: fbEnv({ TEAM_PASSCODE: undefined }) });
+check('feedback: CSV 404 with no TEAM_PASSCODE set', r.status === 404);
+r = await fbCall('PATCH', '/feedback/items/1', { status: 'Reviewed' }, { pass: 'x', e: fbEnv({ TEAM_PASSCODE: undefined }) });
+check('feedback: PATCH 404 with no TEAM_PASSCODE set', r.status === 404);
+r = await send(cardFb(), { e: fbEnv({ TEAM_PASSCODE: undefined }) });
+check('feedback: sending still works with no TEAM_PASSCODE set', r.status === 201);
 r = await fbCall('GET', '/feedback/items', null, { pass: 'wrong' });
 check('feedback: wrong passcode -> 401', r.status === 401);
 r = await fbCall('GET', '/feedback/items', null);
@@ -692,6 +692,15 @@ check('feedback: CSV export has a header, one row per entry and a download name'
 check('feedback: CSV neutralises a leading "=" (formula injection)', r.body.includes("\"'=HYPERLINK"));
 const pre2 = await worker.fetch(new Request('https://w/feedback/items', { method: 'OPTIONS', headers: { Origin: O } }), fbEnv());
 check('feedback: preflight allows x-feedback-passcode', pre2.status === 204 && pre2.headers.get('Access-Control-Allow-Headers').includes('x-feedback-passcode'));
+// one passcode: the team passcode opens feedback and usage, with either header name; an old separate one doesn't
+r = await fbCall('GET', '/feedback/items', null, { pass: PASS });
+check('one passcode: the team passcode reads feedback', r.status === 200);
+{
+  const res = await worker.fetch(new Request('https://w/feedback/items', { headers: { Origin: O, 'x-team-passcode': PASS } }), fbEnv());
+  check('one passcode: x-team-passcode header works for feedback', res.status === 200);
+  const old = await worker.fetch(new Request('https://w/feedback/items', { headers: { Origin: O, 'x-feedback-passcode': 'the old feedback passcode' } }), fbEnv({ FEEDBACK_PASSCODE: 'the old feedback passcode' }));
+  check('one passcode: a leftover FEEDBACK_PASSCODE no longer opens anything', old.status === 401);
+}
 
 // Retention: entries older than 12 months are deleted on the next write (and never returned)
 fbStore = mkFbStore();

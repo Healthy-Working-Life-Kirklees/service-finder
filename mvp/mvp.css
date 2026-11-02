@@ -207,3 +207,7 @@ td.num-cell { text-align: right; white-space: nowrap; width: 1%; }
 .apply-now { margin-top: .75rem; padding-top: .75rem; border-top: 1px solid var(--border); }
 .apply-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; margin: .5rem 0; }
 .apply-now .msg .btn { margin-left: .25rem; }
+
+/* ---------- one sign-in for all MVP pages (team-auth.js) ---------- */
+.teambar .team-auth { margin-left: auto; }
+.teambar .linklike { font: inherit; color: #fff; background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }

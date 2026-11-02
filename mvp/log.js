@@ -9,8 +9,10 @@
   const AREAS = ['Matching quality', 'Data accuracy', 'Wording and content', 'Safety', 'Technical', 'Process and governance', 'Other'];
   const PRIORITIES = ['High', 'Medium', 'Low'];
   const STATUSES = ['Open', 'In progress', 'Done', "Won't do"];
-  const PASS_KEY = 'hwlLogPass';
-  const BY_KEY = 'hwlLogBy';
+  // One passcode for all the MVP pages, shared through team-auth.js.
+  const AUTH = window.TEAM_AUTH || { PASS_KEY: 'hwlTeamPass', BY_KEY: 'hwlLogBy', refresh: () => {} };
+  const PASS_KEY = AUTH.PASS_KEY;
+  const BY_KEY = AUTH.BY_KEY;
 
   const store = {
     get: (k) => { try { return sessionStorage.getItem(k) || ''; } catch { return ''; } },
@@ -89,10 +91,12 @@
     } catch (e) {
       pass = '';
       store.del(PASS_KEY);
-      showGate(e.status === 404 ? 'The log has not been switched on yet. Ask Phil.' : e.status === 401 ? 'That passcode is not right.' : e.message);
+    AUTH.refresh();
+      showGate(e.status === 404 ? 'The MVP team pages have not been switched on yet (the TEAM_PASSCODE secret is not set). Ask Phil.' : e.status === 401 ? 'That passcode is not right.' : e.message);
       return;
     }
     store.set(PASS_KEY, pass);
+    AUTH.refresh();
     $('#gate').hidden = true;
     $('#app').hidden = false;
     $('#pass').value = '';
@@ -104,6 +108,7 @@
     pass = '';
     items = [];
     store.del(PASS_KEY);
+    AUTH.refresh();
     $('#list').replaceChildren();
     showGate('');
   }
@@ -303,7 +308,7 @@
   fillSelect($('#flt-area'), AREAS, { all: true });
   fillSelect($('#flt-priority'), PRIORITIES, { all: true });
   $('#by').value = store.get(BY_KEY);
-  $('#by').addEventListener('change', () => store.set(BY_KEY, by()));
+  $('#by').addEventListener('change', () => { store.set(BY_KEY, by()); AUTH.refresh(); });
 
   $('#unlock').addEventListener('click', () => unlock($('#pass').value));
   $('#pass').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); unlock($('#pass').value); } });

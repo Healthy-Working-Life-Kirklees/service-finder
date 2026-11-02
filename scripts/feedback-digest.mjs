@@ -1,6 +1,6 @@
 // Prints a Markdown digest of new user feedback, for the weekly triage (and later for the maintenance agent).
 //
-//   WORKER_URL=https://hwl-service-finder.<subdomain>.workers.dev FEEDBACK_PASSCODE=... npm run feedback-digest > digest.md
+//   WORKER_URL=https://hwl-service-finder.<subdomain>.workers.dev TEAM_PASSCODE=... npm run feedback-digest > digest.md
 //
 // It fetches the entries with status "New" from the Worker and compares them with the scheme files in
 // data/services/. It is read-only: it changes nothing on the Worker or in the data. Mark entries Reviewed,
@@ -42,14 +42,15 @@ async function load() {
     return (Array.isArray(d) ? d : d.items || []).filter((x) => x.status === 'New');
   }
   const base = String(process.env.WORKER_URL || '').replace(/\/$/, '');
-  const pass = process.env.FEEDBACK_PASSCODE || '';
+  // The one MVP team passcode. FEEDBACK_PASSCODE is still read, for anyone with it set from before the passcodes were merged.
+  const pass = process.env.TEAM_PASSCODE || process.env.FEEDBACK_PASSCODE || '';
   if (!base || !pass) {
-    console.error('Set WORKER_URL and FEEDBACK_PASSCODE, or pass --input <file>.');
+    console.error('Set WORKER_URL and TEAM_PASSCODE, or pass --input <file>.');
     process.exit(1);
   }
-  const r = await fetch(base + '/feedback/items?status=New', { headers: { 'x-feedback-passcode': pass } });
+  const r = await fetch(base + '/feedback/items?status=New', { headers: { 'x-team-passcode': pass } });
   if (r.status === 401) throw new Error('The passcode was not accepted.');
-  if (r.status === 404) throw new Error('The feedback read routes are off (is the FEEDBACK_PASSCODE secret set on the Worker?).');
+  if (r.status === 404) throw new Error('The feedback read routes are off (is the TEAM_PASSCODE secret set on the Worker?).');
   if (!r.ok) throw new Error('The Worker said ' + r.status + '.');
   return (await r.json()).items || [];
 }

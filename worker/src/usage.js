@@ -5,7 +5,7 @@
 // stores nothing on the person's device for this (no cookies, no local storage).
 //
 //   POST /usage               public (same origin and rate limit checks as feedback): one event from the page
-//   GET  /usage/days          passcode (FEEDBACK_PASSCODE): the daily tallies, optionally ?since=YYYY-MM-DD
+//   GET  /usage/days          passcode (TEAM_PASSCODE): the daily tallies, optionally ?since=YYYY-MM-DD
 //   GET  /usage/export.csv    passcode: the same as CSV, one row per date and count
 //
 // Searches are counted by the Worker itself when it answers /chat (see recordUsage in index.js), so they can't
@@ -193,15 +193,17 @@ export async function handleUsage(request, env, url, cors, originOk, ids) {
     return new Response(null, { status: 204, headers: cors });
   }
 
-  // ----- reading (the review team, with the feedback passcode) -----
-  if (!env.FEEDBACK_PASSCODE || !env.USAGE_STORE) return json({ error: 'Not found.' }, 404, cors);
+  // ----- reading (the MVP team, with the team passcode) -----
+  if (!env.TEAM_PASSCODE || !env.USAGE_STORE) return json({ error: 'Not found.' }, 404, cors);
   if (request.headers.get('Origin') && !originOk) return json({ error: 'Not allowed.' }, 403, cors);
   if (env.FEEDBACK_READ_LIMITER) {
     const { success } = await env.FEEDBACK_READ_LIMITER.limit({ key: ip });
     if (!success) return json({ error: 'Too many requests. Please wait a minute.' }, 429, cors);
   }
-  const pass = request.headers.get('X-Feedback-Passcode') || '';
-  if (!(await safeEqual(pass, env.FEEDBACK_PASSCODE))) return json({ error: 'Wrong passcode.' }, 401, cors);
+  // The one MVP team passcode (TEAM_PASSCODE), the same as the log and All services pages. The old
+  // X-Feedback-Passcode header name is still accepted, for scripts written before the passcodes were merged.
+  const pass = request.headers.get('X-Team-Passcode') || request.headers.get('X-Feedback-Passcode') || '';
+  if (!(await safeEqual(pass, env.TEAM_PASSCODE))) return json({ error: 'Wrong passcode.' }, 401, cors);
   if (request.method !== 'GET' || !['/usage/days', '/usage/export.csv'].includes(path)) return json({ error: 'Not found.' }, 404, cors);
   const since = url.searchParams.get('since');
   if (since && !isDate(since)) return json({ error: '"since" must be a date, YYYY-MM-DD.' }, 400, cors);
