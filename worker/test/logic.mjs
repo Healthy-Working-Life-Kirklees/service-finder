@@ -813,5 +813,61 @@ const oldDay = '2020-01-01';
 await usageStore.ctx.storage.put('d:' + oldDay, { date: oldDay, counts: { 'visit|en|none': 5 }, total: 5 });
 check('usage: tallies older than 24 months are deleted', !(await usDays()).body.days.some((d) => d.date === oldDay));
 
+// ---------- "Apply changes now" (applynow.js) ----------
+{
+  const GH = { GH_ACTIONS_TOKEN: 'ghtoken', GH_REPO: 'org/repo' };
+  let calls = [];
+  let runs = {};       // workflow file -> list of runs (newest first)
+  let dispatchStatus = 204;
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (u, init = {}) => {
+    const url = String(u);
+    if (!url.startsWith('https://api.github.com/')) return realFetch(u, init);
+    calls.push({ url, method: init.method || 'GET', body: init.body ? JSON.parse(init.body) : null, auth: (init.headers || {}).Authorization });
+    const m = url.match(/workflows\/([^/]+)\/(runs|dispatches)/);
+    if (m && m[2] === 'dispatches') return new Response(null, { status: dispatchStatus });
+    return Response.json({ workflow_runs: runs[m[1]] || [] });
+  };
+  const run = (status, conclusion, created) => ({ status, conclusion, created_at: created, updated_at: created, html_url: 'https://github.com/run', display_title: 't' });
+
+  r = await logCall('POST', '/log/apply', { by: 'PL' });
+  check('apply: off without GH_ACTIONS_TOKEN (404, off)', r.status === 404 && r.body.off === true && calls.length === 0);
+  r = await logCall('POST', '/log/apply', { by: 'PL' }, { e: logEnv(GH), pass: 'nope' });
+  check('apply: wrong passcode -> 401, GitHub not called', r.status === 401 && calls.length === 0);
+  r = await logCall('POST', '/log/apply', { by: 'PL' }, { e: logEnv(GH), origin: null });
+  check('apply: wrong Origin -> 403, GitHub not called', r.status === 403 && calls.length === 0);
+  r = await logCall('POST', '/log/apply', { by: '' }, { e: logEnv(GH) });
+  check('apply: needs a name', r.status === 400 && calls.length === 0);
+
+  runs = { 'apply-team-changes.yml': [run('completed', 'success', '2026-11-02T09:00:00Z')] };
+  r = await logCall('POST', '/log/apply', { by: 'P<script>L' }, { e: logEnv(GH) });
+  const d = calls.find((c) => c.method === 'POST');
+  check('apply: starts the workflow on main with auto_merge', r.status === 202 && d && d.url === 'https://api.github.com/repos/org/repo/actions/workflows/apply-team-changes.yml/dispatches' && d.body.ref === 'main' && d.body.inputs.auto_merge === 'true', JSON.stringify(d));
+  check('apply: name cleaned before it goes to GitHub', d && d.body.inputs.requested_by === 'PscriptL', JSON.stringify(d && d.body));
+  check('apply: token sent only as a bearer header', d && d.auth === 'Bearer ghtoken');
+
+  calls = [];
+  runs = { 'apply-team-changes.yml': [run('in_progress', null, '2026-11-02T10:00:00Z')] };
+  r = await logCall('POST', '/log/apply', { by: 'PL' }, { e: logEnv(GH) });
+  check('apply: refuses while a run is still going (409)', r.status === 409 && !calls.some((c) => c.method === 'POST'));
+
+  runs = { 'apply-team-changes.yml': [] };
+  dispatchStatus = 422;
+  r = await logCall('POST', '/log/apply', { by: 'PL' }, { e: logEnv(GH) });
+  check('apply: GitHub refusing is reported (502)', r.status === 502);
+  dispatchStatus = 204;
+
+  runs = {
+    'apply-team-changes.yml': [run('completed', 'success', '2026-11-02T10:00:00Z')],
+    'pages.yml': [run('in_progress', null, '2026-11-02T10:01:30Z'), run('completed', 'success', '2026-11-01T08:00:00Z')],
+    'worker.yml': [run('completed', 'success', '2026-11-01T08:00:00Z')],
+  };
+  r = await logCall('GET', '/log/apply/status', null, { e: logEnv(GH) });
+  check('apply status: latest run and the deploys it started', r.status === 200 && r.body.apply.conclusion === 'success' && r.body.site.status === 'in_progress' && r.body.worker === null, JSON.stringify(r.body));
+  r = await logCall('GET', '/log/apply/status', null, { e: logEnv(GH), pass: 'nope' });
+  check('apply status: needs the passcode', r.status === 401);
+  globalThis.fetch = realFetch;
+}
+
 console.log(`passed=${pass} failed=${fail}`);
 process.exit(fail ? 1 : 0);

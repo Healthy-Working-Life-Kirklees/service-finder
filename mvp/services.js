@@ -645,12 +645,105 @@
     return data;
   }
 
+  // ---------- "Apply changes now" (worker/src/applynow.js) ----------
+  // Starts the Apply team changes workflow on GitHub, which checks the changes, merges them and deploys. The page then
+  // follows the run and the two deploys it starts, and says when the changes are live.
+  let applyOn = false;
+  let applyTimer = null;
+  let applyAsked = 0; // when this page asked for a run, so an older run isn't mistaken for it
+  const hhmm = (iso) => {
+    const d = new Date(iso);
+    const time = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    return d.toDateString() === new Date().toDateString() ? time : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ', ' + time;
+  };
+  const waiting = () => services.filter((x) => x.isNew || teamState(x) === 'pending' || editState(x) === 'pending').length;
+
+  function showApply() {
+    $('#apply-now').hidden = !(team && applyOn);
+    $('#apply-hint').hidden = Boolean(team && applyOn);
+    if (!team || !applyOn) return;
+    const n = waiting();
+    $('#apply-pending').textContent = n ? plural(n, 'service has', 'services have') + ' changes waiting to be applied.' : 'Nothing waiting to be applied.';
+  }
+
+  function applyMessage(text, kind, link) {
+    const m = $('#apply-status');
+    m.className = 'msg ' + (kind || 'info');
+    m.replaceChildren(text, ...(link ? [' ', el('a', { href: link, target: '_blank', rel: 'noopener', text: 'See the details on GitHub' }), '.'] : []));
+    m.hidden = false;
+  }
+
+  // What the latest run means for the person looking at the page. Returns true while there's more to wait for.
+  function showRun(st) {
+    const a = st.apply;
+    const ours = a && Date.parse(a.created) >= applyAsked - 30000;
+    if (applyAsked && !ours) { applyMessage('Starting…'); return true; }
+    if (!a) return false;
+    // On opening the page, only mention a finished run from the last 12 hours.
+    if (!applyAsked && a.status === 'completed' && Date.now() - Date.parse(a.updated) > 12 * 3600e3) { $('#apply-status').hidden = true; return false; }
+    const busy = (r) => r && r.status !== 'completed';
+    const failed = (r) => r && r.status === 'completed' && r.conclusion !== 'success';
+    $('#apply-btn').disabled = busy(a) || busy(st.site) || busy(st.worker);
+    if (busy(a)) { applyMessage('Applying: checking the changes and the data (started ' + hhmm(a.created) + '). This takes a minute or two.'); return true; }
+    if (failed(a)) { applyMessage('Not applied: the check found a problem, so nothing went live (' + hhmm(a.updated) + '). Your changes are still saved. Please tell Phil.', 'err', a.url); return false; }
+    if (!st.site && !st.worker) {
+      // The run finished without starting a deploy: there was nothing new to apply.
+      if (applyAsked) applyMessage('Nothing new to apply: the live finder already has all the team\u2019s changes.', 'ok');
+      else $('#apply-status').hidden = true;
+      return false;
+    }
+    if (busy(st.site) || busy(st.worker) || !st.site || !st.worker) { applyMessage('Checks passed and the changes are merged. Updating the live finder now…'); return true; }
+    if (failed(st.site) || failed(st.worker)) { applyMessage('The changes are merged, but updating the live finder failed. Please tell Phil.', 'err', (failed(st.site) ? st.site : st.worker).url); return false; }
+    const done = hhmm(st.site.updated > st.worker.updated ? st.site.updated : st.worker.updated);
+    const m = $('#apply-status');
+    applyMessage('Live: the finder, the AI and the printable directory have the team\u2019s changes (' + done + '). ', 'ok');
+    if (applyAsked) m.append(el('button', { type: 'button', class: 'btn secondary small', text: 'Reload this page', onclick: () => location.reload() }));
+    return false;
+  }
+
+  async function checkApply() {
+    clearTimeout(applyTimer);
+    let st;
+    try {
+      st = await api('GET', '/log/apply/status');
+    } catch (e) {
+      applyOn = e.status !== 404 && e.status !== 401;
+      showApply();
+      if (applyOn && applyAsked) { applyMessage(e.message, 'err'); applyTimer = setTimeout(checkApply, 15000); }
+      return;
+    }
+    applyOn = true;
+    showApply();
+    if (showRun(st)) applyTimer = setTimeout(checkApply, 8000);
+    else { applyAsked = 0; $('#apply-btn').disabled = false; }
+  }
+
+  async function applyNow() {
+    const by = $('#by').value.trim();
+    if (!by) { applyMessage('Please put your name or initials in the box above first.', 'err'); $('#by').focus(); return; }
+    const n = waiting();
+    if (!window.confirm((n ? 'Put the changes to ' + plural(n, 'service', 'services') : 'Check for changes and put them') + ' live now?\n\nThey are checked first. If the check passes they go live on the finder in about 3 minutes; if not, nothing changes.')) return;
+    $('#apply-btn').disabled = true;
+    try {
+      await api('POST', '/log/apply', { by });
+    } catch (e) {
+      applyMessage(e.message, 'err');
+      $('#apply-btn').disabled = false;
+      if (e.status === 409) checkApply();
+      return;
+    }
+    applyAsked = Date.now();
+    applyMessage('Starting…');
+    applyTimer = setTimeout(checkApply, 5000);
+  }
+
   function showSignedIn() {
     const by = $('#by').value.trim();
     $('#signin-form').hidden = Boolean(team);
     $('#signed-in').hidden = !team;
     $('#export-decisions').hidden = !team;
     $('#add-service').hidden = !team;
+    showApply();
     $('#signed-in-text').textContent = team ? 'Signed in' + (by ? ' as ' + by : '') + '. ' + plural(Object.keys(team).length, 'decision', 'decisions') + ', ' + plural(Object.keys(edits || {}).length, 'edited service', 'edited services') + ' and ' + plural(services.filter((y) => y.isNew).length, 'new service', 'new services') + ' so far.' : '';
   }
 
@@ -680,9 +773,13 @@
     showSignedIn();
     summary();
     update();
+    checkApply();
   }
 
   function signOut(message) {
+    clearTimeout(applyTimer);
+    applyAsked = 0;
+    $('#apply-status').hidden = true;
     team = null;
     edits = null;
     added = null;
@@ -844,4 +941,5 @@
   $('#unlock').addEventListener('click', () => { if ($('#pass').value) signIn($('#pass').value); });
   $('#pass').addEventListener('keydown', (e) => { if (e.key === 'Enter' && $('#pass').value) signIn($('#pass').value); });
   $('#lock').addEventListener('click', () => signOut(''));
+  $('#apply-btn').addEventListener('click', applyNow);
 })();
