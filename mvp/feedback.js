@@ -288,6 +288,7 @@
         if (kind === 'yes') return x.kind === 'reply' && x.helpful === true;
         if (kind === 'no') return x.kind === 'reply' && x.helpful === false;
         if (kind === 'card' || kind === 'gap') return x.kind === kind;
+        if (kind === 'provider' || kind === 'suggester') return Boolean(x.missedService && x.missedService.role === kind);
         return true;
       })
       .filter((x) => !status || x.status === status)
@@ -304,7 +305,7 @@
   const SUGGESTION_FIELDS = [
     ['organisation', 'Organisation'], ['description', 'What it does'], ['activities', 'What happens and where'],
     ['running', 'Running now?'], ['dates', 'Dates'], ['age', 'Age'], ['eligibility', 'Who can use it'], ['exclusions', "Who it isn't for"],
-    ['healthNeed', 'Health condition needed?'], ['audience', 'Who it is for'], ['categories', 'Kinds of support'],
+    ['healthNeed', 'Health condition needed?'], ['conditions', 'Which conditions'], ['audience', 'Who it is for'], ['categories', 'Kinds of support'],
     ['addresses', 'Addresses or venues'], ['noMap', 'Online or phone only'], ['level', 'Covers'],
     ['phone', 'Phone'], ['email', 'Email'], ['social', 'Social media'], ['referral', 'How to get referred'],
     ['selfReferral', 'Self-referral'], ['cost', 'Cost'], ['languages', 'Languages'], ['workExperience', 'Work experience or volunteering'],
@@ -351,9 +352,17 @@
         else v = SUGGESTION_CHOICES[k + ':' + v] || v;
         details.append(el('dt', { text: label }), el('dd', { class: 'comment', text: String(v) }));
       }
+      // Opens "Add a service" on All services with the boxes filled in from this suggestion. The details go by
+      // this browser tab only (sessionStorage), are read once and then removed; the contact name is never passed on.
+      const startListing = el('button', { type: 'button', class: 'btn secondary small', text: 'Start a new listing from this', onclick: () => {
+        const { contactName, ...rest } = ms;
+        try { sessionStorage.setItem('hwl-listing-draft', JSON.stringify({ ...rest, from: x.id, date: x.date })); } catch { /* ignore */ }
+        location.href = 'services.html';
+      } });
       if (details.children.length) {
         fact('Details they gave', el('details', { class: 'suggest-details' }, el('summary', { text: (details.children.length / 2) + ' details. Check with the service before using "Add a service".' }), details));
       }
+      fact('Make a listing', el('span', { class: 'stack' }, startListing, el('span', { class: 'hint', text: 'Opens "Add a service" on All services with these details filled in, for you to check and finish. Nothing goes live until the team decides to include it.' })));
     }
     if (x.gapCategories && x.gapCategories.length) fact('Support they looked for', x.gapCategories.join(', '));
     if (x.gapArea) fact('Area', x.gapArea);

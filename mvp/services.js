@@ -403,6 +403,7 @@
       idBox = el('input', { id: id('newid'), type: 'text', maxlength: '50', value: '', oninput: () => { idTouched = true; } });
       grid.append(el('div', { class: 'field' }, el('label', { for: id('newid'), text: 'Id (used for the file name)' }), idBox, el('p', { class: 'hint', text: 'Made from the name. Lower-case letters, numbers and hyphens.' })));
       grid.querySelector('#' + CSS.escape(id('name'))).addEventListener('input', (ev) => { if (!idTouched) idBox.value = slug(ev.target.value); });
+      if (s.name) idBox.value = slug(s.name);
     }
     grid.append(field('open', el('select', { id: id('open') }, el('option', { value: 'yes', text: 'Yes' }), el('option', { value: 'no', text: 'No (never recommended)' }))));
     grid.append(field('level', el('select', { id: id('level') }, (choices.level || []).map((v) => el('option', { value: v, text: LEVEL[v] || v })))));
@@ -446,6 +447,7 @@
     const say = (text, kind) => { msg.className = 'msg ' + kind; msg.textContent = text; msg.hidden = false; };
     if (mode !== 'edit') where.value = (added && added[s.id] && added[s.id].checkedUrl) || '';
     if (mode === 'new' && added[s.id]) why.value = added[s.id].note || '';
+    if (mode === 'add' && x.why) why.value = x.why;
     const cancel = () => {
       if (mode === 'add') { $('#add-panel').replaceChildren(); $('#add-panel').hidden = true; $('#add-service').focus(); return; }
       editing.delete(s.id);
@@ -568,7 +570,8 @@
     const intro = mode === 'add'
       ? 'The new service is saved for the team straight away, as "New: not yet in the data". It is reviewed and decided on like any other, and becomes part of the data when the team\'s changes are next applied. It is never put live without a team decision to include it.'
       : 'Changes are saved for the team straight away and reach the finder once applied. Boxes still marked "' + PLACEHOLDER + '" are highlighted.';
-    return el('section', { class: 'edit', 'aria-label': mode === 'add' ? heading : 'Edit ' + s.name }, el(mode === 'add' ? 'h2' : 'h4', { text: heading }), el('p', { class: 'hint', text: intro }), form);
+    return el('section', { class: 'edit', 'aria-label': mode === 'add' ? heading : 'Edit ' + s.name }, el(mode === 'add' ? 'h2' : 'h4', { text: heading }), el('p', { class: 'hint', text: intro }),
+      x.fromNote ? el('p', { class: 'msg warn from-suggestion', text: x.fromNote }) : null, form);
   }
 
   const slug = (t) => String(t || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 50).replace(/-+$/, '');
@@ -591,9 +594,67 @@
     };
   }
 
-  function openAdd() {
+  // A "Suggest a service" form from the finder, turned into a draft listing. Only what the form asked is filled
+  // in; everything is a starting point for the team to check with the service, never put live as it is.
+  const DRAFT_KEY = 'hwl-listing-draft';
+  const lines = (t) => String(t || '').split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  const STATUS_FROM = { now: 'Live - open to referrals', soon: 'Starting soon', paused: 'Paused', ended: 'Closed' };
+  function fromSuggestion(d) {
+    const s = blankService();
+    const ok = (k, v) => (choices[k] || []).includes(v);
+    s.name = d.name || '';
+    s.organisation = d.organisation || '';
+    s.webpage = d.website || null;
+    s.email = d.email || null;
+    s.phone = d.phone || null;
+    s.social = lines(d.social);
+    s.locations = lines(d.addresses);
+    s.areas = d.area && ok('areas', d.area) ? [d.area] : [];
+    if (ok('level', d.level)) s.level = d.level;
+    s.audience = (d.audience || []).filter((a) => ok('audience', a));
+    if (!s.audience.length) s.audience = ['individual'];
+    s.categories = (d.categories || []).filter((c) => ok('categories', c));
+    s.whoFor = d.description || '';
+    s.age = d.age || null;
+    s.eligibility = lines(d.eligibility);
+    if (d.healthNeed === 'specific') s.eligibility.push('Has a health condition: ' + (d.conditions || 'to be checked with the service'));
+    s.exclusions = lines(d.exclusions);
+    s.healthFocus = d.healthNeed === 'any' ? ['any'] : [];
+    s.referralRoutes = lines(d.referral);
+    s.selfReferral = { allowed: ok('selfReferral', d.selfReferral) ? d.selfReferral : 'tbc', note: '' };
+    s.cost = d.cost || null;
+    s.languages = d.languages || null;
+    s.workExperience = d.workExperience || 'Not stated';
+    if (d.running) {
+      s.status = STATUS_FROM[d.running] + (d.dates ? ', ' + d.dates : '');
+      s.open = d.running === 'now';
+    }
+    s.activities = [{ name: d.name || '', summary: d.activities || d.description || '', duration: d.dates || '' }];
+    return s;
+  }
+  function suggestionNote(d) {
+    const by = d.role === 'provider' ? 'someone from the service' : d.role === 'suggester' ? 'someone who knows about it' : 'someone';
+    const extra = [];
+    if (d.healthNeed === 'specific') extra.push('Needs a specific health condition (' + (d.conditions || 'not said') + '): choose the health focus.');
+    if (d.noMap) extra.push('Online or phone only, with no venue to map: consider turning the map buttons off in the file.');
+    if (d.logoOk) extra.push('They said we may use their logo: ask them for it.');
+    return 'From "Suggest a service" (feedback #' + d.from + ', sent ' + d.date + ') by ' + by + '. Check every detail with the service before including it.' + (extra.length ? ' ' + extra.join(' ') : '');
+  }
+  // The Feedback and usage page leaves a draft in this tab; open it once, then forget it.
+  function openDraft() {
+    const raw = store.get(DRAFT_KEY);
+    if (!raw) return;
+    store.del(DRAFT_KEY);
+    let d;
+    try { d = JSON.parse(raw); } catch { return; }
+    const note = suggestionNote(d);
+    openAdd({ s: fromSuggestion(d), why: note, fromNote: 'Filled in from a suggestion sent through the finder. Boxes it didn\'t answer are left blank or set to a default: check everything with the service, and add what is missing, before adding it for review.' });
+    $('#add-panel').scrollIntoView({ block: 'start' });
+  }
+
+  function openAdd(prefill) {
     const panel = $('#add-panel');
-    const x = { s: blankService(), listing: 'new', isNew: true };
+    const x = { s: blankService(), listing: 'new', isNew: true, ...(prefill && prefill.s ? prefill : {}) };
     panel.replaceChildren(editForm(x, 'add'));
     panel.hidden = false;
     panel.querySelector('input').focus();
@@ -778,6 +839,7 @@
     summary();
     update();
     checkApply();
+    openDraft();
   }
 
   function signOut(message) {
@@ -940,7 +1002,7 @@
   });
   $('#export').addEventListener('click', exportCsv);
   $('#export-decisions').addEventListener('click', exportDecisions);
-  $('#add-service').addEventListener('click', openAdd);
+  $('#add-service').addEventListener('click', () => openAdd());
   $('#by').value = store.get(BY_KEY);
   $('#by').addEventListener('change', () => { store.set(BY_KEY, $('#by').value.trim()); AUTH.refresh(); showSignedIn(); });
   $('#unlock').addEventListener('click', () => { if ($('#pass').value) signIn($('#pass').value); });
