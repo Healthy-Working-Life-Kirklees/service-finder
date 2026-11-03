@@ -34,6 +34,8 @@ const MAX_NAME = 100;
 const MAX_WEBSITE = 200;
 const MAX_NOTE = 500;
 const MAX_BODY = 4096;
+// A suggested service with all its details can be longer than other feedback.
+const MAX_BODY_GAP = 16384;
 const RETENTION_MONTHS = 12;
 // The fields each kind of entry may send. Anything else is rejected.
 const ALLOWED = {
@@ -85,6 +87,40 @@ function list(v, allowed, label, { min = 0, max = allowed.length } = {}) {
   if (value.length < min) return { error: min === 1 ? `Please choose at least one ${label.toLowerCase()}.` : `${label} needs at least ${min}.` };
   if (value.length > max) return { error: `${label} has too many values.` };
   return { value };
+}
+
+// ---------- a suggested service's details ----------
+export const SERVICE_FIELDS = ['name', 'website', 'area', 'role', 'organisation', 'description', 'activities', 'running', 'dates', 'age', 'eligibility', 'exclusions', 'healthNeed', 'audience', 'categories', 'addresses', 'noMap', 'level', 'phone', 'email', 'social', 'referral', 'selfReferral', 'cost', 'languages', 'workExperience', 'logoOk', 'contactName'];
+const SERVICE_TEXT = { organisation: 150, description: 800, activities: 1200, dates: 150, age: 60, eligibility: 800, exclusions: 500, addresses: 500, phone: 80, email: 150, social: 300, referral: 600, cost: 200, languages: 200, workExperience: 300, contactName: 100 };
+const SERVICE_CHOICES = { role: ['provider', 'suggester'], running: ['now', 'paused', 'soon', 'ended'], healthNeed: ['none', 'any', 'specific'], level: ['local', 'regional', 'national'], selfReferral: ['yes', 'partly', 'no'] };
+const AUDIENCES = ['individual', 'employer', 'organisation', 'student'];
+const LABELS = { organisation: 'The organisation', description: 'The description', activities: 'What happens', dates: 'The dates', age: 'The age range', eligibility: 'Who can join', exclusions: "Who it can't help", addresses: 'The addresses', phone: 'The phone number', email: 'The email address', social: 'Social media', referral: 'How people get referred', cost: 'The cost', languages: 'The languages', workExperience: 'Work experience', contactName: 'The contact name' };
+
+function serviceDetails(ms, ctx) {
+  const out = {};
+  for (const [k, max] of Object.entries(SERVICE_TEXT)) {
+    const v = optText(ms[k], max, LABELS[k]);
+    if (v.error) return v;
+    if (v.value) out[k] = v.value;
+  }
+  if (out.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(out.email)) return { error: 'The email address doesn\'t look right.' };
+  for (const [k, allowed] of Object.entries(SERVICE_CHOICES)) {
+    if (ms[k] === undefined || ms[k] === null || ms[k] === '') continue;
+    if (!allowed.includes(ms[k])) return { error: 'Please choose from the list.' };
+    out[k] = ms[k];
+  }
+  for (const k of ['noMap', 'logoOk']) {
+    if (ms[k] === undefined || ms[k] === false) continue;
+    if (ms[k] !== true) return { error: 'The service details could not be read.' };
+    out[k] = true;
+  }
+  const aud = list(ms.audience, AUDIENCES, 'Who it is for');
+  if (aud.error) return aud;
+  if (aud.value.length) out.audience = aud.value;
+  const cats = list(ms.categories, ctx.categories, 'Kind of support');
+  if (cats.error) return cats;
+  if (cats.value.length) out.categories = cats.value;
+  return { value: out };
 }
 
 // Checks a feedback entry from the page. `ctx` holds the scheme ids and the areas and categories in the data.
@@ -145,16 +181,26 @@ export function validateFeedback(body, ctx) {
     const ms = body.missedService;
     if (ms !== undefined && ms !== null) {
       if (!entry.reasons.includes('missing-service')) return { error: 'Service details go with "A service you know about".' };
-      if (typeof ms !== 'object' || Array.isArray(ms) || Object.keys(ms).some((k) => !['name', 'website', 'area'].includes(k))) return { error: 'The service details could not be read.' };
+      if (typeof ms !== 'object' || Array.isArray(ms) || Object.keys(ms).some((k) => !SERVICE_FIELDS.includes(k))) return { error: 'The service details could not be read.' };
       const name = optText(ms.name, MAX_NAME, 'The service name');
       if (name.error) return name;
+      if (!name.value) return { error: 'Please give the name of the service.' };
       const website = optText(ms.website, MAX_WEBSITE, 'The website');
       if (website.error) return website;
       if (website.value && !/^https?:\/\/[^\s/?#]+\.[^\s/?#]+[^\s]*$/i.test(website.value)) return { error: 'The website must start with http:// or https://.' };
       const area = optText(ms.area, 40, 'The area');
       if (area.error) return area;
       if (area.value && area.value !== DONT_KNOW && !ctx.areas.includes(area.value)) return { error: 'Please choose an area from the list.' };
-      if (name.value || website.value || area.value) entry.missedService = { name: name.value, website: website.value, area: area.value };
+      entry.missedService = { name: name.value, website: website.value, area: area.value };
+      // The fuller details a service (or someone who knows it) can add. All optional; checked against fixed
+      // lists and length limits. They describe the service, so they are kept as written (see below).
+      const more = serviceDetails(ms, ctx);
+      if (more.error) return more;
+      Object.assign(entry.missedService, more.value);
+      // Whether they are from the service or suggesting it decides which questions the page shows, so it is needed.
+      if (!entry.missedService.role) return { error: 'Please say whether you are from the service or suggesting it.' };
+    } else if (entry.reasons.includes('missing-service')) {
+      return { error: 'Please give the name of the service.' };
     }
     const cats = list(body.gapCategories, [...ctx.categories, SOMETHING_ELSE], 'Kind of support');
     if (cats.error) return cats;
@@ -174,11 +220,12 @@ export function validateFeedback(body, ctx) {
     if (r.redacted || r.text.includes('[removed]')) entry.redacted = true;
     return r.text;
   };
+  // The service's own details (its name, website, phone, email, address and so on) are about the service, not a
+  // person, so they are kept as written. The page says so beside them and asks people not to include anything
+  // about the people who use the service.
+  // The service name is still checked: a name never needs a phone number or email in it.
   entry.text = scrub(entry.text);
-  if (entry.missedService) {
-    entry.missedService.name = scrub(entry.missedService.name);
-    entry.missedService.website = scrub(entry.missedService.website);
-  }
+  if (entry.missedService) entry.missedService.name = scrub(entry.missedService.name);
   return { entry };
 }
 
@@ -273,7 +320,7 @@ export async function safeEqual(a, b) {
 
 export const feedbackOn = (env) => env.FEEDBACK_ENABLED !== 'false' && Boolean(env.FEEDBACK_STORE);
 
-const CSV_COLUMNS = ['id', 'date', 'kind', 'status', 'schemeIds', 'recordLastUpdated', 'helpful', 'reasons', 'text', 'missedServiceName', 'missedServiceWebsite', 'missedServiceArea', 'gapCategories', 'gapArea', 'lang', 'mode', 'redacted', 'note'];
+const CSV_COLUMNS = ['id', 'date', 'kind', 'status', 'schemeIds', 'recordLastUpdated', 'helpful', 'reasons', 'text', 'missedServiceName', 'missedServiceWebsite', 'missedServiceArea', 'missedServiceDetails', 'gapCategories', 'gapArea', 'lang', 'mode', 'redacted', 'note'];
 function csv(items) {
   // A leading = + - @ would be run as a formula by a spreadsheet, so it gets a ' in front.
   const cell = (v) => {
@@ -283,7 +330,8 @@ function csv(items) {
   };
   const rows = items.map((x) => {
     const ms = x.missedService || {};
-    const row = { ...x, missedServiceName: ms.name, missedServiceWebsite: ms.website, missedServiceArea: ms.area };
+    const details = Object.entries(ms).filter(([k]) => !['name', 'website', 'area'].includes(k)).map(([k, v]) => k + ': ' + (Array.isArray(v) ? v.join(', ') : v)).join(' | ');
+    const row = { ...x, missedServiceName: ms.name, missedServiceWebsite: ms.website, missedServiceArea: ms.area, missedServiceDetails: details };
     return CSV_COLUMNS.map((c) => cell(row[c])).join(',');
   });
   return [CSV_COLUMNS.map(cell).join(','), ...rows].join('\r\n') + '\r\n';
@@ -304,7 +352,7 @@ export async function handleFeedback(request, env, url, cors, originOk, ctx) {
     if (request.method !== 'POST' || !feedbackOn(env)) return json({ error: 'Not found.' }, 404, cors);
     if (!originOk) return json({ error: 'Not allowed.' }, 403, cors);
     const text = await request.text();
-    if (text.length > MAX_BODY) return json({ error: 'That feedback was too large.' }, 413, cors);
+    if (text.length > MAX_BODY_GAP || (text.length > MAX_BODY && !/"kind"\s*:\s*"gap"/.test(text))) return json({ error: 'That feedback was too large.' }, 413, cors);
     if (env.FEEDBACK_LIMITER) {
       const { success } = await env.FEEDBACK_LIMITER.limit({ key: ip });
       if (!success) return json({ error: 'You have sent quite a lot of feedback in a short time. Please wait a minute and try again.' }, 429, cors);
