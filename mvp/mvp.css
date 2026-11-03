@@ -211,3 +211,8 @@ td.num-cell { text-align: right; white-space: nowrap; width: 1%; }
 /* ---------- one sign-in for all MVP pages (team-auth.js) ---------- */
 .teambar .team-auth { margin-left: auto; }
 .teambar .linklike { font: inherit; color: #fff; background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
+
+/* Fuller details from "Suggest a service". */
+.suggest-details > summary { cursor: pointer; color: var(--blue, #005ea5); font-weight: 600; }
+.facts.suggestion { grid-template-columns: minmax(8rem, 12rem) 1fr; border-left: 3px solid #d0d7de; padding-left: .75rem; }
+.facts.suggestion dd { white-space: pre-wrap; }

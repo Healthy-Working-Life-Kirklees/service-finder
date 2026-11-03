@@ -294,11 +294,29 @@
       .filter((x) => {
         if (!q) return true;
         const ms = x.missedService || {};
-        const hay = [x.text, x.note, ms.name, ms.website, ms.area, x.gapArea, ...(x.gapCategories || []), ...(x.schemeIds || []).map(nameOf), ...(x.reasons || []).map(reason)].join(' ').toLowerCase();
+        const hay = [x.text, x.note, ms.name, ms.website, ms.area, ms.organisation, ms.description, x.gapArea, ...(x.gapCategories || []), ...(x.schemeIds || []).map(nameOf), ...(x.reasons || []).map(reason)].join(' ').toLowerCase();
         return hay.includes(q);
       })
       .sort((a, b) => b.id - a.id);
   }
+
+  // Fields from "Suggest a service" (worker/src/feedback.js SERVICE_FIELDS), with labels for the team.
+  const SUGGESTION_FIELDS = [
+    ['organisation', 'Organisation'], ['description', 'What it does'], ['activities', 'What happens and where'],
+    ['running', 'Running now?'], ['dates', 'Dates'], ['age', 'Age'], ['eligibility', 'Who can use it'], ['exclusions', "Who it isn't for"],
+    ['healthNeed', 'Health condition needed?'], ['audience', 'Who it is for'], ['categories', 'Kinds of support'],
+    ['addresses', 'Addresses or venues'], ['noMap', 'Online or phone only'], ['level', 'Covers'],
+    ['phone', 'Phone'], ['email', 'Email'], ['social', 'Social media'], ['referral', 'How to get referred'],
+    ['selfReferral', 'Self-referral'], ['cost', 'Cost'], ['languages', 'Languages'], ['workExperience', 'Work experience or volunteering'],
+    ['logoOk', 'OK to use their logo'], ['contactName', 'Contact name (work)'],
+  ];
+  const SUGGESTION_CHOICES = {
+    'running:now': 'Yes', 'running:paused': 'Paused', 'running:soon': 'Starting soon', 'running:ended': 'Ended',
+    'healthNeed:none': 'No, anyone', 'healthNeed:any': 'Any health condition or disability', 'healthNeed:specific': 'A specific condition',
+    'level:local': 'Kirklees', 'level:regional': 'West Yorkshire', 'level:national': 'UK-wide',
+    'selfReferral:yes': 'Yes', 'selfReferral:partly': 'Sometimes', 'selfReferral:no': 'No, needs a referral',
+    individual: 'Individuals', employer: 'Employers', organisation: 'Organisations and professionals', student: 'Students',
+  };
 
   function entry(x) {
     const kindText = x.kind === 'reply' ? (x.helpful ? 'Helpful: Yes' : 'Helpful: No') : KIND_LABELS[x.kind];
@@ -319,9 +337,23 @@
     if (x.missedService) {
       const ms = x.missedService;
       fact('Suggested service', el('span', { class: 'stack' },
-        ms.name ? el('span', { text: ms.name }) : null,
+        ms.name ? el('strong', { text: ms.name }) : null,
         ms.website ? el('span', { text: ms.website }) : null,
         ms.area ? el('span', { text: 'Area: ' + ms.area }) : null));
+      if (ms.role) fact('Sent by', ms.role === 'provider' ? 'Someone from the service' : 'Someone suggesting it');
+      // The fuller details, in the order of a listing. All optional; only what was given is shown.
+      const details = el('dl', { class: 'facts suggestion' });
+      for (const [k, label] of SUGGESTION_FIELDS) {
+        let v = ms[k];
+        if (v === undefined || v === '' || (Array.isArray(v) && !v.length)) continue;
+        if (Array.isArray(v)) v = v.map((a) => SUGGESTION_CHOICES[a] || a).join(', ');
+        else if (v === true) v = 'Yes';
+        else v = SUGGESTION_CHOICES[k + ':' + v] || v;
+        details.append(el('dt', { text: label }), el('dd', { class: 'comment', text: String(v) }));
+      }
+      if (details.children.length) {
+        fact('Details they gave', el('details', { class: 'suggest-details' }, el('summary', { text: (details.children.length / 2) + ' details. Check with the service before using "Add a service".' }), details));
+      }
     }
     if (x.gapCategories && x.gapCategories.length) fact('Support they looked for', x.gapCategories.join(', '));
     if (x.gapArea) fact('Area', x.gapArea);
