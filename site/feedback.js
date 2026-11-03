@@ -57,7 +57,7 @@
   function ticks(legend, items, name) {
     return el('fieldset', { class: 'fb-ticks' },
       el('legend', {}, ...legend),
-      el('div', { class: name === 'category' ? 'fb-grid' : 'fb-list' },
+      el('div', { class: name === 'category' || name === 'svccat' ? 'fb-grid' : 'fb-list' },
         items.map((x) => el('div', { class: 'fb-tick' },
           el('label', {}, el('input', { type: 'checkbox', name, value: x.value }), el('span', x.lang ? { lang: x.lang, dir: 'auto', text: x.label } : { text: x.label })),
           x.extra || null))));
@@ -76,6 +76,23 @@
     return el('div', { class: 'fb-field' },
       el('label', { for: id, text: label }),
       el('input', { id, type, maxlength: String(max), dir: type === 'url' ? 'ltr' : 'auto', autocomplete: 'off', spellcheck: type === 'url' ? 'false' : null }));
+  }
+
+  function textarea(id, label, max, rows = 3) {
+    return el('div', { class: 'fb-field' },
+      el('label', { for: id, text: label }),
+      el('textarea', { id, rows: String(rows), maxlength: String(max), dir: 'auto' }));
+  }
+
+  // A drop-down of fixed choices: [[value, labelKey], ...].
+  function choice(id, label, options) {
+    return el('div', { class: 'fb-field' },
+      el('label', { for: id, text: label }),
+      el('select', { id }, el('option', { value: '', text: t('fbChooseOne') }), options.map(([v, key]) => el('option', { value: v, text: t(key) }))));
+  }
+
+  function checkbox(id, label) {
+    return el('div', { class: 'fb-tick' }, el('label', { for: id }, el('input', { id, type: 'checkbox' }), el('span', { text: label })));
   }
 
   // The comment box, the privacy note under its label, and the warning shown when it looks like it has
@@ -97,9 +114,10 @@
       errorEl,
       el('div', { class: 'fb-actions' }, sendBtn, el('button', { type: 'button', class: 'btn secondary small', text: t('fbCancel'), onclick: onCancel })));
     const warnEl = form.querySelector('.fb-warn');
-    // Warn as people type if the comment (or a service name or website) looks like it has personal details.
+    // Warn as people type if the comment looks like it has personal details. (A suggested service's own phone,
+    // email and address are about the service, so they are kept and not warned about.)
     form.addEventListener('input', () => {
-      const found = [...form.querySelectorAll('textarea, input[type=text], input[type=url]')].some((x) => hasPersonal(x.value));
+      const found = [...form.querySelectorAll('textarea[name=text]')].some((x) => hasPersonal(x.value));
       if (warnEl && found !== !warnEl.hidden) {
         warnEl.hidden = !found;
         warnEl.textContent = found ? t('fbRedactWarn') : '';
@@ -180,25 +198,105 @@
     return box;
   }
 
-  // ---------- 3. "Tell us what's missing" ----------
-  // One gap form, used under replies, in the footer, and after "It missed a service I know about".
-  function gapForm(getMode, onSent, onCancel) {
+  // ---------- 3. "Tell us what's missing" / "Suggest a service" ----------
+  // One gap form, used under replies, from the "Suggest a service" button in the header, and after
+  // "It missed a service I know about". For a service, people first say whether they are from it or suggesting it
+  // (needed), then give its name (needed). Someone from the service is asked to fill in all the questions for a full
+  // listing; someone suggesting a service sees those questions folded away, to add whatever they know.
+  function serviceQuestions() {
     const areas = fromData('areas');
     const categories = fromData('categories');
-    const nameId = uid('name');
-    const siteId = uid('site');
-    const areaId = uid('area');
+    const ids = {};
+    const id = (k) => (ids[k] = ids[k] || uid('svc-' + k));
+    const roleName = uid('role');
+    const more = el('details', { class: 'fb-more' },
+      el('summary', { text: t('fbMoreDetails') }),
+      el('p', { class: 'fb-note', text: t('fbDetailsNote') }),
+      input(id('organisation'), t('fbOrg'), 150),
+      textarea(id('description'), t('fbDescription'), 800),
+      textarea(id('activities'), t('fbActivities'), 1200, 4),
+      choice(id('running'), t('fbRunning'), [['now', 'fbRunNow'], ['paused', 'fbRunPaused'], ['soon', 'fbRunSoon'], ['ended', 'fbRunEnded']]),
+      input(id('dates'), t('fbDates'), 150),
+      input(id('age'), t('fbAge'), 60),
+      textarea(id('eligibility'), t('fbElig'), 800),
+      textarea(id('exclusions'), t('fbExcl'), 500, 2),
+      choice(id('healthNeed'), t('fbHealth'), [['none', 'fbHealthNone'], ['any', 'fbHealthAny'], ['specific', 'fbHealthSpecific']]),
+      ticks([t('fbAudience')], [['individual', 'fbAudInd'], ['employer', 'fbAudEmp'], ['organisation', 'fbAudOrg'], ['student', 'fbAudStu']].map(([value, key]) => ({ value, label: t(key) })), 'audience'),
+      ticks([t('fbCats')], categories.map((c) => ({ value: c, label: c, lang: 'en' })), 'svccat'),
+      textarea(id('addresses'), t('fbAddresses'), 500, 2),
+      checkbox(id('noMap'), t('fbNoMap')),
+      choice(id('level'), t('fbLevel'), [['local', 'fbLevelLocal'], ['regional', 'fbLevelRegional'], ['national', 'fbLevelNational']]),
+      input(id('phone'), t('fbPhone'), 80, 'tel'),
+      input(id('email'), t('fbEmail'), 150, 'email'),
+      input(id('social'), t('fbSocial'), 300),
+      textarea(id('referral'), t('fbReferral'), 600),
+      choice(id('selfReferral'), t('fbSelf'), [['yes', 'fbSelfYes'], ['partly', 'fbSelfPartly'], ['no', 'fbSelfNo']]),
+      input(id('cost'), t('fbCost'), 200),
+      input(id('languages'), t('fbLanguages'), 200),
+      input(id('workExperience'), t('fbWorkExp'), 300),
+      checkbox(id('logoOk'), t('fbLogo')),
+      input(id('contactName'), t('fbContactName'), 100));
+    const roleSet = el('fieldset', { class: 'fb-ticks' },
+      el('legend', { text: t('fbRoleLegend') }),
+      el('div', { class: 'fb-list' }, [['provider', 'fbRoleProvider'], ['suggester', 'fbRoleSuggester']].map(([v, key]) =>
+        el('div', { class: 'fb-tick' }, el('label', {}, el('input', { type: 'radio', name: roleName, value: v }), el('span', { text: t(key) }))))));
+    const providerNote = el('p', { class: 'fb-prompt', text: t('fbProviderPrompt'), hidden: true });
+    // The rest of the questions appear once they have said which they are.
+    const rest = el('div', { class: 'fb-rest', hidden: true },
+      providerNote,
+      input(id('name'), t('fbServiceName'), 100),
+      input(id('website'), t('fbServiceWebsite'), 200, 'url'),
+      select(id('area'), t('fbServiceArea'), areas),
+      more);
+    const node = el('div', { class: 'fb-sub', hidden: true }, roleSet, rest);
+    // From the service: all the questions shown, with a prompt to fill in as much as they can.
+    // Suggesting it: the listing questions folded away under "Know more about it?".
+    roleSet.addEventListener('change', (e) => {
+      const provider = e.target.value === 'provider';
+      rest.hidden = false;
+      providerNote.hidden = !provider;
+      node.classList.toggle('fb-provider', provider);
+      if (provider) more.open = true;
+    });
+    const val = (k) => { const x = node.querySelector('#' + ids[k]); return x ? x.value.trim() : ''; };
+    // Reads the answers. Returns { ms } or { error, focus }.
+    function read(f) {
+      const role = (node.querySelector('input[name="' + roleName + '"]:checked') || {}).value;
+      if (!role) return { error: t('fbNeedRole'), focus: node.querySelector('input[name="' + roleName + '"]') };
+      const nameEl = node.querySelector('#' + ids.name);
+      const name = redact(nameEl.value.trim());
+      if (!name) return { error: t('fbNeedName'), focus: nameEl };
+      const siteEl = node.querySelector('#' + ids.website);
+      let website = siteEl.value.trim();
+      // "www.example.org" is fine: add the https:// for the person.
+      if (website && !/^https?:\/\//i.test(website) && /^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(website)) website = 'https://' + website;
+      if (website && !/^https?:\/\/[^\s/?#]+\.[^\s/?#]+\S*$/i.test(website)) return { error: t('fbBadWebsite'), focus: siteEl };
+      const emailEl = node.querySelector('#' + ids.email);
+      if (val('email') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val('email'))) { more.open = true; return { error: t('fbBadEmail'), focus: emailEl }; }
+      const ms = { name, website, area: node.querySelector('#' + ids.area).value, role };
+      for (const k of ['organisation', 'description', 'activities', 'running', 'dates', 'age', 'eligibility', 'exclusions', 'healthNeed', 'addresses', 'level', 'phone', 'email', 'social', 'referral', 'selfReferral', 'cost', 'languages', 'workExperience', 'contactName']) if (val(k)) ms[k] = val(k);
+      const aud = ticked(f, 'audience');
+      if (aud.length) ms.audience = aud;
+      const cats = ticked(f, 'svccat');
+      if (cats.length) ms.categories = cats;
+      if (node.querySelector('#' + ids.noMap).checked) ms.noMap = true;
+      if (node.querySelector('#' + ids.logoOk).checked) ms.logoOk = true;
+      return { ms };
+    }
+    return { node, read, focusFirst: () => node.querySelector('input[name="' + roleName + '"]').focus() };
+  }
+
+  function gapForm(getMode, onSent, onCancel, { preset } = {}) {
+    const areas = fromData('areas');
+    const categories = fromData('categories');
     const supportAreaId = uid('sarea');
-    const serviceSub = el('div', { class: 'fb-sub', hidden: true },
-      input(nameId, t('fbServiceName'), 100),
-      input(siteId, t('fbServiceWebsite'), 200, 'url'),
-      select(areaId, t('fbServiceArea'), areas));
+    const service = serviceQuestions();
     const supportSub = el('div', { class: 'fb-sub', hidden: true },
       ticks([t('fbSupportLegend')], [...categories.map((c) => ({ value: c, label: c, lang: 'en' })), { value: SOMETHING_ELSE, label: t('fbSomethingElse') }], 'category'),
       select(supportAreaId, t('fbSupportArea'), areas));
     const form = shell('fb-gap-form', submit, onCancel,
       ticks([t('fbGapLegend')], [
-        { value: 'missing-service', label: t('fbGapService'), extra: serviceSub },
+        { value: 'missing-service', label: t('fbGapService'), extra: service.node },
         { value: 'missing-support', label: t('fbGapSupport'), extra: supportSub },
         { value: 'missing-other', label: t('fbGapOther') },
       ], 'gap'),
@@ -209,18 +307,20 @@
       const sub = e.target.closest('.fb-tick').querySelector('.fb-sub');
       if (sub) sub.hidden = !e.target.checked;
     });
+    // From "Suggest a service": start with "A service you know about" ticked and its questions showing.
+    if (preset === 'missing-service') {
+      form.querySelector('input[name=gap][value=missing-service]').checked = true;
+      service.node.hidden = false;
+    }
+    form.focusFirst = () => (preset === 'missing-service' ? service.focusFirst() : form.querySelector('input[name=gap]').focus());
     async function submit(f) {
       const reasons = ticked(f, 'gap');
       if (!reasons.length) return f.fail(t('fbNeedReason'), f.querySelector('input[name=gap]'));
       const payload = { kind: 'gap', reasons, text: textOf(f), mode: getMode(), lang: window.I18N.lang };
       if (reasons.includes('missing-service')) {
-        const siteEl = f.querySelector('#' + siteId);
-        let website = siteEl.value.trim();
-        // "www.example.org" is fine: add the https:// for the person.
-        if (website && !/^https?:\/\//i.test(website) && /^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(website)) website = 'https://' + website;
-        if (website && !/^https?:\/\/[^\s/?#]+\.[^\s/?#]+\S*$/i.test(website)) return f.fail(t('fbBadWebsite'), siteEl);
-        const ms = { name: redact(f.querySelector('#' + nameId).value.trim()), website: redact(website), area: f.querySelector('#' + areaId).value };
-        if (ms.name || ms.website || ms.area) payload.missedService = ms;
+        const r = service.read(f);
+        if (r.error) return f.fail(r.error, r.focus);
+        payload.missedService = r.ms;
       }
       if (reasons.includes('missing-support')) {
         payload.gapCategories = ticked(f, 'category');
@@ -321,21 +421,39 @@
       .then((r) => r.json())
       .then((h) => {
         enabled = h && h.feedback === true;
-        if (enabled) footer();
+        if (enabled) suggestButton();
         return enabled;
       })
       .catch(() => false);
   }
 
-  // The footer link, so people can tell us at any time, even without a chat.
-  function footer() {
-    const spot = document.getElementById('fb-footer');
-    if (!spot) return;
-    const gap = gapLink(currentMode, currentMode);
-    spot.replaceChildren(gap.node);
-    spot.hidden = false;
-    for (const r of document.querySelectorAll('input[name=mode]')) r.addEventListener('change', gap.relabel);
-    window.I18N.onChange(gap.relabel);
+  // "Suggest a service" in the header: opens the form in a panel at the top of the page, at any time.
+  function suggestButton() {
+    const btn = document.getElementById('suggest-btn');
+    const panel = document.getElementById('suggest-panel');
+    if (!btn || !panel) return;
+    btn.hidden = false;
+    const close = () => {
+      panel.hidden = true;
+      panel.replaceChildren();
+      btn.setAttribute('aria-expanded', 'false');
+      btn.focus();
+    };
+    btn.addEventListener('click', () => {
+      if (!panel.hidden) return close();
+      const form = gapForm(currentMode, (f) => {
+        thank(f, 'fbThanksGap');
+        panel.append(el('div', { class: 'fb-actions' }, el('button', { type: 'button', class: 'btn secondary small', text: t('fbClose'), onclick: close })));
+      }, close, { preset: 'missing-service' });
+      panel.replaceChildren(
+        el('h2', { id: 'suggest-title', class: 'suggest-title', text: t('suggestTitle') }),
+        el('p', { class: 'fb-note', text: t('suggestIntro') }),
+        form);
+      panel.hidden = false;
+      btn.setAttribute('aria-expanded', 'true');
+      panel.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      form.focusFirst();
+    });
   }
 
   window.FEEDBACK = { init, cardControl, replyControls, redact, get enabled() { return enabled; } };

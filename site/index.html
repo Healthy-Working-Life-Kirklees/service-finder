@@ -20,6 +20,11 @@
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"/><rect x="2" y="9" width="20" height="8" rx="2"/><path d="M6 14h12v8H6z"/></svg>
           <span class="dir-label" data-i18n="directoryLink">Printable directory</span>
         </a>
+        <!-- "Suggest a service" (feedback.js). Shown only when feedback is switched on. -->
+        <button type="button" id="suggest-btn" class="dir-btn suggest-btn" aria-expanded="false" aria-controls="suggest-panel" hidden>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+          <span class="dir-label" data-i18n="suggestBtn">Suggest a service</span>
+        </button>
         <div class="lang-switch">
           <label for="lang-select">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20a15 15 0 0 1 0-20z"/></svg>
@@ -42,6 +47,8 @@
   </header>
 
   <main class="wrap">
+    <section id="suggest-panel" class="suggest-panel" aria-labelledby="suggest-title" hidden></section>
+
     <h1 class="page-title" data-i18n="siteName">Healthy Working Life Support Finder</h1>
 
     <p class="notice" role="note">
@@ -96,8 +103,6 @@
   <footer class="site-footer">
     <div class="wrap">
       <p><strong data-i18n="footerStrong">In an emergency call 999.</strong> <span data-i18n="footerA">For urgent mental health support in Kirklees, call the 24-hour Single Point of Access team on </span><a href="tel:01924316830">01924 316830</a><span data-i18n="footerB"> or call NHS 111.</span></p>
-      <!-- "Know a service that should be here? Tell us" (feedback.js). Shown only when feedback is switched on. -->
-      <div id="fb-footer" class="fb-footer" hidden></div>
     </div>
   </footer>
 
