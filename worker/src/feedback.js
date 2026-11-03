@@ -90,8 +90,8 @@ function list(v, allowed, label, { min = 0, max = allowed.length } = {}) {
 }
 
 // ---------- a suggested service's details ----------
-export const SERVICE_FIELDS = ['name', 'website', 'area', 'role', 'organisation', 'description', 'activities', 'running', 'dates', 'age', 'eligibility', 'exclusions', 'healthNeed', 'audience', 'categories', 'addresses', 'noMap', 'level', 'phone', 'email', 'social', 'referral', 'selfReferral', 'cost', 'languages', 'workExperience', 'logoOk', 'contactName'];
-const SERVICE_TEXT = { organisation: 150, description: 800, activities: 1200, dates: 150, age: 60, eligibility: 800, exclusions: 500, addresses: 500, phone: 80, email: 150, social: 300, referral: 600, cost: 200, languages: 200, workExperience: 300, contactName: 100 };
+export const SERVICE_FIELDS = ['name', 'website', 'area', 'role', 'organisation', 'description', 'activities', 'running', 'dates', 'age', 'eligibility', 'exclusions', 'healthNeed', 'conditions', 'audience', 'categories', 'addresses', 'noMap', 'level', 'phone', 'email', 'social', 'referral', 'selfReferral', 'cost', 'languages', 'workExperience', 'logoOk', 'contactName'];
+const SERVICE_TEXT = { organisation: 150, description: 800, activities: 1200, dates: 150, age: 60, eligibility: 800, exclusions: 500, conditions: 300, addresses: 500, phone: 80, email: 150, social: 300, referral: 600, cost: 200, languages: 200, workExperience: 300, contactName: 100 };
 const SERVICE_CHOICES = { role: ['provider', 'suggester'], running: ['now', 'paused', 'soon', 'ended'], healthNeed: ['none', 'any', 'specific'], level: ['local', 'regional', 'national'], selfReferral: ['yes', 'partly', 'no'] };
 const AUDIENCES = ['individual', 'employer', 'organisation', 'student'];
 const LABELS = { organisation: 'The organisation', description: 'The description', activities: 'What happens', dates: 'The dates', age: 'The age range', eligibility: 'Who can join', exclusions: "Who it can't help", addresses: 'The addresses', phone: 'The phone number', email: 'The email address', social: 'Social media', referral: 'How people get referred', cost: 'The cost', languages: 'The languages', workExperience: 'Work experience', contactName: 'The contact name' };
@@ -199,6 +199,8 @@ export function validateFeedback(body, ctx) {
       Object.assign(entry.missedService, more.value);
       // Whether they are from the service or suggesting it decides which questions the page shows, so it is needed.
       if (!entry.missedService.role) return { error: 'Please say whether you are from the service or suggesting it.' };
+      if (!entry.missedService.organisation) return { error: 'Please give the name of the organisation that runs it.' };
+      if (entry.missedService.conditions && entry.missedService.healthNeed !== 'specific') return { error: 'Conditions go with "Yes, a specific condition".' };
     } else if (entry.reasons.includes('missing-service')) {
       return { error: 'Please give the name of the service.' };
     }
