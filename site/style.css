@@ -471,3 +471,23 @@ html.high-contrast .fb-prompt { background: #fff; border-color: #000; }
   .site-header .header-row:has(.suggest-btn:not([hidden])) .brand-logo { width: min(294px, calc(100% - 7.2rem)); }
   .suggest-panel { margin-top: 1rem; padding: .85rem; }
 }
+
+/* Laptop widths: keep the logo and all the header buttons on one line. The logo is a little smaller, the
+   buttons sit closer together, and "Text size" is read out but not shown (A / A+ / A++ speak for themselves,
+   as on a phone). Below this, or in a longer language, the buttons wrap onto a second line as before. */
+.site-header .header-row { max-width: 90rem; }
+@media (min-width: 761px) and (max-width: 1500px) {
+  .brand-logo { height: auto; width: 294px; }
+  .header-tools { gap: .5rem .6rem; }
+  .header-tools .a11y-group > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .dir-btn, .contrast-btn { padding-inline: .6rem; }
+}
+@media (min-width: 761px) and (max-width: 1300px) {
+  /* Smaller laptops: the high contrast button shows its icon only, as on a phone. Its name is still read out. */
+  .contrast-btn .contrast-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+/* "Suggest a service": section headings for someone from the service, and hints under labels. */
+.fb-sub .fb-section { font-size: 1.05rem; margin: 1.1rem 0 .4rem; padding-top: .6rem; border-top: 1px solid var(--border); color: var(--dark-blue); }
+.fb-hint { margin: -.1rem 0 .35rem; font-size: .9rem; color: var(--grey); }
+.fb-field[hidden] { display: none; }
+html.high-contrast .fb-hint { color: #000; }
