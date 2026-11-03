@@ -42,7 +42,7 @@ const fbStore = [
   { ...fbBase, id: 3, kind: 'reply', helpful: true, schemeIds: ['my-way-forward'], mode: 'staff' },
   { ...fbBase, id: 4, kind: 'reply', helpful: false, schemeIds: ['my-way-forward'], reasons: ['none-fit'], text: 'Nothing near me' },
   { ...fbBase, id: 5, kind: 'card', schemeIds: ['my-way-forward'], recordLastUpdated: '2026-08-03', reasons: ['contact-wrong'] },
-  { ...fbBase, id: 6, kind: 'gap', reasons: ['missing-service'], missedService: { name: 'A test service', website: '', area: '' } },
+  { ...fbBase, id: 6, kind: 'gap', reasons: ['missing-service'], missedService: { name: 'A test service', website: '', area: '', role: 'provider', organisation: 'Test Trust', phone: '01924 000000', selfReferral: 'no', audience: ['employer'] } },
 ];
 
 // "Who is this for?" has no default any more. The tests search as someone looking for themselves unless a
@@ -261,19 +261,26 @@ async function worker(route) {
   check('feedback: gap form is still open after sending the No form', await gapForm.isVisible());
   check('feedback: service fields only appear once "a service" is ticked', !(await gapForm.locator('.fb-sub').first().isVisible()));
   await gapForm.locator('input[value="missing-service"]').check();
-  check('feedback: gap form shows name, website and area fields with labels', await gapForm.locator('.fb-sub').first().isVisible() && (await gapForm.locator('.fb-sub').first().locator('label').count()) === 3);
-  const areaOpts = await gapForm.locator('.fb-sub').first().locator('select option').allTextContents();
+  const svcSub = gapForm.locator('.fb-sub').first();
+  check('feedback: gap form first asks only "from this service, or suggesting it?"', await svcSub.isVisible() && (await svcSub.locator('input[type=radio]').count()) === 2 && !(await svcSub.locator('label:text-is("Name of the service")').isVisible()));
+  await gapForm.locator('button[type=submit]').click();
+  check('feedback: "from this service, or suggesting it?" is needed', (await gapForm.locator('.fb-error').textContent()).includes('from the service or suggesting it') && lastSent() === sentNo && await page.evaluate(() => document.activeElement.type === 'radio'));
+  await svcSub.locator('input[type=radio][value=suggester]').check();
+  check('feedback: suggesting it shows name, website and area, with the listing questions folded away and no provider prompt', await svcSub.locator('label:text-is("Name of the service")').isVisible() && !(await svcSub.locator('details.fb-more').evaluate((d) => d.open)) && await svcSub.locator('details.fb-more > summary').isVisible() && !(await svcSub.locator('.fb-prompt').isVisible()));
+  await gapForm.locator('button[type=submit]').click();
+  check('feedback: the service name is needed', (await gapForm.locator('.fb-error').textContent()).includes('name of the service') && lastSent() === sentNo);
+  const areaOpts = await svcSub.locator('select').first().locator('option').allTextContents();
   check('feedback: area choices come from the data, plus "Don\'t know"', areaOpts.includes('Batley') && areaOpts.includes('Kirklees-wide') && areaOpts[areaOpts.length - 1] === "Don't know" && areaOpts.length === new Set(DATA.flatMap((x) => x.areas)).size + 2, areaOpts.join('|'));
-  await gapForm.locator('.fb-sub').first().locator('input[type=text]').fill('Batley Job Club');
+  await svcSub.locator('input[type=text]').first().fill('Batley Job Club');
   await gapForm.locator('input[type=url]').fill('not a web address');
   await gapForm.locator('button[type=submit]').click();
   check('feedback: a bad website is explained and not sent', (await gapForm.locator('.fb-error').textContent()).includes('http') && lastSent() === sentNo);
   await gapForm.locator('input[type=url]').fill('www.example.org/job-club');
-  await gapForm.locator('.fb-sub').first().locator('select').selectOption('Batley');
+  await svcSub.locator('select').first().selectOption('Batley');
   await gapForm.locator('button[type=submit]').click();
   await reply2.locator('.fb-gap-slot .fb-thanks').waitFor();
   const sentGap = lastSent();
-  check('feedback: gap entry sent, with the website given https://', sentGap.kind === 'gap' && sentGap.reasons.join() === 'missing-service' && sentGap.missedService.name === 'Batley Job Club' && sentGap.missedService.website === 'https://www.example.org/job-club' && sentGap.missedService.area === 'Batley' && sentGap.mode === 'public', JSON.stringify(sentGap));
+  check('feedback: gap entry sent, with the website given https://', sentGap.kind === 'gap' && sentGap.reasons.join() === 'missing-service' && sentGap.missedService.name === 'Batley Job Club' && sentGap.missedService.website === 'https://www.example.org/job-club' && sentGap.missedService.area === 'Batley' && sentGap.missedService.role === 'suggester' && Object.keys(sentGap.missedService).length === 4 && sentGap.mode === 'public', JSON.stringify(sentGap));
   await page.fill('#message', 'My name is Jane Smith and I need work');
   await chooseMode(page);
   await page.click('#send');
@@ -281,29 +288,64 @@ async function worker(route) {
   check('main: reminder about identifying details shown when flagged', (await page.locator('.pii-note').textContent()).includes("Please don't type names"));
   check('feedback: "Tell us" link under a result reply with no cards, but no helpful buttons', (await page.locator('.fb-reply').count()) === 3 && (await page.locator('.fb-reply').nth(2).locator('.fb-helpful').count()) === 0 && (await page.locator('.fb-reply').nth(2).locator('.fb-gap-link').count()) === 1);
 
-  // ---------- feedback: the footer link, any time ----------
-  const footLink = page.locator('#fb-footer .fb-gap-link');
-  check('feedback: "Tell us" link in the footer', await footLink.isVisible() && (await footLink.textContent()) === 'Know a service that should be here? Tell us');
-  // "Who is this for?" is hidden during a chat, so try the footer on a fresh page, with no chat at all.
+  // ---------- feedback: "Suggest a service" in the header, any time ----------
+  const sugBtn = page.locator('#suggest-btn');
+  check('feedback: "Suggest a service" button in the header', await sugBtn.isVisible() && (await sugBtn.textContent()).trim() === 'Suggest a service' && (await sugBtn.getAttribute('aria-expanded')) === 'false');
+  check('feedback: no "Tell us" link in the emergency footer', (await page.locator('.site-footer .fb-gap-link, #fb-footer').count()) === 0);
+  // "Who is this for?" is hidden during a chat, so try the button on a fresh page, with no chat at all.
   await page.goto(ON + '/');
-  await footLink.waitFor();
+  await sugBtn.waitFor();
   await page.locator('label:has(input[name=mode][value=staff])').click();
-  check('feedback: staff wording for practitioners', (await footLink.textContent()) === "Do you refer people to a service that isn't listed? Tell us");
-  await footLink.click();
-  const footForm = page.locator('#fb-footer form.fb-gap-form');
+  await sugBtn.click();
+  const panel = page.locator('#suggest-panel');
+  const footForm = panel.locator('form.fb-gap-form');
   await footForm.waitFor();
+  check('feedback: the button opens a panel with the service questions showing', (await sugBtn.getAttribute('aria-expanded')) === 'true' && (await panel.locator('h2').textContent()) === 'Suggest a service' && (await footForm.locator('input[value="missing-service"]').isChecked()) && await footForm.locator('.fb-sub').first().isVisible());
+  check('feedback: focus moves to the first question', await page.evaluate(() => document.activeElement && document.activeElement.type === 'radio'));
+  await footForm.locator('input[value="missing-service"]').uncheck();
   await footForm.locator('input[value="missing-support"]').check();
-  check('feedback: categories come from the data, in English, plus "Something else"', (await footForm.locator('input[name=category]').count()) === new Set(DATA.flatMap((x) => x.categories)).size + 1 && (await footForm.locator('label:has(input[value="Carers"]) span').getAttribute('lang')) === 'en');
-  await footForm.locator('input[value="Carers"]').check();
+  check('feedback: categories come from the data, in English, plus "Something else"', (await footForm.locator('input[name=category]').count()) === new Set(DATA.flatMap((x) => x.categories)).size + 1 && (await footForm.locator('label:has(input[value="Carers"]) span').first().getAttribute('lang')) === 'en');
+  await footForm.locator('input[name=category][value="Carers"]').check();
   await footForm.locator('.fb-sub').nth(1).locator('select').selectOption('Dewsbury');
-  await footForm.locator('textarea').fill('Nothing for young carers who want work.');
+  await footForm.locator('textarea[name=text]').fill('Nothing for young carers who want work.');
   await footForm.locator('button[type=submit]').click();
-  await page.locator('#fb-footer .fb-thanks').waitFor();
+  await panel.locator('.fb-thanks').waitFor();
   const sentFoot = lastSent();
-  check('feedback: footer form sends a gap entry with categories and area, in staff mode', sentFoot.kind === 'gap' && sentFoot.reasons.join() === 'missing-support' && sentFoot.gapCategories.join() === 'Carers' && sentFoot.gapArea === 'Dewsbury' && sentFoot.mode === 'staff' && !sentFoot.missedService, JSON.stringify(sentFoot));
-  check('feedback: footer link still offered after sending', await footLink.isVisible());
+  check('feedback: header form sends a gap entry with categories and area, in staff mode', sentFoot.kind === 'gap' && sentFoot.reasons.join() === 'missing-support' && sentFoot.gapCategories.join() === 'Carers' && sentFoot.gapArea === 'Dewsbury' && sentFoot.mode === 'staff' && !sentFoot.missedService, JSON.stringify(sentFoot));
+  await panel.locator('button:text-is("Close")').click();
+  check('feedback: Close shuts the panel and returns focus to the button', !(await panel.isVisible()) && (await sugBtn.getAttribute('aria-expanded')) === 'false' && await page.evaluate(() => document.activeElement.id === 'suggest-btn'));
+
+  // Someone from the service: all the questions open, and everything they give is sent.
+  await sugBtn.click();
+  await footForm.waitFor();
+  const sub = footForm.locator('.fb-sub').first();
+  await sub.locator('input[type=radio][value=provider]').check();
+  check('feedback: "I work for this service" shows all the listing questions, unfolded, with a prompt to fill in as much as they can', await sub.locator('details.fb-more').evaluate((d) => d.open) && !(await sub.locator('details.fb-more > summary').isVisible()) && (await sub.locator('.fb-prompt').textContent()).includes('fill in as much as you can'));
+  const byLabel = (text) => sub.getByLabel(text, { exact: true });
+  await byLabel('Name of the service').fill('Batley Job Club');
+  await byLabel('Organisation that runs it').fill('Batley Community Trust');
+  await byLabel('What the service does, in a sentence or two').fill('Weekly job club with CV help.');
+  await byLabel('Is it running now?').selectOption('now');
+  await byLabel('Phone number for the service').fill('01924 000000');
+  await byLabel('Email address for the service').fill('not an email');
+  await footForm.locator('button[type=submit]').click();
+  check('feedback: a bad service email is explained and not sent', (await footForm.locator('.fb-error').textContent()).includes('email') && lastSent() === sentFoot);
+  await byLabel('Email address for the service').fill('jobs@example.org');
+  await byLabel('Can people refer themselves?').selectOption('yes');
+  await sub.locator('input[name=audience][value=individual]').check();
+  await sub.locator('input[name=svccat][value="Carers"]').check();
+  await sub.locator('label:has-text("You may use our logo") input').check();
+  await byLabel('Your name, so the team can check details with you (work contact only, optional)').fill('Sam');
+  check('feedback: no personal-details warning for the service\'s own phone and email', !(await footForm.locator('.fb-warn').isVisible()));
+  await footForm.locator('button[type=submit]').click();
+  await panel.locator('.fb-thanks').waitFor();
+  const sentFull = lastSent();
+  const fm = sentFull.missedService || {};
+  check('feedback: a full suggestion from the service is sent as written', sentFull.reasons.join() === 'missing-service' && fm.role === 'provider' && fm.name === 'Batley Job Club' && fm.organisation === 'Batley Community Trust' && fm.running === 'now' && fm.phone === '01924 000000' && fm.email === 'jobs@example.org' && fm.selfReferral === 'yes' && fm.audience.join() === 'individual' && fm.categories.join() === 'Carers' && fm.logoOk === true && fm.contactName === 'Sam' && !('noMap' in fm) && !('website' in fm && fm.website), JSON.stringify(sentFull));
+  await sugBtn.click();
+  check('feedback: the button closes the panel too', !(await panel.isVisible()));
   const everything = JSON.stringify(fbSent);
-  check('feedback: nothing from the conversation is ever sent', fbSent.length === 5 && fbSent.every((x) => !('messages' in x) && !('understood_needs' in x) && !('message' in x)) && !everything.includes('aged 20') && !everything.includes('Here is a match'), everything);
+  check('feedback: nothing from the conversation is ever sent', fbSent.length === 6 && fbSent.every((x) => !('messages' in x) && !('understood_needs' in x) && !('message' in x)) && !everything.includes('aged 20') && !everything.includes('Here is a match'), everything);
   check('feedback: nothing stored in the browser', await page.evaluate(() => localStorage.length === 0 && sessionStorage.length === 0 && document.cookie === ''));
 
   // ---------- help page ----------
@@ -578,6 +620,8 @@ async function worker(route) {
   check('review: totals (75% helpful, 3 yes, 1 no, 1 listing problem, 1 missing)', fbStats.slice(0, 5).join() === '75%,3,1,1,1', fbStats.join());
   check('review: list hides plain Yes answers', (await page.locator('#list .entry').count()) === 3);
   check('review: shows scheme names, not ids', (await page.textContent('#list')).includes('My Way Forward'));
+  const sugText = await page.locator('#list .entry:has(#st-6)').textContent();
+  check('review: a suggestion shows who sent it and the details they gave', sugText.includes('Someone from the service') && sugText.includes('4 details') && sugText.includes('Test Trust') && sugText.includes('01924 000000') && sugText.includes('No, needs a referral') && sugText.includes('Employers'), sugText);
   await page.locator('#list .entry').first().locator('select').selectOption('Actioned');
   await page.waitForTimeout(200);
   check('review: status change is saved', fbStore.find((x) => x.id === 6).status === 'Actioned');
@@ -614,21 +658,21 @@ async function worker(route) {
   await page.click('#send');
   await page.waitForSelector('.card');
   check('feedback off: no card link, no helpful buttons, no Tell us links', (await page.locator('.fb-card, .fb-reply, .fb-helpful').count()) === 0);
-  check('feedback off: footer link hidden', !(await page.locator('#fb-footer').isVisible()) && (await page.locator('#fb-footer .fb-gap-link').count()) === 0);
+  check('feedback off: "Suggest a service" hidden', !(await page.locator('#suggest-btn').isVisible()));
   feedbackFlag = true;
 
   // ---------- feedback in Urdu (right to left) ----------
   await page.goto(ON + '/?lang=ur');
-  await page.waitForSelector('#fb-footer .fb-gap-link');
+  await page.waitForSelector('#suggest-btn:not([hidden])');
   await page.fill('#message', 'I am 20 and anxious in Dewsbury');
   await chooseMode(page);
   await page.click('#send');
   await page.waitForSelector('.card .fb-card .linkish');
   await page.locator('.card .fb-card .linkish').first().click();
-  await page.locator('#fb-footer .fb-gap-link').click();
+  await page.locator('#suggest-btn').click();
   const urCard = page.locator('form.fb-card-form').first();
   await urCard.waitFor();
-  const dirs = await page.evaluate(() => [...document.querySelectorAll('form.fb-card-form, #fb-footer form.fb-gap-form')].map((f) => getComputedStyle(f).direction));
+  const dirs = await page.evaluate(() => [...document.querySelectorAll('form.fb-card-form, #suggest-panel form.fb-gap-form')].map((f) => getComputedStyle(f).direction));
   check('feedback in Urdu: the forms are laid out right to left', dirs.length === 2 && dirs.every((d) => d === 'rtl'), dirs.join());
   check('feedback in Urdu: the wording is in Urdu and the scheme name stays in English', (await page.locator('.card .fb-card .linkish').first().textContent()) === 'اس اندراج میں مسئلے کی اطلاع دیں' && (await urCard.locator('legend [lang="en"]').textContent()) === 'My Way Forward');
   const tickBox = await urCard.locator('input[type=checkbox]').first().boundingBox();
@@ -639,7 +683,7 @@ async function worker(route) {
   await page.setViewportSize({ width: 375, height: 800 });
   for (const q of ['?size=3&contrast=high', '?lang=ur&size=3']) {
     await page.goto(ON + '/' + q);
-    await page.waitForSelector('#fb-footer .fb-gap-link');
+    await page.waitForSelector('#suggest-btn:not([hidden])');
     await page.fill('#message', 'I am 20 and anxious in Dewsbury');
     await chooseMode(page);
   await page.click('#send');
