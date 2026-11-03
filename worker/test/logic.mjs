@@ -513,7 +513,7 @@ const send = (body, opts) => fbCall('POST', '/feedback', body, opts);
 const items = async () => (await fbCall('GET', '/feedback/items', null, { pass: FB_PASS })).body.items;
 const cardFb = (o = {}) => ({ kind: 'card', schemeIds: ['wellness-to-work'], recordLastUpdated: '2026-10-01', reasons: ['contact-wrong'], text: 'The phone number rings out.', lang: 'en', mode: 'public', ...o });
 const replyFb = (o = {}) => ({ kind: 'reply', schemeIds: ['wellness-to-work', 'fitness-for-work'], helpful: true, lang: 'pl', mode: 'staff', ...o });
-const gapFb = (o = {}) => ({ kind: 'gap', reasons: ['missing-service'], missedService: { name: 'Batley Job Club', website: 'https://example.org/job-club', area: 'Batley' }, lang: 'en', mode: 'staff', ...o });
+const gapFb = (o = {}) => ({ kind: 'gap', reasons: ['missing-service'], missedService: { name: 'Batley Job Club', website: 'https://example.org/job-club', area: 'Batley', role: 'suggester' }, lang: 'en', mode: 'staff', ...o });
 
 // /health flag
 let h = await (await worker.fetch(new Request('https://w/health', { headers: { Origin: O } }), fbEnv())).json();
@@ -575,7 +575,17 @@ const bad = [
   ['category without "kind of support"', gapFb({ gapCategories: ['Carers'] })],
   ['unknown support area', gapFb({ reasons: ['missing-support'], gapCategories: ['Carers'], gapArea: 'Narnia' })],
   ['service details without "a service"', gapFb({ reasons: ['missing-other'] })],
-  ['extra service field', gapFb({ missedService: { name: 'x', phone: '01484 123456' } })],
+  ['extra service field', gapFb({ missedService: { name: 'x', secret: 'not a field' } })],
+  ['a service with no name', gapFb({ missedService: { website: 'https://example.org' } })],
+  ['"a service" ticked with no details at all', gapFb({ missedService: undefined })],
+  ['unknown role', gapFb({ missedService: { name: 'x', role: 'boss' } })],
+  ['no "from the service or suggesting it"', gapFb({ missedService: { name: 'Batley Job Club' } })],
+  ['unknown health need', gapFb({ missedService: { name: 'x', healthNeed: 'some' } })],
+  ['unknown audience', gapFb({ missedService: { name: 'x', audience: ['everyone'] } })],
+  ['unknown category in service details', gapFb({ missedService: { name: 'x', categories: ['Juggling'] } })],
+  ['bad service email', gapFb({ missedService: { name: 'x', email: 'not an email' } })],
+  ['description too long', gapFb({ missedService: { name: 'x', description: 'd'.repeat(801) } })],
+  ['noMap not true/false', gapFb({ missedService: { name: 'x', noMap: 'yes' } })],
 ];
 for (const [name, body] of bad) {
   r = await send(body);
@@ -592,7 +602,7 @@ check('feedback: rejected - over 4 KB before parsing (413)', r.status === 413);
 r = await fbCall('GET', '/feedback', null);
 check('feedback: GET /feedback is not a route (404)', r.status === 404);
 check('feedback: nothing stored from rejected requests', (await items()).length === 4);
-r = await send(gapFb({ missedService: { name: '  Spaced out  ', website: 'http://example.org' } }));
+r = await send(gapFb({ missedService: { name: '  Spaced out  ', website: 'http://example.org', role: 'suggester' } }));
 all = await items();
 check('feedback: text fields are trimmed', all[4].missedService.name === 'Spaced out' && all[4].missedService.area === '', JSON.stringify(all[4]));
 
@@ -627,12 +637,26 @@ check('redaction: says when it removed something', fb.redact('x@y.com').redacted
 r = await send(cardFb({ text: 'Ring me on 07700 900123 or email a@b.com, I live in HD1 4EW' }));
 all = await items();
 check('redaction: applied before storing, and the entry marked redacted', all[5].text === 'Ring me on [removed] or email [removed], I live in [removed]' && all[5].redacted === true && all[4].redacted === false, JSON.stringify(all[5]));
-r = await send(gapFb({ missedService: { name: 'Call Sue on 07700900123', website: 'https://example.org' } }));
+r = await send(gapFb({ missedService: { name: 'Call Sue on 07700900123', website: 'https://example.org', role: 'suggester' } }));
 all = await items();
 check('redaction: also applied to the service name', all[6].missedService.name === 'Call Sue on [removed]' && all[6].redacted === true);
+// A full suggestion from a service: every detail kept, its own contact details as written.
+const fullService = { name: 'Shared Hope', role: 'provider', organisation: 'Shared Goods Charity', website: 'https://example.org', area: 'Huddersfield', description: 'Support for refugees.', activities: 'Weekly sessions for six months.', running: 'now', dates: '1 Oct 2026 to 31 Mar 2027, 10 places', age: '18+', eligibility: 'Refugees living in Kirklees', exclusions: 'None', healthNeed: 'any', audience: ['individual'], categories: ['Refugees and new arrivals', 'Wellbeing'], addresses: 'Packhorse Shopping Centre, Huddersfield HD1 2RT', noMap: true, level: 'local', phone: '07825 547938', email: 'hello@example.org', social: '@sharedgoods', referral: 'Phone or email us', selfReferral: 'yes', cost: 'Free', languages: 'English, Arabic', workExperience: 'Volunteering', logoOk: true, contactName: 'Christina' };
+r = await send(gapFb({ missedService: fullService, text: 'Thanks' }));
+all = await items();
+const got = all[all.length - 1].missedService;
+check('suggestion: a full service suggestion is accepted (201)', r.status === 201, JSON.stringify(r.body));
+check('suggestion: every detail stored', Object.keys(fullService).every((k) => JSON.stringify(got[k]) === JSON.stringify(fullService[k])), JSON.stringify(got));
+check('suggestion: the service\'s own phone, email and address are kept, not removed', got.phone === '07825 547938' && got.email === 'hello@example.org' && got.addresses.includes('HD1 2RT') && all[all.length - 1].redacted === false);
+r = await send(gapFb({ missedService: { ...fullService, description: 'x'.repeat(800), activities: 'y'.repeat(1200), eligibility: 'z'.repeat(800) } }));
+check('suggestion: a long suggestion (over 4 KB) is allowed', r.status === 201, String(r.status));
+r = await fbCall('POST', '/feedback', null, { raw: JSON.stringify(cardFb({ text: 'x'.repeat(5000) })) });
+check('suggestion: other feedback is still limited to 4 KB', r.status === 413);
+const csvAll = (await fbCall('GET', '/feedback/export.csv', null, { pass: FB_PASS })).body;
+check('suggestion: CSV has the extra details column', csvAll.includes('"missedServiceDetails"') && csvAll.includes('organisation: Shared Goods Charity'), csvAll.slice(0, 300));
 r = await send(cardFb({ text: 'Number was [removed]' }));
 all = await items();
-check('redaction: text the page already redacted is marked redacted', all[7].redacted === true);
+check('redaction: text the page already redacted is marked redacted', all[all.length - 1].redacted === true && all[all.length - 1].text === 'Number was [removed]');
 const pageSrc = fs.readFileSync(path.join(root, 'site/feedback.js'), 'utf8');
 check('redaction: the page uses the same patterns as the Worker', fb.REDACT_PATTERNS.every((re) => pageSrc.includes(String(re))), fb.REDACT_PATTERNS.filter((re) => !pageSrc.includes(String(re))).join(' '));
 
@@ -730,7 +754,7 @@ fbStore = mkFbStore();
 for (const b of [
   cardFb(), cardFb({ reasons: ['closed', 'contact-wrong'], text: 'Phone is dead' }), cardFb({ schemeIds: ['fitness-for-work'], reasons: ['missing-details'], text: 'No opening times' }),
   replyFb(), replyFb({ helpful: false, reasons: ['none-fit'] }),
-  gapFb(), gapFb({ missedService: { name: 'batley job club', website: '' } }), gapFb({ missedService: { name: 'Wellness to Work', website: 'https://www.locala.org.uk/services/wellness-to-work' } }),
+  gapFb(), gapFb({ missedService: { name: 'batley job club', website: '', role: 'suggester' } }), gapFb({ missedService: { name: 'Wellness to Work', website: 'https://www.locala.org.uk/services/wellness-to-work', role: 'provider' } }),
   gapFb({ reasons: ['missing-support'], missedService: undefined, gapCategories: ['Carers'], gapArea: 'Dewsbury' }),
 ]) await send(b);
 const dump = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'fb-')), 'entries.json');
