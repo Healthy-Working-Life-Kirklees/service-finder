@@ -53,13 +53,14 @@
   }
 
   // ---------- form pieces ----------
-  // A group of tick boxes. items: [{ value, label, lang }]. Each tick box sits inside its own label.
-  function ticks(legend, items, name) {
+  // A group of tick boxes (or, with type 'radio', a choice of one). items: [{ value, label, lang }]. Each one
+  // sits inside its own label.
+  function ticks(legend, items, name, type = 'checkbox') {
     return el('fieldset', { class: 'fb-ticks' },
       el('legend', {}, ...legend),
       el('div', { class: name === 'category' || name === 'svccat' ? 'fb-grid' : 'fb-list' },
         items.map((x) => el('div', { class: 'fb-tick' },
-          el('label', {}, el('input', { type: 'checkbox', name, value: x.value }), el('span', x.lang ? { lang: x.lang, dir: 'auto', text: x.label } : { text: x.label })),
+          el('label', {}, el('input', { type, name, value: x.value }), el('span', x.lang ? { lang: x.lang, dir: 'auto', text: x.label } : { text: x.label })),
           x.extra || null))));
   }
 
@@ -126,7 +127,11 @@
     form.fail = (msg, focusEl) => {
       errorEl.textContent = msg;
       errorEl.hidden = false;
-      if (focusEl) focusEl.focus();
+      // Jump back to the question that needs answering.
+      if (focusEl) {
+        focusEl.focus({ preventScroll: true });
+        focusEl.scrollIntoView({ block: 'center' });
+      }
     };
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -288,14 +293,35 @@
       rest.hidden = false;
     });
     const box = (k) => F[k].querySelector('input, textarea, select');
+    // The service and organisation names are mandatory: if either is missing, it gets a red box and a message.
+    function mark(k, on) {
+      const b = box(k);
+      F[k].classList.toggle('fb-invalid', on);
+      let msg = F[k].querySelector('.fb-field-error');
+      if (on && !msg) {
+        msg = el('p', { id: b.id + '-err', class: 'fb-field-error', text: t('fbMandatory') });
+        b.before(msg);
+      }
+      if (msg) msg.hidden = !on;
+      if (on) {
+        b.setAttribute('aria-invalid', 'true');
+        b.setAttribute('aria-describedby', msg.id);
+      } else {
+        b.removeAttribute('aria-invalid');
+        b.removeAttribute('aria-describedby');
+      }
+    }
+    for (const k of ['name', 'organisation']) box(k).addEventListener('input', () => { if (box(k).value.trim()) mark(k, false); });
     const val = (k) => box(k).value.trim();
     const showing = (k) => node.contains(F[k]);
     // Reads the answers. Returns { ms } or { error, focus }.
     function read(f) {
       if (!role) return { error: t('fbNeedRole'), focus: roleSet.querySelector('input') };
       const name = redact(val('name'));
-      if (!name) return { error: t('fbNeedName'), focus: box('name') };
-      if (!val('organisation')) return { error: t('fbNeedOrg'), focus: box('organisation') };
+      const missing = [!name && 'name', !val('organisation') && 'organisation'].filter(Boolean);
+      mark('name', missing.includes('name'));
+      mark('organisation', missing.includes('organisation'));
+      if (missing.length) return { error: t(missing.length === 2 ? 'fbNeedBoth' : missing[0] === 'name' ? 'fbNeedName' : 'fbNeedOrg'), focus: box(missing[0]) };
       let website = val('website');
       // "www.example.org" is fine: add the https:// for the person.
       if (website && !/^https?:\/\//i.test(website) && /^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(website)) website = 'https://' + website;
@@ -330,18 +356,20 @@
         { value: 'missing-service', label: t('fbGapService'), extra: service.node },
         { value: 'missing-support', label: t('fbGapSupport'), extra: supportSub },
         { value: 'missing-other', label: t('fbGapOther') },
-      ], 'gap'),
+      ], 'gap', 'radio'),
       comment());
-    // Show the extra questions for a kind of gap only when it is ticked.
+    // One kind of gap at a time: show the extra questions for the one chosen.
     form.addEventListener('change', (e) => {
       if (e.target.name !== 'gap') return;
-      const sub = e.target.closest('.fb-tick').querySelector('.fb-sub');
-      if (sub) sub.hidden = !e.target.checked;
+      for (const r of form.querySelectorAll('input[name=gap]')) {
+        const sub = r.closest('.fb-tick').querySelector('.fb-sub');
+        if (sub) sub.hidden = !r.checked;
+      }
     });
     form.focusFirst = () => form.querySelector('input[name=gap]').focus();
     async function submit(f) {
       const reasons = ticked(f, 'gap');
-      if (!reasons.length) return f.fail(t('fbNeedReason'), f.querySelector('input[name=gap]'));
+      if (!reasons.length) return f.fail(t('fbNeedOne'), f.querySelector('input[name=gap]'));
       const payload = { kind: 'gap', reasons, text: textOf(f), mode: getMode(), lang: window.I18N.lang };
       if (reasons.includes('missing-service')) {
         const r = service.read(f);

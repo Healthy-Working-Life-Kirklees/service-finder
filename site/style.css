@@ -491,3 +491,10 @@ html.high-contrast .fb-prompt { background: #fff; border-color: #000; }
 .fb-hint { margin: -.1rem 0 .35rem; font-size: .9rem; color: var(--grey); }
 .fb-field[hidden] { display: none; }
 html.high-contrast .fb-hint { color: #000; }
+/* A mandatory box left empty: red border, red bar and a message above the box. */
+.fb-field.fb-invalid { border-inline-start: 4px solid #b10e1e; padding-inline-start: .6rem; }
+.fb-field.fb-invalid input { border: 2px solid #b10e1e; background: #fff6f6; }
+.fb-field-error { margin: 0 0 .3rem; color: #b10e1e; font-weight: 700; }
+.fb-field-error[hidden] { display: none; }
+html.high-contrast .fb-field.fb-invalid, html.high-contrast .fb-field.fb-invalid input { border-color: #000; background: #fff; }
+html.high-contrast .fb-field-error { color: #000; text-decoration: underline; }
