@@ -1,6 +1,6 @@
 # Scheme data dictionary
 
-This describes the scheme data: everything the Service Finder knows about each scheme or service. Each one is a file in `data/services/`, named after its id (for example `data/services/elevate.json`). The AI is given every service on the live list (`"listing": {"decision": "include"}`) with every message (without contact details), and the scheme cards on the page are drawn from them. If it isn't in these files, the finder doesn't know about it.
+This describes the scheme data: everything the Support Finder knows about each scheme or service. Each one is a file in `data/services/`, named after its id (for example `data/services/elevate.json`). The AI is given every service on the live list (`"listing": {"decision": "include"}`) with every message (without contact details), and the scheme cards on the page are drawn from them. If it isn't in these files, the finder doesn't know about it.
 
 There are 215 at the moment (16 October 2026):
 

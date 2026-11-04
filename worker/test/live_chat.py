@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Live scenario test for the Service Finder Worker. Spends a few pence of API credit.
+"""Live scenario test for the Support Finder Worker. Spends a few pence of API credit.
 
     python3 worker/test/live_chat.py            # all scenarios once
     python3 worker/test/live_chat.py 4 7        # only scenarios 4 and 7

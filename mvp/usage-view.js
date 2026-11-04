@@ -64,7 +64,7 @@
   async function exportCsv() {
     const res = await fetch(API + '/usage/export.csv', { headers: { 'x-feedback-passcode': pass } });
     if (!res.ok) return;
-    const a = el('a', { href: URL.createObjectURL(await res.blob()), download: 'service-finder-usage-' + new Date().toISOString().slice(0, 10) + '.csv' });
+    const a = el('a', { href: URL.createObjectURL(await res.blob()), download: 'support-finder-usage-' + new Date().toISOString().slice(0, 10) + '.csv' });
     document.body.append(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }

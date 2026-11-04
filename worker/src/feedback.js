@@ -399,7 +399,7 @@ export async function handleFeedback(request, env, url, cors, originOk, ctx, exe
     if (path === '/feedback/items') return json({ items: body.items, statuses: STATUSES }, 200, cors);
     return new Response(csv(body.items), {
       status: 200,
-      headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="service-finder-feedback-${today()}.csv"`, 'Cache-Control': 'no-store', ...cors },
+      headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="support-finder-feedback-${today()}.csv"`, 'Cache-Control': 'no-store', ...cors },
     });
   }
 

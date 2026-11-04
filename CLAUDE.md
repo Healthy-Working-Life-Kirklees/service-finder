@@ -51,6 +51,7 @@ Deploys happen on push to `main` via `.github/workflows/`: `pages.yml` (site/, m
 - Keep `lastUpdated` honest. The page and `mvp/help.js` both flag entries older than `STALE_DAYS = 135`; if you change the threshold, change it in both.
 - Scheme `id`s are what the model returns and what `test/smoke.sh` and `logic.mjs` assert on. Don't rename them casually.
 - User-facing text follows the house style: plain, informal, UK spelling. The public mode aims for a reading age of about 11 (`MODE_NOTES` in the Worker).
+- The tool is called the **Healthy Working Life Support Finder** ("Support Finder" for short) in all user-facing text and docs. It was the Service Finder until Nov 2026. The repo name, Pages URL, `hwl-service-finder` Worker name (and `hwl-service-finder-preview`) and package names keep `service-finder` on purpose; don't rename them without a planned migration.
 - `docs/background/` holds the option appraisals and source prompt (.docx/.pptx). They are history, not specs.
 
 ## Accessibility and translation scope

@@ -1,8 +1,10 @@
-# Kirklees Healthy Working Life Service Finder (prototype)
+# Kirklees Healthy Working Life Support Finder (prototype)
 
 A proof of concept: a chat page that matches people to Healthy Working Life schemes and other work and health support in Kirklees.
 
 **It is a prototype. The scheme details come from a draft pathways document and from web research, and may be out of date.**
+
+The tool's name is **Healthy Working Life Support Finder** (it was called the Service Finder until November 2026). The GitHub repo, the web address and the Cloudflare Workers (`hwl-service-finder` and `hwl-service-finder-preview`) still use the old name on purpose: renaming those would change the live addresses and lose the Workers' secrets.
 
 ## How it fits together
 
@@ -38,7 +40,7 @@ If the repo name or organisation changes, update `ALLOWED_ORIGIN` in `worker/wra
 
 ## "Who is this for?"
 
-There is no default: the person has to choose "for myself" or "helping someone else" before searching, so the reply is worded for the right person. If they don't, the page asks them to and sends nothing. The example questions work the same way: they only search once a choice is made, and use the person's choice. Start again clears the choice. After every set of results there is an "other options" button; the prompt tells the AI not to repeat services already shown.
+There is no default: the person has to choose "for myself" or "helping someone else" before searching, so the reply is worded for the right person. If they don't, the page asks them to and sends nothing. Start again clears the choice. After every set of results there is an "other options" button; the prompt tells the AI not to repeat services already shown.
 
 ## Updating the data or prompt
 
@@ -79,7 +81,6 @@ The red panel always shows 999 and NHS 111, and the Single Point of Access numbe
 The page has a language switcher in the header: English, Polski and اردو (Urdu). Urdu switches the page to right-to-left.
 
 - All the page's own wording is in `site/i18n.js`, one block per language. To change a translation, edit it there and keep the keys the same in every language.
-- The example questions on the landing page are in `chipsSelf` (someone looking for support for themselves) and `chipsStaff` (someone helping another person). The page shows them alternately, and clicking one also sets "Who is this for?" to match. Keep the two lists the same length so the mix stays even.
 - **The Polish and Urdu text is a first draft. Have a qualified translator check it before the wider test**, especially the urgent support wording (the `crisis...` and `footer...` lines) and the feedback wording (the `fb...` lines: `fbCardLink`, `fbCardLegend`, the `fbReason...`, `fbNo...` and `fbGap...` lines, `fbTextLabel`, `fbTextNote`, `fbRedactWarn`, the `fbThanks...` lines, `fbServiceName`, `fbServiceWebsite`, `fbServiceArea`, `fbSupportLegend`, `fbSupportArea` and the button and error wording).
 - The chosen language goes in the address (`?lang=pl` or `?lang=ur`), not in browser storage, so the page still stores nothing. A link ending `?lang=ur` opens the page in Urdu, which is handy for posters or leaflets.
 - The page sends the language to the Worker, and the Worker tells Claude to reply in that language (`LANG_NOTES` in `worker/src/index.js`).

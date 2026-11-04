@@ -1,4 +1,4 @@
-"""Turns print/out/service-finder-directory.html into an A4 PDF with headless Chromium.
+"""Turns print/out/support-finder-directory.html into an A4 PDF with headless Chromium.
 
     node scripts/build-print.mjs && python3 scripts/render-print.py
 
@@ -17,7 +17,7 @@ with sync_playwright() as p:
     browser = p.chromium.launch()
     page = browser.new_page()
     for k in keys:
-        html = OUT / f"service-finder-{k}.html"
+        html = OUT / f"support-finder-{k}.html"
         page.goto(html.as_uri())
         page.wait_for_selector("html[data-fitted=yes]")
         page.evaluate("document.fonts.ready")

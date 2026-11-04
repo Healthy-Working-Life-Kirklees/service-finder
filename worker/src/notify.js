@@ -63,7 +63,7 @@ export function buildEmail(entry, names = new Map(), reviewUrl = '') {
   const kind = KIND_LABELS[entry.kind] || entry.kind;
   const about = entry.kind === 'pilot' || entry.kind === 'gap' ? entry.reasons.map(label).join(', ') : entry.schemeIds.map((id) => names.get(id) || id).join(', ');
   const site = entry.site === 'preview' ? ' [preview]' : '';
-  const subject = `Service Finder feedback #${entry.id}${site}: ${kind}${about ? ' – ' + about : ''}`.slice(0, 200);
+  const subject = `Support Finder feedback #${entry.id}${site}: ${kind}${about ? ' – ' + about : ''}`.slice(0, 200);
 
   add('Type', kind);
   add('Date', entry.date);
@@ -95,7 +95,7 @@ export function buildEmail(entry, names = new Map(), reviewUrl = '') {
     '',
     reviewUrl ? `Review, set a status or add a note: ${reviewUrl}` : 'Review it on the Feedback and usage page.',
     '',
-    '— Sent automatically by the HWL Service Finder.',
+    '— Sent automatically by the HWL Support Finder.',
   ].join('\n');
 
   return { subject, text: body };
@@ -108,7 +108,7 @@ export async function notifyFeedback(env, entry, names, reviewUrl) {
     const { subject, text } = buildEmail(entry, names, reviewUrl);
     const msg = {
       to: env.FEEDBACK_EMAIL_TO,
-      from: { email: env.FEEDBACK_EMAIL_FROM, name: 'HWL Service Finder' },
+      from: { email: env.FEEDBACK_EMAIL_FROM, name: 'HWL Support Finder' },
       subject,
       text,
     };

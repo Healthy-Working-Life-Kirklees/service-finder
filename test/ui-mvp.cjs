@@ -423,7 +423,7 @@ async function worker(route) {
 
   const [dl] = await Promise.all([page.waitForEvent('download'), page.click('#export')]);
   const csv = fs.readFileSync(await dl.path(), 'utf8');
-  check('log: CSV downloaded with a sensible name', /^service-finder-log-\d{4}-\d{2}-\d{2}\.csv$/.test(dl.suggestedFilename()), dl.suggestedFilename());
+  check('log: CSV downloaded with a sensible name', /^support-finder-log-\d{4}-\d{2}-\d{2}\.csv$/.test(dl.suggestedFilename()), dl.suggestedFilename());
   check('log: CSV has header and 17 rows', csv.includes('"ID","Type","Title"') && csv.trim().split(/\r?\n/).length >= 18);
   check('log: CSV neutralises a leading "=" (formula injection)', csv.includes("\"'=HYPERLINK"), csv.slice(0, 200));
 

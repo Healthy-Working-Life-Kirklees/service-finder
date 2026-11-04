@@ -107,7 +107,7 @@ function digest(items) {
   const replies = items.filter((x) => x.kind === 'reply');
   const gaps = items.filter((x) => x.kind === 'gap');
 
-  say('# Service Finder feedback digest', '');
+  say('# Support Finder feedback digest', '');
   say(`Made on ${new Date().toISOString().slice(0, 10)} from ${plural(items.length, 'new entry', 'new entries')}: ${plural(cards.length, 'listing report')}, ${plural(replies.length, '"was this helpful?" answer')} and ${plural(gaps.length, '"what\'s missing" report')}.`);
   say('Nothing has been changed. Decide what to do with each one, make any change to the data through a pull request, then mark the entries Actioned or Not actioned.', '');
 

@@ -730,7 +730,7 @@ r = await fbCall('GET', '/feedback/items?since=last-week', null, { pass: FB_PASS
 check('feedback: bad since -> 400', r.status === 400);
 await send(cardFb({ text: '=HYPERLINK("http://x")' }));
 r = await fbCall('GET', '/feedback/export.csv', null, { pass: FB_PASS });
-check('feedback: CSV export has a header, one row per entry and a download name', r.status === 200 && r.body.startsWith('"id","date","kind"') && r.body.trim().split('\r\n').length === 7 && /attachment; filename="service-finder-feedback-\d{4}-\d{2}-\d{2}\.csv"/.test(r.headers.get('content-disposition')), r.body.slice(0, 200));
+check('feedback: CSV export has a header, one row per entry and a download name', r.status === 200 && r.body.startsWith('"id","date","kind"') && r.body.trim().split('\r\n').length === 7 && /attachment; filename="support-finder-feedback-\d{4}-\d{2}-\d{2}\.csv"/.test(r.headers.get('content-disposition')), r.body.slice(0, 200));
 check('feedback: CSV neutralises a leading "=" (formula injection)', r.body.includes("\"'=HYPERLINK"));
 const pre2 = await worker.fetch(new Request('https://w/feedback/items', { method: 'OPTIONS', headers: { Origin: O } }), fbEnv());
 check('feedback: preflight allows x-feedback-passcode', pre2.status === 204 && pre2.headers.get('Access-Control-Allow-Headers').includes('x-feedback-passcode'));
@@ -841,7 +841,7 @@ check('digest: helpful counts by mode and language', /\| staff \| pl \| 1 \| 1 \
   fbStore = mkFbStore();
   await send(pilotFb({ contact: { name: 'Sam Coach', email: 'sam.coach@example.org.uk' } }), { e: pEnv() });
   check('email: sent for a pilot entry, to the team inbox, from the feedback address', sent.length === 1 && sent[0].to === 'admin@hwlsupportfinder.org.uk' && sent[0].from.email === 'feedback@hwlsupportfinder.org.uk', JSON.stringify(sent[0]));
-  check('email: subject has the number and what it is about', /^Service Finder feedback #1: Pilot feedback – Missed a service$/.test(sent[0].subject), sent[0].subject);
+  check('email: subject has the number and what it is about', /^Support Finder feedback #1: Pilot feedback – Missed a service$/.test(sent[0].subject), sent[0].subject);
   check('email: body has the comment, scheme name, ease and contact', sent[0].text.includes('It missed the Batley job club') && sent[0].text.includes(ws.name + ' (wellness-to-work)') && sent[0].text.includes('Ease of use this time (1–5): 4') && sent[0].text.includes('sam.coach@example.org.uk'), sent[0].text);
   check('email: reply goes to a tester who asked to be contacted', sent[0].replyTo && sent[0].replyTo.email === 'sam.coach@example.org.uk');
   await send(pilotFb(), { e: pEnv() });

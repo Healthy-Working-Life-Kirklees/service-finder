@@ -286,7 +286,7 @@
     }
     const blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
-    const a = el('a', { href: url, download: 'service-finder-log-' + new Date().toISOString().slice(0, 10) + '.csv' });
+    const a = el('a', { href: url, download: 'support-finder-log-' + new Date().toISOString().slice(0, 10) + '.csv' });
     document.body.append(a);
     a.click();
     a.remove();
