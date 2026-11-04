@@ -15,6 +15,7 @@ import data from '../../data/services.json';
 import SYSTEM_PROMPT from '../../prompt/system.md';
 import schema from '../../data/schema.json';
 import { handleLog } from './teamlog.js';
+import { handleProvider } from './providerlink.js';
 import { makeChecker } from './serviceedit.js';
 import { handleFeedback, feedbackOn, pilotOn } from './feedback.js';
 import { handleUsage, usageOn, addUsage, chatKeys } from './usage.js';
@@ -58,7 +59,8 @@ const CRISIS_RE = new RegExp(
 
 const SERVICES = data.services;
 // Checks changes to a service's details made by the MVP team on the All services page.
-const EDIT_CHECKER = { ...makeChecker(schema), liveIds: new Set(SERVICES.map((s) => s.id)) };
+// byId is also used by provider review links (providerlink.js), which only work for services on the live list.
+const EDIT_CHECKER = { ...makeChecker(schema), liveIds: new Set(SERVICES.map((s) => s.id)), byId: new Map(SERVICES.map((s) => [s.id, s])) };
 // What Claude is sent about each scheme. Contact details are left out (the page draws them from the data, so the
 // AI never writes them), as are fields only people or the Worker use: requiresMention is applied below by the
 // Worker itself, and provenance, logo and review dates are for maintaining the data. This keeps each request smaller.
@@ -253,6 +255,8 @@ export default {
     // scripts/apply-decisions.mjs can fetch them with the passcode, like the feedback digest does.
     const scriptRead = !origin && request.method === 'GET' && ['/log/decisions', '/log/edits', '/log/new'].includes(url.pathname);
     if (url.pathname.startsWith('/log/')) return originOk || scriptRead ? handleLog(request, env, url, cors, EDIT_CHECKER) : json({ error: 'Not allowed.' }, 403, cors);
+    // Provider review links: a scheme's named contact checks its details. Off unless TEAM_PASSCODE is set.
+    if (url.pathname.startsWith('/provider/')) return handleProvider(request, env, url, cors, originOk, EDIT_CHECKER, schema);
     // User feedback: sending is public (with the same checks as /chat); reading needs the FEEDBACK_PASSCODE secret.
     if (url.pathname === '/feedback' || url.pathname.startsWith('/feedback/')) return handleFeedback(request, env, url, cors, originOk, FEEDBACK_DATA, ctx);
     // Anonymous usage counts: the page sends events; reading the tallies needs the FEEDBACK_PASSCODE secret.

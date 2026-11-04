@@ -422,6 +422,71 @@ check('edits: discard', r.status === 200 && Object.keys((await logCall('GET', '/
 r = await logCall('DELETE', '/log/edits/kbop', { by: 'PL' });
 check('edits: discarding twice -> 404', r.status === 404);
 
+// "checked and still right", with no changes (for example a provider said it's all correct)
+r = await logCall('PUT', '/log/edits/kbop', { changes: {}, before: {}, note: 'Provider said all correct', by: 'PL', checked: true });
+check('edits: no changes allowed when recording a check', r.status === 200 && Object.keys(r.body.item.changes).length === 0 && r.body.item.checked === true, JSON.stringify(r.body));
+r = await logCall('PUT', '/log/edits/kbop', { changes: {}, before: {}, note: 'Nothing', by: 'PL', checked: false });
+check('edits: no changes refused when not recording a check', r.status === 400);
+await logCall('DELETE', '/log/edits/kbop', { by: 'PL' });
+
+// ----- Provider review links -----
+const liveSvc = JSON.parse(fs.readFileSync(path.join(root, 'data/services.json'), 'utf8')).services.find((x) => x.hwlFunded) ;
+const provCall = async (method, token, body, { e = logEnv(), origin = O } = {}) => {
+  const headers = { 'content-type': 'application/json' };
+  if (origin) headers.Origin = origin;
+  const res = await worker.fetch(new Request('https://w/provider/' + token, { method, headers, body: body ? JSON.stringify(body) : undefined }), e);
+  return { status: res.status, body: await res.json() };
+};
+r = await logCall('POST', '/log/provider-links', { id: liveSvc.id, contact: 'Sam Provider', days: 30, by: 'PL' });
+check('plinks: team can make a link for a live service', r.status === 201 && /^[A-Za-z0-9_-]{32}$/.test(r.body.link.token) && r.body.link.contact === 'Sam Provider', JSON.stringify(r.body));
+const tok = r.body.link.token;
+check('plinks: link expires in about 30 days', Math.abs(Date.parse(r.body.link.expires) - Date.now() - 30 * 86400000) < 60000);
+r = await logCall('POST', '/log/provider-links', { id: 'not-a-service', contact: 'Sam', by: 'PL' });
+check('plinks: not for a service that is not live', r.status === 400);
+r = await logCall('POST', '/log/provider-links', { id: liveSvc.id, contact: '', by: 'PL' });
+check('plinks: needs the contact name', r.status === 400);
+r = await logCall('POST', '/log/provider-links', { id: liveSvc.id, contact: 'Sam' }, { pass: 'nope' });
+check('plinks: making one needs the passcode', r.status === 401);
+r = await provCall('GET', tok);
+check('plinks: provider sees the service, the contact name and the choices', r.status === 200 && r.body.service.id === liveSvc.id && r.body.contact === 'Sam Provider' && r.body.choices.areas.includes('Batley') && r.body.lastReply === null, JSON.stringify(r.body).slice(0, 200));
+check('plinks: provider doesn\'t see provenance, listing or trigger words', !('provenance' in r.body.service) && !('listing' in r.body.service) && !('requiresMention' in r.body.service));
+r = await provCall('GET', tok, null, { origin: null });
+check('plinks: needs the page origin', r.status === 403);
+r = await provCall('GET', 'x'.repeat(32));
+check('plinks: unknown code -> 404', r.status === 404);
+r = await provCall('GET', 'short');
+check('plinks: malformed code -> 404', r.status === 404);
+r = await provCall('GET', tok, null, { e: { ...logEnv(), TEAM_PASSCODE: undefined } });
+check('plinks: off when no TEAM_PASSCODE', r.status === 404);
+r = await provCall('POST', tok, { allCorrect: true, note: 'All fine', name: 'Sam P' });
+check('plinks: provider can say all correct', r.status === 200 && r.body.ok);
+r = await provCall('POST', tok, { changes: { phone: '01484 222222', eligibility: ['Lives in Kirklees'] }, note: 'New number', name: 'Sam P' });
+check('plinks: provider can send changes', r.status === 200);
+r = await provCall('POST', tok, { changes: { level: 'national' } });
+check('plinks: provider can\'t change team-only fields', r.status === 400 && /can't be changed/.test(r.body.error));
+r = await provCall('POST', tok, { changes: { email: 'nope' } });
+check('plinks: provider changes checked like team edits', r.status === 400 && /email/i.test(r.body.error));
+r = await provCall('POST', tok, { changes: {}, note: '' });
+check('plinks: nothing changed and no comment refused', r.status === 400);
+r = await provCall('POST', tok, { changes: {}, note: 'The venue is wrong but I am not sure what to put' });
+check('plinks: a comment alone is accepted', r.status === 200);
+r = await logCall('GET', '/log/provider-links');
+const got = r.body.links.find((l) => l.token === tok);
+check('plinks: team sees the replies, with old values', r.status === 200 && got.replies.length === 3 && got.replies[0].allCorrect === true && got.replies[1].changes.phone === '01484 222222' && 'phone' in got.replies[1].before && got.replies[1].name === 'Sam P', JSON.stringify(got).slice(0, 300));
+r = await provCall('GET', tok);
+check('plinks: provider sees their last reply', r.body.lastReply && r.body.lastReply.allCorrect === false);
+r = await logCall('POST', '/log/provider-links/' + tok + '/cancel', { by: 'PL' });
+check('plinks: team can cancel a link', r.status === 200 && r.body.link.cancelled.by === 'PL');
+r = await provCall('GET', tok);
+check('plinks: cancelled link stops working', r.status === 404);
+r = await provCall('POST', tok, { allCorrect: true });
+check('plinks: and can\'t be replied to', r.status === 404);
+r = await logCall('POST', '/log/provider-links', { id: liveSvc.id, contact: 'Old', days: 7, by: 'PL' });
+const oldLink = r.body.link;
+await store.ctx.storage.put('plink:' + oldLink.token, { ...oldLink, expires: new Date(Date.now() - 1000).toISOString() });
+r = await provCall('GET', oldLink.token);
+check('plinks: expired link stops working', r.status === 404);
+
 // new services added by the team
 const newSvc = () => ({
   name: 'Batley Job Club', organisation: 'Batley Community Centre', status: 'Live - open to referrals', open: true, level: 'local', audience: ['individual'],

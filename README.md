@@ -166,6 +166,21 @@ How it works:
 
 The log must never hold personal or identifying information.
 
+### Checking a scheme's details with its provider (review links)
+
+A private link lets one named contact at a scheme check everything the Support Finder holds about it and send corrections, without the team passcode and without seeing any other service, the log, feedback or usage.
+
+1. On **All services**, signed in, find the service and press **Send to provider for checking** (under "Check with the provider"). Type the contact's name (just their name, not their email address), choose how long the link works (30 days unless you change it) and press **Make the link**. Only services on the live list can have a link.
+2. Press **Copy an email to send** (a ready-written email with the link in it) or **Copy link**, and email it to them yourself. Nothing is emailed from the site.
+3. The link opens `provider-check.html` on the Support Finder. The contact sees every detail, including the ones the AI uses for matching that the public never sees (eligibility, who it can't help, how to get in, areas and categories), as boxes they can change. They press **Everything is correct**, or change things and press **Send my changes**, with a comment if they like. They can send again while the link works. They can't change the level, review cycle, logo, trigger words or listing decision.
+4. Their reply shows on the service on All services ("Provider replied" at the top of the card):
+   - **All correct:** press **Record as checked with the provider**. That saves a "checked as current" change with no edits, which moves the last-checked date on when applied.
+   - **Changes:** they're shown old and new. Press **Review these in Edit details** to open the edit form with their changes filled in, adjust anything, and save. It's then an ordinary waiting change.
+   Either way nothing reaches the finder until the team's changes are applied (Apply changes now, or Actions > Apply team changes).
+5. **Cancel link** stops a link working straight away. Links also stop at their expiry date. Replies are kept.
+
+How it works: `worker/src/providerlink.js`. Links and replies are stored with the team log (`LogStore`), so the feature is off unless `TEAM_PASSCODE` is set, and the links stop working if it's removed. The link's code is a long random string after the `#`, so it isn't sent to GitHub Pages; the Worker only answers for a link that exists, hasn't been cancelled and hasn't expired, and only from the site's own address. Each link takes at most 30 replies. Stored about the contact: the name the team typed in and the name they give when replying, nothing else. Note this on the DTAC form as personal data about provider contacts (work contacts, not people using the finder).
+
 ## Anonymous usage counts
 
 The Worker keeps **daily tallies only**, for the review team to see how the finder is used: page visits, conversations started, searches (and whether they found services, found none, asked a question or showed urgent support), which services were shown, which links on a card were opened (referral, website, phone, email, directions, map), "Copy details", Listen, text size and high contrast, "other options", and the answers to "Did you get in touch?". The code is `worker/src/usage.js` (Worker) and `site/usage.js` (page).

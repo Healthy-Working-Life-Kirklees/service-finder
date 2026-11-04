@@ -148,7 +148,10 @@ for (const [id, e] of Object.entries(edits).sort(([a], [b]) => a.localeCompare(b
   }
   const cur = f.s;
   const keys = Object.keys(e.changes);
-  if (keys.every((k) => same(cur[k], e.changes[k]))) {
+  const date0 = String(e.t || '').slice(0, 10);
+  // No changes, only "checked and still right" (for example a provider said it's all correct): applied by moving
+  // the last-checked date on, unless the data has been checked since.
+  if (!keys.length ? !e.checked || String(cur.lastUpdated || '') >= date0 : keys.every((k) => same(cur[k], e.changes[k]))) {
     editsSame += 1;
     continue;
   }

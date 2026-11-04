@@ -41,6 +41,7 @@ Deploys happen on push to `main` via `.github/workflows/`: `pages.yml` (site/, m
 - **Bundler imports.** The Worker imports `.json` and `.md` directly (wrangler `[[rules]]` Text rule). `logic.mjs` rewrites those two exact import lines into file reads and writes `worker/src/.under-test.mjs` (git-ignored). If you change those import lines, update the `.replace(...)` calls in `logic.mjs` too.
 - **Site config is generated.** `site/config.js` in the repo is a placeholder. The Pages workflow (and `test/run-ui.sh`) overwrite it with `{ apiBase, mvpTools }` from the `WORKER_URL` and `MVP_TOOLS` repo variables.
 - **MVP team log.** `worker/src/teamlog.js` is a separate Durable Object (`LogStore`) behind `/log/*`. Every route returns 404 unless the `TEAM_PASSCODE` secret is set. `mvp/` pages are only deployed when `MVP_TOOLS` is exactly `true`.
+- **Provider review links.** `worker/src/providerlink.js`: the team makes a private link for one scheme on All services; `site/provider-check.html#<code>` lets that scheme's contact check and change its details with no passcode. Links and replies live in `LogStore` with the team log (off without `TEAM_PASSCODE`). Replies never change data directly: the team saves them as an ordinary edit (an edit with no changes and `checked: true` records "checked as current"; `scripts/apply-decisions.mjs` moves `lastUpdated` on for it).
 - **Spend and abuse layers:** origin check (`ALLOWED_ORIGIN`), per-IP rate limit, `DailyCap` Durable Object (`MAX_PER_DAY`), then the Anthropic Console spend limit.
 
 ## Rules for this repo
