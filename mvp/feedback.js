@@ -181,7 +181,7 @@
     try {
       const res = await api('GET', '/feedback/export.csv', null, true);
       const blob = await res.blob();
-      const a = el('a', { href: URL.createObjectURL(blob), download: 'service-finder-feedback-' + new Date().toISOString().slice(0, 10) + '.csv' });
+      const a = el('a', { href: URL.createObjectURL(blob), download: 'support-finder-feedback-' + new Date().toISOString().slice(0, 10) + '.csv' });
       document.body.append(a);
       a.click();
       a.remove();

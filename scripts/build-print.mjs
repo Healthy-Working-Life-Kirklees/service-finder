@@ -26,7 +26,7 @@ const STALE_DAYS = 135; // same as the site and mvp/help.js
 const NORTH = ['Batley', 'Dewsbury', 'Mirfield', 'Spen Valley'];
 const SOUTH = ['Colne Valley', 'Holme Valley', 'Huddersfield', 'Kirkburton'];
 
-// The Service Finder isn't public yet. Set this to true to put its web address and
+// The Support Finder isn't public yet. Set this to true to put its web address and
 // QR code back on the cover (the space for them is kept).
 const SHOW_SITE_LINK = false;
 
@@ -160,7 +160,7 @@ const SELF = { yes: ['self', 'You can refer yourself'], partly: ['self', 'Self-r
 function footer(n, left) {
   return `<footer class="pfoot"><span class="pf-left">${left}</span><span class="pf-num">${n}</span></footer>`;
 }
-const brandFoot = `Healthy Working Life Kirklees &middot; Service Finder &middot; ${edition}`;
+const brandFoot = `Healthy Working Life Kirklees &middot; Support Finder &middot; ${edition}`;
 
 function indexRow(s) {
   const c = coverage(s);
@@ -174,7 +174,7 @@ function indexPages(pages, startNo, { title, kicker, intro, cls }) {
     const body = items.map((it) => it.type === 'h'
       ? `<li class="grp"><span>${esc(it.text)}</span>${it.count != null ? `<span class="cnt">${it.count} service${it.count === 1 ? '' : 's'}</span>` : ''}</li>`
       : indexRow(it.s)).join('');
-    return `<section class="page index ${cls}" id="p${startNo + i}"><div class="brandbar"><a class="bb-logo" href="#p1" aria-label="Healthy Working Life: back to the contents"><span class="hwl-logo" aria-hidden="true"></span></a><a class="bb-text" href="#p1">Service Finder</a></div>${head}<ul class="ix">${body}</ul>${footer(startNo + i, brandFoot)}</section>`;
+    return `<section class="page index ${cls}" id="p${startNo + i}"><div class="brandbar"><a class="bb-logo" href="#p1" aria-label="Healthy Working Life: back to the contents"><span class="hwl-logo" aria-hidden="true"></span></a><a class="bb-text" href="#p1">Support Finder</a></div>${head}<ul class="ix">${body}</ul>${footer(startNo + i, brandFoot)}</section>`;
   }).join('\n');
 }
 
@@ -221,7 +221,7 @@ async function servicePage(s, n) {
 
   return `<section class="page svc cov-${c.key}" id="${esc(s.id)}" data-keywords="${esc([...(s.categories || []), ...(s.areas || []).map((a) => a === 'Kirklees-wide' ? 'All Kirklees' : a)].join(' '))}">
   <div class="tab"><span>${c.label}</span></div>
-  <div class="brandbar"><a class="bb-logo" href="#p1" aria-label="Healthy Working Life: back to the contents"><span class="hwl-logo" aria-hidden="true"></span></a><a class="bb-text" href="#p1">Service Finder</a><span class="bb-cov">${c.label}</span><button type="button" class="print-one" data-print-page aria-label="Print the page for ${esc(s.name)}">Print this page</button></div>
+  <div class="brandbar"><a class="bb-logo" href="#p1" aria-label="Healthy Working Life: back to the contents"><span class="hwl-logo" aria-hidden="true"></span></a><a class="bb-text" href="#p1">Support Finder</a><span class="bb-cov">${c.label}</span><button type="button" class="print-one" data-print-page aria-label="Print the page for ${esc(s.name)}">Print this page</button></div>
   <header class="svc-head">${thumb}<div class="ttl"><h2>${esc(s.name)}</h2><p class="org">${esc(s.organisation)}</p><div class="badges">${badges}</div></div></header>
   <div class="fit"><div class="svc-body">
     <div class="main">
@@ -246,7 +246,7 @@ async function servicePage(s, n) {
 function dividerPage(sec) {
   const first = pageOf.get(sec.list[0].id), last = pageOf.get(sec.list.at(-1).id);
   return `<section class="page divider cov-${sec.key}" id="p${sec.divider}">
-  <div class="brandbar"><a class="bb-logo" href="#p1" aria-label="Healthy Working Life: back to the contents"><span class="hwl-logo" aria-hidden="true"></span></a><a class="bb-text" href="#p1">Service Finder</a></div>
+  <div class="brandbar"><a class="bb-logo" href="#p1" aria-label="Healthy Working Life: back to the contents"><span class="hwl-logo" aria-hidden="true"></span></a><a class="bb-text" href="#p1">Support Finder</a></div>
   <div class="dv-main"><p class="kicker">Section ${SECTIONS.indexOf(SECTION[sec.key]) + 1} of ${SECTIONS.length}</p><h1>${sec.title}</h1>
   <p class="dv-intro">${sec.intro}</p><p class="dv-count">${sec.list.length} services, A to Z, on pages ${first} to ${last}.</p></div>
   ${footer(sec.divider, brandFoot)}
@@ -263,7 +263,7 @@ async function cover() {
   <img class="cover-logo" src="${hwlLogo}" alt="Healthy Working Life">
   <div class="cover-main">
     <p class="kicker">Kirklees &middot; Printed directory &middot; ${edition}</p>
-    <h1>Service Finder</h1>
+    <h1>Support Finder</h1>
     <p class="lede">Support for health and work in Kirklees: ${services.length} services, one per page.</p>
     <div class="contents-wrap">
     <ol class="contents"><li class="ch">Indexes</li>
@@ -361,7 +361,7 @@ ${body}
 <script>${PAGE_JS}</script>
 </body></html>`;
   fs.mkdirSync(OUT, { recursive: true });
-  const file = path.join(OUT, 'service-finder-directory.html');
+  const file = path.join(OUT, 'support-finder-directory.html');
   fs.writeFileSync(file, html);
   console.log(`${summary} -> ${path.relative(ROOT, file)}`);
 }

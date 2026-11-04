@@ -719,7 +719,7 @@ r = await fbCall('GET', '/feedback/items?since=last-week', null, { pass: FB_PASS
 check('feedback: bad since -> 400', r.status === 400);
 await send(cardFb({ text: '=HYPERLINK("http://x")' }));
 r = await fbCall('GET', '/feedback/export.csv', null, { pass: FB_PASS });
-check('feedback: CSV export has a header, one row per entry and a download name', r.status === 200 && r.body.startsWith('"id","date","kind"') && r.body.trim().split('\r\n').length === 7 && /attachment; filename="service-finder-feedback-\d{4}-\d{2}-\d{2}\.csv"/.test(r.headers.get('content-disposition')), r.body.slice(0, 200));
+check('feedback: CSV export has a header, one row per entry and a download name', r.status === 200 && r.body.startsWith('"id","date","kind"') && r.body.trim().split('\r\n').length === 7 && /attachment; filename="support-finder-feedback-\d{4}-\d{2}-\d{2}\.csv"/.test(r.headers.get('content-disposition')), r.body.slice(0, 200));
 check('feedback: CSV neutralises a leading "=" (formula injection)', r.body.includes("\"'=HYPERLINK"));
 const pre2 = await worker.fetch(new Request('https://w/feedback/items', { method: 'OPTIONS', headers: { Origin: O } }), fbEnv());
 check('feedback: preflight allows x-feedback-passcode', pre2.status === 204 && pre2.headers.get('Access-Control-Allow-Headers').includes('x-feedback-passcode'));

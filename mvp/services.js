@@ -865,7 +865,7 @@
   function exportDecisions() {
     const blob = new Blob([JSON.stringify({ exported: new Date().toISOString(), decisions: team || {}, edits: edits || {}, added: added || {} }, null, 2) + '\n'], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    const a = el('a', { href: url, download: 'service-finder-team-changes-' + new Date().toISOString().slice(0, 10) + '.json' });
+    const a = el('a', { href: url, download: 'support-finder-team-changes-' + new Date().toISOString().slice(0, 10) + '.json' });
     document.body.append(a);
     a.click();
     a.remove();
@@ -945,7 +945,7 @@
     }
     const blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
-    const a = el('a', { href: url, download: 'service-finder-services-' + new Date().toISOString().slice(0, 10) + '.csv' });
+    const a = el('a', { href: url, download: 'support-finder-services-' + new Date().toISOString().slice(0, 10) + '.csv' });
     document.body.append(a);
     a.click();
     a.remove();

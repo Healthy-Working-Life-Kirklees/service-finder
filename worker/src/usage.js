@@ -211,6 +211,6 @@ export async function handleUsage(request, env, url, cors, originOk, ids) {
   if (path === '/usage/days') return json({ days, retentionMonths: RETENTION_MONTHS }, 200, cors);
   return new Response(csv(days), {
     status: 200,
-    headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="service-finder-usage-${today()}.csv"`, 'Cache-Control': 'no-store', ...cors },
+    headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="support-finder-usage-${today()}.csv"`, 'Cache-Control': 'no-store', ...cors },
   });
 }

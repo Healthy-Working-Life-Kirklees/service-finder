@@ -1,4 +1,4 @@
-// Kirklees HWL Service Finder - Cloudflare Worker proxy.
+// Kirklees HWL Support Finder - Cloudflare Worker proxy.
 //
 // The static page (GitHub Pages) calls this Worker. The Worker holds the Anthropic
 // API key, sends the scheme data plus the conversation to Claude, and returns a

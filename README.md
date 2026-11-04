@@ -1,8 +1,10 @@
-# Kirklees Healthy Working Life Service Finder (prototype)
+# Kirklees Healthy Working Life Support Finder (prototype)
 
 A proof of concept: a chat page that matches people to Healthy Working Life schemes and other work and health support in Kirklees.
 
 **It is a prototype. The scheme details come from a draft pathways document and from web research, and may be out of date.**
+
+The tool's name is **Healthy Working Life Support Finder** (it was called the Service Finder until November 2026). The GitHub repo, the web address and the Cloudflare Worker (`hwl-service-finder`) still use the old name on purpose: renaming those would change the live addresses and lose the Worker's secrets.
 
 ## How it fits together
 

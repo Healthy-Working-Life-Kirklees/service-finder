@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const STALE_DAYS = 135; // same threshold the Service Finder uses
+  const STALE_DAYS = 135; // same threshold the Support Finder uses
   const $ = (s) => document.querySelector(s);
 
   function el(tag, props = {}, ...kids) {

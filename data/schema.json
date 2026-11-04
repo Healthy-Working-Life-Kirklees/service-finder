@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/Healthy-Working-Life-Kirklees/service-finder/data/schema.json",
-  "title": "Service Finder scheme",
+  "title": "Support Finder scheme",
   "description": "One scheme or service, stored as data/services/<id>.json. See docs/data-dictionary.md for what each field means.",
   "type": "object",
   "additionalProperties": false,
