@@ -22,7 +22,7 @@ The tool's name is **Healthy Working Life Support Finder** (it was called the Se
 
 The page is public, so these matter:
 
-1. The Worker only accepts requests from the Pages origin (`ALLOWED_ORIGIN` in `worker/wrangler.toml`).
+1. The Worker only accepts requests from the site's own addresses (`ALLOWED_ORIGIN` in `worker/wrangler.toml`, a comma-separated list: https://hwlsupportfinder.org.uk and the GitHub Pages address).
 2. Per-IP limit of 10 requests a minute (Rate Limiting binding).
 3. A hard global cap of `MAX_PER_DAY` chat requests a day (a small Durable Object holding a date and a number).
 4. **Set a monthly spend limit in the Anthropic Console.** That is the real backstop.
@@ -36,7 +36,7 @@ The page is public, so these matter:
 5. **Point the page at the Worker.** Settings > Secrets and variables > Actions > Variables, add `WORKER_URL` with the workers.dev address (no trailing slash).
 6. **Deploy the page.** Actions > "Deploy site to GitHub Pages" > Run workflow. The page appears at `https://healthy-working-life-kirklees.github.io/<repo-name>/`.
 
-If the repo name or organisation changes, update `ALLOWED_ORIGIN` in `worker/wrangler.toml`.
+If the site's domain, the repo name or the organisation changes, update `ALLOWED_ORIGIN` in `worker/wrangler.toml`, or the page can't reach the Worker: searches fail and the feedback links don't appear.
 
 ## "Who is this for?"
 
