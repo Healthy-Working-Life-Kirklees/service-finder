@@ -884,6 +884,12 @@ check('digest: helpful counts by mode and language', /\| staff \| pl \| 1 \| 1 \
   check('email: nothing sent, and feedback stored, when the email binding is missing', r.status === 201 && sent.length === 0);
   r = await send(pilotFb(), { e: pEnv({ FEEDBACK_EMAIL_TO: undefined }) });
   check('email: nothing sent when there is no inbox set', r.status === 201 && sent.length === 0);
+  r = await send(pilotFb(), { e: pEnv({ FEEDBACK_EMAIL_TO: ' , ' }) });
+  check('email: nothing sent when the address list is blank', r.status === 201 && sent.length === 0);
+  await send(pilotFb(), { e: pEnv({ FEEDBACK_EMAIL_TO: 'one@example.org, two@example.org.uk ' }) });
+  check('email: one email to several admins when the secret lists more than one', sent.length === 1 && Array.isArray(sent[0].to) && sent[0].to.join() === 'one@example.org,two@example.org.uk', JSON.stringify(sent[0] && sent[0].to));
+  const tomlNow = fs.readFileSync(path.join(root, 'worker/wrangler.toml'), 'utf8');
+  check('email: no recipient addresses in the public config', !/^FEEDBACK_EMAIL_TO\s*=/m.test(tomlNow) && !/allowed_destination_addresses/.test(tomlNow));
   let waited = null;
   r = await worker.fetch(new Request('https://w/feedback', { method: 'POST', headers: { 'content-type': 'application/json', Origin: O }, body: JSON.stringify(pilotFb()) }), pEnv(), { waitUntil: (p) => { waited = p; } });
   check('email: sent after the reply, using waitUntil', r.status === 201 && waited instanceof Promise && (await waited) === true);

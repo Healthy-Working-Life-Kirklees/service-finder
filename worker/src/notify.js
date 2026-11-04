@@ -1,7 +1,8 @@
 // Emails the team inbox when feedback arrives, so nobody has to keep checking the review page.
 //
-// Sent through a Cloudflare send_email binding called FEEDBACK_EMAIL, to FEEDBACK_EMAIL_TO, from
-// FEEDBACK_EMAIL_FROM (an address on a domain set up for Cloudflare Email Sending). If any of the three is
+// Sent through a Cloudflare send_email binding called FEEDBACK_EMAIL, to FEEDBACK_EMAIL_TO (a secret: one or more
+// addresses, comma-separated, each a verified destination address in Cloudflare Email Routing, which keeps it
+// free), from FEEDBACK_EMAIL_FROM (an address on the domain with Email Routing on). If any of the three is
 // missing, nothing is sent and feedback is still stored as normal. See "Feedback emails" in README.md.
 //
 // The email holds only what was stored for the entry (already checked and with personal details removed),
@@ -118,10 +119,11 @@ export function buildEmail(entry, names = new Map(), reviewUrl = '') {
 // Sends the email. Never throws.
 export async function notifyFeedback(env, entry, names, reviewUrl) {
   try {
-    if (!env.FEEDBACK_EMAIL || !env.FEEDBACK_EMAIL_TO || !env.FEEDBACK_EMAIL_FROM || !shouldEmail(entry)) return false;
+    const to = String(env.FEEDBACK_EMAIL_TO || '').split(',').map((x) => x.trim()).filter(Boolean).slice(0, 10);
+    if (!env.FEEDBACK_EMAIL || !to.length || !env.FEEDBACK_EMAIL_FROM || !shouldEmail(entry)) return false;
     const { subject, text } = buildEmail(entry, names, reviewUrl);
     const msg = {
-      to: env.FEEDBACK_EMAIL_TO,
+      to: to.length === 1 ? to[0] : to,
       from: { email: env.FEEDBACK_EMAIL_FROM, name: 'HWL Support Finder' },
       subject,
       text,
