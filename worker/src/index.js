@@ -6,7 +6,7 @@
 // and logs nothing (observability is switched off in wrangler.toml).
 //
 // Abuse / spend protection, in layers:
-//   1. Origin must match ALLOWED_ORIGIN (stops casual use from other sites).
+//   1. Origin must be one of ALLOWED_ORIGIN (stops casual use from other sites).
 //   2. Per-IP burst limit (Rate Limiting binding).
 //   3. A hard global daily cap (one Durable Object holding a date and a number).
 //   4. Set a monthly spend limit in the Anthropic Console as the real backstop.
@@ -194,9 +194,10 @@ function respondTool(questionsLeft) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    const allowed = env.ALLOWED_ORIGIN || '';
+    // ALLOWED_ORIGIN can list more than one address, separated by commas (the site's own domain and GitHub Pages).
+    const allowed = String(env.ALLOWED_ORIGIN || '').split(',').map((x) => x.trim()).filter(Boolean);
     const origin = request.headers.get('Origin') || '';
-    const originOk = Boolean(allowed) && origin === allowed;
+    const originOk = allowed.includes(origin);
     const cors = originOk
       ? {
           'Access-Control-Allow-Origin': origin,

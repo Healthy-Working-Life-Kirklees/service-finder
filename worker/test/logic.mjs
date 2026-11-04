@@ -772,6 +772,27 @@ check('digest: lists listings missing useful details', /missing useful details[\
 check('digest: counts kinds of support by category and compares with the data', /\| Carers \| 1 \| Dewsbury \(1\) \| \d+ \|/.test(digest), digest);
 check('digest: helpful counts by mode and language', /\| staff \| pl \| 1 \| 1 \|/.test(digest), digest);
 
+// ----- Allowed origins: the site's own domain and GitHub Pages -----
+{
+  const toml = fs.readFileSync(path.join(root, 'worker/wrangler.toml'), 'utf8');
+  const live = toml.match(/^ALLOWED_ORIGIN = "([^"]*)"/m)[1];
+  const at = async (origin, list = live) => worker.fetch(new Request('https://w/health', { headers: { Origin: origin } }), { ...env('claude-sonnet-5-5'), ALLOWED_ORIGIN: list });
+  for (const o of ['https://hwlsupportfinder.org.uk', 'https://www.hwlsupportfinder.org.uk', 'http://hwlsupportfinder.org.uk', O]) {
+    const r = await at(o);
+    check('origins: live config accepts ' + o, r.headers.get('Access-Control-Allow-Origin') === o);
+  }
+  for (const o of ['https://example.com', 'https://hwlsupportfinder.org.uk.evil.com', 'https://hwlsupportfinder.org.uk/', '']) {
+    const r = await at(o);
+    check('origins: refuses ' + JSON.stringify(o), r.headers.get('Access-Control-Allow-Origin') === null);
+  }
+  const r = await at('https://b.example', ' https://a.example , https://b.example ');
+  check('origins: list is comma-separated and spaces are ignored', r.headers.get('Access-Control-Allow-Origin') === 'https://b.example');
+  const pre = await worker.fetch(new Request('https://w/feedback', { method: 'OPTIONS', headers: { Origin: 'https://hwlsupportfinder.org.uk' } }), { ...env('claude-sonnet-5-5'), ALLOWED_ORIGIN: live });
+  check('origins: preflight from the new domain is allowed (204)', pre.status === 204);
+  const none = await at('https://hwlsupportfinder.org.uk', '');
+  check('origins: nothing accepted when ALLOWED_ORIGIN is empty', none.headers.get('Access-Control-Allow-Origin') === null);
+}
+
 // ----- Pilot feedback form and feedback emails -----
 {
   const notify = await import(pathToFileURL(path.join(root, 'worker/src/notify.js')).href);

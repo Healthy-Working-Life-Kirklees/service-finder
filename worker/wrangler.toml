@@ -5,7 +5,10 @@ workers_dev = true
 
 [vars]
 # The GitHub Pages origin (no path, no trailing slash). Anything else gets a 403.
-ALLOWED_ORIGIN = "https://healthy-working-life-kirklees.github.io"
+# The addresses the pages are served from, separated by commas. The site's own domain, plus the GitHub Pages
+# address it started on. http://hwlsupportfinder.org.uk is only there until GitHub Pages has issued the HTTPS
+# certificate and "Enforce HTTPS" is ticked; remove it then.
+ALLOWED_ORIGIN = "https://hwlsupportfinder.org.uk,https://www.hwlsupportfinder.org.uk,http://hwlsupportfinder.org.uk,https://healthy-working-life-kirklees.github.io"
 ANTHROPIC_MODEL = "claude-sonnet-5-5"
 MAX_PER_DAY = "100"
 # User feedback (worker/src/feedback.js). Set FEEDBACK_ENABLED to "false" to switch sending off; the page
@@ -20,7 +23,7 @@ PILOT_FEEDBACK = "true"
 FEEDBACK_EMAIL_TO = "admin@hwlsupportfinder.org.uk"
 FEEDBACK_EMAIL_FROM = "feedback@hwlsupportfinder.org.uk"
 # Linked from each feedback email.
-FEEDBACK_REVIEW_URL = "https://healthy-working-life-kirklees.github.io/service-finder/mvp/feedback.html"
+FEEDBACK_REVIEW_URL = "https://hwlsupportfinder.org.uk/mvp/feedback.html"
 # Anonymous usage counts (worker/src/usage.js): daily tallies only, nothing that identifies anyone. Set
 # USAGE_ENABLED to "false" to stop counting. MAX_USAGE_PER_DAY caps how many counts are added in a day.
 USAGE_ENABLED = "true"
