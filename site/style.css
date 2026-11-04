@@ -496,3 +496,12 @@ html.high-contrast .fb-hint { color: #000; }
 .fb-field-error[hidden] { display: none; }
 html.high-contrast .fb-field.fb-invalid, html.high-contrast .fb-field.fb-invalid input { border-color: #000; background: #fff; }
 html.high-contrast .fb-field-error { color: #000; text-decoration: underline; }
+
+/* "What's changed" page (changes.html), and the link to it in the landing page notice. */
+.notice a { color: var(--blue); font-weight: 600; }
+.changes { max-width: 46rem; }
+.change-day { margin: 0 0 1.5rem; padding: 1rem 1.25rem; background: #fff; border: 1px solid var(--border); border-radius: 10px; }
+.change-day h2 { margin: 0 0 .5rem; font-size: 1.15rem; color: var(--dark-blue); }
+.change-day ul { margin: 0; padding-inline-start: 1.25rem; }
+.change-day li + li { margin-top: .4rem; }
+html.high-contrast .change-day { border-color: #000; }

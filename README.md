@@ -74,6 +74,10 @@ The Worker sends Claude every scheme with each message, but without contact deta
 
 The red panel always shows 999 and NHS 111, and the Single Point of Access number for mental health. For domestic abuse, child safeguarding and adult safeguarding there are no specific helplines yet. Add them to `URGENT_CONTACTS` at the top of the crisis panel code in `site/app.js` (one whole sentence each) once the programme team has checked them from an official source. Don't copy them from a general web search.
 
+## "What's changed" page
+
+`site/changes.html` lists the changes coaches testing the prototype might notice, newest first. It's linked from the prototype notice at the top of the main page ("See what's changed"). When you make a change they'll notice, add a plain-English line to the top of it in the same commit. Leave out behind-the-scenes and MVP-team-only work. The page is in English only; the link says "(EN)" in Polish and Urdu.
+
 ## Languages (English, Polish, Urdu)
 
 The page has a language switcher in the header: English, Polski and اردو (Urdu). Urdu switches the page to right-to-left.
