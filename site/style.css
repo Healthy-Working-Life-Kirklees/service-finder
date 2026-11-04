@@ -505,3 +505,7 @@ html.high-contrast .fb-field-error { color: #000; text-decoration: underline; }
 .change-day ul { margin: 0; padding-inline-start: 1.25rem; }
 .change-day li + li { margin-top: .4rem; }
 html.high-contrast .change-day { border-color: #000; }
+
+/* The partner logo is a link to the main page. The link carries the .brand-logo size and position; the picture fills it. */
+a.brand-logo { border-radius: 4px; }
+a.brand-logo img { display: block; width: 100%; height: auto; }

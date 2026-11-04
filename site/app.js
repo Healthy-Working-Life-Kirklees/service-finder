@@ -554,6 +554,8 @@
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(input.value); }
   });
   $('#reset').addEventListener('click', reset);
+  // The logo goes back to the main page (a fresh start), keeping the language, text size and contrast in the address.
+  $('#home-link').addEventListener('click', (e) => { e.currentTarget.href = './' + location.search; });
 
   // Feedback links (feedback.js). They appear once the Worker's /health says feedback is on.
   if (window.FEEDBACK) window.FEEDBACK.init({ el, announce, api: API, mode: () => mode() || 'public', services: () => services });

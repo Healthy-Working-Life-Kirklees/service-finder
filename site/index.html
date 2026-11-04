@@ -13,7 +13,8 @@
 
   <header class="site-header">
     <div class="wrap header-row">
-      <img class="brand-logo" src="img/hwl-partner-logo.webp" width="343" height="56" alt="West Yorkshire Combined Authority, Tracy Brabin Mayor of West Yorkshire, and Healthy Working Life" data-i18n-alt="logoAlt">
+      <!-- The logo links to the main page. app.js keeps the language and accessibility settings on the link. -->
+      <a class="brand-logo" id="home-link" href="./" aria-label="Healthy Working Life Support Finder: main page" data-i18n-label="homeLink"><img src="img/hwl-partner-logo.webp" width="343" height="56" alt="West Yorkshire Combined Authority, Tracy Brabin Mayor of West Yorkshire, and Healthy Working Life" data-i18n-alt="logoAlt"></a>
       <div class="header-tools">
         <!-- The printable directory (directory.html) is built from the live list on every deploy: see print/README.md. -->
         <a class="dir-btn" href="directory.html">
