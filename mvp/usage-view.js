@@ -18,6 +18,23 @@
   const A11Y_LABELS = { 'size-large': 'Larger text (A+)', 'size-larger': 'Largest text (A++)', contrast: 'High contrast' };
   const ANSWER_LABELS = { yes: 'Yes', notyet: 'Not yet', no: 'No' };
 
+  // Anthropic's list prices in US dollars per million tokens: base input, output, cache read, cache write (5 minute).
+  // From https://platform.claude.com/docs/en/about-claude/pricing, checked 4 Nov 2026. Update them here if the
+  // prices change. The page only gives an estimate: the Anthropic Console's Cost page is the official figure.
+  const PRICES_CHECKED = '4 Nov 2026';
+  const PRICES = [
+    [/^claude-sonnet-5/, { input: 2, output: 10, cacheRead: 0.1, cacheWrite: 2.5 }],
+    [/^claude-opus-5/, { input: 4, output: 20, cacheRead: 0.2, cacheWrite: 5 }],
+    [/^claude-haiku-4-5/, { input: 1, output: 5, cacheRead: 0.1, cacheWrite: 1.25 }],
+  ];
+  const priceFor = (model) => (PRICES.find(([re]) => re.test(model)) || [])[1] || null;
+  const costOf = (model, t) => {
+    const p = priceFor(model);
+    if (!p) return null;
+    return (t.input * p.input + t.output * p.output + t.cacheRead * p.cacheRead + t.cacheWrite * p.cacheWrite) / 1e6;
+  };
+  const usd = (v) => (v == null ? '–' : '$' + (v < 0.1 && v > 0 ? v.toFixed(3) : v.toFixed(2)));
+
   // ---------- small helpers ----------
   function el(tag, props = {}, ...kids) {
     const n = document.createElement(tag);
@@ -88,7 +105,7 @@
     const dates = periodDates();
     const inPeriod = new Set(dates);
     const byDay = new Map(dates.map((d) => [d, {}]));
-    const t = { ev: {}, links: {}, linkByScheme: {}, shown: {}, contacted: {}, contactedByScheme: {}, a11y: {}, listen: {}, lang: {}, mode: {}, copy: 0 };
+    const t = { ev: {}, links: {}, linkByScheme: {}, shown: {}, contacted: {}, contactedByScheme: {}, a11y: {}, listen: {}, lang: {}, mode: {}, copy: 0, models: {}, unpriced: false };
     const add = (o, k, n) => { o[k] = (o[k] || 0) + n; };
     for (const day of days) {
       if (!inPeriod.has(day.date)) continue;
@@ -106,6 +123,15 @@
         if (ev === 'a11y') add(t.a11y, p[1], n);
         if (ev === 'listen') add(t.listen, p[1], n);
         if (ev === 'copy') t.copy += n;
+      }
+      // AI token totals for the day, by model.
+      for (const [model, tok] of Object.entries(day.tokens || {})) {
+        const m = (t.models[model] = t.models[model] || { calls: 0, input: 0, output: 0, cacheRead: 0, cacheWrite: 0 });
+        for (const f of Object.keys(m)) m[f] += tok[f] || 0;
+        const c = costOf(model, tok);
+        const bd = byDay.get(day.date);
+        bd.cost = (bd.cost || 0) + (c || 0);
+        if (c == null) t.unpriced = true;
       }
     }
     return { dates, byDay, t };
@@ -191,6 +217,46 @@
         el('tbody', {}, rows.map((r) => el('tr', {}, r.map((c, i) => (i === 0 ? el('th', { scope: 'row', text: c }) : el('td', { class: 'num-cell', text: c })))))))));
   }
 
+  // ---------- AI use and cost ----------
+  function aiSection(dates, byDay, t, conversations, searches) {
+    const models = Object.entries(t.models);
+    const sum = (f) => models.reduce((a, [, m]) => a + m[f], 0);
+    const calls = sum('calls');
+    const wrap = el('section', { class: 'ai-use' }, el('h3', { text: 'AI use and estimated cost' }));
+    if (!calls) {
+      wrap.append(el('p', { class: 'hint', text: 'No AI token figures in this period yet. They start from the day the Worker update went live.' }));
+      return wrap;
+    }
+    const cost = models.reduce((a, [model, m]) => a + (costOf(model, m) || 0), 0);
+    const tokensIn = sum('input') + sum('cacheRead') + sum('cacheWrite');
+    const errors = t.ev['ai-error'] || 0;
+    const tiles = [
+      [usd(cost), 'estimated AI cost (US dollars)'],
+      [conversations ? usd(cost / conversations) : '–', 'per conversation, on average'],
+      [searches ? usd(cost / searches) : '–', 'per search, on average'],
+      [fmt(Math.round((tokensIn + sum('output')) / calls)), 'tokens per AI call, on average'],
+      [pct(sum('cacheRead'), tokensIn), 'of input read from the cache (cheaper)'],
+      [fmt(errors), 'AI errors (' + pct(errors, searches + errors) + ' of searches)'],
+    ];
+    wrap.append(
+      el('p', { class: 'hint', text: 'Worked out from the token totals the Worker adds up each day, at Anthropic\'s list prices (checked ' + PRICES_CHECKED + '). It\'s an estimate for spotting trends: the Anthropic Console\'s Cost page is the official figure for the budget.' + (t.unpriced ? ' Some calls used a model with no price set here, so the cost is too low.' : '') }),
+      el('div', { class: 'summary' }, tiles.map(([n, label]) => el('div', { class: 'stat' }, el('b', { text: n }), label))),
+      el('div', { class: 'charts' },
+        lineChart('Estimated AI cost per day (US cents)', dates, [
+          { name: 'Cents', color: '#2a78d6', values: dates.map((d) => Math.round((byDay.get(d).cost || 0) * 100)) },
+        ]),
+        el('figure', { class: 'chart chart-wide' },
+          el('figcaption', {}, el('strong', { text: 'Tokens by model' }), el('span', { class: 'chart-note', text: 'Cache reads are the service list re-used from a recent call, at a tenth of the input price.' })),
+          el('div', { class: 'scroll' }, el('table', { class: 'data' },
+            el('thead', {}, el('tr', {}, ['Model', 'AI calls', 'Input', 'Cache read', 'Cache write', 'Output', 'Est. cost'].map((h) => el('th', { scope: 'col', text: h })))),
+            el('tbody', {}, models.map(([model, m]) => el('tr', {},
+              el('th', { scope: 'row', text: model }),
+              ...[m.calls, m.input, m.cacheRead, m.cacheWrite, m.output].map((v) => el('td', { class: 'num-cell', text: v.toLocaleString('en-GB') })),
+              el('td', { class: 'num-cell', text: usd(costOf(model, m)) }))))))))
+    );
+    return wrap;
+  }
+
   // ---------- the section ----------
   function render() {
     const box = $('#usage');
@@ -223,6 +289,8 @@
         el('button', { type: 'button', class: 'btn secondary small', text: 'Download usage as CSV', onclick: exportCsv })),
       el('p', { class: 'hint', text: 'Anonymous daily counts: no names, no IP addresses, nothing anyone typed. "Conversations" is the nearest honest measure of people using the finder, as the site deliberately doesn\'t recognise returning visitors.' }),
       el('div', { class: 'summary' }, tiles.map(([n, label]) => el('div', { class: 'stat' }, el('b', { text: n }), label))),
+      aiSection(dates, byDay, t, ev('conversation'), searches),
+      el('h3', { text: 'How the finder is used' }),
       el('div', { class: 'charts' },
         lineChart('Searches and conversations per day', dates, [
           { name: 'Searches', color: C1, values: dates.map((d) => byDay.get(d).search || 0) },
