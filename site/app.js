@@ -10,7 +10,6 @@
   const form = $('#form');
   const input = $('#message');
   const sendBtn = $('#send');
-  const chipsEl = $('#chips');
   const peopleEl = $('#people');
   const sendLabel = $('#send-label');
 
@@ -19,7 +18,7 @@
   let history = [];
   let busy = false;
 
-  // Page text comes from i18n.js. The example questions are in there too.
+  // Page text comes from i18n.js.
   const t = (key, vars) => window.I18N.t(key, vars);
   // Service details come from services.json and are in English. They are marked as English so screen
   // readers say them correctly, and dir="auto" lays them out properly on the Urdu (right-to-left) page.
@@ -342,7 +341,6 @@
   function welcome() {
     document.body.classList.remove('chatting');
     showPeople();
-    chipsEl.hidden = false;
     updatePlaceholder();
   }
 
@@ -362,7 +360,6 @@
     if (!text || busy) return;
     if (needMode()) return;
     setBusy(true);
-    chipsEl.hidden = true;
     // Only the latest reply offers "other options".
     for (const n of logEl.querySelectorAll('.more-options')) n.remove();
     document.body.classList.add('chatting');
@@ -546,24 +543,9 @@
   window.addEventListener('focus', comeBack);
 
   // ---------- wiring ----------
-  // Example questions alternate between someone looking for support for themselves and someone helping another
-  // person. Like a typed message, an example only searches once "Who is this for?" has been chosen; until then
-  // the page asks for the choice. The person's own choice is used, whichever example they pick.
-  function showChips() {
-    const self = t('chipsSelf');
-    const staff = t('chipsStaff');
-    const items = [];
-    for (let i = 0; i < Math.max(self.length, staff.length); i++) {
-      if (self[i]) items.push(['public', self[i]]);
-      if (staff[i]) items.push(['staff', staff[i]]);
-    }
-    chipsEl.replaceChildren(...items.map(([, q]) => el('button', { type: 'button', class: 'chip', text: q, onclick: () => send(q) })));
-  }
-  showChips();
-  // Switching language changes the fixed text (i18n.js does that) and the example questions. Messages and
+  // Switching language changes the fixed text (i18n.js does that). Messages and
   // cards already on screen stay as they are; new replies come back in the new language.
   window.I18N.onChange(() => {
-    showChips();
     updatePlaceholder();
     if (!busy) sendLabel.textContent = t('send');
   });
