@@ -576,7 +576,7 @@ r = await send(gapFb({ reasons: ['missing-service', 'missing-support'], gapCateg
 check('feedback: gap entry accepted', r.status === 201, JSON.stringify(r.body));
 let all = await items();
 const today = new Date().toISOString().slice(0, 10);
-const KEYS = ['id', 'kind', 'date', 'schemeIds', 'recordLastUpdated', 'helpful', 'reasons', 'text', 'missedService', 'gapCategories', 'gapArea', 'lang', 'mode', 'redacted', 'status', 'note'].sort().join();
+const KEYS = ['id', 'kind', 'date', 'schemeIds', 'recordLastUpdated', 'helpful', 'reasons', 'text', 'missedService', 'gapCategories', 'gapArea', 'contacted', 'ease', 'contact', 'lang', 'mode', 'site', 'redacted', 'status', 'note'].sort().join();
 check('feedback: four entries stored, all New, dated today with no time', all.length === 4 && all.every((x) => x.status === 'New' && x.date === today), JSON.stringify(all));
 check('feedback: entries hold only the agreed fields (no IP, user agent or time)', all.every((x) => Object.keys(x).sort().join() === KEYS), Object.keys(all[0]).sort().join());
 check('feedback: card entry keeps the scheme id and the date of the record shown', all[0].kind === 'card' && all[0].schemeIds.join() === 'wellness-to-work' && all[0].recordLastUpdated === '2026-10-01' && all[0].helpful === null);
@@ -773,6 +773,104 @@ check('digest: marks a suggestion that is probably already listed', /Wellness to
 check('digest: lists listings missing useful details', /missing useful details[\s\S]*Fitness for Work/i.test(digest), digest);
 check('digest: counts kinds of support by category and compares with the data', /\| Carers \| 1 \| Dewsbury \(1\) \| \d+ \|/.test(digest), digest);
 check('digest: helpful counts by mode and language', /\| staff \| pl \| 1 \| 1 \|/.test(digest), digest);
+
+// ----- Pilot feedback form and feedback emails -----
+{
+  const notify = await import(pathToFileURL(path.join(root, 'worker/src/notify.js')).href);
+  const sent = [];
+  const mailer = (fail = false) => ({ send: async (m) => { if (fail) throw Object.assign(new Error('no'), { code: 'E_SENDER_NOT_VERIFIED' }); sent.push(m); return { messageId: 'm' + sent.length }; } });
+  const pEnv = (extra = {}) => fbEnv({ PILOT_FEEDBACK: 'true', FEEDBACK_EMAIL: mailer(), FEEDBACK_EMAIL_TO: 'admin@hwlsupportfinder.org.uk', FEEDBACK_EMAIL_FROM: 'feedback@hwlsupportfinder.org.uk', ...extra });
+  const pilotFb = (o = {}) => ({ kind: 'pilot', reasons: ['missed-service'], text: 'It missed the Batley job club for a man looking for work.', schemeIds: ['wellness-to-work'], contacted: 'not-yet', ease: 4, lang: 'en', mode: 'staff', ...o });
+  const ws = (await import(pathToFileURL(path.join(root, 'data/services.json')).href, { with: { type: 'json' } })).default.services.find((x) => x.id === 'wellness-to-work');
+
+  // Switch
+  let hp = await (await worker.fetch(new Request('https://w/health', { headers: { Origin: O } }), pEnv())).json();
+  check('pilot: /health says pilot is on when PILOT_FEEDBACK is "true"', hp.pilot === true, JSON.stringify(hp));
+  hp = await (await worker.fetch(new Request('https://w/health', { headers: { Origin: O } }), fbEnv())).json();
+  check('pilot: /health says pilot is off by default (the live site)', hp.pilot === false);
+  hp = await (await worker.fetch(new Request('https://w/health', { headers: { Origin: O } }), pEnv({ FEEDBACK_ENABLED: 'false' }))).json();
+  check('pilot: off when feedback as a whole is off', hp.pilot === false);
+  fbStore = mkFbStore();
+  r = await send(pilotFb(), { e: fbEnv() });
+  check('pilot: pilot entries refused when the form is switched off', r.status === 400);
+
+  // Accepted and stored
+  r = await send(pilotFb({ contact: { name: 'Sam Coach', email: 'sam.coach@example.org.uk' } }), { e: pEnv() });
+  check('pilot: entry accepted (201)', r.status === 201, JSON.stringify(r.body));
+  r = await send(pilotFb({ reasons: ['idea'], schemeIds: undefined, contacted: undefined, ease: undefined, text: 'Could it print a list to hand over?' }), { e: pEnv() });
+  check('pilot: minimal entry (one choice and a comment) accepted', r.status === 201, JSON.stringify(r.body));
+  let pall = await (await fbCall('GET', '/feedback/items', null, { pass: FB_PASS, e: pEnv() })).body.items;
+  check('pilot: stored with the agreed fields only', pall.every((x) => Object.keys(x).sort().join() === KEYS), Object.keys(pall[0]).sort().join());
+  check('pilot: keeps choice, comment, schemes, contacted and ease', pall[0].kind === 'pilot' && pall[0].reasons.join() === 'missed-service' && pall[0].schemeIds.join() === 'wellness-to-work' && pall[0].contacted === 'not-yet' && pall[0].ease === 4, JSON.stringify(pall[0]));
+  check('pilot: keeps the tester\'s own contact details when given (not redacted)', pall[0].contact && pall[0].contact.email === 'sam.coach@example.org.uk' && pall[0].contact.name === 'Sam Coach' && pall[0].redacted === false, JSON.stringify(pall[0].contact));
+  check('pilot: no contact details unless given', pall[1].contact === null && pall[1].schemeIds.length === 0 && pall[1].ease === null && pall[1].contacted === null);
+  check('pilot: entries say which site they came from', pall[0].site === 'live');
+  fbStore = mkFbStore();
+  await send(pilotFb(), { e: pEnv({ ALLOW_SELF_ORIGIN: 'true' }) });
+  pall = await (await fbCall('GET', '/feedback/items', null, { pass: FB_PASS, e: pEnv() })).body.items;
+  check('pilot: preview entries are marked preview', pall[0].site === 'preview', JSON.stringify(pall[0]));
+  r = await send(pilotFb({ text: 'Client on 07700 900123 at HD1 4EW, email jo@x.com' }), { e: pEnv() });
+  pall = await (await fbCall('GET', '/feedback/items', null, { pass: FB_PASS, e: pEnv() })).body.items;
+  check('pilot: personal details still removed from the comment', pall[1].text === 'Client on [removed] at [removed], email [removed]' && pall[1].redacted === true, pall[1].text);
+  r = await send(pilotFb({ text: 'x'.repeat(1400) }), { e: pEnv() });
+  check('pilot: longer comments allowed than the quick forms', r.status === 201);
+
+  const pbad = [
+    ['no choice', pilotFb({ reasons: [] })],
+    ['two choices', pilotFb({ reasons: ['idea', 'broken'] })],
+    ['unknown choice', pilotFb({ reasons: ['none-fit'] })],
+    ['no comment', pilotFb({ text: '' })],
+    ['comment too long', pilotFb({ text: 'x'.repeat(1501) })],
+    ['unknown scheme', pilotFb({ schemeIds: ['made-up'] })],
+    ['too many schemes', pilotFb({ schemeIds: Array(6).fill('wellness-to-work') })],
+    ['bad contacted', pilotFb({ contacted: 'maybe' })],
+    ['ease out of range', pilotFb({ ease: 6 })],
+    ['ease not a whole number', pilotFb({ ease: 3.5 })],
+    ['contact without an email', pilotFb({ contact: { name: 'Sam' } })],
+    ['contact with a bad email', pilotFb({ contact: { name: 'Sam', email: 'not an email' } })],
+    ['contact with an extra field', pilotFb({ contact: { email: 'a@b.com', phone: '07700900123' } })],
+    ['search text sneaked in', pilotFb({ search: 'man in his 50s with back pain' })],
+  ];
+  for (const [name, body] of pbad) {
+    r = await send(body, { e: pEnv() });
+    check('pilot: rejected - ' + name, r.status === 400 && typeof r.body.error === 'string', r.status + ' ' + JSON.stringify(r.body));
+  }
+
+  // Emails
+  sent.length = 0;
+  fbStore = mkFbStore();
+  await send(pilotFb({ contact: { name: 'Sam Coach', email: 'sam.coach@example.org.uk' } }), { e: pEnv() });
+  check('email: sent for a pilot entry, to the team inbox, from the feedback address', sent.length === 1 && sent[0].to === 'admin@hwlsupportfinder.org.uk' && sent[0].from.email === 'feedback@hwlsupportfinder.org.uk', JSON.stringify(sent[0]));
+  check('email: subject has the number and what it is about', /^Service Finder feedback #1: Pilot feedback – Missed a service$/.test(sent[0].subject), sent[0].subject);
+  check('email: body has the comment, scheme name, ease and contact', sent[0].text.includes('It missed the Batley job club') && sent[0].text.includes(ws.name + ' (wellness-to-work)') && sent[0].text.includes('Ease of use this time (1–5): 4') && sent[0].text.includes('sam.coach@example.org.uk'), sent[0].text);
+  check('email: reply goes to a tester who asked to be contacted', sent[0].replyTo && sent[0].replyTo.email === 'sam.coach@example.org.uk');
+  await send(pilotFb(), { e: pEnv() });
+  check('email: no reply-to when the tester did not ask to be contacted', sent.length === 2 && sent[1].replyTo === undefined && sent[1].text.includes('Not asked to be contacted.'));
+  await send(cardFb(), { e: pEnv() });
+  await send(gapFb(), { e: pEnv() });
+  await send(replyFb({ helpful: false, reasons: ['none-fit'] }), { e: pEnv() });
+  check('email: sent for listing problems, gaps and "No" replies too', sent.length === 5 && /Problem with a listing/.test(sent[2].subject) && /Something's missing/.test(sent[3].subject) && /Results not helpful/.test(sent[4].subject), sent.map((m) => m.subject).join(' | '));
+  await send(replyFb(), { e: pEnv() });
+  check('email: not sent for a plain "Yes, it was helpful"', sent.length === 5);
+  await send(cardFb({ text: 'Ring 07700 900123' }), { e: pEnv() });
+  check('email: carries the comment with personal details already removed', sent[5].text.includes('Ring [removed]') && !sent[5].text.includes('07700'), sent[5].text);
+  await send(pilotFb(), { e: pEnv({ ALLOW_SELF_ORIGIN: 'true' }), origin: 'https://w' });
+  check('email: preview entries say so, with a link to the review page', sent[6].subject.includes('[preview]') && sent[6].text.includes('https://w/mvp/feedback.html'), sent[6].subject + ' ' + sent[6].text);
+  const before = (await items()).length;
+  r = await send(pilotFb(), { e: pEnv({ FEEDBACK_EMAIL: mailer(true) }) });
+  check('email: a failed email still stores the feedback (201)', r.status === 201 && (await items()).length === before + 1);
+  sent.length = 0;
+  r = await send(pilotFb(), { e: pEnv({ FEEDBACK_EMAIL: undefined }) });
+  check('email: nothing sent, and feedback stored, when the email binding is missing', r.status === 201 && sent.length === 0);
+  r = await send(pilotFb(), { e: pEnv({ FEEDBACK_EMAIL_TO: undefined }) });
+  check('email: nothing sent when there is no inbox set', r.status === 201 && sent.length === 0);
+  let waited = null;
+  r = await worker.fetch(new Request('https://w/feedback', { method: 'POST', headers: { 'content-type': 'application/json', Origin: O }, body: JSON.stringify(pilotFb()) }), pEnv(), { waitUntil: (p) => { waited = p; } });
+  check('email: sent after the reply, using waitUntil', r.status === 201 && waited instanceof Promise && (await waited) === true);
+  r = await fbCall('GET', '/feedback/export.csv', null, { pass: FB_PASS, e: pEnv() });
+  check('pilot: CSV has the pilot columns', r.body.split('\r\n')[0].includes('"contacted","ease","contactName","contactEmail","lang","mode","site"') && r.body.includes('"sam.coach@example.org.uk"'), r.body.split('\r\n')[0]);
+  check('email: notify.js labels cover every reason the Worker accepts', Object.values(fb.REASONS).flat().every((x) => notify.LABELS[x]), Object.values(fb.REASONS).flat().filter((x) => !notify.LABELS[x]).join());
+}
 
 // ----- Anonymous usage counts -----
 const mkUsageStore = () => {

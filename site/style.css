@@ -322,7 +322,16 @@ html.high-contrast .site-footer { border-top-color: #000; }
 .fb-note { margin: 0 0 .35rem; font-size: .95rem; color: var(--grey); }
 .fb-warn { margin: .4rem 0 0; font-size: .95rem; background: var(--warn-bg); color: var(--warn); padding: .3rem .6rem; border-radius: 6px; }
 .fb-error { margin: 0 0 .6rem; font-weight: 600; background: var(--crisis-bg); color: var(--crisis); padding: .3rem .6rem; border-radius: 6px; }
-.fb-warn[hidden], .fb-error[hidden], .fb-sub[hidden], .fb-footer[hidden] { display: none; }
+.fb-warn[hidden], .fb-error[hidden], .fb-sub[hidden], .fb-footer[hidden], .fb-pilot[hidden] { display: none; }
+/* "Give pilot feedback" band (pilot testers only) */
+.fb-pilot { margin: 0 0 1.25rem; padding: .75rem 1rem; background: var(--light); border-inline-start: 5px solid var(--accent); border-radius: 10px; }
+.fb-pilot-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; }
+.fb-pilot-text { margin: 0; }
+.fb-pilot .fb-form { max-width: none; margin-top: .75rem; }
+.fb-pilot .fb-thanks { margin-top: .75rem; }
+.fb-row { display: flex; flex-wrap: wrap; gap: .1rem 1.25rem; }
+.fb-tick input[type=radio] { flex: none; width: 1.25rem; height: 1.25rem; margin: .2rem 0 0; accent-color: var(--blue); }
+.fb-pilot-sends { margin-bottom: .75rem; }
 .fb-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
 .fb-field select:focus-visible { outline: 3px solid var(--focus); outline-offset: 0; box-shadow: 0 0 0 5px #000; }
 html:lang(ur) .fb-field input[type=url] { text-align: left; }
@@ -337,7 +346,9 @@ html.high-contrast .fb-error { border: 2px solid #000; }
 html.high-contrast .fb-field input,
 html.high-contrast .fb-field select,
 html.high-contrast .fb-field textarea { border-color: #000; }
-html.high-contrast .fb-tick input[type=checkbox] { accent-color: #000; }
+html.high-contrast .fb-tick input[type=checkbox],
+html.high-contrast .fb-tick input[type=radio] { accent-color: #000; }
+html.high-contrast .fb-pilot { background: #fff; border: 2px solid #000; border-inline-start-width: 5px; }
 
 /* ---------- Header: partner logo, title, language and accessibility options on one line ---------- */
 .site-header .header-row { max-width: 84rem; display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1.25rem; padding-top: .6rem; padding-bottom: .6rem; }

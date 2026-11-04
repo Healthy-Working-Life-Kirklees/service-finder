@@ -31,8 +31,15 @@
     'missing-service': "A service that isn't listed",
     'missing-support': "A kind of support they couldn't find",
     'missing-other': 'Something else missing',
+    // "Give pilot feedback" (pilot testers)
+    'found-useful': 'It found something useful',
+    unsuitable: "It suggested something that wasn't suitable",
+    'hard-to-use': 'It was confusing, slow or hard to use',
+    broken: 'Something is broken or wrong',
+    idea: 'An idea or suggestion',
   };
-  const KIND_LABELS = { reply: 'Was this helpful?', card: 'Problem with a listing', gap: "What's missing" };
+  const KIND_LABELS = { reply: 'Was this helpful?', card: 'Problem with a listing', gap: "What's missing", pilot: 'Pilot feedback' };
+  const CONTACTED_LABELS = { yes: 'Yes', no: 'No', 'not-yet': 'Not yet', 'not-applicable': 'Not applicable' };
   const LANG_LABELS = { en: 'English', pl: 'Polish', ur: 'Urdu' };
   const MODE_LABELS = { public: 'For themselves', staff: 'Helping someone else' };
 
@@ -217,6 +224,9 @@
     const no = replies.filter((x) => x.helpful === false);
     const cards = list.filter((x) => x.kind === 'card');
     const gaps = list.filter((x) => x.kind === 'gap');
+    const pilots = list.filter((x) => x.kind === 'pilot');
+    const eased = pilots.filter((x) => x.ease);
+    const avgEase = eased.length ? (eased.reduce((a, x) => a + x.ease, 0) / eased.length).toFixed(1) : '–';
     const needsReading = list.filter((x) => x.status === 'New' && !(x.kind === 'reply' && x.helpful === true));
 
     const stats = [
@@ -225,6 +235,8 @@
       [String(no.length), '"No" answers'],
       [String(cards.length), 'problems with a listing'],
       [String(gaps.length), "what's missing"],
+      [String(pilots.length), 'pilot feedback'],
+      [avgEase, 'average ease of use (1–5, pilot)'],
       [String(needsReading.length), 'new, waiting to be read'],
     ];
     $('#summary').replaceChildren(...stats.map(([n, label]) => el('div', { class: 'stat' }, el('b', { text: n }), label)));
@@ -282,14 +294,15 @@
         if (kind === 'read') return !(x.kind === 'reply' && x.helpful === true);
         if (kind === 'yes') return x.kind === 'reply' && x.helpful === true;
         if (kind === 'no') return x.kind === 'reply' && x.helpful === false;
-        if (kind === 'card' || kind === 'gap') return x.kind === kind;
+        if (kind === 'card' || kind === 'gap' || kind === 'pilot') return x.kind === kind;
         return true;
       })
       .filter((x) => !status || x.status === status)
       .filter((x) => {
         if (!q) return true;
         const ms = x.missedService || {};
-        const hay = [x.text, x.note, ms.name, ms.website, ms.area, x.gapArea, ...(x.gapCategories || []), ...(x.schemeIds || []).map(nameOf), ...(x.reasons || []).map(reason)].join(' ').toLowerCase();
+        const ct = x.contact || {};
+        const hay = [x.text, x.note, ct.name, ct.email, ms.name, ms.website, ms.area, x.gapArea, ...(x.gapCategories || []), ...(x.schemeIds || []).map(nameOf), ...(x.reasons || []).map(reason)].join(' ').toLowerCase();
         return hay.includes(q);
       })
       .sort((a, b) => b.id - a.id);
@@ -307,10 +320,10 @@
     const facts = el('dl', { class: 'facts' });
     const fact = (label, value) => { if (value && (!Array.isArray(value) || value.length)) facts.append(el('dt', { text: label }), el('dd', {}, value)); };
     if (x.schemeIds && x.schemeIds.length) {
-      fact(x.kind === 'card' ? 'Listing' : 'Services shown', el('ul', {}, x.schemeIds.map((id) => el('li', {}, el('a', { href: 'services.html#svc-' + id, text: nameOf(id) })))));
+      fact(x.kind === 'card' ? 'Listing' : x.kind === 'pilot' ? 'Latest results shown' : 'Services shown', el('ul', {}, x.schemeIds.map((id) => el('li', {}, el('a', { href: 'services.html#svc-' + id, text: nameOf(id) })))));
     }
     if (x.kind === 'card' && x.recordLastUpdated) fact('Listing last checked', fmtDate(x.recordLastUpdated));
-    if (x.reasons && x.reasons.length) fact(x.kind === 'reply' ? 'Why not' : 'What they said', el('ul', {}, x.reasons.map((r) => el('li', { text: reason(r) }))));
+    if (x.reasons && x.reasons.length) fact(x.kind === 'reply' ? 'Why not' : x.kind === 'pilot' ? 'Best describes it' : 'What they said', el('ul', {}, x.reasons.map((r) => el('li', { text: reason(r) }))));
     if (x.missedService) {
       const ms = x.missedService;
       fact('Suggested service', el('span', { class: 'stack' },
@@ -321,6 +334,11 @@
     if (x.gapCategories && x.gapCategories.length) fact('Support they looked for', x.gapCategories.join(', '));
     if (x.gapArea) fact('Area', x.gapArea);
     if (x.text) fact('Comment', el('span', { class: 'comment', text: x.text }));
+    if (x.contacted) fact('Contacted a suggested service', CONTACTED_LABELS[x.contacted] || x.contacted);
+    if (x.ease) fact('Ease of use this time', x.ease + ' out of 5');
+    if (x.contact) fact('Happy to be contacted', el('span', { class: 'stack' },
+      x.contact.name ? el('span', { text: x.contact.name }) : null,
+      el('a', { href: 'mailto:' + x.contact.email, text: x.contact.email })));
 
     return el('article', { class: 'entry fb-entry' + (x.kind === 'reply' && !x.helpful ? ' fb-no' : '') + (x.kind === 'card' ? ' fb-card' : '') + (done ? ' closed' : '') },
       el('h3', {}, el('span', { class: 'num', text: '#' + x.id + ' ' }), kindText),
@@ -328,6 +346,7 @@
         el('span', { class: 'pill ' + (x.status === 'New' ? 'blue' : done ? 'ok' : ''), text: x.status }),
         el('span', { class: 'pill', text: MODE_LABELS[x.mode] || x.mode }),
         el('span', { class: 'pill', text: LANG_LABELS[x.lang] || x.lang }),
+        x.site === 'preview' ? el('span', { class: 'pill', text: 'Preview' }) : null,
         x.redacted ? el('span', { class: 'pill warn', text: 'Contact details removed' }) : null
       ),
       el('p', { class: 'meta', text: 'Sent ' + fmtDate(x.date) }),

@@ -1,4 +1,5 @@
-// User feedback: "Report a problem with this listing", "Was this helpful?" and "Tell us what's missing".
+// User feedback: "Report a problem with this listing", "Was this helpful?", "Tell us what's missing" and, during
+// the pilot, the fuller "Give pilot feedback" form (kind 'pilot', only accepted when PILOT_FEEDBACK is "true").
 //
 // Stored in its own Durable Object (SQLite-backed), separate from the team log, so it keeps working when the
 // team log is switched off for the wider test.
@@ -14,8 +15,14 @@
 // What is stored is deliberately small: no IP address, no user agent, no time of day, nothing from the
 // conversation. Free text has email addresses, phone numbers, postcodes and National Insurance numbers removed
 // before it is saved, even though the page asks people not to include them. Entries are deleted after 12 months.
+// The one exception is a pilot tester's own name and work email, kept only when they tick "You can contact me",
+// so the team can follow up with them. Those are about the tester, never about anyone they were helping.
+//
+// Every new entry, apart from a plain "Yes, it was helpful", is also emailed to the team inbox (notify.js).
 
-export const KINDS = ['card', 'reply', 'gap'];
+import { notifyFeedback } from './notify.js';
+
+export const KINDS = ['card', 'reply', 'gap', 'pilot'];
 export const STATUSES = ['New', 'Reviewed', 'Actioned', 'Not actioned'];
 export const REASONS = {
   // "Report a problem with this listing" on a scheme card
@@ -24,12 +31,17 @@ export const REASONS = {
   reply: ['none-fit', 'info-wrong', 'hard-to-understand', 'missed-service'],
   // "Tell us what's missing"
   gap: ['missing-service', 'missing-support', 'missing-other'],
+  // "Give pilot feedback": which best describes it (one only)
+  pilot: ['found-useful', 'missed-service', 'unsuitable', 'hard-to-use', 'broken', 'idea', 'other'],
 };
+export const CONTACTED = ['yes', 'no', 'not-yet', 'not-applicable'];
 const LANGS = ['en', 'pl', 'ur'];
 const MODES = ['public', 'staff'];
 export const DONT_KNOW = "Don't know";
 export const SOMETHING_ELSE = 'Something else';
 const MAX_TEXT = 300;
+const MAX_PILOT_TEXT = 1500;
+const MAX_EMAIL = 200;
 const MAX_NAME = 100;
 const MAX_WEBSITE = 200;
 const MAX_NOTE = 500;
@@ -40,7 +52,9 @@ const ALLOWED = {
   card: ['kind', 'schemeIds', 'recordLastUpdated', 'reasons', 'text', 'lang', 'mode'],
   reply: ['kind', 'schemeIds', 'helpful', 'reasons', 'text', 'lang', 'mode'],
   gap: ['kind', 'reasons', 'text', 'missedService', 'gapCategories', 'gapArea', 'lang', 'mode'],
+  pilot: ['kind', 'reasons', 'text', 'schemeIds', 'contacted', 'ease', 'contact', 'lang', 'mode'],
 };
+const EMAIL_RE = /^[A-Z0-9._%+-]+@[A-Z0-9-]+(?:\.[A-Z0-9-]+)*\.[A-Z]{2,}$/i;
 
 // ---------- removing personal details ----------
 // The page has a copy of these patterns (site/feedback.js) so it can warn people and remove them before sending.
@@ -89,19 +103,20 @@ function list(v, allowed, label, { min = 0, max = allowed.length } = {}) {
 
 // Checks a feedback entry from the page. `ctx` holds the scheme ids and the areas and categories in the data.
 // Returns { entry } ready to store, or { error } in plain English.
-export function validateFeedback(body, ctx) {
+export function validateFeedback(body, ctx, { pilot = false } = {}) {
   if (!body || typeof body !== 'object' || Array.isArray(body)) return { error: 'That feedback could not be read.' };
   const kind = body.kind;
-  if (!KINDS.includes(kind)) return { error: 'Unknown kind of feedback.' };
+  if (!KINDS.includes(kind) || (kind === 'pilot' && !pilot)) return { error: 'Unknown kind of feedback.' };
   const extra = Object.keys(body).filter((k) => !ALLOWED[kind].includes(k));
   if (extra.length) return { error: 'That feedback has a field we don\'t expect.' };
   if (!LANGS.includes(body.lang)) return { error: 'Unknown language.' };
   if (!MODES.includes(body.mode)) return { error: 'Unknown mode.' };
 
-  const reasons = list(body.reasons, REASONS[kind], 'Reason', { min: kind === 'reply' ? 0 : 1 });
+  const reasons = list(body.reasons, REASONS[kind], 'Reason', { min: kind === 'reply' ? 0 : 1, max: kind === 'pilot' ? 1 : undefined });
   if (reasons.error) return reasons;
-  const text = optText(body.text, MAX_TEXT, 'The comment');
+  const text = optText(body.text, kind === 'pilot' ? MAX_PILOT_TEXT : MAX_TEXT, 'The comment');
   if (text.error) return text;
+  if (kind === 'pilot' && !text.value) return { error: 'Please tell us what happened.' };
 
   const entry = {
     kind,
@@ -114,8 +129,12 @@ export function validateFeedback(body, ctx) {
     missedService: null,
     gapCategories: [],
     gapArea: null,
+    contacted: null,
+    ease: null,
+    contact: null,
     lang: body.lang,
     mode: body.mode,
+    site: ctx.site || 'live',
     redacted: false,
     status: 'New',
     note: '',
@@ -128,6 +147,33 @@ export function validateFeedback(body, ctx) {
       return { error: 'That feedback is about a scheme we don\'t know.' };
     }
     entry.schemeIds = [...new Set(ids)];
+  }
+
+  if (kind === 'pilot') {
+    // The schemes shown in the most recent reply, if there was one. Optional.
+    const ids = body.schemeIds === undefined ? [] : body.schemeIds;
+    if (!Array.isArray(ids) || ids.length > 5 || ids.some((x) => typeof x !== 'string' || !ctx.ids.has(x))) {
+      return { error: 'That feedback is about a scheme we don\'t know.' };
+    }
+    entry.schemeIds = [...new Set(ids)];
+    if (body.contacted !== undefined && body.contacted !== null) {
+      if (!CONTACTED.includes(body.contacted)) return { error: 'Please choose an answer from the list.' };
+      entry.contacted = body.contacted;
+    }
+    if (body.ease !== undefined && body.ease !== null) {
+      if (!Number.isInteger(body.ease) || body.ease < 1 || body.ease > 5) return { error: 'Ease of use must be from 1 to 5.' };
+      entry.ease = body.ease;
+    }
+    const c = body.contact;
+    if (c !== undefined && c !== null) {
+      if (typeof c !== 'object' || Array.isArray(c) || Object.keys(c).some((k) => !['name', 'email'].includes(k))) return { error: 'The contact details could not be read.' };
+      const name = optText(c.name, MAX_NAME, 'Your name');
+      if (name.error) return name;
+      const email = optText(c.email, MAX_EMAIL, 'Your email');
+      if (email.error) return email;
+      if (!email.value || !EMAIL_RE.test(email.value)) return { error: 'Please give an email address we can contact you on.' };
+      entry.contact = { name: name.value, email: email.value };
+    }
   }
 
   if (kind === 'card') {
@@ -272,8 +318,10 @@ export async function safeEqual(a, b) {
 }
 
 export const feedbackOn = (env) => env.FEEDBACK_ENABLED !== 'false' && Boolean(env.FEEDBACK_STORE);
+// The "Give pilot feedback" form: on only where PILOT_FEEDBACK is exactly "true" (the preview, for now).
+export const pilotOn = (env) => feedbackOn(env) && env.PILOT_FEEDBACK === 'true';
 
-const CSV_COLUMNS = ['id', 'date', 'kind', 'status', 'schemeIds', 'recordLastUpdated', 'helpful', 'reasons', 'text', 'missedServiceName', 'missedServiceWebsite', 'missedServiceArea', 'gapCategories', 'gapArea', 'lang', 'mode', 'redacted', 'note'];
+const CSV_COLUMNS = ['id', 'date', 'kind', 'status', 'schemeIds', 'recordLastUpdated', 'helpful', 'reasons', 'text', 'missedServiceName', 'missedServiceWebsite', 'missedServiceArea', 'gapCategories', 'gapArea', 'contacted', 'ease', 'contactName', 'contactEmail', 'lang', 'mode', 'site', 'redacted', 'note'];
 function csv(items) {
   // A leading = + - @ would be run as a formula by a spreadsheet, so it gets a ' in front.
   const cell = (v) => {
@@ -283,14 +331,16 @@ function csv(items) {
   };
   const rows = items.map((x) => {
     const ms = x.missedService || {};
-    const row = { ...x, missedServiceName: ms.name, missedServiceWebsite: ms.website, missedServiceArea: ms.area };
+    const ct = x.contact || {};
+    const row = { ...x, missedServiceName: ms.name, missedServiceWebsite: ms.website, missedServiceArea: ms.area, contactName: ct.name, contactEmail: ct.email };
     return CSV_COLUMNS.map((c) => cell(row[c])).join(',');
   });
   return [CSV_COLUMNS.map(cell).join(','), ...rows].join('\r\n') + '\r\n';
 }
 
-// ctx: { ids: Set of scheme ids, areas: [...], categories: [...] }, worked out from the data by index.js.
-export async function handleFeedback(request, env, url, cors, originOk, ctx) {
+// ctx: { ids: Set of scheme ids, names: Map id -> name, areas: [...], categories: [...] }, worked out from the
+// data by index.js. exec is the Worker's execution context, so the email can be sent after the reply.
+export async function handleFeedback(request, env, url, cors, originOk, ctx, exec) {
   const path = url.pathname;
   const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
   const stub = () => env.FEEDBACK_STORE.get(env.FEEDBACK_STORE.idFromName('feedback'));
@@ -315,10 +365,16 @@ export async function handleFeedback(request, env, url, cors, originOk, ctx) {
     } catch {
       return json({ error: 'That feedback could not be read.' }, 400, cors);
     }
-    const v = validateFeedback(body, ctx);
+    const site = env.ALLOW_SELF_ORIGIN === 'true' ? 'preview' : 'live';
+    const v = validateFeedback(body, { ...ctx, site }, { pilot: pilotOn(env) });
     if (v.error) return json({ error: v.error }, 400, cors);
     const r = await call('/add', { entry: v.entry, max: Number(env.MAX_FEEDBACK_PER_DAY || 300) });
     if (r.body.capped) return json({ error: 'We have had a lot of feedback today. Please try again tomorrow.' }, 503, cors);
+    // Email the team, after the entry is safely stored. A failed email never loses the feedback.
+    const review = env.FEEDBACK_REVIEW_URL || (site === 'preview' ? url.origin + '/mvp/feedback.html' : '');
+    const mail = notifyFeedback(env, { id: r.body.id, ...v.entry }, ctx.names, review);
+    if (exec && exec.waitUntil) exec.waitUntil(mail);
+    else await mail;
     return json({ ok: true, redacted: v.entry.redacted }, 201, cors);
   }
 

@@ -136,6 +136,13 @@ ANTHROPIC_MODEL = "claude-sonnet-5-5"
 MAX_PER_DAY = "60"
 FEEDBACK_ENABLED = "true"
 MAX_FEEDBACK_PER_DAY = "100"
+# The fuller "Give pilot feedback" form for the pilot testers (site/feedback.js). Off unless exactly "true".
+PILOT_FEEDBACK = "true"
+# Feedback emails (worker/src/notify.js): each new entry, apart from a plain "Yes, it was helpful", is emailed
+# here as well as stored. Needs the FEEDBACK_EMAIL binding below and the sending domain set up in Cloudflare
+# (see "Feedback emails" in README.md). Until then nothing is sent and feedback is still stored.
+FEEDBACK_EMAIL_TO = "admin@hwlsupportfinder.org.uk"
+FEEDBACK_EMAIL_FROM = "feedback@hwlsupportfinder.org.uk"
 USAGE_ENABLED = "true"
 MAX_USAGE_PER_DAY = "5000"
 
@@ -176,6 +183,11 @@ namespace_id = "7315"
 [env.preview.ratelimits.simple]
 limit = 60
 period = 60
+
+# Sends the feedback emails (Cloudflare Email Service). Only allowed to send to the team inbox.
+[[env.preview.send_email]]
+name = "FEEDBACK_EMAIL"
+allowed_destination_addresses = ["admin@hwlsupportfinder.org.uk"]
 
 [[env.preview.durable_objects.bindings]]
 name = "CAP_COUNTER"

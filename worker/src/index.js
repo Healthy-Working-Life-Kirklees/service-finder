@@ -16,7 +16,7 @@ import SYSTEM_PROMPT from '../../prompt/system.md';
 import schema from '../../data/schema.json';
 import { handleLog } from './teamlog.js';
 import { makeChecker } from './serviceedit.js';
-import { handleFeedback, feedbackOn } from './feedback.js';
+import { handleFeedback, feedbackOn, pilotOn } from './feedback.js';
 import { handleUsage, usageOn, addUsage, chatKeys } from './usage.js';
 
 // The team issues log lives in its own Durable Object class (see teamlog.js).
@@ -69,6 +69,7 @@ const ID_SET = new Set(IDS);
 // What feedback may refer to: the scheme ids, and the areas and categories already used in the data.
 const FEEDBACK_DATA = {
   ids: ID_SET,
+  names: new Map(SERVICES.map((s) => [s.id, s.name])),
   areas: [...new Set(SERVICES.flatMap((s) => s.areas || []))].sort(),
   categories: [...new Set(SERVICES.flatMap((s) => s.categories || []))].sort(),
 };
@@ -246,14 +247,14 @@ export default {
       : { Vary: 'Origin' };
 
     if (request.method === 'OPTIONS') return new Response(null, { status: originOk ? 204 : 403, headers: cors });
-    if (url.pathname === '/health') return json({ ok: true, aiConfigured: Boolean(env.ANTHROPIC_API_KEY), teamLog: Boolean(env.TEAM_PASSCODE), feedback: feedbackOn(env), usage: usageOn(env) }, 200, cors);
+    if (url.pathname === '/health') return json({ ok: true, aiConfigured: Boolean(env.ANTHROPIC_API_KEY), teamLog: Boolean(env.TEAM_PASSCODE), feedback: feedbackOn(env), pilot: pilotOn(env), usage: usageOn(env) }, 200, cors);
     // MVP-team issues log: off unless the TEAM_PASSCODE secret is set.
     // Reading the team's listing decisions is also allowed with no Origin at all (not from a browser), so
     // scripts/apply-decisions.mjs can fetch them with the passcode, like the feedback digest does.
     const scriptRead = !origin && request.method === 'GET' && ['/log/decisions', '/log/edits', '/log/new'].includes(url.pathname);
     if (url.pathname.startsWith('/log/')) return originOk || scriptRead ? handleLog(request, env, url, cors, EDIT_CHECKER) : json({ error: 'Not allowed.' }, 403, cors);
     // User feedback: sending is public (with the same checks as /chat); reading needs the FEEDBACK_PASSCODE secret.
-    if (url.pathname === '/feedback' || url.pathname.startsWith('/feedback/')) return handleFeedback(request, env, url, cors, originOk, FEEDBACK_DATA);
+    if (url.pathname === '/feedback' || url.pathname.startsWith('/feedback/')) return handleFeedback(request, env, url, cors, originOk, FEEDBACK_DATA, ctx);
     // Anonymous usage counts: the page sends events; reading the tallies needs the FEEDBACK_PASSCODE secret.
     if (url.pathname === '/usage' || url.pathname.startsWith('/usage/')) return handleUsage(request, env, url, cors, originOk, ID_SET);
     if (url.pathname !== '/chat' || request.method !== 'POST') return json({ error: 'Not found.' }, 404, cors);
