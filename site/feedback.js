@@ -6,6 +6,11 @@
 // conversation. Email addresses, phone numbers, postcodes and National Insurance numbers are taken out of the
 // comment here before it is sent, and again by the Worker.
 //
+// During the pilot there is also a fuller "Give pilot feedback" form near the top of the page (section 4). It
+// sends a choice, a comment, two optional questions, the ids of the schemes in the latest reply (never what was
+// typed) and, only if the tester ticks the box, their own name and work email. It only appears when /health
+// says pilot is on (PILOT_FEEDBACK in the Worker). Like the MVP tools it is English only.
+//
 // The links only appear when the Worker's /health says feedback is on. Like the rest of the page, this stores
 // nothing in the browser.
 (() => {
@@ -37,6 +42,8 @@
   let currentMode = () => 'public';
   let services = () => new Map();
   let enabled = false;
+  let pilot = false;
+  let lastIds = []; // the schemes shown in the most recent reply, for the pilot form
   let n = 0;
   const uid = (p) => 'fb-' + p + '-' + ++n;
 
@@ -107,13 +114,16 @@
       el('p', { id: id + '-warn', class: 'fb-warn', 'aria-live': 'polite', hidden: true }));
   }
 
+  // The pilot form is English only, so its buttons are too.
+  const PILOT_EN = { fbSend: 'Send feedback', fbSending: 'Sending…', fbCancel: 'Cancel' };
   function shell(className, onSubmit, onCancel, ...fields) {
+    const L = (key) => (className.includes('fb-pilot-form') ? PILOT_EN[key] : t(key));
     const errorEl = el('p', { class: 'fb-error', role: 'alert', hidden: true });
-    const sendBtn = el('button', { type: 'submit', class: 'btn primary small', text: t('fbSend') });
+    const sendBtn = el('button', { type: 'submit', class: 'btn primary small', text: L('fbSend') });
     const form = el('form', { class: 'fb-form ' + className, novalidate: true },
       ...fields,
       errorEl,
-      el('div', { class: 'fb-actions' }, sendBtn, el('button', { type: 'button', class: 'btn secondary small', text: t('fbCancel'), onclick: onCancel })));
+      el('div', { class: 'fb-actions' }, sendBtn, el('button', { type: 'button', class: 'btn secondary small', text: L('fbCancel'), onclick: onCancel })));
     const warnEl = form.querySelector('.fb-warn');
     // Warn as people type if the comment looks like it has personal details. (A suggested service's own phone,
     // email and address are about the service, so they are kept and not warned about.)
@@ -138,12 +148,12 @@
       if (sendBtn.disabled) return;
       errorEl.hidden = true;
       sendBtn.disabled = true;
-      sendBtn.textContent = t('fbSending');
+      sendBtn.textContent = L('fbSending');
       try {
         await onSubmit(form);
       } finally {
         sendBtn.disabled = false;
-        sendBtn.textContent = t('fbSend');
+        sendBtn.textContent = L('fbSend');
       }
     });
     return form;
@@ -419,6 +429,7 @@
   // Under a reply. ids: the schemes shown (none for a "nothing fits" reply). The helpful buttons only appear
   // when at least one card was shown; the "Tell us what's missing" link appears under every result reply.
   function replyControls(ids) {
+    lastIds = ids.slice(0, 5);
     if (!enabled) return null;
     const mode = currentMode();
     const lang = window.I18N.lang;
@@ -462,6 +473,131 @@
     return box;
   }
 
+  // ---------- 4. "Give pilot feedback" (pilot testers, English only) ----------
+  const PILOT_TOPICS = [
+    ['found-useful', 'It found something useful'],
+    ['missed-service', 'It missed a service I know about'],
+    ['unsuitable', 'It suggested something that wasn\'t suitable'],
+    ['hard-to-use', 'It was confusing, slow or hard to use'],
+    ['broken', 'Something is broken or wrong'],
+    ['idea', 'An idea or suggestion'],
+    ['other', 'Something else'],
+  ];
+  const CONTACTED = [['yes', 'Yes'], ['no', 'No'], ['not-yet', 'Not yet'], ['not-applicable', 'Not applicable']];
+  const EASE = [[1, '1 Very hard'], [2, '2'], [3, '3'], [4, '4'], [5, '5 Very easy']];
+  const MAX_PILOT_TEXT = 1500;
+
+  function radios(legend, name, items, { row = false, hint = '' } = {}) {
+    const hintId = hint ? uid('hint') : null;
+    return el('fieldset', { class: 'fb-ticks', 'aria-describedby': hintId },
+      el('legend', { text: legend }),
+      hint ? el('p', { id: hintId, class: 'fb-note', text: hint }) : null,
+      el('div', { class: row ? 'fb-row' : 'fb-list' },
+        items.map(([value, label]) => el('div', { class: 'fb-tick' },
+          el('label', {}, el('input', { type: 'radio', name, value: String(value) }), el('span', { text: label }))))));
+  }
+
+  function pilotForm(onSent, onCancel) {
+    const textId = uid('ptext');
+    const nameId = uid('pname');
+    const emailId = uid('pemail');
+    const contactSub = el('div', { class: 'fb-sub', hidden: true },
+      input(nameId, 'Your name', 100),
+      el('div', { class: 'fb-field' },
+        el('label', { for: emailId, text: 'Your work email' }),
+        el('input', { id: emailId, type: 'email', maxlength: '200', dir: 'ltr', autocomplete: 'email', spellcheck: 'false' })));
+    const shown = lastIds.length;
+    const form = shell('fb-pilot-form', submit, onCancel,
+      radios('Which best describes this feedback?', 'topic', PILOT_TOPICS),
+      el('div', { class: 'fb-field' },
+        el('label', { for: textId, text: 'What happened?' }),
+        el('p', { id: textId + '-note', class: 'fb-note', text: 'Describe the situation in general terms. Please don\'t include names, addresses, dates of birth or anything else that could identify the person you were helping.' }),
+        el('textarea', { id: textId, name: 'text', rows: '5', maxlength: String(MAX_PILOT_TEXT), dir: 'auto', 'aria-describedby': textId + '-note ' + textId + '-warn' }),
+        el('p', { id: textId + '-warn', class: 'fb-warn', 'aria-live': 'polite', hidden: true })),
+      radios('Did you or the person you were helping go on to contact a suggested service?', 'contacted', CONTACTED, { row: true, hint: 'Optional' }),
+      radios('How easy was the tool to use this time?', 'ease', EASE, { row: true, hint: 'Optional. 1 is very hard, 5 is very easy.' }),
+      el('fieldset', { class: 'fb-ticks' },
+        el('legend', { text: 'Can we contact you about this?' }),
+        el('div', { class: 'fb-list' },
+          el('div', { class: 'fb-tick' },
+            el('label', {}, el('input', { type: 'checkbox', name: 'contact-ok', value: 'yes' }), el('span', { text: 'Yes, you can contact me' })),
+            contactSub))),
+      el('p', { class: 'fb-note fb-pilot-sends', text: shown
+        ? 'We\'ll also send the names of the ' + (shown === 1 ? 'service' : shown + ' services') + ' in your latest results, so we know what you were shown. We don\'t send what you typed.'
+        : 'We don\'t send anything you typed into the Support Finder.' }));
+    form.addEventListener('change', (e) => {
+      if (e.target.name === 'contact-ok') {
+        contactSub.hidden = !e.target.checked;
+        if (e.target.checked) form.querySelector('#' + nameId).focus();
+      }
+    });
+    const ids = lastIds.slice();
+    async function submit(f) {
+      const topic = f.querySelector('input[name=topic]:checked');
+      if (!topic) return f.fail('Please choose what best describes your feedback.', f.querySelector('input[name=topic]'));
+      const textEl = f.querySelector('#' + textId);
+      const text = redact(textEl.value.trim()).slice(0, MAX_PILOT_TEXT);
+      if (!text) return f.fail('Please tell us what happened.', textEl);
+      const payload = { kind: 'pilot', reasons: [topic.value], text, lang: window.I18N.lang, mode: currentMode() };
+      if (ids.length) payload.schemeIds = ids;
+      const contacted = f.querySelector('input[name=contacted]:checked');
+      if (contacted) payload.contacted = contacted.value;
+      const ease = f.querySelector('input[name=ease]:checked');
+      if (ease) payload.ease = Number(ease.value);
+      if (f.querySelector('input[name=contact-ok]').checked) {
+        const emailEl = f.querySelector('#' + emailId);
+        const email = emailEl.value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return f.fail('Please give an email address we can contact you on, or untick "Yes, you can contact me".', emailEl);
+        payload.contact = { name: f.querySelector('#' + nameId).value.trim(), email };
+      }
+      if (await send(f, payload)) onSent(f);
+    }
+    return form;
+  }
+
+  // The pilot band near the top of the page: a line of text and a button that opens the form underneath.
+  function pilotBand() {
+    const spot = document.getElementById('fb-pilot');
+    if (!spot) return;
+    const slot = el('div', { class: 'fb-pilot-slot' });
+    let form = null;
+    const btn = el('button', { type: 'button', class: 'btn primary small', 'aria-expanded': 'false', text: 'Give pilot feedback', onclick: () => (form ? close(true) : open()) });
+    function close(focus) {
+      if (form) form.remove();
+      form = null;
+      btn.setAttribute('aria-expanded', 'false');
+      btn.removeAttribute('aria-controls');
+      if (focus) btn.focus();
+    }
+    function open() {
+      const id = uid('pilot');
+      form = pilotForm((f) => {
+        form = null;
+        btn.setAttribute('aria-expanded', 'false');
+        btn.removeAttribute('aria-controls');
+        const p = el('p', { class: 'fb-thanks', tabindex: '-1', text: 'Thanks, we\'ve got that. Send more whenever something comes up.' });
+        f.replaceWith(p);
+        p.focus();
+        announce(p.textContent);
+        setTimeout(() => p.remove(), 8000);
+      }, () => close(true));
+      form.id = id;
+      slot.replaceChildren(form);
+      btn.setAttribute('aria-expanded', 'true');
+      btn.setAttribute('aria-controls', id);
+      form.querySelector('input[name=topic]').focus();
+    }
+    spot.replaceChildren(
+      el('div', { class: 'fb-pilot-row' },
+        el('p', { class: 'fb-pilot-text' }, el('strong', { text: 'Thanks for helping us test the Support Finder. ' }), 'Tell us how it went, as often as you like.'),
+        btn),
+      slot);
+    spot.hidden = false;
+    // "Start again" clears the results, so the form no longer refers to them.
+    const reset = document.getElementById('reset');
+    if (reset) reset.addEventListener('click', () => { lastIds = []; });
+  }
+
   // ---------- setup ----------
   function init(o) {
     el = o.el;
@@ -475,7 +611,9 @@
       .then((r) => r.json())
       .then((h) => {
         enabled = h && h.feedback === true;
+        pilot = enabled && h.pilot === true;
         if (enabled) suggestButton();
+        if (pilot) pilotBand();
         return enabled;
       })
       .catch(() => false);
@@ -510,5 +648,5 @@
     });
   }
 
-  window.FEEDBACK = { init, cardControl, replyControls, redact, get enabled() { return enabled; } };
+  window.FEEDBACK = { init, cardControl, replyControls, redact, get enabled() { return enabled; }, get pilot() { return pilot; } };
 })();

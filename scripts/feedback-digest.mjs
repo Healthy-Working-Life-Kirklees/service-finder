@@ -32,6 +32,11 @@ const LABELS = {
   'missing-service': 'A service that isn\'t listed',
   'missing-support': "A kind of support they couldn't find",
   'missing-other': 'Something else missing',
+  'found-useful': 'It found something useful',
+  unsuitable: "It suggested something that wasn't suitable",
+  'hard-to-use': 'It was confusing, slow or hard to use',
+  broken: 'Something is broken or wrong',
+  idea: 'An idea or suggestion',
 };
 
 // ---------- input ----------
@@ -251,6 +256,24 @@ function digest(items) {
   }
   const redacted = items.filter((x) => x.redacted).length;
   if (redacted) say(`Personal details were removed from ${plural(redacted, 'entry', 'entries')} before they were saved.`, '');
+  // ===== Pilot feedback =====
+  // Testers' names and emails are left out on purpose: follow up from the review page.
+  const pilots = items.filter((x) => x.kind === 'pilot');
+  if (pilots.length) {
+    say('## Pilot feedback', '');
+    const eased = pilots.filter((x) => x.ease);
+    say(`- ${plural(pilots.length, 'new entry', 'new entries')}: ${counted(pilots.flatMap((x) => x.reasons), (r) => LABELS[r] || r)}`);
+    if (eased.length) say(`- Average ease of use: ${(eased.reduce((a, x) => a + x.ease, 0) / eased.length).toFixed(1)} out of 5 (from ${plural(eased.length, 'answer')})`);
+    const followUp = pilots.filter((x) => x.contact).length;
+    if (followUp) say(`- ${plural(followUp, 'tester')} asked to be contacted. Their details are on the review page.`);
+    say('');
+    for (const x of pilots) {
+      const shown = x.schemeIds && x.schemeIds.length ? ` Results shown: ${x.schemeIds.map((id) => `${nameOf(id)} (\`${id}\`)`).join(', ')}.` : '';
+      say(`- **#${x.id} ${x.reasons.map((r) => LABELS[r] || r).join(', ')}**: ${quote(x)}.${shown}`);
+    }
+    say('');
+  }
+
   return out.join('\n');
 }
 
