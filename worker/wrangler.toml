@@ -12,6 +12,15 @@ MAX_PER_DAY = "100"
 # then hides the feedback links. MAX_FEEDBACK_PER_DAY is a global cap on feedback entries a day.
 FEEDBACK_ENABLED = "true"
 MAX_FEEDBACK_PER_DAY = "300"
+# The fuller "Give pilot feedback" form for pilot testers (site/feedback.js). Off unless exactly "true".
+PILOT_FEEDBACK = "true"
+# Feedback emails (worker/src/notify.js): each new entry, apart from a plain "Yes, it was helpful", is emailed
+# here as well as stored. Needs the FEEDBACK_EMAIL binding below and the sending domain set up in Cloudflare
+# (see "Feedback emails" in README.md). Until then nothing is sent and feedback is still stored.
+FEEDBACK_EMAIL_TO = "admin@hwlsupportfinder.org.uk"
+FEEDBACK_EMAIL_FROM = "feedback@hwlsupportfinder.org.uk"
+# Linked from each feedback email.
+FEEDBACK_REVIEW_URL = "https://healthy-working-life-kirklees.github.io/service-finder/mvp/feedback.html"
 # Anonymous usage counts (worker/src/usage.js): daily tallies only, nothing that identifies anyone. Set
 # USAGE_ENABLED to "false" to stop counting. MAX_USAGE_PER_DAY caps how many counts are added in a day.
 USAGE_ENABLED = "true"
@@ -21,6 +30,11 @@ MAX_USAGE_PER_DAY = "20000"
 GH_REPO = "Healthy-Working-Life-Kirklees/service-finder"
 # ANTHROPIC_API_KEY, TEAM_PASSCODE and GH_ACTIONS_TOKEN are secrets: add them in the Cloudflare dashboard
 # (Workers > hwl-service-finder > Settings > Variables and Secrets). Never put them in this file.
+
+# Sends the feedback emails (Cloudflare Email Service). Only allowed to send to the team inbox.
+[[send_email]]
+name = "FEEDBACK_EMAIL"
+allowed_destination_addresses = ["admin@hwlsupportfinder.org.uk"]
 
 # No Workers Logs: nothing about a conversation should be kept anywhere.
 [observability]
