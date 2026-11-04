@@ -32,6 +32,9 @@
   let baseServices = []; // the services in the data; services = these plus new ones waiting to be added
   let choices = {}; // the allowed values for the edit form, from services-all.json
   const editing = new Set(); // services whose edit form is open
+  let plinks = null; // provider review links (providerlink.js in the Worker), once signed in
+  const prefill = {}; // <service id> -> { changes, note } from a provider's reply, opened in the edit form
+  const sending = new Set(); // services whose "send to provider" form is open
 
   // ---------- small DOM helper (text only, never innerHTML) ----------
   function el(tag, props = {}, ...kids) {
@@ -88,6 +91,8 @@
   function editState(x) {
     const e = edits && edits[x.s.id];
     if (!e) return 'none';
+    // Only "checked and still right" (no changes): applied once the data's last-checked date has caught up.
+    if (!Object.keys(e.changes).length) return e.checked && String(x.s.lastUpdated || '') < String(e.t).slice(0, 10) ? 'pending' : 'applied';
     return Object.keys(e.changes).every((k) => norm(x.s[k]) === norm(e.changes[k])) ? 'applied' : 'pending';
   }
 
@@ -225,7 +230,8 @@
       el('span', { class: 'pill ' + lClass, text: lText }),
       x.isNew ? el('span', { class: 'pill', text: 'Added by ' + x.entry.createdBy + ', ' + when(x.entry.created) }) : null,
       state === 'pending' ? el('span', { class: 'pill blue', text: 'Team chose: ' + CHOICE[t.decision].toLowerCase() + ' (waiting to be applied)' }) : null,
-      editState(x) === 'pending' ? el('span', { class: 'pill blue', text: 'Details edited by ' + edits[s.id].by + ' (waiting to be applied)' }) : null,
+      editState(x) === 'pending' ? el('span', { class: 'pill blue', text: (Object.keys(edits[s.id].changes).length ? 'Details edited by ' : 'Checked as current by ') + edits[s.id].by + ' (waiting to be applied)' }) : null,
+      providerNews(x) ? el('span', { class: 'pill warn', text: 'Provider replied: ' + providerNews(x) }) : null,
       x.incomplete ? el('span', { class: 'pill warn', text: 'Details to be completed' }) : null,
       s.hwlFunded ? el('span', { class: 'pill blue', text: 'HWL scheme' }) : null,
       el('span', { class: 'pill', text: LEVEL[s.level] || s.level }),
@@ -282,6 +288,7 @@
       x.isNew ? el('div', { class: 'waiting' }, el('p', { class: 'mt0' }, el('strong', { text: 'New service waiting to be added' }), ' (last saved by ' + x.entry.by + ', ' + when(x.entry.t) + '): ' + x.entry.note),
         el('p', { class: 'hint', text: 'It becomes a file in the data, waiting for review, when the team\'s changes are next applied. If the team has decided to include it, it goes on the live list at the same time.' })) : null,
       edits && !x.isNew && editState(x) === 'pending' ? waitingChanges(x) : null,
+      plinks && !x.isNew ? providerPanel(x) : null,
       edits ? (editing.has(s.id) ? editForm(x, x.isNew ? 'new' : 'edit') : el('p', { class: 'edit-open' },
         el('button', { type: 'button', class: 'btn secondary small', text: 'Edit details', onclick: () => { editing.add(s.id); refreshOne(x); const f = document.getElementById('ed-' + s.id + '-name'); if (f) f.focus(); } }),
         x.isNew ? el('button', { type: 'button', class: 'btn secondary small', text: 'Discard this new service', onclick: () => discardNew(x) }) : null)) : null,
@@ -378,15 +385,159 @@
     } });
     return el('div', { class: 'waiting' },
       el('p', { class: 'mt0' }, el('strong', { text: 'Changes waiting to be applied' }), ' (' + e.by + ', ' + when(e.t) + (e.checked ? ', checked as current' : '') + '): ' + e.note),
+      Object.keys(e.changes).length ? null : el('p', { text: 'No changes to the details: the last-checked date moves on when applied.' }),
       el('dl', { class: 'facts' }, Object.keys(e.changes).flatMap((k) => [el('dt', { text: FIELD_LABEL[k] || k }),
         el('dd', {}, el('del', { text: fmtVal(x.s[k]) }), ' → ', el('ins', { text: fmtVal(e.changes[k]) }))])),
       discard);
   }
 
+  // ---------- provider review links ----------
+  // A private link for one named contact at a scheme (site/provider-check.html#<code>). They check every detail and
+  // reply "all correct" or with changes. Replies wait here; the team saves them as an ordinary edit.
+  const linksFor = (id) => (plinks || []).filter((l) => l.id === id).sort((a, b) => b.created.localeCompare(a.created));
+  const linkUrl = (l) => new URL('../provider-check.html', location.href).href + '#' + l.token;
+  const linkState = (l) => (l.cancelled ? 'cancelled' : Date.parse(l.expires) < Date.now() ? 'expired' : 'active');
+  // The newest reply the team hasn't acted on yet (nothing saved for the service since).
+  function newestReply(id) {
+    const replies = linksFor(id).flatMap((l) => l.replies.map((r) => ({ ...r, link: l }))).sort((a, b) => b.t.localeCompare(a.t));
+    const r = replies[0];
+    const e = edits && edits[id];
+    return { reply: r || null, handled: Boolean(r && e && e.t > r.t), count: replies.length };
+  }
+  function providerNews(x) {
+    if (!plinks) return '';
+    const { reply, handled } = newestReply(x.s.id);
+    if (!reply || handled) return '';
+    return reply.allCorrect ? 'all correct' : 'changes to review';
+  }
+  async function copy(text, btn) {
+    try {
+      await navigator.clipboard.writeText(text);
+      const was = btn.textContent;
+      btn.textContent = 'Copied';
+      setTimeout(() => { btn.textContent = was; }, 2000);
+    } catch {
+      prompt('Copy this:', text);
+    }
+  }
+  const emailText = (x, l) => `Hello ${l.contact},
+
+We're testing the Healthy Working Life Support Finder, a tool that helps work and health coaches in Kirklees find the right support for the people they work with. It includes ${x.s.name}.
+
+Please could you check the details we hold about your service, and correct anything that's wrong or missing? It takes about 10 minutes. Use this link (it's just for you, so please don't share it):
+
+${linkUrl(l)}
+
+The link works until ${fmt(l.expires.slice(0, 10))}. We check any changes before they appear on the Support Finder.
+
+Thank you,
+`;
+
+  function providerPanel(x) {
+    const s = x.s;
+    const links = linksFor(s.id);
+    const live = x.listing === 'include';
+    const by = () => $('#by').value.trim();
+    const msg = el('p', { class: 'msg', role: 'status', hidden: true });
+    const say = (text, kind) => { msg.className = 'msg ' + kind; msg.textContent = text; msg.hidden = false; };
+    const fail = (err) => { if (err.status === 401) return signOut('Your session has ended. Please enter the passcode again.'); say(err.message, 'err'); };
+    const box = el('fieldset', { class: 'decide provider' }, el('legend', { text: 'Check with the provider' }));
+
+    // The newest reply first, with what to do about it.
+    const { reply: r, handled, count } = newestReply(s.id);
+    if (r) {
+      const fmtVal = (v) => (v == null || v === '' ? '(none)' : Array.isArray(v) ? (v.length ? v.map((a) => (typeof a === 'object' ? a.name + ': ' + a.summary : a)).join('; ') : '(none)') : typeof v === 'object' ? (SELF[v.allowed] || v.allowed) + '. ' + v.note + (v.url ? ' ' + v.url : '') : v === true ? 'Yes' : v === false ? 'No' : String(v));
+      const keys = Object.keys(r.changes || {});
+      const who = r.name + (r.name !== r.link.contact ? ' (link sent to ' + r.link.contact + ')' : '');
+      const recordChecked = el('button', { type: 'button', class: 'btn primary small', text: 'Record as checked with the provider', onclick: async () => {
+        if (!by()) { $('#by').focus(); return say('Please put your name or initials at the top of the page first.', 'err'); }
+        if (editState(x) === 'pending' && !confirm('There are changes waiting for this service already. Recording it as checked replaces them. Carry on?')) return;
+        recordChecked.disabled = true;
+        try {
+          const d = await api('PUT', '/log/edits/' + encodeURIComponent(s.id), { changes: {}, before: {}, by: by(), checked: true, checkedUrl: '',
+            note: 'Checked with ' + r.name + ' (provider) using a review link, ' + fmt(r.t.slice(0, 10)) + ': everything correct.' + (r.note ? ' They added: ' + r.note : '') });
+          edits[s.id] = d.item;
+          refreshOne(x);
+          summary();
+        } catch (err) { recordChecked.disabled = false; fail(err); }
+      } });
+      const review = el('button', { type: 'button', class: 'btn primary small', text: 'Review these in Edit details', onclick: () => {
+        prefill[s.id] = { changes: r.changes || {}, note: 'From ' + r.name + ' (provider) using a review link, ' + fmt(r.t.slice(0, 10)) + '.' + (r.note ? ' They said: ' + r.note : '') };
+        editing.add(s.id);
+        refreshOne(x);
+        const f = document.querySelector('#svc-' + CSS.escape(s.id) + ' .edit');
+        if (f) { f.scrollIntoView({ block: 'start' }); const first = f.querySelector('input, textarea, select'); if (first) first.focus(); }
+      } });
+      box.append(el('div', { class: 'reply' + (handled ? ' handled' : '') },
+        el('p', { class: 'mt0' }, el('strong', { text: r.allCorrect ? 'Provider said everything is correct' : keys.length ? 'Provider sent changes' : 'Provider sent a comment' }),
+          ' (' + who + ', ' + when(r.t) + ')' + (count > 1 ? '. ' + plural(count, 'reply', 'replies') + ' in all; this is the newest.' : '.')),
+        r.note ? el('p', {}, el('em', { text: '"' + r.note + '"' })) : null,
+        keys.length ? el('dl', { class: 'facts' }, keys.flatMap((k) => [el('dt', { text: FIELD_LABEL[k] || k }),
+          el('dd', {}, el('del', { text: fmtVal(r.before ? r.before[k] : s[k]) }), ' → ', el('ins', { text: fmtVal(r.changes[k]) }))])) : null,
+        handled ? el('p', { class: 'hint', text: 'The team has saved changes for this service since this reply.' }) : null,
+        el('div', { class: 'row-end' }, r.allCorrect ? recordChecked : keys.length ? review : null)));
+    }
+
+    // Links already made.
+    if (links.length) {
+      box.append(el('ul', { class: 'plinks' }, links.map((l) => {
+        const st = linkState(l);
+        const copyBtn = el('button', { type: 'button', class: 'btn secondary small', text: 'Copy link', onclick: (ev) => copy(linkUrl(l), ev.currentTarget) });
+        const mailBtn = el('button', { type: 'button', class: 'btn secondary small', text: 'Copy an email to send', onclick: (ev) => copy(emailText(x, l), ev.currentTarget) });
+        const cancelBtn = el('button', { type: 'button', class: 'btn secondary small', text: 'Cancel link', onclick: async () => {
+          if (!by()) { $('#by').focus(); return say('Please put your name or initials at the top of the page first.', 'err'); }
+          if (!confirm('Cancel the link for ' + l.contact + '? It stops working straight away. Their replies are kept.')) return;
+          try {
+            const d = await api('POST', '/log/provider-links/' + l.token + '/cancel', { by: by() });
+            Object.assign(l, d.link);
+            refreshOne(x);
+          } catch (err) { fail(err); }
+        } });
+        const stateText = st === 'active' ? 'works until ' + fmt(l.expires.slice(0, 10)) : st === 'expired' ? 'expired ' + fmt(l.expires.slice(0, 10)) : 'cancelled by ' + l.cancelled.by + ', ' + when(l.cancelled.t);
+        return el('li', { class: 'plink ' + st },
+          el('span', { text: 'Link for ' + l.contact + ' (made by ' + l.by + ', ' + when(l.created) + '): ' + stateText + '. ' + (l.replies.length ? plural(l.replies.length, 'reply', 'replies') + '.' : 'No reply yet.') }),
+          st === 'active' ? el('span', { class: 'row-end' }, copyBtn, mailBtn, cancelBtn) : null);
+      })));
+    }
+
+    // Making a new link.
+    if (!live) {
+      box.append(el('p', { class: 'hint', text: 'Provider links can only be made for services on the live list.' }));
+    } else if (sending.has(s.id)) {
+      const who = el('input', { type: 'text', id: 'pl-who-' + s.id, maxlength: '80', autocomplete: 'off' });
+      const days = el('select', { id: 'pl-days-' + s.id }, [14, 30, 60, 90].map((d) => el('option', { value: String(d), text: d + ' days', selected: d === 30 })));
+      const make = el('button', { type: 'button', class: 'btn primary small', text: 'Make the link', onclick: async () => {
+        if (who.value.trim().length < 2) { who.focus(); return say("Give the name of the person you're sending it to.", 'err'); }
+        if (!by()) { $('#by').focus(); return say('Please put your name or initials at the top of the page first.', 'err'); }
+        make.disabled = true;
+        try {
+          const d = await api('POST', '/log/provider-links', { id: s.id, contact: who.value.trim(), days: Number(days.value), by: by() });
+          plinks.push(d.link);
+          sending.delete(s.id);
+          refreshOne(x);
+          const again = document.querySelector('#svc-' + CSS.escape(s.id) + ' .provider');
+          if (again) again.append(el('p', { class: 'msg ok', text: 'Link made. Use "Copy an email to send" (or "Copy link") and email it to ' + d.link.contact + ' yourself.' }));
+        } catch (err) { make.disabled = false; fail(err); }
+      } });
+      box.append(el('div', { class: 'edit-grid' },
+        el('div', { class: 'field' }, el('label', { for: who.id, text: 'Name of the person at the service' }), who, el('p', { class: 'hint', text: 'Just their name. Don\'t put their email address here.' })),
+        el('div', { class: 'field' }, el('label', { for: days.id, text: 'Link works for' }), days)),
+        el('div', { class: 'row-end' }, make, el('button', { type: 'button', class: 'btn secondary small', text: 'Cancel', onclick: () => { sending.delete(s.id); refreshOne(x); } })));
+      setTimeout(() => who.focus(), 0);
+    } else {
+      box.append(el('p', { class: 'hint mt0', text: links.length ? '' : 'Send the provider a private link to check every detail of this service (including who it\'s for and who can\'t use it) and send corrections. Their reply comes back here for the team to check.' }),
+        el('div', { class: 'row-end' }, el('button', { type: 'button', class: 'btn secondary small', text: links.length ? 'Make another link' : 'Send to provider for checking', onclick: () => { sending.add(s.id); refreshOne(x); } })));
+    }
+    box.append(msg);
+    return box;
+  }
+
   // mode: 'edit' a service in the data, 'new' a new service waiting to be added, or 'add' a brand new one.
   function editForm(x, mode = 'edit') {
     const s = x.s;
-    const pending = (mode === 'edit' && edits[s.id] && editState(x) === 'pending' && edits[s.id].changes) || {};
+    const teamPending = (mode === 'edit' && edits[s.id] && editState(x) === 'pending' && edits[s.id].changes) || {};
+    const fromProvider = mode === 'edit' ? prefill[s.id] : null;
+    const pending = fromProvider ? { ...teamPending, ...fromProvider.changes } : teamPending;
     const val = (k) => (k in pending ? pending[k] : s[k]);
     const id = (k) => 'ed-' + s.id + '-' + k;
     const tbc = (v) => String(v == null ? '' : JSON.stringify(v)).includes(PLACEHOLDER);
@@ -440,7 +591,7 @@
     form.append(el('fieldset', { class: 'checks' }, el('legend', { text: 'What it offers' }), acts,
       el('button', { type: 'button', class: 'btn secondary small', text: 'Add another', onclick: () => addAct() })));
 
-    const checkedBox = el('input', { type: 'checkbox', id: id('checked'), checked: mode !== 'edit' });
+    const checkedBox = el('input', { type: 'checkbox', id: id('checked'), checked: mode !== 'edit' || Boolean(fromProvider) });
     const where = el('input', { id: id('checked-url'), type: 'url', value: '' });
     const why = el('textarea', { id: id('why'), rows: '2', maxlength: '1000' });
     const msg = el('p', { class: 'msg', role: 'status', hidden: true });
@@ -448,7 +599,9 @@
     if (mode !== 'edit') where.value = (added && added[s.id] && added[s.id].checkedUrl) || '';
     if (mode === 'new' && added[s.id]) why.value = added[s.id].note || '';
     if (mode === 'add' && x.why) why.value = x.why;
+    if (fromProvider) why.value = fromProvider.note;
     const cancel = () => {
+      delete prefill[s.id];
       if (mode === 'add') { $('#add-panel').replaceChildren(); $('#add-panel').hidden = true; $('#add-service').focus(); return; }
       editing.delete(s.id);
       refreshOne(x);
@@ -506,6 +659,7 @@
         const d = await api('PUT', '/log/edits/' + encodeURIComponent(s.id), { changes, before, note: why.value.trim(), by, checked: checkedBox.checked, checkedUrl: where.value.trim() });
         edits[s.id] = d.item;
         editing.delete(s.id);
+        delete prefill[s.id];
         refreshOne(x);
         summary();
         const again = document.getElementById('svc-' + s.id);
@@ -569,7 +723,7 @@
     const heading = mode === 'add' ? 'Add a service' : 'Edit details';
     const intro = mode === 'add'
       ? 'The new service is saved for the team straight away, as "New: not yet in the data". It is reviewed and decided on like any other, and becomes part of the data when the team\'s changes are next applied. It is never put live without a team decision to include it.'
-      : 'Changes are saved for the team straight away and reach the finder once applied. Boxes still marked "' + PLACEHOLDER + '" are highlighted.';
+      : (fromProvider ? 'The provider\'s changes are filled in below (on top of any changes already waiting). Check them, adjust anything, then save. ' : '') + 'Changes are saved for the team straight away and reach the finder once applied. Boxes still marked "' + PLACEHOLDER + '" are highlighted.';
     return el('section', { class: 'edit', 'aria-label': mode === 'add' ? heading : 'Edit ' + s.name }, el(mode === 'add' ? 'h2' : 'h4', { text: heading }), el('p', { class: 'hint', text: intro }),
       x.fromNote ? el('p', { class: 'msg warn from-suggestion', text: x.fromNote }) : null, form);
   }
@@ -818,15 +972,17 @@
     const msg = $('#signin-msg');
     msg.hidden = true;
     try {
-      const [d, e, nw] = await Promise.all([api('GET', '/log/decisions'), api('GET', '/log/edits'), api('GET', '/log/new')]);
+      const [d, e, nw, pl] = await Promise.all([api('GET', '/log/decisions'), api('GET', '/log/edits'), api('GET', '/log/new'), api('GET', '/log/provider-links').catch(() => ({ links: [] }))]);
       team = d.decisions || {};
       edits = e.edits || {};
       added = nw.added || {};
+      plinks = list(pl.links);
       rebuild();
     } catch (e) {
       team = null;
       edits = null;
       added = null;
+      plinks = null;
       pass = '';
       store.del(PASS_KEY);
     AUTH.refresh();
@@ -852,7 +1008,9 @@
     team = null;
     edits = null;
     added = null;
+    plinks = null;
     editing.clear();
+    sending.clear();
     rebuild();
     $('#add-panel').replaceChildren();
     $('#add-panel').hidden = true;
