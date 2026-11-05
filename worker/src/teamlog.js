@@ -11,6 +11,11 @@
 // It also holds changes to a service's details made on the All services page (one waiting change per service,
 // checked by serviceedit.js), and new services the team adds there, waiting to become files in data/services/.
 // Like decisions, they reach the data through scripts/apply-decisions.mjs (Actions > Apply team changes).
+//
+// And it holds provider review links (providerlink.js): a private link for one named contact at one scheme, so they
+// can check its details and send changes. Their replies wait here for the team, who choose what to apply.
+
+import { teamLinks } from './providerlink.js';
 
 import { handleApply } from './applynow.js';
 
@@ -164,6 +169,44 @@ export class LogStore {
       return Response.json({ id: body.id, deleted: true });
     }
 
+    // ----- provider review links (see providerlink.js) -----
+    if (url.pathname === '/plinks/list') {
+      const m = await s.list({ prefix: 'plink:' });
+      return Response.json({ links: [...m.values()] });
+    }
+
+    if (url.pathname === '/plinks/create') {
+      if (((await s.get('plinkCount')) || 0) >= 500) return Response.json({ error: 'Too many provider links stored.' }, { status: 400 });
+      const link = { token: body.token, id: body.id, contact: body.contact, by: body.by, created: now, expires: body.expires, cancelled: null, sent: 0, replies: [] };
+      await s.put('plink:' + body.token, link);
+      await s.put('plinkCount', ((await s.get('plinkCount')) || 0) + 1);
+      return Response.json({ link });
+    }
+
+    if (url.pathname === '/plinks/get') {
+      return Response.json({ link: (await s.get('plink:' + body.token)) || null });
+    }
+
+    if (url.pathname === '/plinks/cancel') {
+      const key = 'plink:' + body.token;
+      const link = await s.get(key);
+      if (!link) return Response.json({ error: 'Not found.' }, { status: 404 });
+      if (!link.cancelled) link.cancelled = { by: body.by, t: now };
+      await s.put(key, link);
+      return Response.json({ link });
+    }
+
+    if (url.pathname === '/plinks/reply') {
+      const key = 'plink:' + body.token;
+      const link = await s.get(key);
+      if (!link) return Response.json({ error: 'Not found.' }, { status: 404 });
+      if (link.sent >= 30) return Response.json({ error: 'This link has been used too many times. Please contact the Healthy Working Life team.' }, { status: 429 });
+      link.sent += 1;
+      link.replies = [...link.replies, { ...body.reply, t: now }].slice(-10);
+      await s.put(key, link);
+      return Response.json({ reply: link.replies[link.replies.length - 1] });
+    }
+
     if (url.pathname === '/update') {
       const key = pad(body.id);
       const item = await s.get(key);
@@ -264,7 +307,10 @@ export async function handleLog(request, env, url, cors, checker) {
       return json(res, res.error ? 404 : 200, cors);
     }
     if (!checker) return json({ error: 'Editing is not available.' }, 503, cors);
-    const checked = checker.checkChanges(body.changes);
+    // No changes at all is allowed only to record that the details were checked and are still right
+    // (for example a provider said everything is correct).
+    const noChanges = body.changes && typeof body.changes === 'object' && !Array.isArray(body.changes) && !Object.keys(body.changes).length;
+    const checked = noChanges && body.checked === true ? { changes: {} } : checker.checkChanges(body.changes);
     if (checked.error) return json({ error: checked.error }, 400, cors);
     const note = clean(body.note, 1000);
     if (note.length < 3) return json({ error: 'Please say briefly what changed and why.' }, 400, cors);
@@ -303,6 +349,8 @@ export async function handleLog(request, env, url, cors, checker) {
     const res = await call('/new/set', { id: nw[1], service: checked.service, note, by, checkedUrl: checkedUrl || null });
     return json(res, res.error ? 400 : 200, cors);
   }
+
+  if (path.startsWith('/log/provider-links')) return teamLinks(request, path, body, call, cors, checker);
 
   const m = path.match(/^\/log\/items\/(\d{1,9})$/);
   if (request.method === 'PATCH' && m) {

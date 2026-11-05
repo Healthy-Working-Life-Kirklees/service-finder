@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.workers.dev; base-uri 'none'; form-action 'none'">
+  <meta name="robots" content="noindex, nofollow">
+  <!-- The link's code is after the # so it never leaves the browser except to the Worker. -->
+  <meta name="referrer" content="no-referrer">
+  <title>Check your service's details | Healthy Working Life Support Finder</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="provider-check.css">
+</head>
+<body class="provider-page">
+  <a class="skip" href="#main">Skip to the content</a>
+
+  <header class="site-header">
+    <div class="wrap header-row">
+      <img class="brand-logo" src="img/hwl-partner-logo.webp" width="343" height="56" alt="West Yorkshire Combined Authority, Tracy Brabin Mayor of West Yorkshire, and Healthy Working Life">
+    </div>
+  </header>
+
+  <main id="main" class="wrap pc">
+    <h1 class="page-title" id="pc-title">Check your service's details</h1>
+    <p id="pc-loading" class="pc-status" role="status">Loading your service's details…</p>
+    <div id="pc-problem" class="pc-problem" role="alert" hidden></div>
+    <div id="pc-app" hidden></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>Healthy Working Life Kirklees · Support Finder prototype. This page is only for the person the link was sent to. Please don't share the link.</p>
+    </div>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="provider-check.js"></script>
+</body>
+</html>

@@ -15,6 +15,7 @@ import data from '../../data/services.json';
 import SYSTEM_PROMPT from '../../prompt/system.md';
 import schema from '../../data/schema.json';
 import { handleLog } from './teamlog.js';
+import { handleProvider } from './providerlink.js';
 import { makeChecker } from './serviceedit.js';
 import { handleFeedback, feedbackOn, pilotOn } from './feedback.js';
 import { handleUsage, usageOn, addUsage, chatKeys, addTokens, emptyTokens } from './usage.js';
@@ -58,7 +59,8 @@ const CRISIS_RE = new RegExp(
 
 const SERVICES = data.services;
 // Checks changes to a service's details made by the development team on the All services page.
-const EDIT_CHECKER = { ...makeChecker(schema), liveIds: new Set(SERVICES.map((s) => s.id)) };
+// byId is also used by provider review links (providerlink.js), which only work for services on the live list.
+const EDIT_CHECKER = { ...makeChecker(schema), liveIds: new Set(SERVICES.map((s) => s.id)), byId: new Map(SERVICES.map((s) => [s.id, s])) };
 // What Claude is sent about each scheme. Contact details are left out (the page draws them from the data, so the
 // AI never writes them), as are fields only people or the Worker use: requiresMention is applied below by the
 // Worker itself, and provenance, logo and review dates are for maintaining the data. This keeps each request smaller.
@@ -92,8 +94,30 @@ const URGENT_TYPES = ['medical', 'mental_health_crisis', 'domestic_abuse', 'chil
 // Covers English, Polish and Urdu wording.
 const QUESTION_WORD_RE = /question|pytani|pytań|سوال/i;
 const QUESTION_MARK_RE = /[?؟]/;
+
+// A follow-up question comes from the model as { question, options } so the page can show the answers as
+// buttons. A plain string is still accepted (older replies, or the model ignoring the schema): it is shown
+// with no buttons and the person types their answer. Options are short, at most four, with no duplicates.
+// The page adds "Prefer not to say" itself, so the model's own version of that is dropped.
+const MAX_OPTIONS = 4;
+const OWN_OPTION_RE = /^(prefer not to say|i'?d rather not say|rather not say|other|something else|wol(ę|e) nie m(ó|o)wi(ć|c)|inne|کچھ اور|نہیں بتانا چاہت)/i;
+function questionText(q) {
+  if (typeof q === 'string') return q.trim();
+  return q && typeof q.question === 'string' ? q.question.trim() : '';
+}
+function cleanQuestion(q) {
+  const question = questionText(q).slice(0, 300);
+  if (!question) return null;
+  const seen = new Set();
+  const options = (q && Array.isArray(q.options) ? q.options : [])
+    .map((o) => String(o == null ? '' : o).replace(/\s+/g, ' ').trim().slice(0, 80))
+    .filter((o) => o && !OWN_OPTION_RE.test(o) && !seen.has(o.toLowerCase()) && seen.add(o.toLowerCase()))
+    .slice(0, MAX_OPTIONS);
+  return { question, options: options.length >= 2 ? options : [] };
+}
+
 function promisesMissingQuestions(input) {
-  const qs = Array.isArray(input.follow_up_questions) ? input.follow_up_questions.filter((q) => typeof q === 'string' && q.trim()) : [];
+  const qs = Array.isArray(input.follow_up_questions) ? input.follow_up_questions.filter((q) => questionText(q)) : [];
   if (qs.length || input.urgent_support === true) return false;
   if (input.status === 'needs_more_info') return true;
   const msg = String(input.message || '');
@@ -157,7 +181,7 @@ function respondTool(questionsLeft) {
       enum: questionsLeft > 0 ? ['results', 'needs_more_info'] : ['results'],
       description: 'results = you are giving your answer (matches may be empty). needs_more_info = you are asking a follow-up question and returning no matches.',
     },
-    message: { type: 'string', description: 'Your reply to the person in plain text (no markdown). Short. If you are asking questions, write each one out in full here. Never say you have questions without writing them.' },
+    message: { type: 'string', description: 'Your reply to the person in plain text (no markdown). Short. If you are asking questions, this is a one or two sentence lead-in only: the questions go in follow_up_questions, which the page shows under it with answer buttons.' },
     urgent_support: { type: 'boolean', description: 'True only if the text suggests a medical emergency, suicidal thoughts, self-harm, abuse, domestic violence, or anyone at risk of serious harm.' },
     urgent_types: { type: 'array', items: { type: 'string', enum: URGENT_TYPES }, description: 'The kinds of urgent support. Empty unless urgent_support is true.' },
     pii_detected: { type: 'boolean', description: 'True if the text contains a name, address, phone number, date of birth or NHS number.' },
@@ -180,7 +204,19 @@ function respondTool(questionsLeft) {
   };
   const required = ['status', 'message', 'urgent_support', 'urgent_types', 'pii_detected', 'understood_needs', 'matches'];
   if (questionsLeft > 0) {
-    properties.follow_up_questions = { type: 'array', maxItems: questionsLeft, items: { type: 'string' }, description: 'Each question you are asking, written out in full (the same wording as in message). Required whenever status is needs_more_info. Empty when you are giving results.' };
+    properties.follow_up_questions = {
+      type: 'array',
+      maxItems: questionsLeft,
+      description: 'Each question you are asking, with answers the person can tap. Required whenever status is needs_more_info. Empty when you are giving results.',
+      items: {
+        type: 'object',
+        properties: {
+          question: { type: 'string', description: 'The question written out in full. Shown to the person under your message.' },
+          options: { type: 'array', minItems: 2, maxItems: MAX_OPTIONS, items: { type: 'string' }, description: 'Two to four short answers (a few words each) covering the likely replies, in the language of the page. Do not include "Prefer not to say" or "Something else": the page adds those.' },
+        },
+        required: ['question', 'options'],
+      },
+    };
     required.push('follow_up_questions');
   }
   return {
@@ -197,7 +233,12 @@ export default {
     // ALLOWED_ORIGIN can list more than one address, separated by commas (the site's own domain and GitHub Pages).
     const allowed = String(env.ALLOWED_ORIGIN || '').split(',').map((x) => x.trim()).filter(Boolean);
     const origin = request.headers.get('Origin') || '';
-    const originOk = allowed.includes(origin);
+    // The preview Worker (see [env.preview] in wrangler.toml) serves its own pages, so it accepts requests from
+    // its own address. The live Worker never sets ALLOW_SELF_ORIGIN and only accepts ALLOWED_ORIGIN.
+    // Browsers leave Origin off same-site GET requests, so Sec-Fetch-Site (set by the browser) is accepted too.
+    const sameSite = origin ? origin === url.origin : request.headers.get('Sec-Fetch-Site') === 'same-origin';
+    const selfOk = env.ALLOW_SELF_ORIGIN === 'true' && sameSite;
+    const originOk = allowed.includes(origin) || selfOk;
     const cors = originOk
       ? {
           'Access-Control-Allow-Origin': origin,
@@ -215,6 +256,8 @@ export default {
     // scripts/apply-decisions.mjs can fetch them with the passcode, like the feedback digest does.
     const scriptRead = !origin && request.method === 'GET' && ['/log/decisions', '/log/edits', '/log/new'].includes(url.pathname);
     if (url.pathname.startsWith('/log/')) return originOk || scriptRead ? handleLog(request, env, url, cors, EDIT_CHECKER) : json({ error: 'Not allowed.' }, 403, cors);
+    // Provider review links: a scheme's named contact checks its details. Off unless TEAM_PASSCODE is set.
+    if (url.pathname.startsWith('/provider/')) return handleProvider(request, env, url, cors, originOk, EDIT_CHECKER, schema);
     // User feedback: sending is public (with the same checks as /chat); reading needs the team passcode (TEAM_PASSCODE).
     if (url.pathname === '/feedback' || url.pathname.startsWith('/feedback/')) return handleFeedback(request, env, url, cors, originOk, FEEDBACK_DATA, ctx);
     // Anonymous usage counts: the page sends events; reading the tallies needs the team passcode (TEAM_PASSCODE).
@@ -325,7 +368,7 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
             messages: [
               ...messages,
               { role: 'assistant', content: out.content },
-              { role: 'user', content: [{ type: 'tool_result', tool_use_id: block.id, is_error: true, content: 'Your reply says you have questions but does not include them. Call respond again. If you are asking, write each question out in full in "message" and list them in "follow_up_questions", with status "needs_more_info". If you do not need to ask, give your results instead and do not mention questions.' }] },
+              { role: 'user', content: [{ type: 'tool_result', tool_use_id: block.id, is_error: true, content: 'Your reply says you have questions but does not include them. Call respond again. If you are asking, put each question, with its answer options, in "follow_up_questions", with status "needs_more_info". If you do not need to ask, give your results instead and do not mention questions.' }] },
             ],
           }),
           signal: AbortSignal.timeout(40_000),
@@ -361,7 +404,7 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
 
     // Follow-up questions: at most the number left, and only when the model is really asking.
     // A reply with questions and no cards is a question reply, even if the model labelled it "results".
-    let questions = list(input.follow_up_questions).map((q) => clean(q, 300)).filter(Boolean).slice(0, Math.max(questionsLeft, 0));
+    let questions = list(input.follow_up_questions).map(cleanQuestion).filter(Boolean).slice(0, Math.max(questionsLeft, 0));
     const asking = input.status === 'needs_more_info' || !list(input.matches).some((x) => x && OPEN_SET.has(x.service_id));
     let status = asking && questions.length && !urgent ? 'needs_more_info' : 'results';
     if (status === 'results') questions = [];
@@ -391,7 +434,9 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
         urgent_types: urgent ? urgentTypes : [],
         pii_detected: input.pii_detected === true,
         understood_needs: urgent ? [] : list(input.understood_needs).map((x) => clean(x, 100)).filter(Boolean).slice(0, 5),
-        follow_up_questions: questions,
+        // The questions as plain text (as before), and the same questions with their tap-to-answer options.
+        follow_up_questions: questions.map((q) => q.question),
+        question_options: questions,
       },
       200,
       cors

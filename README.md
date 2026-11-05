@@ -64,10 +64,12 @@ The Worker sends Claude every scheme with each message, but without contact deta
 
 ### What the Worker sends back to the page
 
-`{ status, message, recommendations: [{ id, why, fit, check_first }], safety_concern, urgent_types, pii_detected, understood_needs, follow_up_questions }`
+`{ status, message, recommendations: [{ id, why, fit, check_first }], safety_concern, urgent_types, pii_detected, understood_needs, follow_up_questions, question_options: [{ question, options }] }`
 
 - `status` is `results` or `needs_more_info`. A reply that asks questions has no cards.
 - At most two follow-up questions are asked in a whole chat. The page adds `(Follow-up questions asked: N)` to the history after a reply that asked questions, and the Worker counts it.
+- `question_options` has the same questions with two to four short answers each. The page shows them as tap-to-answer buttons and adds "Prefer not to say" itself; the person can still type instead. A question with fewer than two usable answers comes back with `options: []` and is shown as plain text.
+- Before the first cards in a chat, the page shows `understood_needs` as "Have we understood you?". The cards are held in the page until the person says yes, so that costs no extra AI call. If they say something is wrong, their correction is sent with a note in the history that the summary was not right and no services were shown.
 - When `safety_concern` is true there are never cards or questions. The crisis wording backstop in the Worker sets it even if the model doesn't.
 
 ### Urgent support contacts
@@ -99,6 +101,17 @@ A bar under the header lets people choose a larger text size (A, A+, A++) and sw
 - The choices go in the address (`?size=2`, `?size=3`, `?contrast=high`), like the language, not in browser storage, so the page still stores nothing. A link such as `?size=3&contrast=high` opens the page that way.
 - Each AI reply and each scheme card has a **Listen** button that reads it aloud using the voices built into the person's own device (the browser's speech synthesis). There is no extra service or cost. Device voices are preferred; some browsers (for example Chrome on a desktop) also offer online voices, which send the text to the browser maker to be spoken, and are only used when the device has no voice of its own for that language.
 - Replies are read in the page's language and cards in English. If a device has no voice for a language (Urdu voices are often missing), the Listen buttons for that language are hidden.
+
+## Preview site (trying changes before they go live)
+
+Pushing to the `experimental` branch deploys a separate preview through `.github/workflows/preview.yml`. It is one Cloudflare Worker, `hwl-service-finder-preview` (`[env.preview]` in `worker/wrangler.toml`), that serves both the pages and `/chat`, so the live GitHub Pages site and the live Worker are not touched. The preview's address is on the run's summary page in the Actions tab, and every page shows a "Preview version" label.
+
+- It has its own daily cap (`MAX_PER_DAY` = 60), team log, feedback and usage counts, kept apart from live.
+- It accepts requests only from its own address (`ALLOW_SELF_ORIGIN`). The live Worker never sets this.
+- Secrets belong to each Worker. The workflow copies `ANTHROPIC_API_KEY` (or `PREVIEW_ANTHROPIC_API_KEY`, if you want a separate key with its own spend limit) and `TEAM_PASSCODE` from GitHub secrets when they exist. Otherwise add them to `hwl-service-finder-preview` in the Cloudflare dashboard.
+- The Admin section is built in, as on the live site, and signs in with the preview Worker's own `TEAM_PASSCODE`.
+- To preview another branch, run the workflow by hand and pick the branch. There is one preview at a time.
+- Anyone with the address can use it, so share it only with testers. To lock it down, put Cloudflare Access in front of the preview Worker.
 
 ## Local test of the Worker
 
@@ -173,6 +186,21 @@ Until November 2026 feedback and usage had a separate `FEEDBACK_PASSCODE`. It is
 4. Export the log first if you want to keep it (Download as CSV on the log page).
 
 The log must never hold personal or identifying information.
+
+### Checking a scheme's details with its provider (review links)
+
+A private link lets one named contact at a scheme check everything the Support Finder holds about it and send corrections, without the team passcode and without seeing any other service, the log, feedback or usage.
+
+1. On **All services**, signed in, find the service and press **Send to provider for checking** (under "Check with the provider"). Type the contact's name (just their name, not their email address), choose how long the link works (30 days unless you change it) and press **Make the link**. Only services on the live list can have a link.
+2. Press **Copy an email to send** (a ready-written email with the link in it) or **Copy link**, and email it to them yourself. Nothing is emailed from the site.
+3. The link opens `provider-check.html` on the Support Finder. The contact sees every detail, including the ones the AI uses for matching that the public never sees (eligibility, who it can't help, how to get in, areas and categories), as boxes they can change. They press **Everything is correct**, or change things and press **Send my changes**, with a comment if they like. They can send again while the link works. They can't change the level, review cycle, logo, trigger words or listing decision.
+4. Their reply shows on the service on All services ("Provider replied" at the top of the card):
+   - **All correct:** press **Record as checked with the provider**. That saves a "checked as current" change with no edits, which moves the last-checked date on when applied.
+   - **Changes:** they're shown old and new. Press **Review these in Edit details** to open the edit form with their changes filled in, adjust anything, and save. It's then an ordinary waiting change.
+   Either way nothing reaches the finder until the team's changes are applied (Apply changes now, or Actions > Apply team changes).
+5. **Cancel link** stops a link working straight away. Links also stop at their expiry date. Replies are kept.
+
+How it works: `worker/src/providerlink.js`. Links and replies are stored with the team log (`LogStore`), so the feature is off unless `TEAM_PASSCODE` is set, and the links stop working if it's removed. The link's code is a long random string after the `#`, so it isn't sent to GitHub Pages; the Worker only answers for a link that exists, hasn't been cancelled and hasn't expired, and only from the site's own address. Each link takes at most 30 replies. Stored about the contact: the name the team typed in and the name they give when replying, nothing else. Note this on the DTAC form as personal data about provider contacts (work contacts, not people using the finder).
 
 ## Anonymous usage counts
 

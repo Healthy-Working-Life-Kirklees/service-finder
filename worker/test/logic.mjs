@@ -149,6 +149,48 @@ reply = tool(reply0({ status: 'results', follow_up_questions: ['Stray question?'
 r = await call('claude-sonnet-5-5');
 check('questions: stray question dropped from a results reply', r.body.status === 'results' && r.body.follow_up_questions.length === 0 && r.body.recommendations.length === 1);
 
+// ----- preview Worker: accepts its own address only when ALLOW_SELF_ORIGIN is set -----
+{
+  const PV = 'https://hwl-service-finder-preview.example.workers.dev';
+  const pvChat = async (e, headers) => (await worker.fetch(new Request(PV + '/chat', { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify({ messages: [U('hello')] }) }), { ...env('claude-sonnet-5-5'), ...e })).status;
+  reply = tool(reply0());
+  check('preview: the live Worker refuses a request from its own address', (await pvChat({}, { Origin: PV })) === 403);
+  check('preview: with ALLOW_SELF_ORIGIN, its own address is accepted', (await pvChat({ ALLOWED_ORIGIN: '', ALLOW_SELF_ORIGIN: 'true' }, { Origin: PV })) === 200);
+  check('preview: other sites are still refused', (await pvChat({ ALLOWED_ORIGIN: '', ALLOW_SELF_ORIGIN: 'true' }, { Origin: 'https://evil.example' })) === 403);
+  check('preview: the GitHub Pages site is refused by the preview (ALLOWED_ORIGIN empty)', (await pvChat({ ALLOWED_ORIGIN: '', ALLOW_SELF_ORIGIN: 'true' }, { Origin: O })) === 403);
+  check('preview: a same-site request with no Origin is accepted (Sec-Fetch-Site)', (await pvChat({ ALLOWED_ORIGIN: '', ALLOW_SELF_ORIGIN: 'true' }, { 'Sec-Fetch-Site': 'same-origin' })) === 200);
+  check('preview: no Origin and a cross-site marker is refused', (await pvChat({ ALLOWED_ORIGIN: '', ALLOW_SELF_ORIGIN: 'true' }, { 'Sec-Fetch-Site': 'cross-site' })) === 403);
+  check('preview: the live Worker ignores Sec-Fetch-Site', (await pvChat({}, { 'Sec-Fetch-Site': 'same-origin' })) === 403);
+}
+
+// ----- tap-to-answer options on follow-up questions -----
+reply = tool(reply0({ status: 'results', follow_up_questions: [] }));
+r = await call('claude-sonnet-5-5');
+{
+  const fq = sent.tools[0].input_schema.properties.follow_up_questions;
+  check('options: schema asks for { question, options } with 2-4 options', fq.items.type === 'object' && fq.items.required.join() === 'question,options' && fq.items.properties.options.minItems === 2 && fq.items.properties.options.maxItems === 4, JSON.stringify(fq.items));
+}
+reply = tool(reply0({ status: 'needs_more_info', message: 'Which town are you nearest to? Are you working at the moment?', matches: [], follow_up_questions: [
+  { question: 'Which town are you nearest to?', options: ['Batley', 'Dewsbury', ' batley ', 'Huddersfield', 'Prefer not to say', 'Somewhere else in Kirklees', 'Holmfirth'] },
+  { question: 'Are you working at the moment?', options: ['Working', 'x'.repeat(200), 'Other'] },
+] }));
+r = await call('claude-sonnet-5-5');
+{
+  const qo = r.body.question_options || [];
+  check('options: plain question list still returned for the page', r.body.follow_up_questions.join('|') === 'Which town are you nearest to?|Are you working at the moment?', JSON.stringify(r.body.follow_up_questions));
+  check('options: duplicates and "Prefer not to say" dropped, capped at 4', qo[0] && qo[0].options.join('|') === 'Batley|Dewsbury|Huddersfield|Somewhere else in Kirklees', JSON.stringify(qo[0]));
+  check('options: long options cut to 80 characters, "Other" dropped', qo[1] && qo[1].options.length === 2 && qo[1].options[1].length === 80 && !qo[1].options.includes('Other'), JSON.stringify(qo[1]));
+}
+reply = tool(reply0({ status: 'needs_more_info', message: 'Which town?', matches: [], follow_up_questions: [{ question: 'Which town?', options: ['Batley'] }] }));
+r = await call('claude-sonnet-5-5');
+check('options: a single option is not enough -> question kept, no buttons', r.body.status === 'needs_more_info' && r.body.question_options[0].options.length === 0, JSON.stringify(r.body.question_options));
+reply = tool(reply0({ status: 'needs_more_info', message: 'Which town?', matches: [], follow_up_questions: ['Which town?'] }));
+r = await call('claude-sonnet-5-5');
+check('options: a plain-text question from the model still works', r.body.status === 'needs_more_info' && r.body.follow_up_questions[0] === 'Which town?' && r.body.question_options[0].options.length === 0, JSON.stringify(r.body));
+reply = tool(reply0({ urgent_support: true, urgent_types: ['medical'], status: 'needs_more_info', matches: [], follow_up_questions: [{ question: 'Where are you?', options: ['Batley', 'Dewsbury'] }] }));
+r = await call('claude-sonnet-5-5');
+check('options: urgent support -> no questions and no options', r.body.status === 'results' && r.body.question_options.length === 0 && r.body.follow_up_questions.length === 0, JSON.stringify(r.body));
+
 // ----- questions promised but missing (the "Two quick questions..." bug) -----
 // A sequence of replies, one per call to the model; counts the calls.
 let calls = 0;
@@ -383,6 +425,71 @@ r = await logCall('DELETE', '/log/edits/kbop', { by: 'PL' });
 check('edits: discard', r.status === 200 && Object.keys((await logCall('GET', '/log/edits')).body.edits).length === 0);
 r = await logCall('DELETE', '/log/edits/kbop', { by: 'PL' });
 check('edits: discarding twice -> 404', r.status === 404);
+
+// "checked and still right", with no changes (for example a provider said it's all correct)
+r = await logCall('PUT', '/log/edits/kbop', { changes: {}, before: {}, note: 'Provider said all correct', by: 'PL', checked: true });
+check('edits: no changes allowed when recording a check', r.status === 200 && Object.keys(r.body.item.changes).length === 0 && r.body.item.checked === true, JSON.stringify(r.body));
+r = await logCall('PUT', '/log/edits/kbop', { changes: {}, before: {}, note: 'Nothing', by: 'PL', checked: false });
+check('edits: no changes refused when not recording a check', r.status === 400);
+await logCall('DELETE', '/log/edits/kbop', { by: 'PL' });
+
+// ----- Provider review links -----
+const liveSvc = JSON.parse(fs.readFileSync(path.join(root, 'data/services.json'), 'utf8')).services.find((x) => x.hwlFunded) ;
+const provCall = async (method, token, body, { e = logEnv(), origin = O } = {}) => {
+  const headers = { 'content-type': 'application/json' };
+  if (origin) headers.Origin = origin;
+  const res = await worker.fetch(new Request('https://w/provider/' + token, { method, headers, body: body ? JSON.stringify(body) : undefined }), e);
+  return { status: res.status, body: await res.json() };
+};
+r = await logCall('POST', '/log/provider-links', { id: liveSvc.id, contact: 'Sam Provider', days: 30, by: 'PL' });
+check('plinks: team can make a link for a live service', r.status === 201 && /^[A-Za-z0-9_-]{32}$/.test(r.body.link.token) && r.body.link.contact === 'Sam Provider', JSON.stringify(r.body));
+const tok = r.body.link.token;
+check('plinks: link expires in about 30 days', Math.abs(Date.parse(r.body.link.expires) - Date.now() - 30 * 86400000) < 60000);
+r = await logCall('POST', '/log/provider-links', { id: 'not-a-service', contact: 'Sam', by: 'PL' });
+check('plinks: not for a service that is not live', r.status === 400);
+r = await logCall('POST', '/log/provider-links', { id: liveSvc.id, contact: '', by: 'PL' });
+check('plinks: needs the contact name', r.status === 400);
+r = await logCall('POST', '/log/provider-links', { id: liveSvc.id, contact: 'Sam' }, { pass: 'nope' });
+check('plinks: making one needs the passcode', r.status === 401);
+r = await provCall('GET', tok);
+check('plinks: provider sees the service, the contact name and the choices', r.status === 200 && r.body.service.id === liveSvc.id && r.body.contact === 'Sam Provider' && r.body.choices.areas.includes('Batley') && r.body.lastReply === null, JSON.stringify(r.body).slice(0, 200));
+check('plinks: provider doesn\'t see provenance, listing or trigger words', !('provenance' in r.body.service) && !('listing' in r.body.service) && !('requiresMention' in r.body.service));
+r = await provCall('GET', tok, null, { origin: null });
+check('plinks: needs the page origin', r.status === 403);
+r = await provCall('GET', 'x'.repeat(32));
+check('plinks: unknown code -> 404', r.status === 404);
+r = await provCall('GET', 'short');
+check('plinks: malformed code -> 404', r.status === 404);
+r = await provCall('GET', tok, null, { e: { ...logEnv(), TEAM_PASSCODE: undefined } });
+check('plinks: off when no TEAM_PASSCODE', r.status === 404);
+r = await provCall('POST', tok, { allCorrect: true, note: 'All fine', name: 'Sam P' });
+check('plinks: provider can say all correct', r.status === 200 && r.body.ok);
+r = await provCall('POST', tok, { changes: { phone: '01484 222222', eligibility: ['Lives in Kirklees'] }, note: 'New number', name: 'Sam P' });
+check('plinks: provider can send changes', r.status === 200);
+r = await provCall('POST', tok, { changes: { level: 'national' } });
+check('plinks: provider can\'t change team-only fields', r.status === 400 && /can't be changed/.test(r.body.error));
+r = await provCall('POST', tok, { changes: { email: 'nope' } });
+check('plinks: provider changes checked like team edits', r.status === 400 && /email/i.test(r.body.error));
+r = await provCall('POST', tok, { changes: {}, note: '' });
+check('plinks: nothing changed and no comment refused', r.status === 400);
+r = await provCall('POST', tok, { changes: {}, note: 'The venue is wrong but I am not sure what to put' });
+check('plinks: a comment alone is accepted', r.status === 200);
+r = await logCall('GET', '/log/provider-links');
+const gotLink = r.body.links.find((l) => l.token === tok);
+check('plinks: team sees the replies, with old values', r.status === 200 && gotLink.replies.length === 3 && gotLink.replies[0].allCorrect === true && gotLink.replies[1].changes.phone === '01484 222222' && 'phone' in gotLink.replies[1].before && gotLink.replies[1].name === 'Sam P', JSON.stringify(gotLink).slice(0, 300));
+r = await provCall('GET', tok);
+check('plinks: provider sees their last reply', r.body.lastReply && r.body.lastReply.allCorrect === false);
+r = await logCall('POST', '/log/provider-links/' + tok + '/cancel', { by: 'PL' });
+check('plinks: team can cancel a link', r.status === 200 && r.body.link.cancelled.by === 'PL');
+r = await provCall('GET', tok);
+check('plinks: cancelled link stops working', r.status === 404);
+r = await provCall('POST', tok, { allCorrect: true });
+check('plinks: and can\'t be replied to', r.status === 404);
+r = await logCall('POST', '/log/provider-links', { id: liveSvc.id, contact: 'Old', days: 7, by: 'PL' });
+const oldLink = r.body.link;
+await store.ctx.storage.put('plink:' + oldLink.token, { ...oldLink, expires: new Date(Date.now() - 1000).toISOString() });
+r = await provCall('GET', oldLink.token);
+check('plinks: expired link stops working', r.status === 404);
 
 // new services added by the team
 const newSvc = () => ({
@@ -967,6 +1074,10 @@ check('usage: contacted answer accepted', (await usPost({ e: 'contacted', s: ope
 check('usage: accessibility event accepted', (await usPost({ e: 'a11y', k: 'contrast', lang: 'en' })) === 204);
 uc = await todayCounts();
 check('usage: page events counted with fixed values only', uc['link|' + openId + '|referral|en|public'] === 1 && uc['visit|ur|none'] === 1 && uc['contacted|' + openId + '|notyet|en|staff'] === 1 && uc['a11y|contrast|en|none'] === 1, JSON.stringify(uc));
+check('usage: summary check and answer kind accepted', (await usPost({ e: 'summary', k: 'changed', lang: 'en', mode: 'public' })) === 204 && (await usPost({ e: 'answers', k: 'tapped', lang: 'pl', mode: 'staff' })) === 204);
+uc = await todayCounts();
+check('usage: summary and answers counted', uc['summary|changed|en|public'] === 1 && uc['answers|tapped|pl|staff'] === 1, JSON.stringify(uc));
+check('usage: unknown summary or answer kind refused', (await usPost({ e: 'summary', k: 'maybe' })) === 400 && (await usPost({ e: 'answers', k: 'Batley' })) === 400);
 check('usage: unknown scheme refused', (await usPost({ e: 'link', s: 'not-a-scheme', k: 'referral' })) === 400);
 check('usage: unknown event refused', (await usPost({ e: 'typed', text: 'hello' })) === 400);
 check('usage: extra field refused', (await usPost({ e: 'visit', text: 'my name is' })) === 400);
