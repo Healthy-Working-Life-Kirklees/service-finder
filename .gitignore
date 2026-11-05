@@ -10,3 +10,6 @@ data/services.json
 data/services-all.json
 # Printed directory, built by scripts/build-print.mjs. Rebuild it rather than committing it.
 print/out/
+
+# Built by the preview workflow (preview.yml); never committed.
+worker/preview-site/
