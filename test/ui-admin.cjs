@@ -87,6 +87,7 @@ async function worker(route) {
     if (/abuse/i.test(last)) return json({ status: 'results', message: 'I am so sorry. You deserve to be safe.', recommendations: [], safety_concern: true, urgent_types: ['domestic_abuse'], pii_detected: false, understood_needs: [], follow_up_questions: [] });
     if (/unsure/i.test(last)) return json({ status: 'needs_more_info', message: 'Which town are you nearest to?', recommendations: [], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: ['needs support'], follow_up_questions: ['Which town are you nearest to?'] });
     if (/Jane Smith/.test(last)) return json({ status: 'results', message: 'Here is a match.', recommendations: [], safety_concern: false, urgent_types: [], pii_detected: true, understood_needs: [], follow_up_questions: [] });
+    if (/several/i.test(last)) return json({ status: 'results', message: 'Here are some options.', recommendations: [{ id: 'my-way-forward', why: 'One.', fit: 'strong' }, { id: 'acas-helpline', why: 'Two.', fit: 'possible' }, { id: 'nope-not-real', why: 'Dropped.', fit: 'possible' }], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: [], follow_up_questions: [] });
     return json({ status: 'results', message: 'Here is a match.', recommendations: [{ id: 'my-way-forward', why: 'Fits your age and situation.', fit: 'possible', check_first: 'Check they are not claiming Universal Credit with a job-search requirement.' }], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: ['aged 20', 'anxious'], follow_up_questions: [] });
   }
 
@@ -174,6 +175,38 @@ async function worker(route) {
   check('usage: page visit sent with no identifiers', usageSent.some((e) => e.e === 'visit') && usageSent.every((e) => Object.keys(e).every((k) => ['e', 's', 'k', 'lang', 'mode'].includes(k))), JSON.stringify(usageSent));
   check('main: scheme card rendered from the data file', (await page.locator('.card h3').first().textContent()) === 'My Way Forward');
   check('main: overdue warning on the stale entry', (await page.locator('.card .stale').count()) === 1);
+
+  // ---------- folding cards ----------
+  {
+    const one = page.locator('.card').first();
+    const btn = one.locator('.more-btn');
+    check('cards: a single result starts open', (await btn.getAttribute('aria-expanded')) === 'true' && await one.locator('.more').isVisible() && (await btn.textContent()) === 'Hide full details');
+    check('cards: the button points at the section it opens', (await btn.getAttribute('aria-controls')) === (await one.locator('.more').getAttribute('id')));
+    check('cards: no "all" button with one result', (await page.locator('.cards-bar').count()) === 0);
+    const p2 = await ctx.newPage();
+    p2.on('pageerror', (e) => problems.push('pageerror: ' + e.message));
+    await p2.goto(ON + '/');
+    await p2.check('input[name=mode][value=staff]');
+    await p2.fill('#message', 'show me several options');
+    await p2.click('#send');
+    await p2.waitForSelector('.card');
+    const cards = p2.locator('.card');
+    check('cards: unknown ids are left out', (await cards.count()) === 2);
+    check('cards: several results start folded, with the summary still showing', (await p2.locator('.card .more-btn[aria-expanded="false"]').count()) === 2 && (await p2.locator('.card .more:visible').count()) === 0 && await cards.first().locator('.whofor').isVisible() && await cards.first().locator('.why').isVisible());
+    check('cards: contact details are inside the folded part', (await cards.first().locator('.more .contact').count()) === 1);
+    const shortH = (await cards.first().boundingBox()).height;
+    await cards.first().locator('.more-btn').click();
+    check('cards: "Show full details" opens one card only', (await cards.first().locator('.more-btn').getAttribute('aria-expanded')) === 'true' && await cards.first().locator('.more .contact').isVisible() && !(await cards.nth(1).locator('.more').isVisible()));
+    check('cards: a folded card is much shorter than an open one', (await cards.first().boundingBox()).height > shortH * 1.5, shortH + ' vs ' + (await cards.first().boundingBox()).height);
+    check('usage: opening a card is counted once, with the scheme', usageSent.filter((e) => e.e === 'expand').length === 1 && usageSent.find((e) => e.e === 'expand').s === 'my-way-forward', JSON.stringify(usageSent.filter((e) => e.e === 'expand')));
+    await cards.first().locator('.more-btn').click();
+    check('cards: pressing again folds it', !(await cards.first().locator('.more').isVisible()) && (await cards.first().locator('.more-btn').textContent()) === 'Show full details');
+    await p2.click('.cards-bar .all-btn');
+    check('cards: "Show full details for all" opens every card', (await p2.locator('.card .more:visible').count()) === 2 && (await p2.textContent('.cards-bar .all-btn')) === 'Hide full details for all');
+    await p2.click('.cards-bar .all-btn');
+    check('cards: and folds them again', (await p2.locator('.card .more:visible').count()) === 0);
+    await p2.close();
+  }
 
   // ---------- feedback: "Report a problem with this listing" ----------
   const lastSent = () => fbSent[fbSent.length - 1];

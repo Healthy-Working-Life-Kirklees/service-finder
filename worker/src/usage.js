@@ -29,6 +29,7 @@ export const PAGE_EVENTS = {
   visit: [], // the page was opened
   link: ['s', 'k'], // a link on a card was opened: scheme, kind of link
   copy: ['s'], // "Copy details" on a card
+  expand: ['s'], // "Show full details" opened on a card (once per card)
   listen: ['k'], // a Listen button was started: reply or card
   a11y: ['k'], // text size or high contrast switched on
   other: [], // "Are there other options?" pressed
@@ -157,7 +158,7 @@ function csv(days) {
       const lang = p[p.length - 2];
       const mode = p[p.length - 1];
       const mid = p.slice(1, -2);
-      const hasScheme = ['link', 'copy', 'contacted', 'shown'].includes(event);
+      const hasScheme = ['link', 'copy', 'expand', 'contacted', 'shown'].includes(event);
       const scheme = hasScheme ? mid[0] : '';
       const detail = hasScheme ? mid[1] || '' : mid[0] || '';
       rows.push([d.date, event, scheme, detail, lang, mode, n].map(cell).join(','));

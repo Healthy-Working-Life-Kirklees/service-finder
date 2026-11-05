@@ -88,7 +88,7 @@
     const dates = periodDates();
     const inPeriod = new Set(dates);
     const byDay = new Map(dates.map((d) => [d, {}]));
-    const t = { ev: {}, links: {}, linkByScheme: {}, shown: {}, contacted: {}, contactedByScheme: {}, a11y: {}, listen: {}, lang: {}, mode: {}, copy: 0 };
+    const t = { ev: {}, links: {}, linkByScheme: {}, shown: {}, contacted: {}, contactedByScheme: {}, a11y: {}, listen: {}, lang: {}, mode: {}, copy: 0, expand: 0 };
     const add = (o, k, n) => { o[k] = (o[k] || 0) + n; };
     for (const day of days) {
       if (!inPeriod.has(day.date)) continue;
@@ -106,6 +106,7 @@
         if (ev === 'a11y') add(t.a11y, p[1], n);
         if (ev === 'listen') add(t.listen, p[1], n);
         if (ev === 'copy') t.copy += n;
+        if (ev === 'expand') t.expand += n;
       }
     }
     return { dates, byDay, t };
@@ -244,6 +245,7 @@
         hbars('Accessibility and other tools', [
           ...Object.keys(A11Y_LABELS).map((k) => ({ label: A11Y_LABELS[k] + ' switched on', value: t.a11y[k] || 0 })),
           { label: 'Listen (read aloud) started', value: (t.listen.reply || 0) + (t.listen.card || 0) },
+          { label: 'Cards opened (Show full details)', value: t.expand },
           { label: 'Copy details used', value: t.copy },
           { label: '"Other options" asked for', value: ev('other') },
         ])
