@@ -19,16 +19,25 @@
   "age": null,
   "webpage": "https://www.kcalc.org.uk",
   "email": null,
-  "phone": null,
-  "social": [],
+  "phone": "No",
+  "social": [
+    "https://www.facebook.com/KirkleesCALC"
+  ],
   "locations": [
-    "Dewsbury: Empire House WF12 8DJ (Mon & Tue 9.30–3)",
-    "Huddersfield: Pearl House (Fri 10–1)"
+    "Dewsbury: Empire House, WF12 8DJ (Mon & Tue 9.30–3)",
+    "Huddersfield: Fusion Housing, Pearl House, HD1 1BA (Fri 10–1)"
   ],
   "areas": [
     "Dewsbury",
     "Huddersfield",
-    "Kirklees-wide"
+    "Kirklees-wide",
+    "Batley",
+    "Colne Valley",
+    "Holme Valley",
+    "Kirkburton",
+    "Mirfield",
+    "Spen Valley",
+    "Online"
   ],
   "eligibility": [
     "Kirklees residents"
@@ -54,17 +63,19 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-04",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 20",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://www.kcalc.org.uk",
-    "evidence": "Site © 2026. Phone left blank: KCALC says AdviceLine no longer answered from 1 June, but council page (Mar 2026) still lists 0808 278 7896 — check with KCALC.",
+    "checkedUrl": "https://kcalc.org.uk/",
+    "evidence": "Checked by PL on 2026-11-04: checked online access only - no phone",
     "confidence": "high"
   },
   "listing": {
     "decision": "include",
-    "reason": "On the live list since the October 2026 import, before the MVP team review."
+    "reason": "Included by the development team.",
+    "by": "PL",
+    "date": "2026-11-04"
   }
 }

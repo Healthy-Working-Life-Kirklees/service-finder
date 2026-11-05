@@ -9,7 +9,7 @@
 // During the pilot there is also a fuller "Give pilot feedback" form near the top of the page (section 4). It
 // sends a choice, a comment, two optional questions, the ids of the schemes in the latest reply (never what was
 // typed) and, only if the tester ticks the box, their own name and work email. It only appears when /health
-// says pilot is on (PILOT_FEEDBACK in the Worker). Like the MVP tools it is English only.
+// says pilot is on (PILOT_FEEDBACK in the Worker). Like the Admin pages it is English only.
 //
 // The links only appear when the Worker's /health says feedback is on. Like the rest of the page, this stores
 // nothing in the browser.

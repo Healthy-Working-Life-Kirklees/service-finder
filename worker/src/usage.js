@@ -31,6 +31,7 @@ export const PAGE_EVENTS = {
   visit: [], // the page was opened
   link: ['s', 'k'], // a link on a card was opened: scheme, kind of link
   copy: ['s'], // "Copy details" on a card
+  expand: ['s'], // "Show full details" opened on a card (once per card)
   listen: ['k'], // a Listen button was started: reply or card
   a11y: ['k'], // text size or high contrast switched on
   other: [], // "Are there other options?" pressed
@@ -198,7 +199,7 @@ function csv(days) {
       const lang = p[p.length - 2];
       const mode = p[p.length - 1];
       const mid = p.slice(1, -2);
-      const hasScheme = ['link', 'copy', 'contacted', 'shown'].includes(event);
+      const hasScheme = ['link', 'copy', 'expand', 'contacted', 'shown'].includes(event);
       const scheme = hasScheme ? mid[0] : '';
       const detail = hasScheme ? mid[1] || '' : mid[0] || '';
       rows.push([d.date, event, scheme, detail, lang, mode, n].map(cell).join(','));
@@ -239,14 +240,14 @@ export async function handleUsage(request, env, url, cors, originOk, ids) {
     return new Response(null, { status: 204, headers: cors });
   }
 
-  // ----- reading (the MVP team, with the team passcode) -----
+  // ----- reading (the Admin pages, with the team passcode) -----
   if (!env.TEAM_PASSCODE || !env.USAGE_STORE) return json({ error: 'Not found.' }, 404, cors);
   if (request.headers.get('Origin') && !originOk) return json({ error: 'Not allowed.' }, 403, cors);
   if (env.FEEDBACK_READ_LIMITER) {
     const { success } = await env.FEEDBACK_READ_LIMITER.limit({ key: ip });
     if (!success) return json({ error: 'Too many requests. Please wait a minute.' }, 429, cors);
   }
-  // The one MVP team passcode (TEAM_PASSCODE), the same as the log and All services pages. The old
+  // The one team passcode (TEAM_PASSCODE) for all the Admin pages, the same as the log and All services pages. The old
   // X-Feedback-Passcode header name is still accepted, for scripts written before the passcodes were merged.
   const pass = request.headers.get('X-Team-Passcode') || request.headers.get('X-Feedback-Passcode') || '';
   if (!(await safeEqual(pass, env.TEAM_PASSCODE))) return json({ error: 'Wrong passcode.' }, 401, cors);

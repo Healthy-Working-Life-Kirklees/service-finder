@@ -1,4 +1,4 @@
-// Writes the MVP team's changes from the All services page into the scheme files, so they can go into a pull
+// Writes the development team's changes from the All services page into the scheme files, so they can go into a pull
 // request: first new services the team has added (each becomes data/services/<id>.json), then edits to a
 // service's details, then the listing decisions (include, review or exclude). A new service starts as "review"
 // and only goes on the live list if the team has also decided to include it.
@@ -205,8 +205,8 @@ for (const [id, d] of Object.entries(decisions).sort(([a], [b]) => a.localeCompa
   }
   s.listing = {
     decision: d.decision,
-    reason: (d.note || '').trim() || (d.decision === 'include' ? 'Included by the MVP team.' : 'Decided by the MVP team.'),
-    by: String(d.by || 'MVP team').trim(),
+    reason: (d.note || '').trim() || (d.decision === 'include' ? 'Included by the development team.' : 'Decided by the development team.'),
+    by: String(d.by || 'Development team').trim(),
     date,
   };
   f.dirty = true;
@@ -217,7 +217,7 @@ if (!dryRun) for (const f of files.values()) if (f && f.dirty) fs.writeFileSync(
 
 // ---------- summary ----------
 const n = (k, one, many) => `${k} ${k === 1 ? one : many}`;
-const out = [`# MVP team changes${dryRun ? ' (dry run: nothing changed)' : ''}`, ''];
+const out = [`# Development team changes${dryRun ? ' (dry run: nothing changed)' : ''}`, ''];
 out.push(`${n(created.length, 'new service', 'new services')} added, ${addedSame} already added. ${n(edited.length, 'service', 'services')} with edited details, ${editsSame} already up to date. ${n(changed.length, 'listing decision', 'listing decisions')} applied, ${decisionsSame} already up to date.`, '');
 if (created.length) {
   out.push(`## New services (${created.length})`, '');

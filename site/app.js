@@ -179,7 +179,7 @@
     ];
   }
 
-  function card(rec) {
+  function card(rec, opts) {
     const s = services.get(rec.id);
     if (!s) return null;
 
@@ -204,7 +204,28 @@
     if (!contact.children.length) contact.append(el('li', { text: t('noContact') }));
 
     const stale = ageInDays(s.lastUpdated) > STALE_DAYS;
-    const staff = mode() === 'staff';
+
+    // Everything below "who it's for", folded away until "Show full details" is pressed.
+    const more = el('div', { class: 'more', id: 'more-' + s.id + '-' + ++moreSeq },
+      el('h4', { text: t('contact') }),
+      contact,
+      whereBlock(s),
+      el('h4', { text: t('howIn') }),
+      el('ul', { class: 'routes' }, (s.referralRoutes || []).map(routeNode)),
+      el('h4', { text: t('whoJoin') }),
+      el('ul', {}, (s.eligibility || []).map((x) => el('li', { ...EN, text: x }))),
+      s.exclusions && s.exclusions.length ? el('h4', { text: t('whoNot') }) : null,
+      s.exclusions && s.exclusions.length ? el('ul', {}, s.exclusions.map((x) => el('li', { ...EN, text: x }))) : null,
+      (s.activities || []).length ? el('h4', { text: t('whatWhere') }) : null,
+      (s.activities || []).length ? el('ul', {}, s.activities.map((a) => el('li', { ...EN, text: a.name + ': ' + a.summary + (a.duration ? ' (' + a.duration + ')' : '') }))) : null,
+      (s.locations || []).length ? el('h4', { text: t('where') }) : null,
+      (s.locations || []).length ? el('ul', {}, s.locations.map((x) => el('li', { ...EN, text: x }))) : null,
+      s.cost ? el('h4', { text: t('cost') }) : null,
+      s.cost ? el('ul', {}, el('li', { ...EN, text: s.cost })) : null,
+      s.languages ? el('h4', { text: t('languages') }) : null,
+      s.languages ? el('ul', {}, el('li', { ...EN, text: s.languages })) : null,
+      el('p', { class: 'meta', text: t('lastChecked', { date: fmtDate(s.lastUpdated) }) }));
+    const toggle = moreToggle(s, more, Boolean(opts && opts.open));
 
     const node = el('article', { class: 'card', 'data-scheme': s.id },
       el('div', { class: 'card-head' },
@@ -216,34 +237,45 @@
       rec.why ? el('p', { class: 'why', dir: 'auto', text: rec.why }) : null,
       rec.check_first ? el('p', { class: 'check' }, t('checkFirst'), el('span', { dir: 'auto', text: rec.check_first })) : null,
       el('p', { ...EN, class: 'whofor', text: s.whoFor }),
-      el('h4', { text: t('contact') }),
-      contact,
-      whereBlock(s),
-      el('h4', { text: t('howIn') }),
-      el('ul', { class: 'routes' }, (s.referralRoutes || []).map(routeNode)),
-      el('details', { open: staff }, el('summary', { text: t('whoJoin') }),
-        el('ul', {}, (s.eligibility || []).map((x) => el('li', { ...EN, text: x }))),
-        s.exclusions && s.exclusions.length ? el('h4', { text: t('whoNot') }) : null,
-        s.exclusions && s.exclusions.length ? el('ul', {}, s.exclusions.map((x) => el('li', { ...EN, text: x }))) : null
-      ),
-      el('details', {}, el('summary', { text: t('whatWhere') }),
-        el('ul', {}, (s.activities || []).map((a) => el('li', { ...EN, text: a.name + ': ' + a.summary + (a.duration ? ' (' + a.duration + ')' : '') }))),
-        el('h4', { text: t('where') }),
-        el('ul', {}, (s.locations || []).map((x) => el('li', { ...EN, text: x }))),
-        s.cost ? el('h4', { text: t('cost') }) : null,
-        s.cost ? el('ul', {}, el('li', { ...EN, text: s.cost })) : null,
-        s.languages ? el('h4', { text: t('languages') }) : null,
-        s.languages ? el('ul', {}, el('li', { ...EN, text: s.languages })) : null
-      ),
-      el('p', { class: 'meta', text: t('lastChecked', { date: fmtDate(s.lastUpdated) }) }),
       stale ? el('p', { class: 'stale', text: t('stale') }) : null,
+      more,
       el('div', { class: 'tools' },
+        toggle,
         el('button', { type: 'button', class: 'btn secondary small', text: t('copy'), onclick: (e) => copyDetails(s, e.currentTarget) }),
         window.ACCESS ? window.ACCESS.listenButton(() => spokenText(s), 'en-GB', t('listenTo', { name: s.name })) : null),
       // "Report a problem with this listing" (feedback.js). Only there when feedback is switched on.
       window.FEEDBACK ? window.FEEDBACK.cardControl(s) : null
     );
     return node;
+  }
+
+  // Cards start folded so several fit on a screen. "Show full details" opens one; the rest of its details sit
+  // in a section with an id the button points to. A single result starts open.
+  let moreSeq = 0;
+  function moreToggle(s, more, startOpen) {
+    const label = el('span', {});
+    const chevron = el('span', { class: 'chev', 'aria-hidden': 'true' });
+    const btn = el('button', { type: 'button', class: 'btn small more-btn', 'aria-controls': more.id }, chevron, label);
+    let tracked = false;
+    const set = (open) => {
+      more.hidden = !open;
+      btn.setAttribute('aria-expanded', String(open));
+      label.textContent = open ? t('lessDetails') : t('moreDetails');
+      btn.closest('.card')?.classList.toggle('open', open);
+    };
+    btn.addEventListener('click', () => {
+      const open = more.hidden;
+      set(open);
+      if (open && !tracked && window.USAGE) { tracked = true; window.USAGE.track('expand', { s: s.id }); }
+    });
+    btn._set = set;
+    queueMicrotask(() => set(startOpen));
+    return btn;
+  }
+
+  // Opens or folds every card in a set of results.
+  function setAllCards(container, open) {
+    for (const b of container.querySelectorAll('.more-btn')) b._set(open);
   }
 
   // What the Listen button on a card reads out. Scheme details are in English, so they are read in English.
@@ -411,11 +443,22 @@
         b.append(el('div', { class: 'bubble-tools' }, window.ACCESS.listenButton(() => [...reply.querySelectorAll('p, li')].map((p) => p.textContent).join(' '), window.I18N.locale)));
       }
       // The chat message comes first, with the scheme cards underneath it.
-      const recs = (data.recommendations || []).map(card).filter(Boolean);
+      const list = (data.recommendations || []).filter((r) => services.has(r.id));
+      const recs = list.map((r) => card(r, { open: list.length === 1 })).filter(Boolean);
       if (recs.length) {
         // A heading screen reader users can jump to; hidden on screen, where the cards speak for themselves.
         logEl.append(el('h2', { class: 'visually-hidden', text: t('resultsHeading') }));
         const cardsEl = el('div', { class: 'cards' }, recs);
+        // With more than one card, a button to open or fold them all at once.
+        if (recs.length > 1) {
+          let allOpen = false;
+          const allBtn = el('button', { type: 'button', class: 'link-btn all-btn', text: t('openAll'), onclick: () => {
+            allOpen = !allOpen;
+            setAllCards(cardsEl, allOpen);
+            allBtn.textContent = allOpen ? t('closeAll') : t('openAll');
+          } });
+          logEl.append(el('div', { class: 'cards-bar' }, allBtn));
+        }
         logEl.append(cardsEl);
         // After every set of results, offer a quick way to ask for different services. The AI is told not to
         // repeat services already shown. With one card the wording asks about that one; with more, about others.
@@ -585,12 +628,6 @@
     .then((r) => r.json())
     .then((d) => { services = new Map(d.services.map((s) => [s.id, s])); })
     .catch(() => bubble('error', t('loadFailed')));
-
-  // MVP team links: only present when the deploy switched the MVP tools on.
-  if (window.FINDER_CONFIG && window.FINDER_CONFIG.mvpTools) {
-    document.body.prepend(el('nav', { class: 'teambar', 'aria-label': 'MVP team' },
-      el('div', { class: 'wrap' }, el('strong', { text: 'MVP team only' }), el('a', { href: 'mvp/help.html', text: 'Help' }), el('a', { href: 'mvp/services.html', text: 'All services' }), el('a', { href: 'mvp/log.html', text: 'Issues and actions log' }), el('a', { href: 'mvp/feedback.html', text: 'Feedback and usage' }))));
-  }
 
   welcome();
 })();

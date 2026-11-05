@@ -12,7 +12,7 @@ The tool's name is **Healthy Working Life Support Finder** (it was called the Se
                  static page + data         holds the API key, no storage
 
 - `site/` is the page. GitHub Pages serves it. It is public.
-- `data/services/` holds the scheme data, one file per scheme (215 at the moment: 31 Healthy Working Life schemes, 137 other services on the live list, and 47 waiting for the MVP team to review). Each has a `listing` decision: `include`, `review` or `exclude`. On deploy they are checked and combined into `services.json`, **the live list (only `include`)**, which is copied into the site and bundled into the Worker, so the page and the AI only ever see included services. Every service, whatever its decision, also goes into `services-all.json` for the MVP team's All services page.
+- `data/services/` holds the scheme data, one file per scheme (215 at the moment: 31 Healthy Working Life schemes, 137 other services on the live list, and 47 waiting for the development team to review). Each has a `listing` decision: `include`, `review` or `exclude`. On deploy they are checked and combined into `services.json`, **the live list (only `include`)**, which is copied into the site and bundled into the Worker, so the page and the AI only ever see included services. Every service, whatever its decision, also goes into `services-all.json` for the All services page in Admin.
 - `prompt/system.md` is the instructions Claude follows. Bundled into the Worker.
 - `worker/` is a small Cloudflare Worker. It holds the Anthropic API key, sends the scheme data and the conversation to Claude, and returns a short message, a list of matches (scheme id, how well it fits, a short reason and what to check first) and flags for urgent support and identifying details. The page draws the cards from `services.json`, so contact details are never written by the AI, and unknown or closed schemes are dropped.
 - Nothing about a conversation is stored or logged. Workers Logs are switched off.
@@ -56,7 +56,7 @@ Push to a branch and open a pull request. The **Checks** workflow runs the data 
 
 To make sure every change goes through a pull request, including changes made later by an automated maintenance agent: Settings > Branches > add a rule for `main` that requires a pull request and requires the **Checks** workflow to pass.
 
-**Listing decisions.** A service's `listing.decision` says whether it's on the live list. Only `include` reaches the page and the AI. `review` (needs further review) and `exclude` (left out completely) stay in the data, so the reasons and research aren't lost, and show only on the MVP team's All services page. A service whose file still says "To be completed" can't be `include`: the check fails until someone fills in its details. The MVP team records decisions on the All services page (see [Reviewing which services are live](#reviewing-which-services-are-live)).
+**Listing decisions.** A service's `listing.decision` says whether it's on the live list. Only `include` reaches the page and the AI. `review` (needs further review) and `exclude` (left out completely) stay in the data, so the reasons and research aren't lost, and show only on the All services page in Admin. A service whose file still says "To be completed" can't be `include`: the check fails until someone fills in its details. The development team records decisions on the All services page (see [Reviewing which services are live](#reviewing-which-services-are-live)).
 
 Keep `lastUpdated` honest: the page flags entries older than about 4.5 months, and `npm run check-data` lists them. Entries with `"open": false` are never recommended. Each scheme's `provenance` records where its details came from, so they can be rechecked.
 
@@ -76,7 +76,7 @@ The red panel always shows 999 and NHS 111, and the Single Point of Access numbe
 
 ## "What's changed" page
 
-`site/changes.html` lists the changes coaches testing the prototype might notice, newest first. It's linked from the prototype notice at the top of the main page ("See what's changed"). When you make a change they'll notice, add a plain-English line to the top of it in the same commit. Leave out behind-the-scenes and MVP-team-only work. The page is in English only; the link says "(EN)" in Polish and Urdu.
+`site/changes.html` lists the changes coaches testing the prototype might notice, newest first. It's linked from the prototype notice at the top of the main page ("See what's changed"). When you make a change they'll notice, add a plain-English line to the top of it in the same commit. Leave out behind-the-scenes and Admin-only work. The page is in English only; the link says "(EN)" in Polish and Urdu.
 
 ## Languages (English, Polish, Urdu)
 
@@ -90,7 +90,7 @@ The page has a language switcher in the header: English, Polski and اردو (Ur
 - The crisis wording backstop (`CRISIS_RE`) and the `requiresMention` words in the scheme files include Polish and Urdu phrases, so the safety panel and the condition-specific schemes still work when someone writes in those languages. These lists are also a first draft for a translator to check and add to.
 - Fonts for Polish letters and for Urdu (Noto Nastaliq Urdu) are in `site/fonts/`. A browser only downloads them when the page shows those characters.
 - Switching language part-way through a chat leaves earlier messages and cards as they were. New replies come back in the new language.
-- The MVP help page and issues log are English only.
+- The Admin pages are English only.
 
 ## Accessibility options (text size, high contrast, read aloud)
 
@@ -111,19 +111,21 @@ A bar under the header lets people choose a larger text size (A, A+, A++) and sw
 
 The mock stands in for the Anthropic API, so no real key or spend is involved.
 
-## MVP team tools (help page and issues log)
+## Admin (for the development team)
 
-For the initial MVP team only, not for the wider test.
+The Admin section (`admin/`) is for the Support Finder development team (Phil, Lewis and anyone else given the team passcode). The main page has one small **Admin** link at the bottom, which goes to the Admin home page, `admin/index.html`. Every Admin page needs you to sign in with the team passcode first: see [One sign-in for Admin](#one-sign-in-for-admin).
 
-- `mvp/help.html` is a help page for testers: how to use the finder, scenarios to try, what good looks like, known limits, and a table of the scheme data with overdue entries flagged.
-- `mvp/services.html` lists every scheme and service, including those not on the live list, with search and filters (live list, team decision, type, level, area, category, health focus, audience, self-referral, review status, confidence, and gaps such as no phone). Each one links to its file on GitHub to edit it. Filters are kept in the address, so a filtered view can be shared as a link, and the list can be downloaded as CSV. Signed in with the team passcode, it's also where the team decides which services are live and edits a service's details (below).
-- `mvp/log.html` is a shared issues and actions log. Entries are stored on the Worker (one Durable Object), not in the repo, and are protected by a shared passcode. Add, filter, search, change status and priority, set an owner, add notes, and download everything as CSV. If the log is empty it offers to load the starter list in `mvp/seed-log.json`.
-- `mvp/suggested-entries.json` holds packs of suggested log entries (for example the data-freshness options). The log page offers to add any whose title isn't already in the log, using the signed-in person's own session, and can append a note to an existing entry. To suggest more entries, add a pack to that file and push.
-- These pages are deployed only when the repository variable `MVP_TOOLS` is exactly `true`. When it is, the main page also shows a small "MVP team only" bar linking to them.
+- `admin/index.html` is the Admin home: the sign-in, then links to the pages below.
+- `admin/help.html` is a help page for testers: how to use the finder, scenarios to try, what good looks like, known limits, and a table of the scheme data with overdue entries flagged.
+- `admin/services.html` lists every scheme and service, including those not on the live list, with search and filters (live list, team decision, type, level, area, category, health focus, audience, self-referral, review status, confidence, and gaps such as no phone). Each one links to its file on GitHub to edit it. Filters are kept in the address, so a filtered view can be shared as a link, and the list can be downloaded as CSV. Signed in with the team passcode, it's also where the team decides which services are live and edits a service's details (below).
+- `admin/log.html` is a shared issues and actions log. Entries are stored on the Worker (one Durable Object), not in the repo, and are protected by a shared passcode. Add, filter, search, change status and priority, set an owner, add notes, and download everything as CSV. If the log is empty it offers to load the starter list in `admin/seed-log.json`.
+- `admin/suggested-entries.json` holds packs of suggested log entries (for example the data-freshness options). The log page offers to add any whose title isn't already in the log, using the signed-in person's own session, and can append a note to an existing entry. To suggest more entries, add a pack to that file and push.
+- `admin/feedback.html` shows the anonymous usage counts and the feedback people sent (below).
+- The Admin pages are always deployed with the site. Until November 2026 they were at `/mvp/` and only deployed when the repository variable `MVP_TOOLS` was `true`. That variable is no longer used and can be deleted; the old `/mvp/` addresses redirect to Admin.
 
 ### Reviewing which services are live, editing details and adding services
 
-For each service, the MVP team decides one of three things on the All services page:
+For each service, the development team decides one of three things on the All services page:
 
 - **Include on the live list**: shown on the finder and given to the AI.
 - **Needs further review**: kept off the live list until someone checks it. A reason is required.
@@ -131,7 +133,7 @@ For each service, the MVP team decides one of three things on the All services p
 
 How it works:
 
-1. Open **All services**, enter the team passcode and your name or initials (see [One sign-in for the MVP pages](#one-sign-in-for-the-mvp-pages)).
+1. Sign in on the Admin home page with the team passcode and your name or initials (see [One sign-in for Admin](#one-sign-in-for-admin)), then open **All services**.
 2. Filter to what you want to work through. "Live list: Waiting for review" shows the 47 services added for review. "Team changes: Not yet decided by the team" shows everything nobody has decided on yet.
 3. For each service, choose include, further review or exclude, add a reason, and save. Decisions are stored on the Worker with the team log, so everyone sees them straight away, and a changed decision keeps the earlier ones as history. Nothing about a person is stored, only the service, the decision, the reason, the name or initials given and the time.
 4. **Editing details.** "Edit details" on any service opens a form with its details: name, contact details, who it's for, areas, categories, eligibility, how to get in, self-referral, what it offers and so on. Boxes still saying "To be completed" are highlighted. Say what changed and why, and tick "I have checked these details are current" if you checked them with the provider or its website (that sets the "last checked" date when applied). Only the fields that differ from the data are saved, with what the data said at the time. The changes show on the service, old and new, until they are applied, and can be discarded. One set of waiting changes is kept per service; editing again replaces it. The Worker checks every value against the same rules as the data (`worker/src/serviceedit.js`, using `data/schema.json`). The id, logo, trigger words (`requiresMention`), HWL flag and listing decision can't be changed this way.
@@ -155,20 +157,18 @@ How it works:
 
    It holds back, and lists in the summary: a new service whose id is already taken, or with the same name and organisation as one already in the data; an edit to a field that has been changed in the data since the edit was made (so nobody's change is overwritten), an edit that wouldn't pass the data check, and a service chosen for the live list whose details still say "To be completed".
 
-### One sign-in for the MVP pages
+### One sign-in for Admin
 
-There is **one team passcode**, the Worker secret `TEAM_PASSCODE`, for every MVP page: All services (decisions, edits, new services, Apply changes now), the issues and actions log, and feedback and usage. Sign in once on any of them and the others open without asking again. The passcode and your name or initials are kept in that browser tab only (sessionStorage) until it's closed, and "Sign out" in the "MVP team only" bar, or on any page, signs you out of all of them. The shared code is `mvp/team-auth.js`, loaded before each page's own script. The Worker checks the same secret on `/log/*`, `/feedback/*` (reading) and `/usage/*` (reading); it accepts it in an `X-Team-Passcode` header, or `X-Feedback-Passcode` for older scripts.
+There is **one team passcode**, the Worker secret `TEAM_PASSCODE`, for every Admin page: Help, All services (decisions, edits, new services, Apply changes now), the issues and actions log, and feedback and usage. You sign in on the Admin home page, which checks the passcode with the Worker; the other pages then open without asking again. Opening any Admin page without signing in takes you to the Admin home to sign in, and then back to that page. The passcode and your name or initials are kept in that browser tab only (sessionStorage) until it's closed, and "Sign out" in the Admin bar, or on any page, signs you out of all of them. The shared code is `admin/team-auth.js`, loaded in the `<head>` of every Admin page.
+
+The pages themselves are plain files on GitHub Pages (and the code is public), so the sign-in is a front door rather than a lock: what actually protects the team's data (the log, decisions, edits, feedback and usage) is that the Worker only sends it with the right passcode. The Help page and the list of every service hold nothing that isn't already in the public repository. The Worker checks the same secret on `/log/*`, `/feedback/*` (reading) and `/usage/*` (reading); it accepts it in an `X-Team-Passcode` header, or `X-Feedback-Passcode` for older scripts.
 
 Until November 2026 feedback and usage had a separate `FEEDBACK_PASSCODE`. It is no longer used: delete it from the Worker's secrets.
 
-**Switch on:**
-1. Cloudflare dashboard > Workers & Pages > hwl-service-finder > Settings > Variables and Secrets: add a **secret** called `TEAM_PASSCODE` (a long passphrase, 16+ characters). Share it with the team directly, not by chat or email to people outside the team.
-2. GitHub repo > Settings > Secrets and variables > Actions > Variables: add `MVP_TOOLS` = `true`.
-3. Re-run "Deploy site to GitHub Pages".
+**Switch on:** Cloudflare dashboard > Workers & Pages > hwl-service-finder > Settings > Variables and Secrets: add a **secret** called `TEAM_PASSCODE` (a long passphrase, 16+ characters). Share it with the team directly, not by chat or email to people outside the team. To add someone to the team, give them the passcode; to remove someone, change the passcode and give the new one to everyone else.
 
-**Switch off (for the wider test):**
-1. Set `MVP_TOOLS` to `false` (or delete it) and re-run the Pages deploy. The pages and the links disappear.
-2. Delete the `TEAM_PASSCODE` secret. The log, decision, edit, new-service, feedback-reading and usage-reading routes then return 404 (people can still send feedback).
+**Switch off:**
+1. Delete the `TEAM_PASSCODE` secret. The log, decision, edit, new-service, feedback-reading and usage-reading routes then return 404 (people can still send feedback).
 3. Apply any outstanding new services, decisions and edits first (Actions > Apply team changes), as they are stored with the log.
 4. Export the log first if you want to keep it (Download as CSV on the log page).
 
@@ -209,7 +209,7 @@ The code is in `site/feedback.js` (the page) and `worker/src/feedback.js` (the W
 
 During the pilot there is a fourth, fuller form for testers:
 
-4. **"Give pilot feedback"**, a band near the top of the page with a button that opens the form. It asks which best describes the feedback (found something useful, missed a service, suggested something unsuitable, hard to use, something broken, an idea, something else), what happened (required, up to 1,500 characters), whether they or the person went on to contact a suggested service, how easy the tool was to use this time (1 to 5), and, only if they tick "Yes, you can contact me", their name and work email. It also sends the ids of the schemes in the latest reply (never what was typed), so we know what they were shown. It is English only, like the MVP tools. It appears only when `PILOT_FEEDBACK` is `"true"`, which is set in `[vars]` in `worker/wrangler.toml`. To hide it after the pilot, change it to `"false"` and merge. Testers can send as many as they like: feedback is ongoing, not a survey at the end.
+4. **"Give pilot feedback"**, a band near the top of the page with a button that opens the form. It asks which best describes the feedback (found something useful, missed a service, suggested something unsuitable, hard to use, something broken, an idea, something else), what happened (required, up to 1,500 characters), whether they or the person went on to contact a suggested service, how easy the tool was to use this time (1 to 5), and, only if they tick "Yes, you can contact me", their name and work email. It also sends the ids of the schemes in the latest reply (never what was typed), so we know what they were shown. It is English only, like the Admin pages. It appears only when `PILOT_FEEDBACK` is `"true"`, which is set in `[vars]` in `worker/wrangler.toml`. To hide it after the pilot, change it to `"false"` and merge. Testers can send as many as they like: feedback is ongoing, not a survey at the end.
 
 **What is collected:** which kind of feedback it is, the date (no time), the scheme id (and the date the listing shown had last been checked), or the ids of the schemes shown in a reply, the boxes ticked, a comment of up to 300 characters, the details of a suggested service (including the service's own phone, email and address, and an optional work contact name for someone from the service), the categories and area of a gap, the page's mode and language, and whether anything was removed from the text. Each entry also has a status (`New`, `Reviewed`, `Actioned`, `Not actioned`) and a reviewer note.
 
@@ -233,9 +233,9 @@ The emails go straight to the admins' own addresses, not to `admin@hwlsupportfin
 
 To add or remove an admin, verify the new address (step 1) and edit the secret. To stop emails without touching feedback, delete the secret.
 
-**The Feedback and usage page (for the review team):** `mvp/feedback.html`, linked from the "MVP team only" bar. The top part shows the anonymous usage counts with charts (see [Anonymous usage counts](#anonymous-usage-counts)); the rest is the feedback. It is deployed with the other MVP pages (when `MVP_TOOLS` is `true`) and needs the team passcode, like the other MVP pages. It shows, for the last 7, 30 or 90 days or everything: how many people said results were helpful (split by who it was for and by language), why people said No, which services have problem reports, and what people said was missing. Below that is the feedback to read (plain "Yes" answers are hidden by default), with a status and a reviewer note on each entry, and a button to download everything as CSV. The code is `mvp/feedback.js`; it uses the same routes as below, so the Worker needs no change.
+**The Feedback and usage page (for the development team):** `admin/feedback.html`, linked from the Admin home page. The top part shows the anonymous usage counts with charts (see [Anonymous usage counts](#anonymous-usage-counts)); the rest is the feedback. Like the other Admin pages it needs the team passcode. It shows, for the last 7, 30 or 90 days or everything: how many people said results were helpful (split by who it was for and by language), why people said No, which services have problem reports, and what people said was missing. Below that is the feedback to read (plain "Yes" answers are hidden by default), with a status and a reviewer note on each entry, and a button to download everything as CSV. The code is `admin/feedback.js`; it uses the same routes as below, so the Worker needs no change.
 
-**Reading the feedback:** uses the team passcode (`TEAM_PASSCODE`; see [One sign-in for the MVP pages](#one-sign-in-for-the-mvp-pages)). Without it the read routes return 404, but people can still send feedback. The routes, with the passcode in an `X-Team-Passcode` header:
+**Reading the feedback:** uses the team passcode (`TEAM_PASSCODE`; see [One sign-in for Admin](#one-sign-in-for-admin)). Without it the read routes return 404, but people can still send feedback. The routes, with the passcode in an `X-Team-Passcode` header:
 
 - `GET /feedback/items`, optionally `?status=New` and `?since=YYYY-MM-DD`
 - `PATCH /feedback/items/<id>` with `{"status": "Actioned", "note": "Fixed in PR 23"}`
@@ -258,10 +258,32 @@ It has two parts. **What's wrong**: reports grouped by scheme, most reported fir
 
 **Before the wider test, the information governance lead should review this approach** (what is collected, the removal of personal details, the 12-month retention, and who holds the passcode).
 
+## Hidden from search engines during the pilot
+
+While the pilot runs, the site is kept out of Google and other search engines in two ways:
+
+1. **A tag on every page.** `<meta name="robots" content="noindex, nofollow">` is in `site/index.html`, `site/changes.html`, the printable directory (built by `scripts/build-print.mjs`), every Admin page and the old `/mvp/` redirect pages (written by `.github/workflows/pages.yml`).
+2. **A Cloudflare header on everything else.** Files that can't carry a tag, such as `services.json`, images and fonts, get an `X-Robots-Tag: noindex, nofollow` header from a Cloudflare rule: dashboard > hwlsupportfinder.org.uk > Rules > Response Header Transform Rules > "Pilot – hide from search engines". This only works because the site's DNS records (the four `A` records and the `www` CNAME) are **Proxied** (orange cloud). SSL/TLS mode must stay on Full, not Flexible, or GitHub Pages gives a "too many redirects" error.
+
+There is no `robots.txt`, on purpose: blocking crawlers there would stop them seeing the noindex tag.
+
+To check: search `site:hwlsupportfinder.org.uk` on Google. If anything shows up, use the Removals tool in Google Search Console.
+
+### At go-live
+
+When the Support Finder is launched publicly and should appear in search results:
+
+- [ ] Remove the robots meta tag from `site/index.html` and `site/changes.html`.
+- [ ] Remove it from the printable directory in `scripts/build-print.mjs` (the `<meta name="robots" ...>` line in the `SITE_DIR` page).
+- [ ] Turn off or delete the "Pilot – hide from search engines" rule in Cloudflare.
+- [ ] **Keep** the tag on the Admin pages and the `/mvp/` redirects. Those should never be in search results.
+- [ ] Leave the DNS records Proxied.
+- [ ] Optional: register the site in Google Search Console and submit the main page, so it's picked up sooner.
+
 ## Tests
 
     npm run check-data             # the scheme data
     node worker/test/logic.mjs     # Worker logic, offline (model handling, guards, crisis backstop, team log, feedback, digest)
-    bash test/run-ui.sh            # headless-browser test of the pages, with MVP tools on and off, and the feedback forms (Docker, or a local Playwright)
+    bash test/run-ui.sh            # headless-browser test of the main page, the Admin pages and the feedback forms (Docker, or a local Playwright)
     python3 worker/test/live_chat.py   # real conversations against the live Worker (spends a few pence)
 

@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.workers.dev; base-uri 'none'; form-action 'none'">
+  <title>All services | Kirklees HWL Support Finder</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="mvp.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to the content</a>
+
+  <nav class="teambar" aria-label="MVP team">
+    <div class="wrap wide">
+      <strong>MVP team only</strong>
+      <a href="../">Support Finder</a>
+      <a href="help.html">Help</a>
+      <a href="services.html" aria-current="page">All services</a>
+      <a href="log.html">Issues and actions log</a>
+      <a href="feedback.html">Feedback and usage</a>
+    </div>
+  </nav>
+
+  <header class="site-header">
+    <div class="wrap wide">
+      <h1>All services<br><span>Kirklees Healthy Working Life Support Finder</span></h1>
+    </div>
+  </header>
+
+  <main id="main" class="wrap wide">
+    <p class="mvp-banner"><strong>For the MVP team only.</strong> Every scheme and service the finder knows about, including those not on the live list. Only services <strong>on the live list</strong> are shown on the finder and given to the AI. Sign in below to decide which services are live, correct their details, and add services that are missing.</p>
+
+    <details class="how" id="how">
+      <summary>How to use this page</summary>
+      <ol>
+        <li><strong>Sign in</strong> with the team passcode (the same one as the issues log) and put your name or initials. They are saved with everything you do, so the team can see who did what. Without signing in you can still search, filter and read everything.</li>
+        <li><strong>Find what needs doing.</strong> Use the figures at the top (each one is a shortcut) or the filters. "Live list: Waiting for review" shows services not yet live. "Team changes: Not yet decided by the team" shows everything nobody has decided on. "Sort by: Waiting for review first" puts them at the top.</li>
+        <li><strong>Decide.</strong> In each service's "Team decision" box choose:
+          <ul>
+            <li><strong>Include on the live list</strong>: shown on the finder and given to the AI.</li>
+            <li><strong>Needs further review</strong>: kept off the live list until someone checks it.</li>
+            <li><strong>Exclude completely</strong>: kept off for good, for example closed, not in Kirklees, not a service, or a duplicate.</li>
+          </ul>
+          Give a reason for further review or exclude, then save. You can change a decision later; earlier ones are kept.</li>
+        <li><strong>Correct or complete details.</strong> "Edit details" opens a form with the service's details. Boxes still saying "To be completed" are highlighted: a service can't go live until they're filled in. Say what changed and why, and tick "I have checked these details are current" if you checked them with the provider or its website. Your changes show on the service, old and new, until they're applied, and can be discarded.</li>
+        <li><strong>Add a missing service.</strong> "Add a service" (above the list) opens an empty form. Say where the service came from and why it should be added. The page warns you if it looks like one already listed. It then appears as "New: not yet in the data", and the team reviews, edits and decides on it like any other. A new service never goes live unless the team decides to include it.</li>
+        <li><strong>Going live.</strong> Everything is saved for the team straight away, but the finder itself only changes when the team's changes are applied: Phil runs <strong>Apply team changes</strong> on GitHub and merges the pull request it opens. Until then you'll see "waiting to be applied". Changes that clash with something changed since, or that break the data rules, are held back and listed for Phil to sort out.</li>
+      </ol>
+      <p>Please don't put personal or identifying information in reasons or notes. To see a service's file and its history, open its "Full details" and use the GitHub links.</p>
+    </details>
+
+    <section id="review-signin" class="review-signin" aria-labelledby="review-h">
+      <h2 id="review-h" class="mt0">Review, edit and add services</h2>
+      <div id="signin-form">
+        <p>Enter the team passcode to decide on services, edit their details and add new ones. Without it you can still search and read everything.</p>
+        <div class="field"><label for="pass">Team passcode</label><input id="pass" type="password" autocomplete="off"></div>
+        <button id="unlock" class="btn primary small" type="button">Sign in</button>
+      </div>
+      <p id="signin-msg" class="msg err" role="alert" hidden></p>
+      <div class="field mt-sm"><label for="by">Your name or initials</label><input id="by" type="text" maxlength="40" autocomplete="off" aria-describedby="by-hint"><p id="by-hint" class="hint">Saved with each decision, edit and new service.</p></div>
+      <div id="signed-in" hidden>
+        <p><span id="signed-in-text"></span> <button id="lock" class="btn secondary small" type="button">Sign out</button></p>
+        <p class="hint">Everything you save is shared with the team straight away. It reaches the live finder when the team's changes are applied (Phil: Actions &gt; Apply team changes on GitHub, then merge), so "waiting to be applied" means saved but not live yet. See "How to use this page" above.</p>
+      </div>
+    </section>
+
+    <div id="summary" class="summary"></div>
+
+    <div class="search">
+      <label for="q">Search</label>
+      <input id="q" type="search" autocomplete="off" placeholder="Name, organisation, place, phone, eligibility…" aria-describedby="q-hint">
+      <p id="q-hint" class="hint">Matches every word you type, anywhere in a service's details.</p>
+    </div>
+
+    <details class="filter-panel" id="filter-panel" open>
+      <summary>Filters</summary>
+      <div class="filters" id="filters">
+        <div><label for="f-listing">Live list</label>
+          <select id="f-listing">
+            <option value="">All</option>
+            <option value="include">On the live list</option>
+            <option value="review">Waiting for review</option>
+            <option value="exclude">Excluded</option>
+            <option value="new">New: not yet in the data</option>
+          </select></div>
+        <div><label for="f-decision">Team changes</label>
+          <select id="f-decision">
+            <option value="">All</option>
+            <option value="undecided">Not yet decided by the team</option>
+            <option value="pending">Decided, waiting to be applied</option>
+            <option value="edited">Details edited, waiting to be applied</option>
+            <option value="team-include">Team chose: include</option>
+            <option value="team-review">Team chose: further review</option>
+            <option value="team-exclude">Team chose: exclude</option>
+          </select></div>
+        <div><label for="f-type">Type</label>
+          <select id="f-type">
+            <option value="">All</option>
+            <option value="hwl">Healthy Working Life schemes</option>
+            <option value="other">Other services</option>
+          </select></div>
+        <div><label for="f-level">Level</label>
+          <select id="f-level">
+            <option value="">All</option>
+            <option value="local">Local</option>
+            <option value="regional">Regional</option>
+            <option value="national">National</option>
+          </select></div>
+        <div><label for="f-area">Area</label><select id="f-area"><option value="">All</option></select></div>
+        <div><label for="f-category">Category</label><select id="f-category"><option value="">All</option></select></div>
+        <div><label for="f-health">Health focus</label><select id="f-health"><option value="">All</option></select></div>
+        <div><label for="f-audience">Audience</label><select id="f-audience"><option value="">All</option></select></div>
+        <div><label for="f-self">Self-referral</label>
+          <select id="f-self">
+            <option value="">All</option>
+            <option value="yes">Can refer themselves</option>
+            <option value="partly">Partly</option>
+            <option value="no">Needs a referral</option>
+            <option value="tbc">To be confirmed</option>
+          </select></div>
+        <div><label for="f-review">Review</label>
+          <select id="f-review">
+            <option value="">All</option>
+            <option value="overdue">Overdue a check</option>
+            <option value="due">Due a check</option>
+            <option value="current">Up to date</option>
+            <option value="closed">Not open</option>
+          </select></div>
+        <div><label for="f-confidence">Confidence</label>
+          <select id="f-confidence">
+            <option value="">All</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+            <option value="none">Not rated</option>
+          </select></div>
+        <div><label for="f-gap">Gaps and flags</label>
+          <select id="f-gap">
+            <option value="">All</option>
+            <option value="no-phone">No phone</option>
+            <option value="no-email">No email</option>
+            <option value="no-web">No web page</option>
+            <option value="no-contact">No phone, email or web page</option>
+            <option value="no-age">No age given</option>
+            <option value="gated">Has a gate</option>
+            <option value="mention">Only shown when mentioned</option>
+            <option value="not-free">Not free for everyone</option>
+          </select></div>
+        <div><label for="f-sort">Sort by</label>
+          <select id="f-sort">
+            <option value="name">Name (A to Z)</option>
+            <option value="listing">Waiting for review first</option>
+            <option value="org">Organisation (A to Z)</option>
+            <option value="oldest">Last checked (oldest first)</option>
+            <option value="newest">Last checked (newest first)</option>
+          </select></div>
+      </div>
+    </details>
+
+    <section id="add-panel" class="add-panel" hidden></section>
+
+    <div class="toolbar">
+      <button id="add-service" class="btn primary small" type="button" hidden>Add a service</button>
+      <button id="clear" class="btn secondary small" type="button">Clear search and filters</button>
+      <button id="expand" class="btn secondary small" type="button">Show all details</button>
+      <button id="export" class="btn secondary small" type="button">Download these as CSV</button>
+      <button id="export-decisions" class="btn secondary small" type="button" hidden>Download the team's changes</button>
+    </div>
+
+    <p id="count" class="count" role="status" aria-live="polite"></p>
+    <div id="list" class="entries"></div>
+    <p id="empty" class="msg info" hidden>Nothing matches. Try fewer words, or clear the filters.</p>
+    <p id="load-error" class="msg err" role="alert" hidden>Could not load the service list.</p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap wide">
+      <p><strong>In an emergency call 999.</strong> For urgent mental health support in Kirklees, call the 24-hour Single Point of Access team on <a href="tel:01924316830">01924 316830</a> or call NHS 111.</p>
+    </div>
+  </footer>
+
+  <script src="../config.js"></script>
+  <script src="services.js" defer></script>
+</body>
+</html>

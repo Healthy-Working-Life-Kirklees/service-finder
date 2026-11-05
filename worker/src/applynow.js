@@ -1,4 +1,4 @@
-// "Apply changes now" on the All services page (MVP team only).
+// "Apply changes now" on the All services page (Admin pages, development team only).
 //
 // POST /log/apply         starts the Apply team changes workflow on GitHub with auto_merge on: it writes the team's
 //                         decisions, edits and new services into data/services/, runs the data check and the Worker

@@ -16,7 +16,7 @@
 @font-face { font-family: "Noto Nastaliq Urdu"; font-weight: 700; font-style: normal; font-display: swap; src: url("fonts/noto-nastaliq-urdu-arabic-700-normal.woff2") format("woff2"); unicode-range: U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC; }
 
 :root {
-  /* The colour names below are kept from the earlier version so the MVP pages pick up the new colours too. */
+  /* The colour names below are kept from the earlier version so the Admin pages pick up the new colours too. */
   --blue: #0b6b6b;
   --dark-blue: #0b5c5c;
   --green: #0b6b6b;
@@ -177,11 +177,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .thumb { width: 4.5rem; height: 4.5rem; }
 }
 
-/* MVP team bar (only present when the MVP tools are switched on) */
+/* Admin bar, at the top of every Admin page (admin/) */
 .teambar { background: var(--dark-blue); color: #fff; font-size: .95rem; }
 .teambar .wrap { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; align-items: center; padding-top: .4rem; padding-bottom: .4rem; }
 .teambar a { color: #fff; }
 .teambar a[aria-current="page"] { font-weight: 700; text-decoration: none; }
+
+/* The one link to the Admin section, at the end of the main page. Kept quiet: it's for the development team. */
+.admin-link { margin: 1.5rem 0 0; font-size: .9rem; text-align: end; }
+.admin-link a { color: var(--grey); }
 
 /* Language switcher, in the header: a globe and a drop-down. Each language is named in its own language. */
 .lang-switch { display: flex; align-items: center; gap: .35rem; color: var(--dark-blue); }
@@ -520,3 +524,18 @@ html.high-contrast .change-day { border-color: #000; }
 /* The partner logo is a link to the main page. The link carries the .brand-logo size and position; the picture fills it. */
 a.brand-logo { border-radius: 4px; }
 a.brand-logo img { display: block; width: 100%; height: auto; }
+
+/* Folding cards: the summary stays visible, "Show full details" opens the rest (app.js moreToggle). */
+.card .more { border-top: 1px solid var(--border); margin-top: .6rem; padding-top: .2rem; }
+.card .more[hidden] { display: none; }
+.card .more > h4:first-child { margin-top: .5rem; }
+.card .whofor { margin-bottom: .5rem; }
+.card .more-btn { background: var(--blue); color: #fff; border: 2px solid var(--blue); }
+.card .more-btn:hover { background: var(--dark-blue); border-color: var(--dark-blue); }
+.card .more-btn .chev { display: inline-block; width: .55em; height: .55em; border-right: 2.5px solid currentColor; border-bottom: 2.5px solid currentColor; transform: translateY(-.15em) rotate(45deg); margin-inline-end: .5em; transition: transform .15s; }
+.card .more-btn[aria-expanded="true"] .chev { transform: translateY(.1em) rotate(-135deg); }
+@media (prefers-reduced-motion: reduce) { .card .more-btn .chev { transition: none; } }
+.cards-bar { display: flex; justify-content: flex-end; margin: .25rem 0 -.25rem; }
+.link-btn { background: none; border: 0; padding: .25rem .1rem; font: inherit; font-weight: 600; color: var(--blue); text-decoration: underline; cursor: pointer; }
+.link-btn:hover { color: var(--dark-blue); }
+@media print { .card .more[hidden] { display: block; } .card .more-btn, .cards-bar { display: none; } }

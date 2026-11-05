@@ -1,4 +1,4 @@
-// Team issues & actions log (MVP team only).
+// Team issues & actions log (Admin pages, development team only).
 //
 // Stored in one Durable Object (SQLite-backed). Protected by a shared passcode held as the Worker
 // secret TEAM_PASSCODE. If that secret is not set, every /log route returns 404, i.e. the feature is off.

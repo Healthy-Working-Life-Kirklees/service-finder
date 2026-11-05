@@ -24,7 +24,7 @@ PILOT_FEEDBACK = "true"
 # still stored.
 FEEDBACK_EMAIL_FROM = "feedback@hwlsupportfinder.org.uk"
 # Linked from each feedback email.
-FEEDBACK_REVIEW_URL = "https://hwlsupportfinder.org.uk/mvp/feedback.html"
+FEEDBACK_REVIEW_URL = "https://hwlsupportfinder.org.uk/admin/feedback.html"
 # Anonymous usage counts (worker/src/usage.js): daily tallies only, nothing that identifies anyone. Set
 # USAGE_ENABLED to "false" to stop counting. MAX_USAGE_PER_DAY caps how many counts are added in a day.
 USAGE_ENABLED = "true"
@@ -63,7 +63,7 @@ period = 60
 name = "CAP_COUNTER"
 class_name = "DailyCap"
 
-# MVP-team issues log (only active if the TEAM_PASSCODE secret is set).
+# Team issues log for the Admin pages (only active if the TEAM_PASSCODE secret is set).
 [[durable_objects.bindings]]
 name = "LOG_STORE"
 class_name = "LogStore"
