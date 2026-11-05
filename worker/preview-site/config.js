@@ -1,1 +1,0 @@
-window.FINDER_CONFIG = {apiBase: location.origin, mvpTools: true, preview: true};
