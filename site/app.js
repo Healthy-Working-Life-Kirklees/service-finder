@@ -337,14 +337,16 @@
     return b;
   }
 
-  // Support details shown for the kinds of urgent support below. Each one is written as a whole sentence, for example
-  // 'For domestic abuse support, call <name> on <number>.' Leave a value as '' until the programme team has checked it
-  // from an official source. Do not fill these in from a general web search. While a value is empty, the panel shows
-  // only 999 and NHS 111.
+  // Support details shown for the kinds of urgent support below: the key of a whole sentence in i18n.js, for example
+  // 'For domestic abuse support, call <name> on <number>.' Only add a contact once the programme team has checked it
+  // from an official source, never from a general web search. With no key, the panel shows only 999 and NHS 111.
+  // Checked by the programme team on 5 November 2026 against Kirklees Council, the Kirklees Safeguarding Children
+  // Partnership "Duty and Advice quick reference numbers", Pennine Domestic Abuse Partnership and Refuge. The same
+  // numbers are on safety.html: change both together.
   const URGENT_CONTACTS = {
-    domestic_abuse: '',
-    child_safeguarding: '',
-    adult_safeguarding: '',
+    domestic_abuse: 'urgentDomesticAbuse',
+    child_safeguarding: 'urgentChild',
+    adult_safeguarding: 'urgentAdult',
   };
 
   function crisisPanel(types) {
@@ -357,7 +359,8 @@
     const others = ['domestic_abuse', 'child_safeguarding', 'adult_safeguarding'].filter((k) => kinds.includes(k));
     if (others.length) {
       lines.push([t('crisisOther')]);
-      for (const k of others) if (URGENT_CONTACTS[k]) lines.push(phoneNodes(URGENT_CONTACTS[k]));
+      for (const k of others) if (URGENT_CONTACTS[k]) lines.push(window.I18N.telNodes(t(URGENT_CONTACTS[k])));
+      lines.push([el('a', { href: 'safety.html' + location.search, class: 'safety-link', text: t('urgentAll') })]);
     }
     return el('div', { class: 'crisis', role: 'alert' }, lines.map((nodes) => el('p', {}, ...nodes)));
   }
@@ -770,6 +773,8 @@
   $('#reset').addEventListener('click', reset);
   // The logo goes back to the main page (a fresh start), keeping the language, text size and contrast in the address.
   $('#home-link').addEventListener('click', (e) => { e.currentTarget.href = './' + location.search; });
+  // The same for "Help with abuse and safety" in the footer, so the safety page opens in the same language.
+  $('#safety-link').addEventListener('click', (e) => { e.currentTarget.href = 'safety.html' + location.search; });
 
   // Feedback links (feedback.js). They appear once the Worker's /health says feedback is on.
   if (window.FEEDBACK) window.FEEDBACK.init({ el, announce, api: API, mode: () => mode() || 'public', services: () => services });

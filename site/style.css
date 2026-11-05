@@ -583,3 +583,61 @@ html.high-contrast .answer-option:has(input:checked) input { accent-color: #fff;
 /* Preview site only (FINDER_CONFIG.preview): a plain label above the prototype notice. */
 .preview-bar { max-width: 52rem; margin: 0 auto 1rem; padding: .6rem 1rem; background: #fff; border: 2px dashed var(--blue); border-radius: 10px; color: var(--dark-blue); font-weight: 700; text-align: center; }
 html.high-contrast .preview-bar { border-color: #000; color: #000; }
+
+/* ---------- Help with abuse and safety ---------- */
+/* Main page footer: the emergency text, with the "Help with abuse and safety" button beside it. */
+.footer-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1.5rem; }
+.footer-row p { flex: 1 1 26rem; min-width: 0; }
+.safety-btn { display: inline-flex; align-items: center; gap: .5rem; max-width: 100%; min-height: 2.75rem; padding: .3rem 1rem; background: #fff; border: 2px solid var(--crisis); border-radius: 8px; font: 700 1rem/1.2 var(--heading-font); text-decoration: none; }
+.site-footer a.safety-btn { color: var(--crisis); }
+.safety-btn:hover { background: var(--crisis-bg); }
+.safety-btn svg { flex: none; }
+@media (max-width: 760px) { .safety-btn { min-height: 2.5rem; padding: .2rem .8rem; font-size: .95rem; } }
+/* The link to the safety page at the end of the urgent support panel in a reply. */
+.crisis .safety-link { font-weight: 700; }
+
+/* safety.html */
+.safety-page .site-header { position: sticky; top: 0; z-index: 5; }
+.quick-exit { display: inline-flex; align-items: center; gap: .5rem; max-width: 100%; min-height: 2.75rem; padding: .3rem 1.1rem; background: var(--crisis); color: #fff; border-radius: 8px; font: 700 1.05rem/1.2 var(--heading-font); text-decoration: none; }
+.quick-exit:hover { background: #6b1515; color: #fff; }
+.safety-intro { max-width: 44rem; margin: 0 auto 1.5rem; text-align: center; font-size: 1.125rem; }
+.danger { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; margin: 0 0 1.5rem; padding: 1.1rem 1.4rem; background: var(--crisis-bg); border: 2px solid var(--crisis); border-radius: 10px; color: var(--crisis); }
+.danger-text { flex: 1 1 20rem; }
+.danger h2 { margin: 0 0 .25rem; font-size: 1.35rem; }
+.danger p { margin: 0; }
+.danger p a { color: var(--crisis); font-weight: 700; }
+.danger-calls { display: flex; flex-wrap: wrap; gap: .75rem; }
+.call-btn { display: inline-flex; flex-direction: column; justify-content: center; align-self: flex-start; min-height: 3rem; padding: .35rem 1.1rem; background: var(--blue); color: #fff; border-radius: 10px; text-decoration: none; box-shadow: 0 4px 12px rgba(11, 92, 92, .25); font-family: var(--heading-font); }
+a.call-btn, a.call-btn:hover { color: #fff; }
+.call-btn:hover { background: #094f4f; }
+.call-btn.call-urgent { background: var(--crisis); box-shadow: none; }
+.call-btn.call-urgent:hover { background: #6b1515; }
+.call-num { font-size: 1.3rem; font-weight: 700; line-height: 1.2; white-space: nowrap; direction: ltr; unicode-bidi: isolate; }
+.call-label { font-size: .875rem; font-weight: 500; }
+.safety-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(17.5rem, 100%), 1fr)); gap: 1.25rem; align-items: start; }
+.safety-card { display: flex; flex-direction: column; gap: 1rem; padding: 1.4rem; background: #fff; border: 1px solid var(--border); border-radius: 10px; }
+.safety-card h2 { display: flex; align-items: center; gap: .6rem; margin: 0; font-size: 1.35rem; line-height: 1.25; color: var(--dark-blue); }
+.safety-card h2 svg { flex: none; width: 2.5rem; height: 2.5rem; padding: .55rem; border-radius: 50%; background: var(--light); color: var(--blue); }
+.safety-contact { display: flex; flex-direction: column; gap: .4rem; padding-bottom: 1rem; border-bottom: 1px solid #eee5d3; }
+.safety-contact h3 { margin: 0; font-size: 1.1rem; }
+.safety-contact p { margin: 0; font-size: .95rem; color: var(--grey); }
+.safety-contact p.safety-hours { color: var(--text); }
+.safety-card a[href^="mailto:"] { overflow-wrap: anywhere; }
+.safety-card a:not(.call-btn) { color: var(--blue); }
+.safety-card a:not(.call-btn):hover { color: var(--dark-blue); }
+.safety-note, .safety-more-lines { margin: 0; padding: .7rem .9rem; background: var(--mint); border-radius: 8px; font-size: .95rem; }
+.safety-more-lines summary { cursor: pointer; font-weight: 700; color: var(--dark-blue); min-height: 1.75rem; }
+.safety-more-lines ul, .safety-list { display: flex; flex-direction: column; gap: .4rem; margin: .6rem 0 0; padding-inline-start: 1.2rem; }
+.safety-list { margin: 0; font-size: .95rem; }
+.safety-link-out { margin: 0; font-weight: 600; }
+.safety-meta { margin-top: 1.5rem; font-size: .95rem; color: var(--grey); }
+.safety-meta p { margin: 0 0 .3rem; }
+html.high-contrast .safety-btn { border-color: #000; }
+html.high-contrast .site-footer a.safety-btn { color: #000; }
+html.high-contrast .call-btn { background: #000; box-shadow: none; }
+html.high-contrast .call-btn.call-urgent,
+html.high-contrast .quick-exit { background: var(--crisis); }
+html.high-contrast .safety-card,
+html.high-contrast .safety-note,
+html.high-contrast .safety-more-lines { border: 2px solid #000; }
+html.high-contrast .safety-card h2 svg { background: #fff; border: 2px solid #000; color: #000; }

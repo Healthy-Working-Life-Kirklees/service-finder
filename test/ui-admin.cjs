@@ -278,6 +278,9 @@ async function worker(route) {
   await page.waitForFunction(() => document.querySelectorAll('.crisis').length === 2);
   const abuse = await page.locator('.crisis').nth(1).textContent();
   check('main: domestic abuse panel has 999 and NHS 111, and no mental health number', abuse.includes('999') && abuse.includes('NHS 111') && !abuse.includes('01924'), abuse);
+  const abusePanel = page.locator('.crisis').nth(1);
+  check('main: domestic abuse panel gives the checked helplines as tap-to-call links', (await abusePanel.locator('a[href="tel:08000527222"]').count()) === 1 && (await abusePanel.locator('a[href="tel:08082000247"]').count()) === 1);
+  check('main: domestic abuse panel links to the safety contacts page', (await abusePanel.locator('a.safety-link').getAttribute('href') || '').startsWith('safety.html'));
   await page.fill('#message', 'I am unsure what I need');
   await chooseMode(page);
   await page.click('#send');
@@ -862,6 +865,29 @@ async function worker(route) {
   await page.waitForSelector('#list .entry');
   const overLog = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   check('phone width: no sideways scrolling on the open log', overLog <= 1, 'overflow ' + overLog + 'px');
+
+  // ---------- help with abuse and safety (safety.html) ----------
+  for (const q of ['', '?size=3&contrast=high', '?lang=ur&size=3', '?lang=pl']) await phoneOver('safety page ' + (q || 'default'), '/safety.html' + q);
+  await page.setViewportSize({ width: 1000, height: 900 });
+  await page.goto(ON + '/?lang=pl');
+  await page.click('#safety-link');
+  await page.waitForURL(/safety\.html\?lang=pl/);
+  check('safety: the footer button opens the safety page in the same language', (await page.locator('h1').textContent()).startsWith('Pomoc'));
+  check('safety: numbers in translated text are tap-to-call links', (await page.locator('a[href="tel:01484414960"]').count()) === 1 && (await page.locator('a[href="tel:08001111"]').count()) === 1);
+  await page.goto(ON + '/safety.html?lang=ur');
+  check('safety: Urdu page is right to left with its own title', (await page.evaluate(() => document.documentElement.dir)) === 'rtl' && (await page.title()).includes('زیادتی'));
+  await page.goto(ON + '/safety.html');
+  check('safety: every number on the page is a tap-to-call link', (await page.locator('a[href^="tel:"]').count()) >= 18);
+  await page.click('#back-link');
+  await page.waitForURL((u) => !u.pathname.endsWith('safety.html'));
+  check('safety: back link returns to the main page', (await page.locator('#message').count()) === 1);
+  await page.goto(ON + '/safety.html');
+  await page.route('https://www.bbc.co.uk/**', (r) => r.fulfill({ status: 200, contentType: 'text/html', body: '<title>Weather</title>' }));
+  await page.click('#quick-exit');
+  await page.waitForURL(/bbc\.co\.uk\/weather/);
+  await page.goBack();
+  check('safety: quick exit replaces the page, so Back does not return to it', !page.url().endsWith('safety.html'), page.url());
+  await page.unroute('https://www.bbc.co.uk/**');
 
   // ---------- old /mvp/ addresses ----------
   // The Pages workflow publishes small redirect pages at /mvp/; this local build doesn't, so only check the config.

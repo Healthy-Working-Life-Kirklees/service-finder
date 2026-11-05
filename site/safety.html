@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>Help with safety and abuse | Healthy Working Life Support Finder</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<!--
+  Help with abuse and safety: domestic abuse, child safeguarding and adult safeguarding contacts.
+  Reached from "Help with abuse and safety" in the main page footer, and from the urgent support panel in a reply.
+
+  Every phone number here was checked by the programme team on 5 November 2026 against an official source
+  (Kirklees Council, the Kirklees Safeguarding Children Partnership "Duty and Advice quick reference numbers",
+  Pennine Domestic Abuse Partnership, Refuge). Don't add or change a number from a general web search. The same
+  numbers are in i18n.js (urgent*) for the reply panel: change both together, and the "last checked" date.
+
+  The page text is in i18n.js (keys from safetyLink to safetyHistory), so it follows the language switcher.
+  Service names stay in English. Nothing is counted or stored on this page.
+-->
+<body class="safety-page" data-title-key="safetyTitle">
+  <a class="skip" href="#main" data-i18n="safetySkip">Skip to the contacts</a>
+
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="brand-logo" id="home-link" href="./" aria-label="Healthy Working Life Support Finder: main page" data-i18n-label="homeLink"><img src="img/hwl-partner-logo.webp" width="343" height="56" alt="West Yorkshire Combined Authority, Tracy Brabin Mayor of West Yorkshire, and Healthy Working Life" data-i18n-alt="logoAlt"></a>
+      <div class="header-tools">
+        <a class="dir-btn" id="back-link" href="./">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+          <span data-i18n="safetyBack">Back to the Support Finder</span>
+        </a>
+        <div class="lang-switch">
+          <label for="lang-select">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20a15 15 0 0 1 0-20z"/></svg>
+            <span class="visually-hidden" data-i18n="langNav">Language</span>
+          </label>
+          <select id="lang-select"></select>
+        </div>
+        <!-- Quick exit: replaces this page with BBC Weather, so the browser's Back button doesn't return here. -->
+        <a class="quick-exit" id="quick-exit" href="https://www.bbc.co.uk/weather" rel="noreferrer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          <span data-i18n="quickExit">Leave this site quickly</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="wrap safety">
+    <h1 class="page-title" data-i18n="safetyHeading">Help with safety and abuse</h1>
+    <p class="safety-intro" data-i18n="safetyIntro">If you're worried about yourself, someone you support, a child or an adult at risk, these services can help. Tap a number to call it.</p>
+
+    <section class="danger" aria-labelledby="danger-heading">
+      <div class="danger-text">
+        <h2 id="danger-heading" data-i18n="dangerHeading">Is someone in immediate danger?</h2>
+        <p data-i18n-tel="dangerText">Call the police on 999. If you can't speak, call 999 and then press 55 when asked.</p>
+      </div>
+      <div class="danger-calls">
+        <a class="call-btn call-urgent" href="tel:999"><span class="call-num">999</span><span class="call-label" data-i18n="dangerEmergency">Emergency</span></a>
+        <a class="call-btn" href="tel:101"><span class="call-num">101</span><span class="call-label" data-i18n="dangerPolice">Police, not an emergency</span></a>
+      </div>
+    </section>
+
+    <div class="safety-grid">
+      <section class="safety-card" aria-labelledby="da-heading">
+        <h2 id="da-heading">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>
+          <span data-i18n="daHeading">Domestic abuse</span>
+        </h2>
+        <div class="safety-contact">
+          <h3 lang="en" dir="ltr">Pennine Domestic Abuse Partnership</h3>
+          <p data-i18n="daLocal">Local support for anyone aged 16 or over living in Kirklees</p>
+          <a class="call-btn" href="tel:08000527222"><span class="call-num">0800 052 7222</span></a>
+          <p class="safety-hours" data-i18n="open24">Open 24 hours. Free to call.</p>
+        </div>
+        <div class="safety-contact">
+          <h3 lang="en" dir="ltr">National Domestic Abuse Helpline</h3>
+          <p data-i18n="daNational">National helpline, run by Refuge</p>
+          <a class="call-btn" href="tel:08082000247"><span class="call-num">0808 2000 247</span></a>
+          <p class="safety-hours" data-i18n="open24">Open 24 hours. Free to call.</p>
+        </div>
+        <details class="safety-more-lines">
+          <summary data-i18n="daSpecialist">Specialist helplines</summary>
+          <ul>
+            <li data-i18n-tel="daMen">Men's Advice Line: 0800 801 0327</li>
+            <li data-i18n-tel="daLgbt">Galop, for LGBT+ people: 0800 999 5428</li>
+            <li data-i18n-tel="daForced">Karma Nirvana, for forced marriage and honour-based abuse: 0800 5999 247</li>
+          </ul>
+        </details>
+        <p class="safety-link-out"><a href="https://www.kirklees.gov.uk/domestic-abuse" data-i18n="daMore">More about domestic abuse support in Kirklees</a></p>
+      </section>
+
+      <section class="safety-card" aria-labelledby="child-heading">
+        <h2 id="child-heading">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="3"/><path d="M7 21v-2a5 5 0 0 1 10 0v2"/></svg>
+          <span data-i18n="childHeading">Worried about a child</span>
+        </h2>
+        <div class="safety-contact">
+          <h3 lang="en" dir="ltr">Children's Services: Duty and Advice</h3>
+          <p data-i18n="childPublic">For members of the public. 9am to 5pm, office hours.</p>
+          <a class="call-btn" href="tel:01484456848"><span class="call-num">01484 456848</span></a>
+          <p class="safety-hours"><a href="mailto:dutyandadvice@kirklees.gov.uk">dutyandadvice@kirklees.gov.uk</a></p>
+        </div>
+        <p class="safety-note" data-i18n-tel="childOut">Outside 9am to 5pm: if a child is in immediate danger, call 999. Otherwise, call the relevant service, such as the NSPCC helpline below.</p>
+        <ul class="safety-list">
+          <li data-i18n-tel="childNspcc">NSPCC helpline, for adults worried about a child: 0808 800 5000</li>
+          <li data-i18n-tel="childIfChild">If you are a child, call 01484 456848 or Childline on 0800 1111. Calls are free.</li>
+          <li><span data-i18n-tel="childPro">Professionals (24 hours): call Duty and Advice on 01484 414960.</span> <a href="https://www.kirkleessafeguardingchildren.co.uk/safeguarding-2/safeguarding-processes-and-systems/duty-and-advice/" data-i18n="childProForm">Then fill in the Duty and Advice contact form</a></li>
+        </ul>
+        <p class="safety-link-out"><a href="https://www.kirkleessafeguardingchildren.co.uk/reporting-child-abuse/" data-i18n="childMore">Worried about a child? Kirklees Safeguarding Children Partnership</a></p>
+      </section>
+
+      <section class="safety-card" aria-labelledby="adult-heading">
+        <h2 id="adult-heading">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.4-9.3-9A5.3 5.3 0 0 1 12 6a5.3 5.3 0 0 1 9.3 6c-2.3 4.6-9.3 9-9.3 9z"/></svg>
+          <span data-i18n="adultHeading">Worried about an adult at risk</span>
+        </h2>
+        <div class="safety-contact">
+          <h3 lang="en" dir="ltr">Community Health and Social Care Hub</h3>
+          <p data-i18n="adultHub">Kirklees adult social care. Monday to Thursday 8am to 5pm, Friday 8am to 4.45pm.</p>
+          <a class="call-btn" href="tel:03003045555"><span class="call-num">0300 304 5555</span></a>
+        </div>
+        <div class="safety-contact">
+          <h3 lang="en" dir="ltr">Emergency Duty Team</h3>
+          <p data-i18n="adultEdt">For urgent concerns on weekday evenings and nights, at weekends and on bank holidays.</p>
+          <a class="call-btn" href="tel:01484414933"><span class="call-num">01484 414933</span></a>
+        </div>
+        <p class="safety-note"><a href="https://www.kirklees.gov.uk/report-adult-safeguarding" data-i18n="adultPro">Professionals and care homes: report an adult safeguarding concern online</a></p>
+        <p class="safety-link-out"><a href="https://www.kirklees.gov.uk/beta/adult-protection/report-abuse.aspx" data-i18n="adultMore">Report abuse of an adult: Kirklees Council</a></p>
+      </section>
+    </div>
+
+    <div class="safety-meta">
+      <p data-i18n="safetyChecked">Phone numbers last checked: 5 November 2026.</p>
+      <p data-i18n="safetyHistory">Your browser history may show that you visited this page. "Leave this site quickly" opens the BBC Weather website.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><strong data-i18n="footerStrong">In an emergency call 999.</strong> <span data-i18n="footerA">For urgent mental health support in Kirklees, call the 24-hour Single Point of Access team on </span><a href="tel:01924316830">01924 316830</a><span data-i18n="footerB"> or call NHS 111.</span></p>
+    </div>
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="access.js"></script>
+  <script src="safety.js"></script>
+</body>
+</html>

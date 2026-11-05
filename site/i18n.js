@@ -257,6 +257,47 @@
       fbSomethingElse: 'Something else',
       fbSupportArea: "Which area were you looking in?",
       fbThanksGap: "Thank you. We'll look into it, and add services that check out.",
+      // Help with abuse and safety: the footer button, the urgent support panel and safety.html.
+      // Phone numbers written in this text become tap-to-call links. Keep them exactly as checked.
+      safetyLink: 'Help with abuse and safety',
+      urgentDomesticAbuse: 'For domestic abuse support, call Pennine Domestic Abuse Partnership on 0800 052 7222 or the National Domestic Abuse Helpline on 0808 2000 247. Both are free and open 24 hours.',
+      urgentChild: "If you're worried about a child in Kirklees, call Children's Services Duty and Advice on 01484 456848 (9am to 5pm). Professionals can call 01484 414960 at any time.",
+      urgentAdult: "If you're worried about an adult at risk, call Kirklees adult social care on 0300 304 5555 during office hours, or 01484 414933 out of hours.",
+      urgentAll: 'See all safety and abuse contacts',
+      safetyTitle: 'Help with safety and abuse | Healthy Working Life Support Finder',
+      safetySkip: 'Skip to the contacts',
+      safetyBack: 'Back to the Support Finder',
+      quickExit: 'Leave this site quickly',
+      safetyHeading: 'Help with safety and abuse',
+      safetyIntro: "If you're worried about yourself, someone you support, a child or an adult at risk, these services can help. Tap a number to call it.",
+      dangerHeading: 'Is someone in immediate danger?',
+      dangerText: "Call the police on 999. If you can't speak, call 999 and then press 55 when asked.",
+      dangerEmergency: 'Emergency',
+      dangerPolice: 'Police, not an emergency',
+      daHeading: 'Domestic abuse',
+      daLocal: 'Local support for anyone aged 16 or over living in Kirklees',
+      daNational: 'National helpline, run by Refuge',
+      open24: 'Open 24 hours. Free to call.',
+      daSpecialist: 'Specialist helplines',
+      daMen: "Men's Advice Line: 0800 801 0327",
+      daLgbt: 'Galop, for LGBT+ people: 0800 999 5428',
+      daForced: 'Karma Nirvana, for forced marriage and honour-based abuse: 0800 5999 247',
+      daMore: 'More about domestic abuse support in Kirklees',
+      childHeading: 'Worried about a child',
+      childPublic: 'For members of the public. 9am to 5pm, office hours.',
+      childOut: 'Outside 9am to 5pm: if a child is in immediate danger, call 999. Otherwise, call the relevant service, such as the NSPCC helpline below.',
+      childNspcc: 'NSPCC helpline, for adults worried about a child: 0808 800 5000',
+      childIfChild: 'If you are a child, call 01484 456848 or Childline on 0800 1111. Calls are free.',
+      childPro: 'Professionals (24 hours): call Duty and Advice on 01484 414960.',
+      childProForm: 'Then fill in the Duty and Advice contact form',
+      childMore: 'Worried about a child? Kirklees Safeguarding Children Partnership',
+      adultHeading: 'Worried about an adult at risk',
+      adultHub: 'Kirklees adult social care. Monday to Thursday 8am to 5pm, Friday 8am to 4.45pm.',
+      adultEdt: 'For urgent concerns on weekday evenings and nights, at weekends and on bank holidays.',
+      adultPro: 'Professionals and care homes: report an adult safeguarding concern online',
+      adultMore: 'Report abuse of an adult: Kirklees Council',
+      safetyChecked: 'Phone numbers last checked: 5 November 2026.',
+      safetyHistory: 'Your browser history may show that you visited this page. "Leave this site quickly" opens the BBC Weather website.',
     },
 
     pl: {
@@ -499,6 +540,45 @@
       fbSomethingElse: 'Coś innego',
       fbSupportArea: "W jakiej okolicy szukałeś(-aś)?",
       fbThanksGap: 'Dziękujemy. Sprawdzimy to i dodamy usługi, które się potwierdzą.',
+      safetyLink: 'Pomoc w sprawie przemocy i bezpieczeństwa',
+      urgentDomesticAbuse: 'Wsparcie w sprawie przemocy domowej: zadzwoń do Pennine Domestic Abuse Partnership pod numer 0800 052 7222 lub do krajowej infolinii National Domestic Abuse Helpline pod numer 0808 2000 247. Obie linie są bezpłatne i czynne całą dobę.',
+      urgentChild: 'Jeśli martwisz się o dziecko w Kirklees, zadzwoń do zespołu Duty and Advice w Children’s Services pod numer 01484 456848 (od 9:00 do 17:00). Specjaliści mogą dzwonić o każdej porze pod numer 01484 414960.',
+      urgentAdult: 'Jeśli martwisz się o osobę dorosłą zagrożoną krzywdą, zadzwoń do opieki społecznej dla dorosłych w Kirklees pod numer 0300 304 5555 w godzinach pracy lub pod numer 01484 414933 poza godzinami pracy.',
+      urgentAll: 'Zobacz wszystkie kontakty w sprawie przemocy i bezpieczeństwa',
+      safetyTitle: 'Pomoc w sprawie przemocy i bezpieczeństwa | Healthy Working Life',
+      safetySkip: 'Przejdź do kontaktów',
+      safetyBack: 'Wróć do wyszukiwarki wsparcia',
+      quickExit: 'Szybko opuść tę stronę',
+      safetyHeading: 'Pomoc w sprawie przemocy i bezpieczeństwa',
+      safetyIntro: 'Jeśli martwisz się o siebie, o osobę, której pomagasz, o dziecko lub o osobę dorosłą zagrożoną krzywdą, te służby mogą pomóc. Dotknij numeru, aby zadzwonić.',
+      dangerHeading: 'Czy ktoś jest w bezpośrednim niebezpieczeństwie?',
+      dangerText: 'Zadzwoń na policję pod numer 999. Jeśli nie możesz mówić, zadzwoń pod 999, a gdy usłyszysz prośbę, naciśnij 55.',
+      dangerEmergency: 'Nagły wypadek',
+      dangerPolice: 'Policja, sprawy niepilne',
+      daHeading: 'Przemoc domowa',
+      daLocal: 'Lokalne wsparcie dla każdej osoby w wieku 16 lat i starszej mieszkającej w Kirklees',
+      daNational: 'Krajowa infolinia prowadzona przez organizację Refuge',
+      open24: 'Czynne całą dobę. Połączenie bezpłatne.',
+      daSpecialist: 'Specjalistyczne infolinie',
+      daMen: 'Men’s Advice Line (dla mężczyzn): 0800 801 0327',
+      daLgbt: 'Galop, dla osób LGBT+: 0800 999 5428',
+      daForced: 'Karma Nirvana, w sprawie małżeństw przymusowych i przemocy w imię „honoru”: 0800 5999 247',
+      daMore: 'Więcej o wsparciu w sprawie przemocy domowej w Kirklees (EN)',
+      childHeading: 'Martwisz się o dziecko',
+      childPublic: 'Dla osób prywatnych. Od 9:00 do 17:00, w godzinach pracy.',
+      childOut: 'Poza godzinami 9:00–17:00: jeśli dziecko jest w bezpośrednim niebezpieczeństwie, zadzwoń pod 999. W innym przypadku zadzwoń do odpowiedniej służby, na przykład na infolinię NSPCC podaną niżej.',
+      childNspcc: 'Infolinia NSPCC dla dorosłych, którzy martwią się o dziecko: 0808 800 5000',
+      childIfChild: 'Jeśli jesteś dzieckiem, zadzwoń pod numer 01484 456848 lub do Childline pod numer 0800 1111. Połączenia są bezpłatne.',
+      childPro: 'Specjaliści (całą dobę): zadzwoń do Duty and Advice pod numer 01484 414960.',
+      childProForm: 'Następnie wypełnij formularz kontaktowy Duty and Advice (EN)',
+      childMore: 'Martwisz się o dziecko? Kirklees Safeguarding Children Partnership (EN)',
+      adultHeading: 'Martwisz się o osobę dorosłą zagrożoną krzywdą',
+      adultHub: 'Opieka społeczna dla dorosłych w Kirklees. Od poniedziałku do czwartku 8:00–17:00, w piątek 8:00–16:45.',
+      adultEdt: 'W pilnych sprawach w dni powszednie wieczorem i w nocy, w weekendy i w święta państwowe (bank holidays).',
+      adultPro: 'Specjaliści i domy opieki: zgłoś przez internet obawy dotyczące ochrony osoby dorosłej (EN)',
+      adultMore: 'Zgłoś krzywdzenie osoby dorosłej: Kirklees Council (EN)',
+      safetyChecked: 'Numery telefonów sprawdzono: 5 listopada 2026 r.',
+      safetyHistory: 'Historia przeglądarki może pokazywać, że odwiedzono tę stronę. Przycisk „Szybko opuść tę stronę” otwiera stronę BBC Weather.',
     },
 
     ur: {
@@ -741,6 +821,45 @@
       fbSomethingElse: 'کچھ اور',
       fbSupportArea: "آپ کس علاقے میں تلاش کر رہے تھے؟",
       fbThanksGap: 'شکریہ۔ ہم اس کا جائزہ لیں گے، اور جو سروسز درست ثابت ہوں انہیں شامل کریں گے۔',
+      safetyLink: 'زیادتی اور حفاظت کے بارے میں مدد',
+      urgentDomesticAbuse: 'گھریلو زیادتی کے بارے میں مدد کے لیے Pennine Domestic Abuse Partnership کو 0800 052 7222 پر یا National Domestic Abuse Helpline کو 0808 2000 247 پر کال کریں۔ دونوں مفت ہیں اور 24 گھنٹے کھلی رہتی ہیں۔',
+      urgentChild: 'اگر آپ کو کرکلیز میں کسی بچے کے بارے میں فکر ہے تو Children’s Services کی Duty and Advice ٹیم کو 01484 456848 پر کال کریں (صبح 9 بجے سے شام 5 بجے تک)۔ پیشہ ور افراد کسی بھی وقت 01484 414960 پر کال کر سکتے ہیں۔',
+      urgentAdult: 'اگر آپ کو کسی ایسے بالغ کے بارے میں فکر ہے جسے نقصان کا خطرہ ہو تو دفتری اوقات میں کرکلیز ایڈلٹ سوشل کیئر کو 0300 304 5555 پر، اور دفتری اوقات کے بعد 01484 414933 پر کال کریں۔',
+      urgentAll: 'زیادتی اور حفاظت سے متعلق تمام رابطے دیکھیں',
+      safetyTitle: 'زیادتی اور حفاظت کے بارے میں مدد | Healthy Working Life',
+      safetySkip: 'رابطوں پر جائیں',
+      safetyBack: 'مدد کی تلاش پر واپس جائیں',
+      quickExit: 'یہ سائٹ فوراً چھوڑیں',
+      safetyHeading: 'زیادتی اور حفاظت کے بارے میں مدد',
+      safetyIntro: 'اگر آپ کو اپنے بارے میں، کسی ایسے شخص کے بارے میں جس کی آپ مدد کرتے ہیں، کسی بچے یا کسی خطرے میں موجود بالغ کے بارے میں فکر ہے تو یہ سروسز مدد کر سکتی ہیں۔ کال کرنے کے لیے نمبر پر ٹیپ کریں۔',
+      dangerHeading: 'کیا کوئی فوری خطرے میں ہے؟',
+      dangerText: 'پولیس کو 999 پر کال کریں۔ اگر آپ بول نہیں سکتے تو 999 پر کال کریں اور کہا جانے پر 55 دبائیں۔',
+      dangerEmergency: 'ایمرجنسی',
+      dangerPolice: 'پولیس، غیر ہنگامی',
+      daHeading: 'گھریلو زیادتی',
+      daLocal: 'کرکلیز میں رہنے والے 16 سال یا اس سے زیادہ عمر کے ہر شخص کے لیے مقامی مدد',
+      daNational: 'قومی ہیلپ لائن، جسے Refuge چلاتی ہے',
+      open24: '24 گھنٹے کھلی۔ کال مفت ہے۔',
+      daSpecialist: 'خصوصی ہیلپ لائنز',
+      daMen: 'Men’s Advice Line (مردوں کے لیے): 0800 801 0327',
+      daLgbt: 'Galop، LGBT+ افراد کے لیے: 0800 999 5428',
+      daForced: 'Karma Nirvana، جبری شادی اور نام نہاد غیرت کے نام پر زیادتی کے لیے: 0800 5999 247',
+      daMore: 'کرکلیز میں گھریلو زیادتی سے متعلق مدد کے بارے میں مزید (EN)',
+      childHeading: 'کسی بچے کے بارے میں فکر',
+      childPublic: 'عام لوگوں کے لیے۔ صبح 9 بجے سے شام 5 بجے تک، دفتری اوقات۔',
+      childOut: 'صبح 9 بجے سے شام 5 بجے کے علاوہ: اگر کوئی بچہ فوری خطرے میں ہے تو 999 پر کال کریں۔ ورنہ متعلقہ سروس سے رابطہ کریں، جیسے نیچے دی گئی NSPCC ہیلپ لائن۔',
+      childNspcc: 'NSPCC ہیلپ لائن، ان بالغوں کے لیے جنہیں کسی بچے کے بارے میں فکر ہے: 0808 800 5000',
+      childIfChild: 'اگر آپ بچے ہیں تو 01484 456848 پر یا Childline کو 0800 1111 پر کال کریں۔ کالیں مفت ہیں۔',
+      childPro: 'پیشہ ور افراد (24 گھنٹے): Duty and Advice کو 01484 414960 پر کال کریں۔',
+      childProForm: 'پھر Duty and Advice کا رابطہ فارم بھریں (EN)',
+      childMore: 'کسی بچے کے بارے میں فکر ہے؟ Kirklees Safeguarding Children Partnership (EN)',
+      adultHeading: 'کسی خطرے میں موجود بالغ کے بارے میں فکر',
+      adultHub: 'کرکلیز ایڈلٹ سوشل کیئر۔ پیر سے جمعرات صبح 8 بجے سے شام 5 بجے تک، جمعہ صبح 8 بجے سے شام 4:45 تک۔',
+      adultEdt: 'فوری معاملات کے لیے: ہفتے کے دنوں میں شام اور رات کو، ویک اینڈ پر اور بینک ہالیڈیز پر۔',
+      adultPro: 'پیشہ ور افراد اور کیئر ہومز: کسی بالغ کے تحفظ سے متعلق تشویش آن لائن رپورٹ کریں (EN)',
+      adultMore: 'کسی بالغ کے ساتھ زیادتی کی رپورٹ کریں: Kirklees Council (EN)',
+      safetyChecked: 'فون نمبر آخری بار چیک کیے گئے: 5 نومبر 2026۔',
+      safetyHistory: 'ہو سکتا ہے آپ کے براؤزر کی ہسٹری میں دکھائی دے کہ آپ نے یہ صفحہ دیکھا ہے۔ "یہ سائٹ فوراً چھوڑیں" بٹن BBC Weather کی ویب سائٹ کھولتا ہے۔',
     },
   };
 
@@ -754,13 +873,35 @@
     return v.replace(/\{(\w+)\}/g, (_, k) => (k in vars ? vars[k] : ''));
   }
 
-  // Fill in every element marked with data-i18n (text), data-i18n-placeholder or data-i18n-label (aria-label).
+  // UK phone numbers (and 999, 101, 111) in a piece of text, for turning into tap-to-call links.
+  const TEL_RE = /\b(?:0\d{3,4} ?\d{3,4}(?: ?\d{3,4})?|999|101|111)\b/g;
+
+  // The text as a list of text and <a href="tel:..."> nodes. No HTML is ever parsed.
+  function telNodes(text) {
+    const nodes = [];
+    let last = 0;
+    for (const m of String(text).matchAll(TEL_RE)) {
+      if (m.index > last) nodes.push(document.createTextNode(text.slice(last, m.index)));
+      const a = document.createElement('a');
+      a.href = 'tel:' + m[0].replace(/\s/g, '');
+      a.textContent = m[0];
+      nodes.push(a);
+      last = m.index + m[0].length;
+    }
+    if (last < text.length) nodes.push(document.createTextNode(text.slice(last)));
+    return nodes;
+  }
+
+  // Fill in every element marked with data-i18n (text), data-i18n-tel (text with its phone numbers as links),
+  // data-i18n-placeholder or data-i18n-label (aria-label). A page can name its own title with
+  // <body data-title-key="...">.
   function applyStatic() {
     const info = LANGS[current];
     document.documentElement.lang = current === 'en' ? 'en-GB' : current;
     document.documentElement.dir = info.dir;
-    document.title = t('pageTitle');
+    document.title = t((document.body && document.body.dataset.titleKey) || 'pageTitle');
     for (const n of document.querySelectorAll('[data-i18n]')) n.textContent = t(n.dataset.i18n);
+    for (const n of document.querySelectorAll('[data-i18n-tel]')) n.replaceChildren(...telNodes(t(n.dataset.i18nTel)));
     for (const n of document.querySelectorAll('[data-i18n-placeholder]')) n.placeholder = t(n.dataset.i18nPlaceholder);
     for (const n of document.querySelectorAll('[data-i18n-label]')) n.setAttribute('aria-label', t(n.dataset.i18nLabel));
     for (const n of document.querySelectorAll('[data-i18n-alt]')) n.alt = t(n.dataset.i18nAlt);
@@ -795,6 +936,7 @@
 
   window.I18N = {
     t,
+    telNodes,
     set,
     get lang() { return current; },
     get locale() { return LANGS[current].locale; },
