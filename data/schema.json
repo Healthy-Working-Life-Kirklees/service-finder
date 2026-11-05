@@ -117,7 +117,7 @@
       }
     },
     "listing": {
-      "description": "Whether the service is on the live list. Only 'include' services reach the public page and the AI. The MVP team decides on the All services page; scripts/apply-decisions.mjs writes their decisions here.",
+      "description": "Whether the service is on the live list. Only 'include' services reach the public page and the AI. The development team decides on the All services page; scripts/apply-decisions.mjs writes their decisions here.",
       "type": "object",
       "additionalProperties": false,
       "required": ["decision", "reason"],

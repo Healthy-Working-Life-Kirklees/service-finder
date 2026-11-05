@@ -1,5 +1,5 @@
 {
-  "note": "Starter entries for the MVP issues and actions log. The log page offers to load these when the log is empty. No personal or identifying information in here.",
+  "note": "Starter entries for the issues and actions log. The log page offers to load these when the log is empty. No personal or identifying information in here.",
   "items": [
     {
       "type": "Action", "area": "Data accuracy", "priority": "High", "owner": "Phil", "status": "Open",
@@ -70,11 +70,6 @@
       "type": "Action", "area": "Technical", "priority": "Low", "owner": "", "status": "Open",
       "title": "Remove the error detail from failed chat responses",
       "details": "The Worker adds Anthropic's error message to failed responses, to help diagnose problems. It never includes anything a user typed, but it is not needed once things are stable."
-    },
-    {
-      "type": "Action", "area": "Process and governance", "priority": "Medium", "owner": "Phil", "status": "Open",
-      "title": "Take the help page and this log out of the wider test version",
-      "details": "Set the repository variable MVP_TOOLS to false (or delete it), re-run the Pages deploy, and delete the TEAM_PASSCODE secret on the Worker. The pages and the team links then disappear."
     },
     {
       "type": "Action", "area": "Technical", "priority": "High", "owner": "Phil", "status": "Done",

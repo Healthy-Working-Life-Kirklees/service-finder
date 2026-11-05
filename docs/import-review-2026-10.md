@@ -75,7 +75,7 @@ Where phone or online support is offered, these are matched as `Kirklees-wide`. 
 
 - [ ] The new card wording (regional/national service, needs a referral, cost, languages and formats) and the new trigger words for convictions, bereavement and gambling have first-draft Polish and Urdu. Add them to the translator's list.
 
-## 8. Services added for the MVP team to review (16 October 2026)
+## 8. Services added for the development team to review (16 October 2026)
 
 47 more services were added with `"listing": {"decision": "review"}`, so they are **not** on the live finder until the team decides. Work through them on the All services page (filter "Live list: Waiting for review"), choosing include, further review or exclude for each.
 

@@ -9,7 +9,7 @@
   const AREAS = ['Matching quality', 'Data accuracy', 'Wording and content', 'Safety', 'Technical', 'Process and governance', 'Other'];
   const PRIORITIES = ['High', 'Medium', 'Low'];
   const STATUSES = ['Open', 'In progress', 'Done', "Won't do"];
-  // One passcode for all the MVP pages, shared through team-auth.js.
+  // One passcode for all the Admin pages, shared through team-auth.js.
   const AUTH = window.TEAM_AUTH || { PASS_KEY: 'hwlTeamPass', BY_KEY: 'hwlLogBy', refresh: () => {} };
   const PASS_KEY = AUTH.PASS_KEY;
   const BY_KEY = AUTH.BY_KEY;
@@ -92,7 +92,7 @@
       pass = '';
       store.del(PASS_KEY);
     AUTH.refresh();
-      showGate(e.status === 404 ? 'The MVP team pages have not been switched on yet (the TEAM_PASSCODE secret is not set). Ask Phil.' : e.status === 401 ? 'That passcode is not right.' : e.message);
+      showGate(e.status === 404 ? 'Admin has not been switched on yet (the TEAM_PASSCODE secret is not set). Ask Phil.' : e.status === 401 ? 'That passcode is not right.' : e.message);
       return;
     }
     store.set(PASS_KEY, pass);

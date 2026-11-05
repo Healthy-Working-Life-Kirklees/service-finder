@@ -1,7 +1,7 @@
-/* MVP team pages (help + issues log). Loaded after ../style.css. */
+/* Admin pages. Loaded after ../style.css. */
 
-.mvp-banner { background: #e8edee; border-left: 6px solid var(--blue); padding: .6rem 1rem; margin: 0 0 1rem; font-size: 1rem; }
-.mvp-banner strong { color: var(--dark-blue); }
+.admin-banner { background: #e8edee; border-left: 6px solid var(--blue); padding: .6rem 1rem; margin: 0 0 1rem; font-size: 1rem; }
+.admin-banner strong { color: var(--dark-blue); }
 
 h2 { color: var(--dark-blue); font-size: 1.35rem; margin: 2rem 0 .5rem; }
 h3 { font-size: 1.1rem; margin: 1.2rem 0 .3rem; }
@@ -208,7 +208,7 @@ td.num-cell { text-align: right; white-space: nowrap; width: 1%; }
 .apply-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; margin: .5rem 0; }
 .apply-now .msg .btn { margin-left: .25rem; }
 
-/* ---------- one sign-in for all MVP pages (team-auth.js) ---------- */
+/* ---------- one sign-in for all Admin pages (team-auth.js) ---------- */
 .teambar .team-auth { margin-left: auto; }
 .teambar .linklike { font: inherit; color: #fff; background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
 
@@ -216,3 +216,18 @@ td.num-cell { text-align: right; white-space: nowrap; width: 1%; }
 .suggest-details > summary { cursor: pointer; color: var(--blue, #005ea5); font-weight: 600; }
 .facts.suggestion { grid-template-columns: minmax(8rem, 12rem) 1fr; border-left: 3px solid #d0d7de; padding-left: .75rem; }
 .facts.suggestion dd { white-space: pre-wrap; }
+
+/* ---------- Admin home (index.html) ---------- */
+.admin-signin { max-width: 28rem; }
+.admin-signin .field input { width: 100%; }
+.admin-tools { list-style: none; padding: 0 !important; margin: 0 0 1.25rem; display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
+.admin-tools li { margin: 0; max-width: none; }
+.admin-tools a { display: block; height: 100%; padding: .9rem 1rem; border: 1px solid var(--border); border-left: 6px solid var(--blue); border-radius: 4px; background: #fff; color: var(--text); text-decoration: none; }
+.admin-tools a:hover { background: var(--light); }
+.admin-tools a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.admin-tools strong { display: block; color: var(--dark-blue); font-size: 1.1rem; margin-bottom: .2rem; text-decoration: underline; }
+.admin-tools span { display: block; font-size: .95rem; }
+
+/* Filters never push the page sideways on a phone. */
+.filters > div { min-width: 0; max-width: 100%; }
+.filters select, .filters input { max-width: 100%; }

@@ -1,4 +1,4 @@
-// Browser test for the MVP pages. Run by test/run-ui.sh (headless Chromium, mocked Worker, no real API use).
+// Browser test for the main page and the Admin pages. Run by test/run-ui.sh (headless Chromium, mocked Worker, no real API use).
 const { chromium } = require('playwright');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -6,8 +6,7 @@ const CSS_ID = (t) => t.replace(/([^a-zA-Z0-9_-])/g, '\\$1');
 const DATA = require(path.join(__dirname, '..', 'data', 'services.json')).services; // the live list
 const ALL = require(path.join(__dirname, '..', 'data', 'services-all.json')).services; // every service
 
-const ON = 'http://127.0.0.1:18480';   // build with MVP tools switched on
-const OFF = 'http://127.0.0.1:18481';  // build with MVP tools off (the wider-test version)
+const ON = 'http://127.0.0.1:18480';   // the site as the Pages workflow builds it
 const PASS = 'test-pass';
 
 let ok = 0, bad = 0;
@@ -34,7 +33,7 @@ const mk = (f, status) => {
 };
 
 // Stored feedback for the User feedback review page.
-const FB_PASS = PASS; // one team passcode for every MVP page
+const FB_PASS = PASS; // one team passcode for every Admin page
 const fbToday = new Date().toISOString().slice(0, 10);
 const fbBase = { date: fbToday, schemeIds: [], recordLastUpdated: null, helpful: null, reasons: [], text: '', missedService: null, gapCategories: [], gapArea: null, lang: 'en', mode: 'public', redacted: false, status: 'New', note: '' };
 const fbStore = [
@@ -157,10 +156,11 @@ async function worker(route) {
   page.on('console', (m) => { if (m.type() === 'error' || /Content Security Policy|Refused to/i.test(m.text())) problems.push(m.text()); });
   page.on('pageerror', (e) => problems.push('pageerror: ' + e.message));
 
-  // ---------- main page (MVP tools ON) ----------
+  // ---------- main page ----------
   await page.goto(ON + '/');
-  check('main: team bar shown when MVP tools are on', (await page.locator('.teambar a').allTextContents()).join('|').includes('Help'));
-  check('main: team bar links point at /mvp/', (await page.locator('.teambar a').evaluateAll((a) => a.map((x) => x.getAttribute('href')))).join() === 'mvp/help.html,mvp/services.html,mvp/log.html,mvp/feedback.html');
+  check('main: no team bar on the public page', (await page.locator('.teambar').count()) === 0);
+  check('main: one link to Admin, and nothing else for the team', (await page.locator('a[href^="admin/"]').evaluateAll((a) => a.map((x) => x.getAttribute('href') + '|' + x.textContent))).join() === 'admin/|Admin');
+  check('main: the word MVP is not on the page', !(await page.content()).includes('MVP'));
   check('main: "Who is this for?" has no default', (await page.locator('input[name=mode]:checked').count()) === 0);
   await page.fill('#message', 'I am 20 and anxious in Dewsbury');
   await page.click('#send');
@@ -365,8 +365,39 @@ async function worker(route) {
   check('feedback: nothing from the conversation is ever sent', fbSent.length === 6 && fbSent.every((x) => !('messages' in x) && !('understood_needs' in x) && !('message' in x)) && !everything.includes('aged 20') && !everything.includes('Here is a match'), everything);
   check('feedback: nothing stored in the browser', await page.evaluate(() => localStorage.length === 0 && sessionStorage.length === 0 && document.cookie === ''));
 
+  // ---------- Admin home and signing in ----------
+  await page.goto(ON + '/admin/help.html');
+  await page.waitForURL(/\/admin\/\?next=help\.html$/);
+  check('admin: not signed in, an Admin page sends you to sign in first', await page.locator('#gate').isVisible() && !(await page.locator('#app').isVisible()));
+  check('admin: says why', (await page.textContent('#gate-msg')).includes('Please sign in'));
+  for (const p of ['services.html', 'log.html', 'feedback.html']) {
+    await page.goto(ON + '/admin/' + p);
+    await page.waitForURL(/\/admin\/\?next=/);
+    check('admin: ' + p + ' is not shown without signing in', page.url().endsWith('?next=' + p) && (await page.locator('.svc, #list .entry').count()) === 0);
+  }
+  await page.goto(ON + '/admin/');
+  check('admin: home page asks for the passcode and a name', await page.locator('#pass').isVisible() && await page.locator('#by').isVisible() && !(await page.locator('#app').isVisible()));
+  await page.fill('#pass', 'wrong');
+  await page.click('#unlock');
+  await page.waitForSelector('#gate-msg:not([hidden])');
+  check('admin: wrong passcode explained', (await page.textContent('#gate-msg')).includes('not right'));
+  check('admin: wrong passcode is not kept', await page.evaluate(() => !sessionStorage.getItem('hwlTeamPass')));
+  await page.fill('#pass', PASS);
+  await page.fill('#by', 'PL');
+  await page.click('#unlock');
+  await page.waitForSelector('#app:not([hidden])');
+  check('admin: signed in, the four Admin pages are listed', (await page.locator('.admin-tools a').evaluateAll((a) => a.map((x) => x.getAttribute('href')))).join() === 'help.html,services.html,log.html,feedback.html');
+  check('admin: team bar says signed in with the name', (await page.textContent('.teambar .team-auth')).includes('Signed in as PL'));
+  await page.goto(ON + '/admin/?next=https://example.org/');
+  check('admin: only goes on to Admin pages after signing in', page.url().startsWith(ON + '/admin/') && await page.locator('#app').isVisible());
+  await page.goto(ON + '/admin/?next=help.html');
+  await page.waitForURL(/\/admin\/help\.html$/);
+  check('admin: already signed in, a sign-in link goes straight on', page.url().endsWith('/admin/help.html'));
+  check('admin: every page links back to Admin home', (await page.locator('.teambar a', { hasText: 'Admin home' }).getAttribute('href')) === './');
+  check('admin: the word MVP is not on the help page', !(await page.content()).includes('MVP'));
+
   // ---------- help page ----------
-  await page.goto(ON + '/mvp/help.html');
+  await page.goto(ON + '/admin/help.html');
   await page.waitForSelector('#data-table tbody tr');
   const schemeCount = DATA.length;
   check(`help: data table lists all ${schemeCount} schemes`, (await page.locator('#data-table tbody tr').count()) === schemeCount);
@@ -375,11 +406,12 @@ async function worker(route) {
   check('help: has the key sections', (await page.locator('h2').allTextContents()).join('|').includes('Reporting a problem'));
 
   // ---------- all services page ----------
-  await page.goto(ON + '/mvp/services.html');
+  await page.goto(ON + '/admin/services.html');
   await page.waitForSelector('.svc');
   check(`services: lists all ${ALL.length} services, including those not on the live list`, (await page.locator('.svc').count()) === ALL.length, String(await page.locator('.svc').count()));
   check('services: live list holds only included services', ALL.length > DATA.length && DATA.every((x) => x.listing.decision === 'include'));
-  check('services: not signed in, so no decision controls', (await page.locator('.decide').count()) === 0 && await page.locator('#signin-form').isVisible());
+  await page.waitForSelector('.svc .decide');
+  check('services: signed in from Admin home, so decision controls shown', !(await page.locator('#signin-form').isVisible()));
   await page.selectOption('#f-listing', 'review');
   check('services: "waiting for review" filter', (await page.locator('.svc').count()) === ALL.filter((x) => x.listing.decision === 'review').length);
   check('services: waiting-for-review badge and reason shown', (await page.locator('.svc .pill.warn', { hasText: 'Waiting for review' }).count()) > 0 && (await page.locator('.svc .listing').first().textContent()).startsWith('Waiting for review:'));
@@ -392,32 +424,25 @@ async function worker(route) {
   await page.click('#clear');
   await page.selectOption('#f-type', 'hwl');
   check('services: HWL filter shows the HWL schemes', (await page.locator('.svc').count()) === DATA.filter((x) => x.hwlFunded).length);
-  await page.goto(ON + '/mvp/services.html?review=closed');
+  await page.goto(ON + '/admin/services.html?review=closed');
   await page.waitForSelector('.svc');
   check('services: filters restored from the address (not open)', (await page.locator('.svc').count()) === ALL.filter((x) => !x.open).length);
   check('services: edit link points at the scheme file', /\/edit\/main\/data\/services\/[a-z0-9-]+\.json$/.test(await page.locator('.svc a', { hasText: 'Edit on GitHub' }).first().getAttribute('href')));
 
   // ---------- log page ----------
-  await page.goto(ON + '/mvp/log.html');
-  check('log: gate shown first', await page.locator('#gate').isVisible() && !(await page.locator('#app').isVisible()));
-  await page.fill('#pass', 'wrong');
-  await page.click('#unlock');
-  await page.waitForSelector('#gate-msg:not([hidden])');
-  check('log: wrong passcode explained', (await page.textContent('#gate-msg')).includes('not right'));
-  await page.fill('#pass', PASS);
-  await page.click('#unlock');
-  await page.waitForSelector('#app:not([hidden])');
+  await page.goto(ON + '/admin/log.html');
+  check('log: opens straight away, signed in from Admin home', await page.waitForSelector('#app:not([hidden])', { timeout: 5000 }).then(() => true, () => false) && !(await page.locator('#gate').isVisible()));
   check('log: unlocked, starter offer shown on an empty log', await page.waitForSelector('#starter:not([hidden])', { timeout: 5000 }).then(() => true, () => false));
   await page.click('#load-starter');
   await page.waitForSelector('#list .entry');
-  check('log: starter list loaded (15 open shown, 1 done hidden)', (await page.locator('#list .entry').count()) === 15, String(await page.locator('#list .entry').count()));
+  check('log: starter list loaded (14 open shown, 1 done hidden)', (await page.locator('#list .entry').count()) === 14, String(await page.locator('#list .entry').count()));
   check('log: starter offer hides once loaded', !(await page.locator('#starter').isVisible()));
   const stats = await page.locator('#summary .stat').allTextContents();
   check('log: summary shows 4 open high-priority items', stats.some((s) => s.includes('High priority open') && s.startsWith('4')), stats.join(' | '));
   check('log: high priority sorted first', (await page.locator('#list .entry').first().getAttribute('class')).includes('pri-High'));
 
   await page.selectOption('#flt-status', 'all');
-  check('log: "Everything" shows all 16', (await page.locator('#list .entry').count()) === 16);
+  check('log: "Everything" shows all 15', (await page.locator('#list .entry').count()) === 15);
   await page.selectOption('#flt-status', 'active');
   await page.selectOption('#flt-type', 'Action');
   check('log: type filter works', (await page.locator('#list .entry').count()) > 0 && (await page.locator('#list .entry .pill.blue').allTextContents()).every((t) => t === 'Action'));
@@ -451,13 +476,13 @@ async function worker(route) {
   await page.selectOption('#f-priority', 'High');
   await page.click('#form button[type=submit]');
   await page.waitForSelector('#list .entry:has-text("HYPERLINK")');
-  check('log: new entry saved and listed', (await page.locator('#list .entry').count()) === 17);
+  check('log: new entry saved and listed', (await page.locator('#list .entry').count()) === 16);
   check('log: new entry form closes', !(await page.locator('#form').isVisible()));
 
   const [dl] = await Promise.all([page.waitForEvent('download'), page.click('#export')]);
   const csv = fs.readFileSync(await dl.path(), 'utf8');
   check('log: CSV downloaded with a sensible name', /^support-finder-log-\d{4}-\d{2}-\d{2}\.csv$/.test(dl.suggestedFilename()), dl.suggestedFilename());
-  check('log: CSV has header and 17 rows', csv.includes('"ID","Type","Title"') && csv.trim().split(/\r?\n/).length >= 18);
+  check('log: CSV has header and 16 rows', csv.includes('"ID","Type","Title"') && csv.trim().split(/\r?\n/).length >= 17);
   check('log: CSV neutralises a leading "=" (formula injection)', csv.includes("\"'=HYPERLINK"), csv.slice(0, 200));
 
   await page.reload();
@@ -490,7 +515,7 @@ async function worker(route) {
   check('log: suggestions are not offered twice', !(await page.locator('#suggested').isVisible()));
 
   // ---------- listing decisions on the All services page (signed in from the log, same tab) ----------
-  await page.goto(ON + '/mvp/services.html?listing=review&q=samaritans');
+  await page.goto(ON + '/admin/services.html?listing=review&q=samaritans');
   await page.waitForSelector('#signed-in:not([hidden])');
   check('decide: signed in via the log passcode in this tab', (await page.textContent('#signed-in-text')).includes('0 decisions, 0 edited services and 0 new services'), await page.textContent('#signed-in-text'));
   await page.waitForSelector('.svc .decide');
@@ -508,7 +533,7 @@ async function worker(route) {
   check('decide: saved and shown as waiting to be applied', decisions['samaritans-helpline'] && decisions['samaritans-helpline'].decision === 'exclude' && decisions['samaritans-helpline'].by === 'TB');
   check('decide: "Saved." confirmation', (await page.textContent('#svc-samaritans-helpline .decide .msg[role=status]')).includes('Saved'));
   // an incomplete service: choosing include warns that it can't go live yet
-  await page.goto(ON + '/mvp/services.html?q=kbop');
+  await page.goto(ON + '/admin/services.html?q=kbop');
   await page.waitForSelector('#svc-kbop .decide');
   await page.check('#svc-kbop input[value=include]');
   check('decide: warns when an incomplete service is chosen for the live list', await page.locator('#svc-kbop .decide .msg.info').isVisible());
@@ -516,7 +541,7 @@ async function worker(route) {
   await page.waitForSelector('#svc-kbop .pill.blue');
 
   // ---------- adding a new service ----------
-  await page.goto(ON + '/mvp/services.html');
+  await page.goto(ON + '/admin/services.html');
   await page.waitForSelector('#add-service:not([hidden])');
   await page.click('#add-service');
   await page.waitForSelector('#add-panel form');
@@ -561,7 +586,7 @@ async function worker(route) {
   check('add: a new service can be discarded', !added['batley-job-club']);
   delete decisions['batley-job-club'];
 
-  await page.goto(ON + '/mvp/services.html?decision=pending');
+  await page.goto(ON + '/admin/services.html?decision=pending');
   await page.waitForSelector('.svc');
   check('decide: "waiting to be applied" filter shows both decisions', (await page.locator('.svc').count()) === 2, String(await page.locator('.svc').count()));
   const sStats = await page.locator('#summary .stat').allTextContents();
@@ -571,7 +596,7 @@ async function worker(route) {
   check('decide: decisions download for apply-decisions', saved.decisions.kbop.decision === 'include' && saved.decisions['samaritans-helpline'].decision === 'exclude' && 'edits' in saved);
 
   // ---------- editing a service's details ----------
-  await page.goto(ON + '/mvp/services.html?q=kbop');
+  await page.goto(ON + '/admin/services.html?q=kbop');
   await page.waitForSelector('#svc-kbop .edit-open button');
   await page.click('#svc-kbop .edit-open button');
   await page.waitForSelector('#svc-kbop form.edit-form');
@@ -599,40 +624,47 @@ async function worker(route) {
   await page.waitForSelector('#svc-kbop form.edit-form');
   check('edit: editing again starts from the waiting changes', (await page.inputValue('#ed-kbop-phone')) === '01484 000000');
   await page.click('#svc-kbop .edit button:has-text("Cancel")');
-  await page.goto(ON + '/mvp/services.html?decision=edited');
+  await page.goto(ON + '/admin/services.html?decision=edited');
   await page.waitForSelector('.svc');
   check('edit: "details edited" filter', (await page.locator('.svc').count()) === 1);
   page.once('dialog', (d) => d.accept());
   await page.click('#svc-kbop .waiting button');
   await page.waitForSelector('#svc-kbop .waiting', { state: 'detached' });
   check('edit: waiting changes can be discarded', !edits.kbop);
-  await page.goto(ON + '/mvp/services.html?decision=pending');
+  await page.goto(ON + '/admin/services.html?decision=pending');
   await page.waitForSelector('.svc');
   const [dc] = await Promise.all([page.waitForEvent('download'), page.click('#export')]);
   const csv2 = fs.readFileSync(await dc.path(), 'utf8');
   check('decide: CSV includes the live list and team decision', csv2.includes('"Live list"') && csv2.includes('"Exclude completely"'), csv2.slice(0, 600));
   await page.click('#lock');
-  check('decide: sign out hides the controls', (await page.locator('.decide').count()) === 0);
-  await page.goto(ON + '/mvp/log.html');
+  await page.waitForURL(/\/admin\/\?next=services\.html/);
+  check('decide: signing out goes back to Admin home to sign in', await page.locator('#gate').isVisible() && (await page.locator('.decide').count()) === 0);
+  await page.goto(ON + '/admin/log.html');
+  await page.waitForURL(/\/admin\/\?next=log\.html$/);
+  check('log: signed out, the log asks you to sign in first', await page.locator('#gate').isVisible());
   await page.fill('#pass', PASS);
   await page.click('#unlock');
-  await page.waitForSelector('#app:not([hidden])');
+  await page.waitForURL(/\/admin\/log\.html$/);
+  check('log: after signing in you are taken back to the log', await page.waitForSelector('#app:not([hidden])', { timeout: 5000 }).then(() => true, () => false));
 
   await page.click('#lock');
-  check('log: lock returns to the gate', await page.locator('#gate').isVisible());
+  await page.waitForURL(/\/admin\/\?next=log\.html$/);
+  check('log: lock returns to the sign-in', await page.locator('#gate').isVisible());
   await page.reload();
   check('log: still locked after reload', await page.locator('#gate').isVisible() && !(await page.locator('#app').isVisible()));
 
   // ---------- User feedback review page ----------
-  await page.goto(ON + '/mvp/feedback.html');
-  check('review: team bar marks the page', (await page.locator('.teambar a[aria-current="page"]').textContent()) === 'Feedback and usage');
+  await page.goto(ON + '/admin/feedback.html');
+  await page.waitForURL(/\/admin\/\?next=feedback\.html$/);
   await page.fill('#pass', 'wrong');
   await page.click('#unlock');
   await page.waitForTimeout(200);
   check('review: wrong passcode refused', (await page.textContent('#gate-msg')).includes('not right') && !(await page.locator('#app').isVisible()));
   await page.fill('#pass', FB_PASS);
   await page.click('#unlock');
+  await page.waitForURL(/\/admin\/feedback\.html$/);
   await page.waitForSelector('#app:not([hidden])');
+  check('review: team bar marks the page', (await page.locator('.teambar a[aria-current="page"]').textContent()) === 'Feedback and usage');
   const fbStats = await page.locator('#summary .stat b').allTextContents();
   check('review: totals (75% helpful, 3 yes, 1 no, 1 listing problem, 1 missing)', fbStats.slice(0, 5).join() === '75%,3,1,1,1', fbStats.join());
   check('review: list hides plain Yes answers', (await page.locator('#list .entry').count()) === 3);
@@ -655,25 +687,28 @@ async function worker(route) {
   check('review: the draft is used once and not left in the browser', await page.evaluate(() => sessionStorage.getItem('hwl-listing-draft') === null));
   await page.locator('#add-panel button:text-is("Cancel")').click();
 
-  // ---------- one sign-in for every MVP page ----------
+  // ---------- one sign-in for every Admin page ----------
   check('one sign-in: team bar says signed in', (await page.textContent('.teambar .team-auth')).includes('Signed in'));
-  await page.goto(ON + '/mvp/log.html');
+  await page.goto(ON + '/admin/log.html');
   check('one sign-in: the log opens without asking again', await page.waitForSelector('#app:not([hidden])', { timeout: 5000 }).then(() => true, () => false) && !(await page.locator('#gate').isVisible()));
-  await page.goto(ON + '/mvp/services.html');
+  await page.goto(ON + '/admin/services.html');
   check('one sign-in: All services is signed in without asking again', await page.waitForSelector('#signed-in:not([hidden])', { timeout: 5000 }).then(() => true, () => false));
-  await page.goto(ON + '/mvp/help.html');
+  await page.goto(ON + '/admin/help.html');
   check('one sign-in: the help page shows it too', (await page.textContent('.teambar .team-auth')).includes('Signed in'));
   await page.click('.teambar .team-auth button');
-  await page.waitForLoadState('load');
-  check('one sign-in: signing out in the team bar says not signed in', (await page.textContent('.teambar .team-auth')).includes('Not signed in'));
-  await page.goto(ON + '/mvp/feedback.html');
+  await page.waitForURL(/\/admin\/\?next=help\.html$/);
+  check('one sign-in: signing out in the team bar goes back to sign in', (await page.textContent('.teambar .team-auth')).includes('Not signed in') && await page.locator('#gate').isVisible());
+  await page.goto(ON + '/admin/feedback.html');
+  await page.waitForURL(/\/admin\/\?next=feedback\.html$/);
   check('one sign-in: ...and signs out of every page', await page.locator('#gate').isVisible() && !(await page.locator('#app').isVisible()));
-  check('one sign-in: the sign-in box explains it is one passcode for all pages', (await page.textContent('#gate')).includes('One passcode for all the MVP team pages'));
+  check('one sign-in: the sign-in box explains it is one passcode for all pages', (await page.textContent('#gate')).includes('One passcode for all the Admin pages'));
   await page.fill('#pass', FB_PASS);
   await page.click('#unlock');
+  await page.waitForURL(/\/admin\/feedback\.html$/);
   await page.waitForSelector('#app:not([hidden])');
   await page.click('#lock');
-  check('review: lock returns to the gate', await page.locator('#gate').isVisible());
+  await page.waitForURL(/\/admin\/\?next=feedback\.html$/);
+  check('review: lock returns to the sign-in', await page.locator('#gate').isVisible());
 
   // ---------- feedback switched off on the Worker ----------
   feedbackFlag = false;
@@ -727,29 +762,28 @@ async function worker(route) {
 
   // ---------- phone-width layout ----------
   await page.setViewportSize({ width: 375, height: 800 });
-  for (const [name, path] of [['main', '/'], ['help', '/mvp/help.html'], ['services', '/mvp/services.html'], ['feedback (gate)', '/mvp/feedback.html'], ['log (gate)', '/mvp/log.html']]) {
+  const phoneOver = async (name, path) => {
     await page.goto(ON + path);
     await page.waitForTimeout(300);
     const over = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     check('phone width: no sideways scrolling on ' + name, over <= 1, 'overflow ' + over + 'px');
-  }
+  };
+  await phoneOver('main', '/');
+  await phoneOver('Admin sign-in', '/admin/');
   await page.fill('#pass', PASS);
   await page.click('#unlock');
+  await page.waitForSelector('#app:not([hidden])');
+  await phoneOver('Admin home', '/admin/');
+  for (const p of ['help', 'services', 'feedback']) await phoneOver(p, '/admin/' + p + '.html');
+  await page.goto(ON + '/admin/log.html');
   await page.waitForSelector('#list .entry');
   const overLog = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   check('phone width: no sideways scrolling on the open log', overLog <= 1, 'overflow ' + overLog + 'px');
 
-  // ---------- the wider-test build (MVP tools OFF) ----------
-  const off = await ctx.newPage();
-  await off.goto(OFF + '/');
-  check('off: no team bar on the main page', (await off.locator('.teambar').count()) === 0);
-  const r1 = await off.goto(OFF + '/mvp/help.html');
-  const r2 = await off.goto(OFF + '/mvp/log.html');
-  const r3 = await off.goto(OFF + '/mvp/seed-log.json');
-  const r4 = await off.goto(OFF + '/mvp/services.html');
-  check('off: help, log, services list and starter list are not published (404)', [r1, r2, r3, r4].every((r) => r.status() === 404), [r1, r2, r3, r4].map((r) => r.status()).join());
-  const cfg = await (await off.goto(OFF + '/config.js')).text();
-  check('off: config says mvpTools false', cfg.includes('"mvpTools":false'), cfg);
+  // ---------- old /mvp/ addresses ----------
+  // The Pages workflow publishes small redirect pages at /mvp/; this local build doesn't, so only check the config.
+  const cfg = await (await page.goto(ON + '/config.js')).text();
+  check('config: only says where the Worker is', cfg.includes('apiBase') && !cfg.includes('mvp'), cfg);
 
   check('no console errors or CSP violations anywhere', problems.filter((p) => !/status of (401|404)/.test(p)).length === 0, problems.join(' || '));
   await browser.close();

@@ -47,7 +47,7 @@ async function load() {
     return (Array.isArray(d) ? d : d.items || []).filter((x) => x.status === 'New');
   }
   const base = String(process.env.WORKER_URL || '').replace(/\/$/, '');
-  // The one MVP team passcode. FEEDBACK_PASSCODE is still read, for anyone with it set from before the passcodes were merged.
+  // The one team passcode for the Admin pages. FEEDBACK_PASSCODE is still read, for anyone with it set from before the passcodes were merged.
   const pass = process.env.TEAM_PASSCODE || process.env.FEEDBACK_PASSCODE || '';
   if (!base || !pass) {
     console.error('Set WORKER_URL and TEAM_PASSCODE, or pass --input <file>.');

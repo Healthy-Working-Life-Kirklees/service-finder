@@ -2,7 +2,7 @@
 //
 //   data/services.json      the live list: only services whose "listing" decision is "include". The page, the
 //                           Worker (and so the AI) and the tests read this one.
-//   data/services-all.json  every service, whatever its decision, for the MVP team's All services page.
+//   data/services-all.json  every service, whatever its decision, for the All services page in Admin.
 //
 // Run it before deploying, testing or running the Worker locally:
 //

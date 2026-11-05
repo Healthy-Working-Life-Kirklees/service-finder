@@ -1,5 +1,5 @@
 // All services: a searchable, filterable list of every scheme and service (services-all.json, which includes
-// those not on the live list), for the MVP team to check what's there, what's missing and what needs reviewing,
+// those not on the live list), for the development team to check what's there, what's missing and what needs reviewing,
 // and to decide for each one: include it on the live list, give it further review, or exclude it completely.
 //
 // The search and filters live in the address (for example services.html?listing=review), so a filtered view
@@ -15,7 +15,7 @@
   const $ = (s) => document.querySelector(s);
   const cfg = window.FINDER_CONFIG || {};
   const API = String(cfg.apiBase || '').replace(/\/$/, '');
-  // One passcode for all the MVP pages, shared through team-auth.js.
+  // One passcode for all the Admin pages, shared through team-auth.js.
   const AUTH = window.TEAM_AUTH || { PASS_KEY: 'hwlTeamPass', BY_KEY: 'hwlLogBy', refresh: () => {} };
   const PASS_KEY = AUTH.PASS_KEY;
   const BY_KEY = AUTH.BY_KEY;
@@ -830,7 +830,7 @@
       pass = '';
       store.del(PASS_KEY);
     AUTH.refresh();
-      msg.textContent = e.status === 404 ? 'The MVP team pages have not been switched on yet (the TEAM_PASSCODE secret is not set). Ask Phil.' : e.status === 401 ? 'That passcode is not right.' : e.message;
+      msg.textContent = e.status === 404 ? 'Admin has not been switched on yet (the TEAM_PASSCODE secret is not set). Ask Phil.' : e.status === 401 ? 'That passcode is not right.' : e.message;
       msg.hidden = false;
       showSignedIn();
       return;
@@ -956,7 +956,7 @@
   }
 
   // ---------- start ----------
-  // services-all.json (every service) is published with the MVP pages; fall back to the live list if it's missing.
+  // services-all.json (every service) is published with the Admin pages; fall back to the live list if it's missing.
   const getJson = (u) => fetch(u).then((r) => {
     if (!r.ok) throw new Error(r.status);
     return r.json();

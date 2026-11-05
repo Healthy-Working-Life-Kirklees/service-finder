@@ -57,7 +57,7 @@ const CRISIS_RE = new RegExp(
 );
 
 const SERVICES = data.services;
-// Checks changes to a service's details made by the MVP team on the All services page.
+// Checks changes to a service's details made by the development team on the All services page.
 const EDIT_CHECKER = { ...makeChecker(schema), liveIds: new Set(SERVICES.map((s) => s.id)) };
 // What Claude is sent about each scheme. Contact details are left out (the page draws them from the data, so the
 // AI never writes them), as are fields only people or the Worker use: requiresMention is applied below by the
@@ -210,7 +210,7 @@ export default {
 
     if (request.method === 'OPTIONS') return new Response(null, { status: originOk ? 204 : 403, headers: cors });
     if (url.pathname === '/health') return json({ ok: true, aiConfigured: Boolean(env.ANTHROPIC_API_KEY), teamLog: Boolean(env.TEAM_PASSCODE), feedback: feedbackOn(env), pilot: pilotOn(env), usage: usageOn(env) }, 200, cors);
-    // MVP-team issues log: off unless the TEAM_PASSCODE secret is set.
+    // Team issues log (Admin pages): off unless the TEAM_PASSCODE secret is set.
     // Reading the team's listing decisions is also allowed with no Origin at all (not from a browser), so
     // scripts/apply-decisions.mjs can fetch them with the passcode, like the feedback digest does.
     const scriptRead = !origin && request.method === 'GET' && ['/log/decisions', '/log/edits', '/log/new'].includes(url.pathname);

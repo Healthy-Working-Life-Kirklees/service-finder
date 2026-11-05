@@ -9,7 +9,7 @@
 //   PATCH /feedback/items/:id       passcode: change the status or add a short reviewer note
 //   GET   /feedback/export.csv      passcode: everything as CSV
 //
-// The read routes are protected by the Worker secret TEAM_PASSCODE, the one MVP team passcode. If it is not set they return 404, but
+// The read routes are protected by the Worker secret TEAM_PASSCODE, the one team passcode for the Admin pages. If it is not set they return 404, but
 // people can still send feedback. Sending is on unless the variable FEEDBACK_ENABLED is "false".
 //
 // What is stored is deliberately small: no IP address, no user agent, no time of day, nothing from the
@@ -421,7 +421,7 @@ export async function handleFeedback(request, env, url, cors, originOk, ctx, exe
     const r = await call('/add', { entry: v.entry, max: Number(env.MAX_FEEDBACK_PER_DAY || 300) });
     if (r.body.capped) return json({ error: 'We have had a lot of feedback today. Please try again tomorrow.' }, 503, cors);
     // Email the team, after the entry is safely stored. A failed email never loses the feedback.
-    const review = env.FEEDBACK_REVIEW_URL || (site === 'preview' ? url.origin + '/mvp/feedback.html' : '');
+    const review = env.FEEDBACK_REVIEW_URL || (site === 'preview' ? url.origin + '/admin/feedback.html' : '');
     const mail = notifyFeedback(env, { id: r.body.id, ...v.entry }, ctx.names, review);
     if (exec && exec.waitUntil) exec.waitUntil(mail);
     else await mail;
@@ -437,7 +437,7 @@ export async function handleFeedback(request, env, url, cors, originOk, ctx, exe
     const { success } = await env.FEEDBACK_READ_LIMITER.limit({ key: ip });
     if (!success) return json({ error: 'Too many requests. Please wait a minute.' }, 429, cors);
   }
-  // The one MVP team passcode (TEAM_PASSCODE), the same as the log and All services pages. The old
+  // The one team passcode (TEAM_PASSCODE) for all the Admin pages, the same as the log and All services pages. The old
   // X-Feedback-Passcode header name is still accepted, for scripts written before the passcodes were merged.
   const pass = request.headers.get('X-Team-Passcode') || request.headers.get('X-Feedback-Passcode') || '';
   if (!(await safeEqual(pass, env.TEAM_PASSCODE))) return json({ error: 'Wrong passcode.' }, 401, cors);

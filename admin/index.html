@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en-GB" data-admin="home">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.workers.dev; base-uri 'none'; form-action 'none'">
+  <title>Admin | Kirklees HWL Support Finder</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="admin.css">
+  <script src="../config.js"></script>
+  <script src="team-auth.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to the content</a>
+
+  <nav class="teambar" aria-label="Admin">
+    <div class="wrap">
+      <strong>Admin</strong>
+      <a href="../">Support Finder</a>
+    </div>
+  </nav>
+
+  <header class="site-header">
+    <div class="wrap">
+      <h1>Admin<br><span>Kirklees Healthy Working Life Support Finder</span></h1>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <p class="admin-banner"><strong>For the Support Finder development team only.</strong> The Admin pages only open for people signed in with the team passcode. Please keep everything here free of personal or identifying information.</p>
+
+    <!-- sign in -->
+    <section id="gate" class="gate" hidden>
+      <form id="signin" class="admin-signin" autocomplete="off">
+        <h2 class="mt0">Sign in</h2>
+        <div class="field">
+          <label for="pass">Team passcode</label>
+          <input id="pass" type="password" autocomplete="off" required>
+        </div>
+        <div class="field">
+          <label for="by">Your name or initials</label>
+          <input id="by" type="text" maxlength="40" autocomplete="off" aria-describedby="by-hint">
+          <p id="by-hint" class="hint">Saved with each log entry, decision and edit, so the team can see who did what.</p>
+        </div>
+        <button id="unlock" class="btn primary" type="submit">Sign in</button>
+        <p id="gate-msg" class="msg err" role="alert" hidden></p>
+      </form>
+      <p>One passcode for all the Admin pages. You stay signed in until you close this browser tab. Don't have it? Ask Phil.</p>
+    </section>
+
+    <!-- the Admin pages -->
+    <section id="app" hidden>
+      <ul class="admin-tools">
+        <li><a href="help.html"><strong>Help</strong><span>What the Support Finder is, how it works, what to try and how to report a problem.</span></a></li>
+        <li><a href="services.html"><strong>All services</strong><span>Every service, including those not on the live list. Decide what's live, correct details and add missing services.</span></a></li>
+        <li><a href="log.html"><strong>Issues and actions log</strong><span>The team's shared list of issues, actions, ideas and questions.</span></a></li>
+        <li><a href="feedback.html"><strong>Feedback and usage</strong><span>Anonymous usage counts and what people sent from the finder.</span></a></li>
+      </ul>
+      <p><button id="lock" class="btn secondary small" type="button">Sign out</button></p>
+    </section>
+  </main>
+
+  <script src="home.js"></script>
+</body>
+</html>

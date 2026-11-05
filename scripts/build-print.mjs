@@ -21,7 +21,7 @@ import QRCode from 'qrcode';
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const OUT = path.join(ROOT, 'print', 'out');
 const SITE_URL = 'https://healthy-working-life-kirklees.github.io/service-finder/';
-const STALE_DAYS = 135; // same as the site and mvp/help.js
+const STALE_DAYS = 135; // same as the site and admin/help.js
 
 const NORTH = ['Batley', 'Dewsbury', 'Mirfield', 'Spen Valley'];
 const SOUTH = ['Colne Valley', 'Holme Valley', 'Huddersfield', 'Kirkburton'];
