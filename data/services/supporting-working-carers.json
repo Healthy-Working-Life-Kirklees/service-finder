@@ -19,7 +19,7 @@
   "whoFor": "Kirklees employers supporting staff who have unpaid caring responsibilities, and working carers themselves (supported through their employer).",
   "age": "Adults",
   "webpage": "https://carerscountkirklees.org.uk/how-can-we-help/support-and-training/#employer-support",
-  "email": null,
+  "email": "annmarie.brabiner@carerscount.org.uk",
   "phone": "0300 012 0231",
   "social": [],
   "locations": [
@@ -43,13 +43,14 @@
   ],
   "referralRoutes": [
     "Employer registration form (downloadable PDF)",
-    "Email",
+    "Email annmarie.brabiner@carerscount.org.uk or sharon.daley@cloverleaf-advocacy.co.uk",
     "Online booking for awareness sessions, training and forums (Eventbrite)",
     "In person - via employer drop-ins"
   ],
   "selfReferral": {
     "allowed": "yes",
-    "note": "Yes - employers can register directly via any route"
+    "note": "Yes - employers can register directly via any route",
+    "url": "https://carerscountkirklees.org.uk/wp-content/uploads/CCK-CCC-Employer-Registration-Form-Editable-PDF.pdf"
   },
   "activities": [
     {
@@ -74,11 +75,14 @@
     }
   ],
   "workExperience": "No",
-  "notes": "The source document lists named individuals' email addresses for this scheme; they are left out here until it is decided whether they should be public.",
-  "lastUpdated": "2026-08-03",
+  "cost": "Free",
+  "lastUpdated": "2026-11-05",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
+    "checkedUrl": "https://carerscountkirklees.org.uk/how-can-we-help/support-and-training/",
+    "evidence": "Provider page checked 5 Nov 2026 (sessions listed to Nov 2026) and matches Pathways v2.1; programme manager confirmed it is current, on-site delivery, both contact emails and that everything is free.",
+    "confidence": "high"
   },
   "listing": {
     "decision": "include",
