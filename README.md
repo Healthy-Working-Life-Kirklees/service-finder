@@ -256,6 +256,28 @@ It has two parts. **What's wrong**: reports grouped by scheme, most reported fir
 
 **Before the wider test, the information governance lead should review this approach** (what is collected, the removal of personal details, the 12-month retention, and who holds the passcode).
 
+## Hidden from search engines during the pilot
+
+While the pilot runs, the site is kept out of Google and other search engines in two ways:
+
+1. **A tag on every page.** `<meta name="robots" content="noindex, nofollow">` is in `site/index.html`, `site/changes.html`, the printable directory (built by `scripts/build-print.mjs`), every Admin page and the old `/mvp/` redirect pages (written by `.github/workflows/pages.yml`).
+2. **A Cloudflare header on everything else.** Files that can't carry a tag, such as `services.json`, images and fonts, get an `X-Robots-Tag: noindex, nofollow` header from a Cloudflare rule: dashboard > hwlsupportfinder.org.uk > Rules > Response Header Transform Rules > "Pilot – hide from search engines". This only works because the site's DNS records (the four `A` records and the `www` CNAME) are **Proxied** (orange cloud). SSL/TLS mode must stay on Full, not Flexible, or GitHub Pages gives a "too many redirects" error.
+
+There is no `robots.txt`, on purpose: blocking crawlers there would stop them seeing the noindex tag.
+
+To check: search `site:hwlsupportfinder.org.uk` on Google. If anything shows up, use the Removals tool in Google Search Console.
+
+### At go-live
+
+When the Support Finder is launched publicly and should appear in search results:
+
+- [ ] Remove the robots meta tag from `site/index.html` and `site/changes.html`.
+- [ ] Remove it from the printable directory in `scripts/build-print.mjs` (the `<meta name="robots" ...>` line in the `SITE_DIR` page).
+- [ ] Turn off or delete the "Pilot – hide from search engines" rule in Cloudflare.
+- [ ] **Keep** the tag on the Admin pages and the `/mvp/` redirects. Those should never be in search results.
+- [ ] Leave the DNS records Proxied.
+- [ ] Optional: register the site in Google Search Console and submit the main page, so it's picked up sooner.
+
 ## Tests
 
     npm run check-data             # the scheme data
