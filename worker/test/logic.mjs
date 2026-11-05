@@ -944,6 +944,22 @@ await worker.fetch(new Request('https://w/chat', { method: 'POST', headers: { Or
 uc = await todayCounts();
 check('usage: a later message is a search but not a new conversation; no results counted', uc['search|en|public'] === 1 && !uc['conversation|en|public'] && uc['no-results|en|public'] === 1, JSON.stringify(uc));
 
+// AI token totals: added up per day and model from Anthropic's usage numbers, nothing else.
+const todayRec = async () => (await usDays()).body.days.find((d) => d.date === new Date().toISOString().slice(0, 10)) || {};
+let tk = (await todayRec()).tokens || {};
+check('tokens: each answer counts one AI call for the model', tk['claude-sonnet-5-5'] && tk['claude-sonnet-5-5'].calls === 2, JSON.stringify(tk));
+reply = () => new Response(JSON.stringify({ content: [{ type: 'tool_use', id: 'tu3', name: 'respond', input: { status: 'results', message: 'Here.', urgent_support: false, matches: [] } }], usage: { input_tokens: 120, output_tokens: 300, cache_read_input_tokens: 9000, cache_creation_input_tokens: 50 } }), { status: 200 });
+await worker.fetch(new Request('https://w/chat', { method: 'POST', headers: { Origin: O, 'content-type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user', content: 'My name is Sam' }] }) }), usEnv());
+tk = (await todayRec()).tokens['claude-sonnet-5-5'];
+check('tokens: input, output and cache tokens added up', tk.calls === 3 && tk.input === 120 && tk.output === 300 && tk.cacheRead === 9000 && tk.cacheWrite === 50, JSON.stringify(tk));
+check('tokens: nothing typed is stored', !JSON.stringify(await todayRec()).includes('Sam'));
+reply = () => new Response(JSON.stringify({ error: { message: 'overloaded' } }), { status: 529 });
+await worker.fetch(new Request('https://w/chat', { method: 'POST', headers: { Origin: O, 'content-type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user', content: 'x' }] }) }), usEnv());
+uc = await todayCounts();
+check('tokens: a failed AI call is counted as an AI error', uc['ai-error|en|public'] === 1, JSON.stringify(uc));
+const usageMod = await import(pathToFileURL(path.join(root, 'worker/src/usage.js')).href);
+check('tokens: bad token data is ignored by the store', usageMod.cleanTokens({ model: 'Bad Model!', calls: 1 }) === null && usageMod.cleanTokens({ model: 'claude-x', calls: 1, input: -5 }).input === 0);
+
 // Events from the page
 check('usage: link event accepted (204)', (await usPost({ e: 'link', s: openId, k: 'referral', lang: 'en', mode: 'public' })) === 204);
 check('usage: visit event accepted', (await usPost({ e: 'visit', lang: 'ur' })) === 204);
@@ -964,6 +980,7 @@ check('usage: reading needs the passcode', (await usDays('wrong')).status === 40
 const csvRes = await worker.fetch(new Request('https://w/usage/export.csv', { headers: { 'x-feedback-passcode': FB_PASS } }), usEnv());
 const csvText = await csvRes.text();
 check('usage: CSV export has a header and a row per count', csvRes.status === 200 && csvText.startsWith('"date","event","scheme","detail","lang","mode","count"') && csvText.includes('"link","' + openId + '","referral","en","public","1"'), csvText.slice(0, 300));
+check('tokens: CSV export has the day\'s AI token totals', csvText.includes('"ai-output-tokens","","claude-sonnet-5-5","","","300"') && csvText.includes('"ai-calls","","claude-sonnet-5-5","","","3"'), csvText.slice(-400));
 check('usage: bad since date refused', (await usDays(FB_PASS, '?since=yesterday')).status === 400);
 
 // Daily cap

@@ -17,7 +17,7 @@ import schema from '../../data/schema.json';
 import { handleLog } from './teamlog.js';
 import { makeChecker } from './serviceedit.js';
 import { handleFeedback, feedbackOn, pilotOn } from './feedback.js';
-import { handleUsage, usageOn, addUsage, chatKeys } from './usage.js';
+import { handleUsage, usageOn, addUsage, chatKeys, addTokens, emptyTokens } from './usage.js';
 
 // The team issues log lives in its own Durable Object class (see teamlog.js).
 export { LogStore } from './teamlog.js';
@@ -275,6 +275,15 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
     if (/^claude-(sonnet|opus)-5/.test(payload.model)) payload.thinking = { type: 'between_tools' };
     else payload.tool_choice = { type: 'tool', name: 'respond' };
 
+    // AI token use for this answer, added to the day's totals (usage.js). Only numbers from Anthropic's replies.
+    const tokens = { model: payload.model, ...emptyTokens() };
+    // Records the day's AI error count and any tokens already spent, without holding up the reply.
+    const countFailure = () => {
+      const p = addUsage(env, ['ai-error|' + lang + '|' + mode], tokens.calls ? tokens : null);
+      if (ctx && typeof ctx.waitUntil === 'function') return ctx.waitUntil(p);
+      return p;
+    };
+
     let r;
     try {
       r = await fetch(`${env.ANTHROPIC_API_URL || 'https://api.anthropic.com'}/v1/messages`, {
@@ -284,6 +293,7 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
         signal: AbortSignal.timeout(40_000),
       });
     } catch {
+      await countFailure();
       return json({ error: 'Could not reach the AI service. Please try again.' }, 502, cors);
     }
 
@@ -295,10 +305,12 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
         const e = await r.json();
         detail = String((e.error && e.error.message) || '').slice(0, 300);
       } catch {}
+      await countFailure();
       return json({ error: busy ? 'The AI service is busy. Please try again in a moment.' : 'Something went wrong on our side. Please try again.', upstream: r.status, detail }, busy ? 503 : 502, cors);
     }
 
     let out = await r.json();
+    addTokens(tokens, out.usage);
     let block = (out.content || []).find((b) => b.type === 'tool_use' && b.name === 'respond');
 
     // The model sometimes says it has questions ("Two quick questions...") without writing them anywhere. When that
@@ -320,6 +332,7 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
         });
         if (retry.ok) {
           const out2 = await retry.json();
+          addTokens(tokens, out2.usage); // billed whether or not the second answer is used
           const block2 = (out2.content || []).find((b) => b.type === 'tool_use' && b.name === 'respond');
           if (block2 && block2.input && typeof block2.input.message === 'string') { out = out2; block = block2; }
         }
@@ -329,7 +342,10 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
     if (!input) {
       // The model answered in plain text instead of calling the tool: show it as the message, with no cards.
       const text = (out.content || []).filter((b) => b.type === 'text').map((b) => b.text).join(' ').trim();
-      if (!text) return json({ error: 'Something went wrong on our side. Please try again.' }, 502, cors);
+      if (!text) {
+        await countFailure();
+        return json({ error: 'Something went wrong on our side. Please try again.' }, 502, cors);
+      }
       input = { status: 'results', message: text, urgent_support: false, matches: [] };
     }
     const clean = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
@@ -362,7 +378,7 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
 
     // Anonymous usage counts for this answer (search, results or not, services shown). Nothing from the
     // conversation is counted. Done after the reply is sent where the platform allows it.
-    const counting = addUsage(env, chatKeys({ lang, mode, firstMessage: messages.filter((m) => m.role === 'user').length === 1, status, urgent, ids: recommendations.map((x) => x.id) }));
+    const counting = addUsage(env, chatKeys({ lang, mode, firstMessage: messages.filter((m) => m.role === 'user').length === 1, status, urgent, ids: recommendations.map((x) => x.id) }), tokens);
     if (ctx && typeof ctx.waitUntil === 'function') ctx.waitUntil(counting);
     else await counting;
 

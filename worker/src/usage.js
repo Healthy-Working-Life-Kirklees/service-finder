@@ -9,7 +9,9 @@
 //   GET  /usage/export.csv    passcode: the same as CSV, one row per date and count
 //
 // Searches are counted by the Worker itself when it answers /chat (see recordUsage in index.js), so they can't
-// be inflated from the page. Events from the page are checked against fixed lists and the scheme ids.
+// be inflated from the page. The Worker also adds up the AI's token use per day and model (calls, input, output,
+// cache reads and writes), from the usage numbers in Anthropic's replies. These are totals for the day only: they
+// can't be linked to a search, a conversation or a person. Events from the page are checked against fixed lists and the scheme ids.
 // Counting is on unless the variable USAGE_ENABLED is "false". Tallies older than 24 months are deleted.
 
 import { safeEqual } from './feedback.js';
@@ -82,7 +84,32 @@ export function chatKeys({ lang, mode, firstMessage, status, urgent, ids }) {
   return keys;
 }
 
-// ---------- the store: one record per day, { date, counts: { key: n }, total } ----------
+// ---------- AI token use ----------
+export const TOKEN_FIELDS = ['calls', 'input', 'output', 'cacheRead', 'cacheWrite'];
+const MAX_MODELS_A_DAY = 10;
+
+// Adds the "usage" block of one Anthropic reply to a running total. Never throws.
+export function addTokens(total, usage) {
+  const u = usage && typeof usage === 'object' ? usage : {};
+  const n = (v) => (Number.isFinite(v) && v > 0 ? Math.floor(v) : 0);
+  total.calls += 1;
+  total.input += n(u.input_tokens);
+  total.output += n(u.output_tokens);
+  total.cacheRead += n(u.cache_read_input_tokens);
+  total.cacheWrite += n(u.cache_creation_input_tokens);
+  return total;
+}
+export const emptyTokens = () => ({ calls: 0, input: 0, output: 0, cacheRead: 0, cacheWrite: 0 });
+
+// Only a plain model id is kept as a key, and the fields above as numbers.
+export function cleanTokens(t) {
+  if (!t || typeof t !== 'object' || typeof t.model !== 'string' || !/^[a-z0-9][a-z0-9.-]{0,59}$/.test(t.model)) return null;
+  const out = { model: t.model };
+  for (const f of TOKEN_FIELDS) out[f] = Number.isFinite(t[f]) && t[f] > 0 ? Math.floor(t[f]) : 0;
+  return out.calls ? out : null;
+}
+
+// ---------- the store: one record per day, { date, counts: { key: n }, total, tokens: { model: { calls, input, ... } } } ----------
 export class UsageStore {
   constructor(ctx) {
     this.ctx = ctx;
@@ -107,13 +134,26 @@ export class UsageStore {
       await this.purge();
       const day = today();
       const rec = (await s.get('d:' + day)) || { date: day, counts: {}, total: 0 };
-      const keys = body.keys.slice(0, 20);
+      const keys = (body.keys || []).slice(0, 20);
+      // Token totals: a few numbers per model, so they can't fill the store. Added even when the counts are
+      // capped, so the AI spend figures stay complete.
+      const t = cleanTokens(body.tokens);
+      if (t) {
+        rec.tokens = rec.tokens || {};
+        if (rec.tokens[t.model] || Object.keys(rec.tokens).length < MAX_MODELS_A_DAY) {
+          const cur = rec.tokens[t.model] || emptyTokens();
+          for (const f of TOKEN_FIELDS) cur[f] += t[f];
+          rec.tokens[t.model] = cur;
+        }
+      }
       // Daily cap on everything counted, so a flood of requests can't fill the store.
-      if (rec.total + keys.length > body.max) return Response.json({ capped: true });
-      for (const k of keys) rec.counts[k] = (rec.counts[k] || 0) + 1;
-      rec.total += keys.length;
-      await s.put('d:' + day, rec);
-      return Response.json({ ok: true });
+      const capped = rec.total + keys.length > body.max;
+      if (!capped) {
+        for (const k of keys) rec.counts[k] = (rec.counts[k] || 0) + 1;
+        rec.total += keys.length;
+      }
+      if (!capped || t) await s.put('d:' + day, rec);
+      return Response.json(capped ? { capped: true } : { ok: true });
     }
 
     if (url.pathname === '/days') {
@@ -137,11 +177,12 @@ async function callStore(env, p, payload) {
   return res.json();
 }
 
-// Adds counts. Never throws: counting must not get in the way of answering.
-export async function addUsage(env, keys) {
-  if (!usageOn(env) || !keys.length) return;
+// Adds counts, and optionally one answer's AI token totals ({ model, calls, input, output, cacheRead, cacheWrite }).
+// Never throws: counting must not get in the way of answering.
+export async function addUsage(env, keys, tokens) {
+  if (!usageOn(env) || (!keys.length && !tokens)) return;
   try {
-    await callStore(env, '/add', { keys, max: Number(env.MAX_USAGE_PER_DAY || 20000) });
+    await callStore(env, '/add', { keys, tokens: tokens || null, max: Number(env.MAX_USAGE_PER_DAY || 20000) });
   } catch {
     /* counting is best effort */
   }
@@ -162,6 +203,11 @@ function csv(days) {
       const scheme = hasScheme ? mid[0] : '';
       const detail = hasScheme ? mid[1] || '' : mid[0] || '';
       rows.push([d.date, event, scheme, detail, lang, mode, n].map(cell).join(','));
+    }
+    // AI token totals: event "ai-calls", "ai-input-tokens" and so on, with the model in the detail column.
+    for (const [model, t] of Object.entries(d.tokens || {}).sort()) {
+      const names = { calls: 'ai-calls', input: 'ai-input-tokens', output: 'ai-output-tokens', cacheRead: 'ai-cache-read-tokens', cacheWrite: 'ai-cache-write-tokens' };
+      for (const f of TOKEN_FIELDS) rows.push([d.date, names[f], '', model, '', '', t[f] || 0].map(cell).join(','));
     }
   }
   return [head.map(cell).join(','), ...rows].join('\r\n') + '\r\n';
