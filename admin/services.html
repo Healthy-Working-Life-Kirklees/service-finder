@@ -7,14 +7,16 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.workers.dev; base-uri 'none'; form-action 'none'">
   <title>All services | Kirklees HWL Support Finder</title>
   <link rel="stylesheet" href="../style.css">
-  <link rel="stylesheet" href="mvp.css">
+  <link rel="stylesheet" href="admin.css">
+  <script src="team-auth.js"></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to the content</a>
 
-  <nav class="teambar" aria-label="MVP team">
+  <nav class="teambar" aria-label="Admin">
     <div class="wrap wide">
-      <strong>MVP team only</strong>
+      <strong>Admin</strong>
+      <a href="./">Admin home</a>
       <a href="../">Support Finder</a>
       <a href="help.html">Help</a>
       <a href="services.html" aria-current="page">All services</a>
@@ -30,12 +32,12 @@
   </header>
 
   <main id="main" class="wrap wide">
-    <p class="mvp-banner"><strong>For the MVP team only.</strong> Every scheme and service the finder knows about, including those not on the live list. Only services <strong>on the live list</strong> are shown on the finder and given to the AI. Sign in below to decide which services are live, correct their details, and add services that are missing.</p>
+    <p class="admin-banner"><strong>For the development team only.</strong> Every scheme and service the finder knows about, including those not on the live list. Only services <strong>on the live list</strong> are shown on the finder and given to the AI. Use this page to decide which services are live, correct their details, and add services that are missing.</p>
 
     <details class="how" id="how">
       <summary>How to use this page</summary>
       <ol>
-        <li><strong>Sign in</strong> with the team passcode (one passcode for all the MVP team pages) and put your name or initials. They are saved with everything you do, so the team can see who did what. Without signing in you can still search, filter and read everything.</li>
+        <li><strong>Your name.</strong> You're already signed in from the Admin home page. Check your name or initials in the box below: they are saved with everything you do, so the team can see who did what.</li>
         <li><strong>Find what needs doing.</strong> Use the figures at the top (each one is a shortcut) or the filters. "Live list: Waiting for review" shows services not yet live. "Team changes: Not yet decided by the team" shows everything nobody has decided on. "Sort by: Waiting for review first" puts them at the top.</li>
         <li><strong>Decide.</strong> In each service's "Team decision" box choose:
           <ul>
@@ -54,7 +56,7 @@
     <section id="review-signin" class="review-signin" aria-labelledby="review-h">
       <h2 id="review-h" class="mt0">Review, edit and add services</h2>
       <div id="signin-form">
-        <p>Enter the team passcode to decide on services, edit their details and add new ones. Without it you can still search and read everything. One passcode for all the MVP team pages: All services, the issues log, and feedback and usage. You stay signed in on these pages until you close this browser tab. Don't have it? Ask Phil.</p>
+        <p>Enter the team passcode to decide on services, edit their details and add new ones. Without it you can still search and read everything. One passcode for all the Admin pages. You stay signed in until you close this browser tab. Don't have it? Ask Phil.</p>
         <div class="field"><label for="pass">Team passcode</label><input id="pass" type="password" autocomplete="off"></div>
         <button id="unlock" class="btn primary small" type="button">Sign in</button>
       </div>
@@ -181,7 +183,6 @@
     <p id="load-error" class="msg err" role="alert" hidden>Could not load the service list.</p>
   </main>
 
-  <script src="team-auth.js"></script>
   <script src="../config.js"></script>
   <script src="services.js" defer></script>
 </body>

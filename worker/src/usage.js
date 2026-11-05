@@ -193,14 +193,14 @@ export async function handleUsage(request, env, url, cors, originOk, ids) {
     return new Response(null, { status: 204, headers: cors });
   }
 
-  // ----- reading (the MVP team, with the team passcode) -----
+  // ----- reading (the Admin pages, with the team passcode) -----
   if (!env.TEAM_PASSCODE || !env.USAGE_STORE) return json({ error: 'Not found.' }, 404, cors);
   if (request.headers.get('Origin') && !originOk) return json({ error: 'Not allowed.' }, 403, cors);
   if (env.FEEDBACK_READ_LIMITER) {
     const { success } = await env.FEEDBACK_READ_LIMITER.limit({ key: ip });
     if (!success) return json({ error: 'Too many requests. Please wait a minute.' }, 429, cors);
   }
-  // The one MVP team passcode (TEAM_PASSCODE), the same as the log and All services pages. The old
+  // The one team passcode (TEAM_PASSCODE) for all the Admin pages, the same as the log and All services pages. The old
   // X-Feedback-Passcode header name is still accepted, for scripts written before the passcodes were merged.
   const pass = request.headers.get('X-Team-Passcode') || request.headers.get('X-Feedback-Passcode') || '';
   if (!(await safeEqual(pass, env.TEAM_PASSCODE))) return json({ error: 'Wrong passcode.' }, 401, cors);

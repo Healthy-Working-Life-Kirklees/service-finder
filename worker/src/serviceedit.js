@@ -1,4 +1,4 @@
-// Checks a change to a service's details sent from the All services page (MVP team only), before it is stored.
+// Checks a change to a service's details sent from the All services page (Admin pages, development team only), before it is stored.
 //
 // Only the fields below can be edited this way. The allowed values (areas, categories and so on) come from
 // data/schema.json, so they stay in step with the data. The full check against the schema runs again when the

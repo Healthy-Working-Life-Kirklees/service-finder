@@ -1,5 +1,5 @@
 {
-  "note": "Suggested entries for the MVP issues and actions log. The log page offers to add any whose title is not already in the log, using the signed-in person's session. No personal or identifying information in here.",
+  "note": "Suggested entries for the issues and actions log. The log page offers to add any whose title is not already in the log, using the signed-in person's session. No personal or identifying information in here.",
   "packs": [
     {
       "id": "data-freshness-2026-10-07",

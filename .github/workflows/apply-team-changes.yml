@@ -1,7 +1,7 @@
 name: Apply team changes
 run-name: "Apply team changes${{ inputs.auto_merge && ' and put them live' || '' }}${{ inputs.requested_by && format(' (from the All services page, {0})', inputs.requested_by) || '' }}"
 
-# The "button" for the MVP team's changes from the All services page: Actions > Apply team changes > Run workflow.
+# The "button" for the development team's changes from the All services page: Actions > Apply team changes > Run workflow.
 # It fetches the team's new services, edits and listing decisions from the Worker, writes them into data/services/, checks the
 # data, and opens a pull request with a summary of what changed. Nothing goes live until that pull request is merged.
 #
@@ -105,7 +105,7 @@ jobs:
           git switch -c "$branch"
           git add data/services
           if [ -n "$REQUESTED_BY" ]; then who="Requested by $REQUESTED_BY on the All services page."; else who="Run by $ACTOR from the Apply team changes workflow."; fi
-          git commit -q -m "Apply the MVP team's decisions and edits ($(date -u +%Y-%m-%d))" -m "$who"
+          git commit -q -m "Apply the development team's decisions and edits ($(date -u +%Y-%m-%d))" -m "$who"
           git push -q origin "$branch"
           {
             cat "$RUNNER_TEMP/summary.md"
@@ -117,7 +117,7 @@ jobs:
               echo "Opened by the [Apply team changes]($RUN_URL) workflow, run by @$ACTOR. The data check and Worker tests passed in that run. Merge to put these changes live."
             fi
           } > "$RUNNER_TEMP/body.md"
-          if url=$(gh pr create --base main --head "$branch" --title "Apply the MVP team's decisions and edits ($(date -u '+%-d %b %Y'))" --body-file "$RUNNER_TEMP/body.md"); then
+          if url=$(gh pr create --base main --head "$branch" --title "Apply the development team's decisions and edits ($(date -u '+%-d %b %Y'))" --body-file "$RUNNER_TEMP/body.md"); then
             echo "Pull request: $url" | tee -a "$GITHUB_STEP_SUMMARY"
             if [ "$AUTO_MERGE" = "true" ]; then
               # The checks above passed, so merge now. A merge made with this workflow's token doesn't start other

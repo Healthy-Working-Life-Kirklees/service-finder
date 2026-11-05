@@ -325,7 +325,7 @@ check('log: imported statuses/areas kept', r.body.items[0].status === 'Done' && 
 const pre = await worker.fetch(new Request('https://w/log/items', { method: 'OPTIONS', headers: { Origin: O } }), logEnv());
 check('log: preflight allows x-team-passcode and PATCH', pre.status === 204 && pre.headers.get('Access-Control-Allow-Headers').includes('x-team-passcode') && pre.headers.get('Access-Control-Allow-Methods').includes('PATCH'));
 
-// ----- Listing decisions (MVP team) -----
+// ----- Listing decisions (development team) -----
 check('live list: only services with listing decision include reach the Worker', svc.every((s) => s.listing && s.listing.decision === 'include'));
 const allSvc = JSON.parse(fs.readFileSync(path.join(root, 'data/services-all.json'), 'utf8')).services;
 check('all-services file holds every service, live or not', allSvc.length > svc.length && allSvc.some((s) => s.listing.decision === 'review'), allSvc.length + ' vs ' + svc.length);
@@ -481,7 +481,7 @@ check('new: discard', r.status === 200 && Object.keys((await logCall('GET', '/lo
 }
 
 // ----- User feedback -----
-const FB_PASS = PASS; // one team passcode for every MVP area
+const FB_PASS = PASS; // one team passcode for every Admin area
 const mkFbStore = () => {
   const mem = new Map();
   const storage = {
@@ -875,7 +875,7 @@ check('digest: helpful counts by mode and language', /\| staff \| pl \| 1 \| 1 \
   await send(cardFb({ text: 'Ring 07700 900123' }), { e: pEnv() });
   check('email: carries the comment with personal details already removed', sent[5].text.includes('Ring [removed]') && !sent[5].text.includes('07700'), sent[5].text);
   await send(pilotFb(), { e: pEnv({ ALLOW_SELF_ORIGIN: 'true' }) });
-  check('email: preview entries say so, with a link to the review page', sent[6].subject.includes('[preview]') && sent[6].text.includes('https://w/mvp/feedback.html'), sent[6].subject + ' ' + sent[6].text);
+  check('email: preview entries say so, with a link to the review page', sent[6].subject.includes('[preview]') && sent[6].text.includes('https://w/admin/feedback.html'), sent[6].subject + ' ' + sent[6].text);
   const before = (await items()).length;
   r = await send(pilotFb(), { e: pEnv({ FEEDBACK_EMAIL: mailer(true) }) });
   check('email: a failed email still stores the feedback (201)', r.status === 201 && (await items()).length === before + 1);

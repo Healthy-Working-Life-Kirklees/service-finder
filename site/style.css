@@ -16,7 +16,7 @@
 @font-face { font-family: "Noto Nastaliq Urdu"; font-weight: 700; font-style: normal; font-display: swap; src: url("fonts/noto-nastaliq-urdu-arabic-700-normal.woff2") format("woff2"); unicode-range: U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC; }
 
 :root {
-  /* The colour names below are kept from the earlier version so the MVP pages pick up the new colours too. */
+  /* The colour names below are kept from the earlier version so the Admin pages pick up the new colours too. */
   --blue: #0b6b6b;
   --dark-blue: #0b5c5c;
   --green: #0b6b6b;
@@ -177,11 +177,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   .thumb { width: 4.5rem; height: 4.5rem; }
 }
 
-/* MVP team bar (only present when the MVP tools are switched on) */
+/* Admin bar, at the top of every Admin page (admin/) */
 .teambar { background: var(--dark-blue); color: #fff; font-size: .95rem; }
 .teambar .wrap { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; align-items: center; padding-top: .4rem; padding-bottom: .4rem; }
 .teambar a { color: #fff; }
 .teambar a[aria-current="page"] { font-weight: 700; text-decoration: none; }
+
+/* The one link to the Admin section, at the end of the main page. Kept quiet: it's for the development team. */
+.admin-link { margin: 1.5rem 0 0; font-size: .9rem; text-align: end; }
+.admin-link a { color: var(--grey); }
 
 /* Language switcher, in the header: a globe and a drop-down. Each language is named in its own language. */
 .lang-switch { display: flex; align-items: center; gap: .35rem; color: var(--dark-blue); }

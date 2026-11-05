@@ -5,16 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.workers.dev; base-uri 'none'; form-action 'none'">
-  <title>Help for the MVP team | Kirklees HWL Support Finder</title>
+  <title>Help for the development team | Kirklees HWL Support Finder</title>
   <link rel="stylesheet" href="../style.css">
-  <link rel="stylesheet" href="mvp.css">
+  <link rel="stylesheet" href="admin.css">
+  <script src="team-auth.js"></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to the content</a>
 
-  <nav class="teambar" aria-label="MVP team">
+  <nav class="teambar" aria-label="Admin">
     <div class="wrap">
-      <strong>MVP team only</strong>
+      <strong>Admin</strong>
+      <a href="./">Admin home</a>
       <a href="../">Support Finder</a>
       <a href="help.html" aria-current="page">Help</a>
       <a href="services.html">All services</a>
@@ -25,12 +27,12 @@
 
   <header class="site-header">
     <div class="wrap">
-      <h1>Help for the MVP team<br><span>Kirklees Healthy Working Life Support Finder</span></h1>
+      <h1>Help for the development team<br><span>Kirklees Healthy Working Life Support Finder</span></h1>
     </div>
   </header>
 
   <main id="main" class="wrap">
-    <p class="mvp-banner"><strong>For the MVP team only.</strong> This page and the issues log won't be part of the version we use for the wider test.</p>
+    <p class="admin-banner"><strong>For the Support Finder development team only.</strong> The Admin pages only open for people signed in with the team passcode.</p>
 
     <nav class="toc" aria-label="On this page">
       <strong>On this page</strong>
@@ -121,7 +123,7 @@
       <li>Please test with made-up scenarios. Don't type real names, addresses, dates of birth or NHS numbers, and don't describe a real client in identifiable detail.</li>
       <li>The finder doesn't store conversations. They exist only in your browser tab. Messages do pass through Cloudflare to Anthropic's Claude to get an answer, and these are third-party services.</li>
       <li>The issues log <em>does</em> store what you write in it. It's protected by a shared passcode and kept on the same Cloudflare service. Keep entries free of personal information. The wording of a test message is fine, as long as it's made up.</li>
-      <li>The website and its code are public. Please don't share the link beyond the MVP team yet.</li>
+      <li>The website and its code are public. The Admin pages are for the development team only: please don't share the team passcode.</li>
     </ul>
 
     <h2 id="data">The data it uses</h2>
@@ -135,7 +137,7 @@
     </div>
 
     <h2 id="report">Reporting a problem</h2>
-    <p>Use <a href="log.html">the issues and actions log</a>. It's a shared list for the MVP team, protected by the team passcode (ask Phil). It's the same passcode for every MVP page, and once you've signed in on one, the others open without asking again until you close the browser tab. A good entry says:</p>
+    <p>Use <a href="log.html">the issues and actions log</a>. It's a shared list for the development team. Like every Admin page it needs the team passcode (ask Phil): you sign in once on the Admin home page and stay signed in until you close the browser tab. A good entry says:</p>
     <ol>
       <li>What you typed (made-up, please), and which mode you were in.</li>
       <li>What you expected.</li>
@@ -145,6 +147,7 @@
 
     <h2 id="changes">What has changed</h2>
     <ul>
+      <li><strong>5 Nov 2026</strong>: the team pages are now the <a href="./">Admin</a> section, reached from one "Admin" link at the bottom of the main page instead of the bar at the top. Every Admin page, including this one, needs the team passcode: you sign in once on the Admin home page.</li>
       <li><strong>16 Oct 2026</strong>: added the 47 remaining services from the research spreadsheet (the "Not verified or closed" tab, the crisis helplines and the directories). They are <em>not</em> on the live finder yet. On the <a href="services.html">All services</a> page, sign in with the team passcode to decide for each service whether to include it on the live list, give it further review, or exclude it completely, and use "Edit details" to correct or complete a service's details. Use "Add a service" to add one that's missing: it is reviewed and decided on like the rest, and only goes live if the team decides to include it. Phil applies the team's changes with the "Apply team changes" button on GitHub.</li>
       <li><strong>15 Oct 2026</strong>: new <a href="services.html">All services</a> page, to search and filter every service and find ones that need checking.</li>
       <li><strong>15 Oct 2026</strong>: added 137 more services from the web research spreadsheet (crisis helplines and directories left out). The scheme data is now one file per scheme, checked automatically before it goes live. Cards now show whether a service is regional or national, whether it needs a referral, its cost and any language support.</li>
@@ -153,7 +156,6 @@
     </ul>
   </main>
 
-  <script src="team-auth.js"></script>
   <script src="help.js" defer></script>
 </body>
 </html>

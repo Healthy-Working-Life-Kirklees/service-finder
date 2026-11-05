@@ -7,14 +7,16 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.workers.dev; base-uri 'none'; form-action 'none'">
   <title>Issues and actions log | Kirklees HWL Support Finder</title>
   <link rel="stylesheet" href="../style.css">
-  <link rel="stylesheet" href="mvp.css">
+  <link rel="stylesheet" href="admin.css">
+  <script src="team-auth.js"></script>
 </head>
 <body>
   <a class="skip" href="#main">Skip to the content</a>
 
-  <nav class="teambar" aria-label="MVP team">
+  <nav class="teambar" aria-label="Admin">
     <div class="wrap">
-      <strong>MVP team only</strong>
+      <strong>Admin</strong>
+      <a href="./">Admin home</a>
       <a href="../">Support Finder</a>
       <a href="help.html">Help</a>
       <a href="services.html">All services</a>
@@ -30,18 +32,18 @@
   </header>
 
   <main id="main" class="wrap">
-    <p class="mvp-banner"><strong>For the MVP team only.</strong> Please keep entries free of personal or identifying information. Made-up test wording is fine. <a href="help.html#report">How to write a good entry</a>.</p>
+    <p class="admin-banner"><strong>For the development team only.</strong> Please keep entries free of personal or identifying information. Made-up test wording is fine. <a href="help.html#report">How to write a good entry</a>.</p>
 
     <!-- passcode gate -->
     <section id="gate" class="gate">
-      <h2 class="mt0">Sign in to the MVP team pages</h2>
+      <h2 class="mt0">Sign in to Admin</h2>
       <div class="field">
         <label for="pass">Team passcode</label>
         <input id="pass" type="password" autocomplete="off">
       </div>
       <button id="unlock" class="btn primary" type="button">Sign in</button>
       <p id="gate-msg" class="msg err" role="alert" hidden></p>
-      <p>One passcode for all the MVP team pages: All services, the issues log, and feedback and usage. You stay signed in on these pages until you close this browser tab. Don't have it? Ask Phil.</p>
+      <p>One passcode for all the Admin pages. You stay signed in until you close this browser tab. Don't have it? Ask Phil.</p>
     </section>
 
     <!-- the log -->
@@ -121,7 +123,6 @@
     </section>
   </main>
 
-  <script src="team-auth.js"></script>
   <script src="../config.js"></script>
   <script src="log.js" defer></script>
 </body>

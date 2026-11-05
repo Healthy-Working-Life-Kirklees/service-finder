@@ -59,6 +59,6 @@
   },
   "listing": {
     "decision": "review",
-    "reason": "Left out of the October import because it is a directory, not a service. Added so the MVP team can decide."
+    "reason": "Left out of the October import because it is a directory, not a service. Added so the development team can decide."
   }
 }
