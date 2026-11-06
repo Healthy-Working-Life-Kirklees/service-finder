@@ -19,6 +19,7 @@ const check = (name, cond, extra = '') => {
 let seq = 0;
 let log = [];
 let lastChat = null;
+let lastChatHeaders = {};
 let feedbackFlag = true; // what /health says about feedback
 let fbSent = []; // feedback the page sent
 let usageSent = []; // anonymous usage events the page sent
@@ -42,6 +43,7 @@ const fbStore = [
   { ...fbBase, id: 3, kind: 'reply', helpful: true, schemeIds: ['my-way-forward'], mode: 'staff' },
   { ...fbBase, id: 4, kind: 'reply', helpful: false, schemeIds: ['my-way-forward'], reasons: ['none-fit'], text: 'Nothing near me' },
   { ...fbBase, id: 5, kind: 'card', schemeIds: ['my-way-forward'], recordLastUpdated: '2026-08-03', reasons: ['contact-wrong'] },
+  { ...fbBase, id: 7, kind: 'reply', helpful: false, schemeIds: ['my-way-forward'], reasons: ['none-fit'], text: 'Team test entry', team: true },
   { ...fbBase, id: 6, kind: 'gap', reasons: ['missing-service'], missedService: { name: 'A test service', website: '', area: '', role: 'provider', organisation: 'Test Trust', phone: '01924 000000', selfReferral: 'no', audience: ['employer'] } },
 ];
 
@@ -63,11 +65,16 @@ async function showCards(page) {
 async function worker(route) {
   const req = route.request();
   const url = new URL(req.url());
-  const cors = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type, x-team-passcode, x-feedback-passcode', 'access-control-allow-methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS' };
+  const cors = { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type, x-team-passcode, x-feedback-passcode, x-team-test', 'access-control-allow-methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS' };
   const json = (obj, status = 200) => route.fulfill({ status, headers: { ...cors, 'content-type': 'application/json' }, body: JSON.stringify(obj) });
   if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: cors });
 
   if (url.pathname === '/health') return json({ ok: true, aiConfigured: true, teamLog: true, feedback: feedbackFlag, usage: true });
+  if (url.pathname === '/usage/days' && req.method() === 'GET') {
+    if (req.headers()['x-team-passcode'] !== FB_PASS) return json({ error: 'Wrong passcode.' }, 401);
+    const team = url.searchParams.get('source') === 'team';
+    return json({ days: [{ date: fbToday, counts: team ? { 'search|en|staff': 2 } : { 'search|en|public': 4, 'conversation|en|public': 2 }, total: 1, tokens: { 'claude-sonnet-5-5': { calls: team ? 2 : 4, input: 1000, output: 500, cacheRead: 0, cacheWrite: 0 } } }] });
+  }
   if (url.pathname === '/usage' && req.method() === 'POST') { usageSent.push(JSON.parse(req.postData())); return route.fulfill({ status: 204, headers: cors }); }
   // Reading feedback (the User feedback review page), with the team passcode.
   if (url.pathname.startsWith('/feedback/')) {
@@ -92,6 +99,7 @@ async function worker(route) {
     const body = JSON.parse(req.postData());
     const last = body.messages[body.messages.length - 1].content;
     lastChat = body;
+    lastChatHeaders = req.headers();
     if (/crisis/i.test(last)) return json({ status: 'results', message: 'I am sorry you feel like this.', recommendations: [], safety_concern: true, urgent_types: ['mental_health_crisis'], pii_detected: false, understood_needs: [], follow_up_questions: [] });
     if (/abuse/i.test(last)) return json({ status: 'results', message: 'I am so sorry. You deserve to be safe.', recommendations: [], safety_concern: true, urgent_types: ['domestic_abuse'], pii_detected: false, understood_needs: [], follow_up_questions: [] });
     if (/unsure/i.test(last)) return json({ status: 'needs_more_info', message: 'Thanks, I can help. One quick question.', recommendations: [], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: ['needs support'], follow_up_questions: ['Which town are you nearest to?'], question_options: [{ question: 'Which town are you nearest to?', options: ['Batley', 'Dewsbury', 'Huddersfield'] }] });
@@ -450,6 +458,30 @@ async function worker(route) {
   await page.waitForSelector('#app:not([hidden])');
   check('admin: signed in, the four Admin pages are listed', (await page.locator('.admin-tools a').evaluateAll((a) => a.map((x) => x.getAttribute('href')))).join() === 'help.html,services.html,log.html,feedback.html');
   check('admin: team bar says signed in with the name', (await page.textContent('.teambar .team-auth')).includes('Signed in as PL'));
+  // ---------- Admin test mode ----------
+  const usageBefore = usageSent.length;
+  await page.click('#test-mode');
+  await page.waitForURL(ON + '/');
+  await page.waitForSelector('.team-test-bar');
+  check('test mode: the finder shows the test mode bar', (await page.textContent('.team-test-bar')).includes('Test mode') && await page.locator('.team-test-stop').isVisible());
+  await page.waitForFunction((n) => true, usageBefore);
+  await page.waitForTimeout(300);
+  check('test mode: usage events carry the team marker', usageSent.slice(usageBefore).length > 0 && usageSent.slice(usageBefore).every((e) => e.t === PASS), JSON.stringify(usageSent.slice(usageBefore)));
+  await chooseMode(page);
+  await page.fill('#message', 'I am 20 and anxious in Dewsbury');
+  await page.click('#send');
+  await page.waitForSelector('.check-summary, .card, .bubble.assistant');
+  check('test mode: searches carry the team marker', lastChatHeaders['x-team-test'] === PASS);
+  await page.click('.team-test-stop');
+  await page.waitForLoadState();
+  await page.waitForTimeout(300);
+  check('test mode: "Stop test mode" turns it off', !(await page.locator('.team-test-bar').count()) && await page.evaluate(() => !sessionStorage.getItem('hwlTeamTest') && window.HWL_TEAM_TEST === ''));
+  const afterStop = usageSent.length;
+  await page.reload();
+  await page.waitForTimeout(300);
+  check('test mode: ...and later events are ordinary again', usageSent.slice(afterStop).every((e) => !('t' in e)));
+  await page.goto(ON + '/admin/');
+  await page.waitForSelector('#app:not([hidden])');
   await page.goto(ON + '/admin/?next=https://example.org/');
   check('admin: only goes on to Admin pages after signing in', page.url().startsWith(ON + '/admin/') && await page.locator('#app').isVisible());
   await page.goto(ON + '/admin/?next=help.html');
@@ -727,9 +759,20 @@ async function worker(route) {
   await page.waitForURL(/\/admin\/feedback\.html$/);
   await page.waitForSelector('#app:not([hidden])');
   check('review: team bar marks the page', (await page.locator('.teambar a[aria-current="page"]').textContent()) === 'Feedback and usage');
+  check('review: starts at "Since live testing started", showing delivery partners and the public', (await page.inputValue('#period')) === 'live' && (await page.inputValue('#source')) === 'real');
+  await page.selectOption('#period', '30');
+  await page.waitForSelector('#usage .stat');
+  const usStats = await page.locator('#usage > .summary .stat b').allTextContents();
+  check('review: usage shows real use only', usStats[2] === '4', usStats.join());
+  check('review: the team testing AI cost is noted under real use', (await page.textContent('#usage')).includes('Admin team testing in this period used another 2 AI calls'));
   const fbStats = await page.locator('#summary .stat b').allTextContents();
   check('review: totals (75% helpful, 3 yes, 1 no, 1 listing problem, 1 missing)', fbStats.slice(0, 5).join() === '75%,3,1,1,1', fbStats.join());
   check('review: list hides plain Yes answers', (await page.locator('#list .entry').count()) === 3);
+  check('review: team test feedback is not in the real list', !(await page.textContent('#list')).includes('Team test entry'));
+  await page.selectOption('#source', 'team');
+  check('review: "Admin team testing" shows only test mode feedback, labelled', (await page.locator('#list .entry').count()) === 1 && (await page.textContent('#list')).includes('Team test entry') && (await page.locator('#list .pill:text-is("Team test")').count()) === 1);
+  check('review: ...and only test mode usage', (await page.locator('#usage > .summary .stat b').allTextContents())[2] === '2' && (await page.textContent('#usage')).includes('Showing Admin team testing only'));
+  await page.selectOption('#source', 'real');
   check('review: shows scheme names, not ids', (await page.textContent('#list')).includes('My Way Forward'));
   const sugText = await page.locator('#list .entry:has(#st-6)').textContent();
   check('review: a suggestion shows who sent it and the details they gave', sugText.includes('Someone from the service') && sugText.includes('4 details') && sugText.includes('Test Trust') && sugText.includes('01924 000000') && sugText.includes('No, needs a referral') && sugText.includes('Employers'), sugText);
