@@ -11,7 +11,8 @@
 //   node scripts/build-print.mjs --site _site
 //
 // Writes the version for the website instead: directory.html, directory.css,
-// directory.js and img/hwl-logo.png into the assembled site folder. It uses the site's
+// directory.js and img/hwl-logo.png into the assembled site folder. Its "Download PDF" link
+// stays hidden until scripts/render-print-pdf.mjs has made the PDF (the deploy runs both). It uses the site's
 // own fonts and logos and has no inline script or style, so it works under the
 // site's Content Security Policy. The Pages workflow runs this on every deploy.
 import fs from 'node:fs';
@@ -325,6 +326,7 @@ async function build() {
     <ul id="dir-results" class="sb-results" hidden></ul>
   </div>
   <button type="button" class="sb-print" data-print-all>Print the whole directory</button>
+  ${SITE_DIR ? '<a class="sb-pdf" href="support-finder-directory.pdf" download hidden data-pdf-link>Download PDF</a>' : ''}
 </nav>`;
   const head = `<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Healthy Working Life Support Finder: printable directory</title>`;
