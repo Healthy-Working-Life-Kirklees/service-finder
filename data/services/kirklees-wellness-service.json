@@ -12,10 +12,13 @@
   "categories": [
     "Health linked to work",
     "Mental health",
-    "Long-term conditions"
+    "Long-term conditions",
+    "Wellbeing",
+    "Women",
+    "Young people"
   ],
-  "whoFor": "Kirklees residents 16+.",
-  "age": "16+",
+  "whoFor": "Kirklees residents 18 and above.",
+  "age": "18 and above",
   "webpage": "https://www.kirkleeswellnessservice.co.uk/",
   "email": "wellness.service@kirklees.gov.uk",
   "phone": "01484 234095 (Mon–Fri 9–5)",
@@ -25,15 +28,24 @@
   ],
   "areas": [
     "Kirklees-wide",
-    "Colne Valley"
+    "Colne Valley",
+    "Batley",
+    "Dewsbury",
+    "Holme Valley",
+    "Huddersfield",
+    "Kirkburton",
+    "Mirfield",
+    "Spen Valley"
   ],
   "eligibility": [
     "Lives in Kirklees",
-    "Aged 16 or over"
+    "Aged 18 or over"
   ],
   "exclusions": [],
   "gate": [],
-  "healthFocus": [],
+  "healthFocus": [
+    "any"
+  ],
   "referralRoutes": [
     "Phone",
     "Email",
@@ -54,13 +66,13 @@
   "workExperience": "No",
   "cost": "Free",
   "languages": "Translation available (NHS listing)",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-05",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 26",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://www.nhs.uk/services/service-directory/kirklees-wellness-service/N11043361",
-    "evidence": "NHS directory updated 5 Oct 2026; council pages Apr/Sep 2026.",
+    "checkedUrl": "https://kirkleeswellnessservice.co.uk/",
+    "evidence": "Checked by PL on 2026-11-05: clarified phone numbers and areas",
     "confidence": "high"
   },
   "listing": {

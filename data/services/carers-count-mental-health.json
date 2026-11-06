@@ -25,7 +25,14 @@
   ],
   "areas": [
     "Dewsbury",
-    "Kirklees-wide"
+    "Kirklees-wide",
+    "Batley",
+    "Colne Valley",
+    "Holme Valley",
+    "Huddersfield",
+    "Kirkburton",
+    "Mirfield",
+    "Spen Valley"
   ],
   "eligibility": [
     "Unpaid carer aged 18 or over",
@@ -54,13 +61,13 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-05",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 8",
     "foundVia": "Kirklees Community Directory",
-    "checkedUrl": "https://carerscountkirklees.org.uk/kirklees-mental-health-service/",
-    "evidence": "Page modified June 2026.",
+    "checkedUrl": "https://carerscountkirklees.org.uk/contact-us/",
+    "evidence": "Checked by PL on 2026-11-05: Checked areas",
     "confidence": "high"
   },
   "listing": {

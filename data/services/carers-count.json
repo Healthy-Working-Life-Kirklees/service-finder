@@ -7,14 +7,14 @@
   "hwlFunded": false,
   "level": "local",
   "audience": [
-    "individual"
+    "employer"
   ],
   "categories": [
     "Carers",
-    "Benefits and money",
-    "Mental health"
+    "Employers",
+    "Employment rights"
   ],
-  "whoFor": "Unpaid carers in Kirklees.",
+  "whoFor": "Employers who employ staff with caring responsibilities",
   "age": null,
   "webpage": "https://www.carerscount.org.uk/",
   "email": "info@carerscount.org.uk",
@@ -24,12 +24,10 @@
     "4th Floor, Empire House, Wakefield Old Road, Dewsbury WF12 8DJ"
   ],
   "areas": [
-    "Dewsbury",
     "Kirklees-wide"
   ],
   "eligibility": [
-    "Unpaid carers in Kirklees",
-    "Includes people caring for someone with mental ill health or drug or alcohol problems"
+    "Employers in Kirklees who employ unpaid carers"
   ],
   "exclusions": [],
   "gate": [],
@@ -53,13 +51,13 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-05",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 44",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationDetails.aspx?orgId=7338",
-    "evidence": "Directory March 2025; site July 2025. Separate from Supporting Working Carers. Provider site (June 2026) gives Empire House, Dewsbury; directory gives Brian Jackson House/5th floor.",
+    "checkedUrl": "https://carerscountkirklees.org.uk/how-can-we-help/support-and-training/",
+    "evidence": "Checked by PL on 2026-11-05: various updates",
     "confidence": "medium"
   },
   "listing": {
