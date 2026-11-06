@@ -370,7 +370,7 @@ export const feedbackOn = (env) => env.FEEDBACK_ENABLED !== 'false' && Boolean(e
 // The "Give pilot feedback" form: on only where PILOT_FEEDBACK is exactly "true" (the preview, for now).
 export const pilotOn = (env) => feedbackOn(env) && env.PILOT_FEEDBACK === 'true';
 
-const CSV_COLUMNS = ['id', 'date', 'kind', 'status', 'schemeIds', 'recordLastUpdated', 'helpful', 'reasons', 'text', 'missedServiceName', 'missedServiceWebsite', 'missedServiceArea', 'missedServiceDetails', 'gapCategories', 'gapArea', 'contacted', 'ease', 'contactName', 'contactEmail', 'lang', 'mode', 'site', 'redacted', 'note'];
+const CSV_COLUMNS = ['id', 'date', 'kind', 'status', 'schemeIds', 'recordLastUpdated', 'helpful', 'reasons', 'text', 'missedServiceName', 'missedServiceWebsite', 'missedServiceArea', 'missedServiceDetails', 'gapCategories', 'gapArea', 'contacted', 'ease', 'contactName', 'contactEmail', 'lang', 'mode', 'site', 'team', 'redacted', 'note'];
 function csv(items) {
   // A leading = + - @ would be run as a formula by a spreadsheet, so it gets a ' in front.
   const cell = (v) => {
@@ -390,6 +390,14 @@ function csv(items) {
 
 // ctx: { ids: Set of scheme ids, names: Map id -> name, areas: [...], categories: [...] }, worked out from the
 // data by index.js. exec is the Worker's execution context, so the email can be sent after the reply.
+// Admin test mode: the finder sends the team passcode in an X-Team-Test header (or, for usage events, a "t" field)
+// when an Admin has opened it in test mode. Searches, events and feedback are then kept apart from real use, so
+// they can be looked at separately on the Feedback and usage page. Without TEAM_PASSCODE nothing is ever a test.
+export async function isTeamTest(value, env) {
+  if (!env.TEAM_PASSCODE || typeof value !== 'string' || !value) return false;
+  return safeEqual(value, env.TEAM_PASSCODE);
+}
+
 export async function handleFeedback(request, env, url, cors, originOk, ctx, exec) {
   const path = url.pathname;
   const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
@@ -418,6 +426,7 @@ export async function handleFeedback(request, env, url, cors, originOk, ctx, exe
     const site = env.ALLOW_SELF_ORIGIN === 'true' ? 'preview' : 'live';
     const v = validateFeedback(body, { ...ctx, site }, { pilot: pilotOn(env) });
     if (v.error) return json({ error: v.error }, 400, cors);
+    if (await isTeamTest(request.headers.get('X-Team-Test'), env)) v.entry.team = true;
     const r = await call('/add', { entry: v.entry, max: Number(env.MAX_FEEDBACK_PER_DAY || 300) });
     if (r.body.capped) return json({ error: 'We have had a lot of feedback today. Please try again tomorrow.' }, 503, cors);
     // Email the team, after the entry is safely stored. A failed email never loses the feedback.

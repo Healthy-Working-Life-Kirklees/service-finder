@@ -71,7 +71,7 @@ export function buildEmail(entry, names = new Map(), reviewUrl = '') {
 
   const kind = KIND_LABELS[entry.kind] || entry.kind;
   const about = entry.kind === 'pilot' || entry.kind === 'gap' ? entry.reasons.map(label).join(', ') : entry.schemeIds.map((id) => names.get(id) || id).join(', ');
-  const site = entry.site === 'preview' ? ' [preview]' : '';
+  const site = (entry.site === 'preview' ? ' [preview]' : '') + (entry.team ? ' [team test]' : '');
   const subject = `Support Finder feedback #${entry.id}${site}: ${kind}${about ? ' – ' + about : ''}`.slice(0, 200);
 
   add('Type', kind);

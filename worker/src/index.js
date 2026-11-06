@@ -17,7 +17,7 @@ import schema from '../../data/schema.json';
 import { handleLog } from './teamlog.js';
 import { handleProvider } from './providerlink.js';
 import { makeChecker } from './serviceedit.js';
-import { handleFeedback, feedbackOn, pilotOn } from './feedback.js';
+import { handleFeedback, feedbackOn, pilotOn, isTeamTest } from './feedback.js';
 import { handleUsage, usageOn, addUsage, chatKeys, addTokens, emptyTokens } from './usage.js';
 
 // The team issues log lives in its own Durable Object class (see teamlog.js).
@@ -243,7 +243,7 @@ export default {
       ? {
           'Access-Control-Allow-Origin': origin,
           'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'content-type, x-team-passcode, x-feedback-passcode',
+          'Access-Control-Allow-Headers': 'content-type, x-team-passcode, x-feedback-passcode, x-team-test',
           'Access-Control-Max-Age': '600',
           Vary: 'Origin',
         }
@@ -320,9 +320,11 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
 
     // AI token use for this answer, added to the day's totals (usage.js). Only numbers from Anthropic's replies.
     const tokens = { model: payload.model, ...emptyTokens() };
+    // Admin test mode: counted apart from real use (the AI is still called and paid for as normal).
+    const teamTest = await isTeamTest(request.headers.get('X-Team-Test'), env);
     // Records the day's AI error count and any tokens already spent, without holding up the reply.
     const countFailure = () => {
-      const p = addUsage(env, ['ai-error|' + lang + '|' + mode], tokens.calls ? tokens : null);
+      const p = addUsage(env, ['ai-error|' + lang + '|' + mode], tokens.calls ? tokens : null, teamTest);
       if (ctx && typeof ctx.waitUntil === 'function') return ctx.waitUntil(p);
       return p;
     };
@@ -421,7 +423,7 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
 
     // Anonymous usage counts for this answer (search, results or not, services shown). Nothing from the
     // conversation is counted. Done after the reply is sent where the platform allows it.
-    const counting = addUsage(env, chatKeys({ lang, mode, firstMessage: messages.filter((m) => m.role === 'user').length === 1, status, urgent, ids: recommendations.map((x) => x.id) }), tokens);
+    const counting = addUsage(env, chatKeys({ lang, mode, firstMessage: messages.filter((m) => m.role === 'user').length === 1, status, urgent, ids: recommendations.map((x) => x.id) }), tokens, teamTest);
     if (ctx && typeof ctx.waitUntil === 'function') ctx.waitUntil(counting);
     else await counting;
 

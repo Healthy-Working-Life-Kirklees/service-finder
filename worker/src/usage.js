@@ -14,7 +14,7 @@
 // can't be linked to a search, a conversation or a person. Events from the page are checked against fixed lists and the scheme ids.
 // Counting is on unless the variable USAGE_ENABLED is "false". Tallies older than 24 months are deleted.
 
-import { safeEqual } from './feedback.js';
+import { safeEqual, isTeamTest } from './feedback.js';
 
 const LANGS = ['en', 'pl', 'ur'];
 const MODES = ['public', 'staff'];
@@ -25,7 +25,7 @@ export const CONTACT_ANSWERS = ['yes', 'notyet', 'no'];
 export const SUMMARY_ANSWERS = ['yes', 'changed'];
 export const ANSWER_KINDS = ['tapped', 'typed', 'both'];
 const RETENTION_MONTHS = 24;
-const MAX_BODY = 512;
+const MAX_BODY = 768; // room for an event plus, in Admin test mode, the team passcode
 
 // Events the page may send, and what each may carry. Every counter key is built only from these fixed values
 // and scheme ids, so nothing free-form can ever be stored.
@@ -124,7 +124,8 @@ export class UsageStore {
     const day = today();
     if ((await s.get('purged')) === day) return;
     const cutoff = retentionCutoff();
-    const old = [...(await s.list({ prefix: 'd:' })).keys()].filter((k) => k.slice(2) < cutoff);
+    // "d:" is real use; "t:" is Admin test mode (see isTeamTest in feedback.js), kept the same way.
+    const old = [...(await s.list({ prefix: 'd:' })).keys(), ...(await s.list({ prefix: 't:' })).keys()].filter((k) => k.slice(2) < cutoff);
     if (old.length) await s.delete(old);
     await s.put('purged', day);
   }
@@ -137,7 +138,8 @@ export class UsageStore {
     if (url.pathname === '/add') {
       await this.purge();
       const day = today();
-      const rec = (await s.get('d:' + day)) || { date: day, counts: {}, total: 0 };
+      const prefix = body.test ? 't:' : 'd:';
+      const rec = (await s.get(prefix + day)) || { date: day, counts: {}, total: 0 };
       const keys = (body.keys || []).slice(0, 20);
       // Token totals: a few numbers per model, so they can't fill the store. Added even when the counts are
       // capped, so the AI spend figures stay complete.
@@ -156,13 +158,13 @@ export class UsageStore {
         for (const k of keys) rec.counts[k] = (rec.counts[k] || 0) + 1;
         rec.total += keys.length;
       }
-      if (!capped || t) await s.put('d:' + day, rec);
+      if (!capped || t) await s.put(prefix + day, rec);
       return Response.json(capped ? { capped: true } : { ok: true });
     }
 
     if (url.pathname === '/days') {
       await this.purge();
-      const days = [...(await s.list({ prefix: 'd:' })).values()].filter((d) => !body.since || d.date >= body.since);
+      const days = [...(await s.list({ prefix: body.test ? 't:' : 'd:' })).values()].filter((d) => !body.since || d.date >= body.since);
       return Response.json({ days });
     }
 
@@ -182,11 +184,11 @@ async function callStore(env, p, payload) {
 }
 
 // Adds counts, and optionally one answer's AI token totals ({ model, calls, input, output, cacheRead, cacheWrite }).
-// Never throws: counting must not get in the way of answering.
-export async function addUsage(env, keys, tokens) {
+// test: true for Admin test mode, kept apart from real use. Never throws: counting must not get in the way of answering.
+export async function addUsage(env, keys, tokens, test = false) {
   if (!usageOn(env) || (!keys.length && !tokens)) return;
   try {
-    await callStore(env, '/add', { keys, tokens: tokens || null, max: Number(env.MAX_USAGE_PER_DAY || 20000) });
+    await callStore(env, '/add', { keys, tokens: tokens || null, max: Number(env.MAX_USAGE_PER_DAY || 20000), test: test === true });
   } catch {
     /* counting is best effort */
   }
@@ -238,9 +240,15 @@ export async function handleUsage(request, env, url, cors, originOk, ids) {
     } catch {
       return json({ error: 'Not readable.' }, 400, cors);
     }
+    // Admin test mode sends the team passcode as "t": take it off before checking the event.
+    let test = false;
+    if (body && typeof body === 'object' && Object.hasOwn(body, 't')) {
+      test = await isTeamTest(body.t, env);
+      delete body.t;
+    }
     const v = eventKeys(body, ids);
     if (v.error) return json({ error: v.error }, 400, cors);
-    await addUsage(env, v.keys);
+    await addUsage(env, v.keys, null, test);
     return new Response(null, { status: 204, headers: cors });
   }
 
@@ -258,10 +266,12 @@ export async function handleUsage(request, env, url, cors, originOk, ids) {
   if (request.method !== 'GET' || !['/usage/days', '/usage/export.csv'].includes(path)) return json({ error: 'Not found.' }, 404, cors);
   const since = url.searchParams.get('since');
   if (since && !isDate(since)) return json({ error: '"since" must be a date, YYYY-MM-DD.' }, 400, cors);
-  const { days } = await callStore(env, '/days', { since });
+  // ?source=team: the Admin test mode counts instead of real use.
+  const test = url.searchParams.get('source') === 'team';
+  const { days } = await callStore(env, '/days', { since, test });
   if (path === '/usage/days') return json({ days, retentionMonths: RETENTION_MONTHS }, 200, cors);
   return new Response(csv(days), {
     status: 200,
-    headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="support-finder-usage-${today()}.csv"`, 'Cache-Control': 'no-store', ...cors },
+    headers: { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="support-finder-usage${test ? '-team-tests' : ''}-${today()}.csv"`, 'Cache-Control': 'no-store', ...cors },
   });
 }
