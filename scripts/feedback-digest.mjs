@@ -44,7 +44,7 @@ async function load() {
   const i = process.argv.indexOf('--input');
   if (i > 0) {
     const d = JSON.parse(fs.readFileSync(process.argv[i + 1], 'utf8'));
-    return (Array.isArray(d) ? d : d.items || []).filter((x) => x.status === 'New');
+    return (Array.isArray(d) ? d : d.items || []).filter((x) => x.status === 'New' && !x.team); // Admin test-mode feedback is left out
   }
   const base = String(process.env.WORKER_URL || '').replace(/\/$/, '');
   // The one team passcode for the Admin pages. FEEDBACK_PASSCODE is still read, for anyone with it set from before the passcodes were merged.
