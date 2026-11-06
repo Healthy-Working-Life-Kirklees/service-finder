@@ -52,7 +52,7 @@
 
   async function post(payload) {
     try {
-      const r = await fetch(api + '/feedback', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
+      const r = await fetch(api + '/feedback', { method: 'POST', headers: { 'content-type': 'application/json', ...(window.HWL_TEAM_TEST ? { 'x-team-test': window.HWL_TEAM_TEST } : {}) }, body: JSON.stringify(payload) });
       return { ok: r.ok, status: r.status };
     } catch {
       return { ok: false, status: 0 };

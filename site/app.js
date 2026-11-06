@@ -553,7 +553,8 @@
       }
       const r = await fetch(API + '/chat', {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        // Admin test mode (team-test.js): the Worker counts this search apart from real use.
+        headers: { 'content-type': 'application/json', ...(window.HWL_TEAM_TEST ? { 'x-team-test': window.HWL_TEAM_TEST } : {}) },
         body: JSON.stringify({ mode: mode(), lang: window.I18N.lang, messages: history }),
       });
       const data = await r.json().catch(() => ({}));

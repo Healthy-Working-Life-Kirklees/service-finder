@@ -641,3 +641,10 @@ html.high-contrast .safety-card,
 html.high-contrast .safety-note,
 html.high-contrast .safety-more-lines { border: 2px solid #000; }
 html.high-contrast .safety-card h2 svg { background: #fff; border: 2px solid #000; color: #000; }
+
+/* Admin test mode bar (team-test.js): only ever shown to an Admin who switched it on. */
+.team-test-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; padding: .6rem max(16px, env(safe-area-inset-left, 0px)); background: #5a2d82; color: #fff; font-size: .95rem; }
+.team-test-bar p { margin: 0; flex: 1 1 20rem; }
+.team-test-stop { flex: none; font: inherit; font-weight: 700; padding: .35rem .8rem; border: 2px solid #fff; border-radius: 6px; background: transparent; color: #fff; cursor: pointer; }
+.team-test-stop:hover, .team-test-stop:focus-visible { background: #fff; color: #5a2d82; outline: 3px solid #ffbf47; outline-offset: 2px; }
+html.high-contrast .team-test-bar { background: #000; }

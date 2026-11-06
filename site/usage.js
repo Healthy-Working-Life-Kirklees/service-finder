@@ -13,7 +13,8 @@
   const queue = [];
 
   function post(body) {
-    const text = JSON.stringify(body);
+    // Admin test mode (team-test.js): the passcode goes in the body, so this stays a simple request.
+    const text = JSON.stringify(window.HWL_TEAM_TEST ? { ...body, t: window.HWL_TEAM_TEST } : body);
     // text/plain keeps this a simple request (no preflight). sendBeacon still sends if the page is closing.
     try {
       if (navigator.sendBeacon && navigator.sendBeacon(API + '/usage', new Blob([text], { type: 'text/plain' }))) return;
