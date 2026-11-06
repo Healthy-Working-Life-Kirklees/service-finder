@@ -1083,7 +1083,7 @@ check('usage: unknown event refused', (await usPost({ e: 'typed', text: 'hello' 
 check('usage: extra field refused', (await usPost({ e: 'visit', text: 'my name is' })) === 400);
 check('usage: unknown link kind refused', (await usPost({ e: 'link', s: openId, k: 'facebook' })) === 400);
 check('usage: wrong origin refused', (await usPost({ e: 'visit' }, { origin: 'https://evil.example' })) === 403);
-check('usage: too large refused', (await usPost(null, { raw: '{"e":"visit","x":"' + 'a'.repeat(600) + '"}' })) === 413);
+check('usage: too large refused', (await usPost(null, { raw: '{"e":"visit","x":"' + 'a'.repeat(900) + '"}' })) === 413);
 check('usage: switched off -> 404', (await usPost({ e: 'visit' }, { e: usEnv({ USAGE_ENABLED: 'false' }) })) === 404);
 
 // Reading
@@ -1106,6 +1106,42 @@ usageStore = mkUsageStore();
 const oldDay = '2020-01-01';
 await usageStore.ctx.storage.put('d:' + oldDay, { date: oldDay, counts: { 'visit|en|none': 5 }, total: 5 });
 check('usage: tallies older than 24 months are deleted', !(await usDays()).body.days.some((d) => d.date === oldDay));
+
+// ----- Admin test mode: counted apart from real use -----
+usageStore = mkUsageStore();
+const teamDays = async () => (await usDays(FB_PASS, '?source=team')).body.days;
+const dayOf = (days) => (days.find((d) => d.date === new Date().toISOString().slice(0, 10)) || { counts: {} });
+reply = ok([{ type: 'tool_use', id: 'tt1', name: 'respond', input: { status: 'results', message: 'Here you go.', urgent_support: false, matches: [{ service_id: openId, fit: 'strong', reason: 'r', check_first: '' }] } }]);
+await worker.fetch(new Request('https://w/chat', { method: 'POST', headers: { Origin: O, 'content-type': 'application/json', 'x-team-test': FB_PASS }, body: JSON.stringify({ mode: 'staff', lang: 'en', messages: [{ role: 'user', content: 'Test search' }] }) }), usEnv());
+check('team test: a test-mode search is not in the real counts', !(await todayCounts())['search|en|staff'], JSON.stringify(await todayCounts()));
+let td = dayOf(await teamDays());
+check('team test: ...it is in the team test counts, with its AI tokens', td.counts['search|en|staff'] === 1 && td.counts['shown|' + openId + '|en|staff'] === 1 && td.tokens && td.tokens['claude-sonnet-5-5'].calls === 1, JSON.stringify(td));
+await worker.fetch(new Request('https://w/chat', { method: 'POST', headers: { Origin: O, 'content-type': 'application/json', 'x-team-test': 'not the passcode' }, body: JSON.stringify({ mode: 'staff', lang: 'en', messages: [{ role: 'user', content: 'Search' }] }) }), usEnv());
+check('team test: a wrong passcode is counted as real use', (await todayCounts())['search|en|staff'] === 1 && dayOf(await teamDays()).counts['search|en|staff'] === 1);
+check('team test: page event with the passcode accepted (204)', (await usPost({ e: 'link', s: openId, k: 'website', lang: 'en', mode: 'public', t: FB_PASS })) === 204);
+check('team test: ...and counted as a test only', dayOf(await teamDays()).counts['link|' + openId + '|website|en|public'] === 1 && !(await todayCounts())['link|' + openId + '|website|en|public']);
+check('team test: page event with a wrong passcode counted as real use', (await usPost({ e: 'visit', t: 'guess' })) === 204 && (await todayCounts())['visit|en|none'] === 1 && !dayOf(await teamDays()).counts['visit|en|none']);
+check('team test: without TEAM_PASSCODE nothing is a test', (await usPost({ e: 'copy', s: openId, t: '' }, { e: usEnv({ TEAM_PASSCODE: undefined }) })) === 204 && (await todayCounts())['copy|' + openId + '|en|none'] === 1);
+check('team test: reading team counts needs the passcode', (await usDays('wrong', '?source=team')).status === 401);
+const teamCsv = await worker.fetch(new Request('https://w/usage/export.csv?source=team', { headers: { 'x-feedback-passcode': FB_PASS } }), usEnv());
+check('team test: CSV of team counts', teamCsv.status === 200 && (teamCsv.headers.get('content-disposition') || '').includes('team-tests') && (await teamCsv.text()).includes('"search","","","en","staff","1"'));
+const oldTeam = '2020-01-01';
+await usageStore.ctx.storage.put('purged', 'never');
+await usageStore.ctx.storage.put('t:' + oldTeam, { date: oldTeam, counts: { 'visit|en|none': 1 }, total: 1 });
+check('team test: old team counts are deleted after 24 months too', !(await teamDays()).some((d) => d.date === oldTeam));
+// Feedback sent in test mode is labelled, not hidden or refused.
+fbStore = mkFbStore();
+const fbTeam = async (pass) => {
+  const res = await worker.fetch(new Request('https://w/feedback', { method: 'POST', headers: { Origin: O, 'content-type': 'application/json', 'x-team-test': pass }, body: JSON.stringify(replyFb()) }), fbEnv());
+  return res.status;
+};
+check('team test: feedback in test mode accepted', (await fbTeam(FB_PASS)) === 201 && (await fbTeam('nope')) === 201);
+let tItems = await items();
+check('team test: test-mode feedback is labelled "team"; a wrong passcode is ordinary feedback', tItems.length === 2 && tItems.filter((x) => x.team === true).length === 1, JSON.stringify(tItems.map((x) => x.team)));
+const tCsv = (await fbCall('GET', '/feedback/export.csv', null, { pass: FB_PASS })).body;
+check('team test: feedback CSV has a team column', tCsv.split('\r\n')[0].includes('"team"'));
+const notifyMod = await import(pathToFileURL(path.join(root, 'worker/src/notify.js')).href);
+check('team test: the email subject says [team test]', notifyMod.buildEmail({ id: 9, kind: 'reply', schemeIds: [], reasons: [], team: true }).subject.includes('[team test]'));
 
 // ---------- "Apply changes now" (applynow.js) ----------
 {
