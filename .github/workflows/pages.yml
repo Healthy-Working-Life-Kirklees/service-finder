@@ -69,6 +69,12 @@ jobs:
           # Tell the pages where the Worker is.
           printf 'window.FINDER_CONFIG = %s;' "$(jq -cn --arg api "$WORKER_URL" '{apiBase: $api}')" > _site/config.js
 
+      # The PDF of the printable directory, for the "Download PDF" link on directory.html, made with the runner's
+      # Google Chrome. If it fails, the site still deploys and the link stays hidden. See print/README.md.
+      - name: Make the directory PDF
+        continue-on-error: true
+        run: node scripts/render-print-pdf.mjs _site
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

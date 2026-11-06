@@ -55,6 +55,11 @@ jobs:
           rm -f "$OUT/admin/README.md"
           printf 'window.FINDER_CONFIG = {apiBase: location.origin, preview: true};' > "$OUT/config.js"
 
+      # The directory PDF, as on the live site. If it fails, the preview still deploys without the link.
+      - name: Make the directory PDF
+        continue-on-error: true
+        run: node scripts/render-print-pdf.mjs worker/preview-site
+
       - name: Install
         working-directory: worker
         run: npm ci

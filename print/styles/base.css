@@ -149,6 +149,9 @@ a { color: inherit; text-decoration: none; }
   .sb-title { flex: 1; min-width: 50mm; opacity: .9; }
   .sb-print { font: inherit; font-weight: 700; padding: 1.6mm 4mm; border-radius: 1.5mm; border: .4mm solid #fff; background: #fff; color: var(--dark); cursor: pointer; }
   .sb-print:hover { background: var(--light); }
+  .screen-bar .sb-pdf { padding: 1.6mm 4mm; border-radius: 1.5mm; border: .4mm solid #fff; text-decoration: none; white-space: nowrap; }
+  .screen-bar .sb-pdf:hover { background: rgba(255,255,255,.15); }
+  .screen-bar .sb-pdf[hidden] { display: none; }
   .screen-bar a:focus-visible, .sb-print:focus-visible { outline: .8mm solid #ffeb3b; outline-offset: .5mm; }
   .page { zoom: var(--screen-scale, 1); }
   /* jumping to a page from an index leaves it clear of the bar (set on the root, so zoom doesn't shrink it) */
@@ -158,6 +161,9 @@ a { color: inherit; text-decoration: none; }
   .screen-bar { gap: 2mm 3mm; padding: 2mm 3mm; font-size: 10.5pt; }
   .sb-title { display: none; }
   .sb-print { margin-left: auto; padding: 1.2mm 3mm; }
+  .screen-bar .sb-pdf { padding: 1.2mm 3mm; margin-left: auto; }
+  /* On a phone, Download PDF takes the print button's place (when there's a PDF), to keep the bar to two rows. */
+  .screen-bar:has(.sb-pdf:not([hidden])) .sb-print { display: none; }
 }
 @media print { .screen-bar { display: none !important; } }
 
