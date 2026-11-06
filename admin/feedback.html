@@ -59,13 +59,24 @@
       <div class="filters">
         <div>
           <label for="period">Period</label>
+          <!-- "Since live testing started" hides the development team's testing before that date. Nothing is deleted:
+               choose "Everything" to see it. To change the date, change data-since here. -->
           <select id="period">
+            <option value="live" data-since="2026-11-09" selected>Since live testing started (9 Nov 2026)</option>
             <option value="7">Last 7 days</option>
-            <option value="30" selected>Last 30 days</option>
+            <option value="30">Last 30 days</option>
             <option value="90">Last 90 days</option>
-            <option value="all">Everything (up to 12 months)</option>
+            <option value="all">Everything, including development testing</option>
           </select>
         </div>
+        <div>
+          <label for="source">Whose use</label>
+          <select id="source" aria-describedby="source-hint">
+            <option value="real" selected>Delivery partners and the public</option>
+            <option value="team">Admin team testing (test mode)</option>
+          </select>
+        </div>
+        <p id="source-hint" class="hint">Admins can test without counting: "Open the finder in test mode" on the <a href="index.html">Admin home page</a>.</p>
       </div>
 
       <h2 class="mt0">How the finder is used</h2>

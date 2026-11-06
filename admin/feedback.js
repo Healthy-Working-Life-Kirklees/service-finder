@@ -200,13 +200,19 @@
   }
 
   // ---------- working out the numbers ----------
+  // Feedback in the chosen period, from the chosen source: real use, or Admin test mode (labelled "team" by the Worker).
   function inPeriod() {
-    const p = $('#period').value;
-    if (p === 'all') return items;
-    const d = new Date();
-    d.setUTCDate(d.getUTCDate() - Number(p));
-    const since = d.toISOString().slice(0, 10);
-    return items.filter((x) => x.date >= since);
+    const team = $('#source').value === 'team';
+    const mine = items.filter((x) => Boolean(x.team) === team);
+    const opt = $('#period').selectedOptions[0];
+    if (opt.value === 'all') return mine;
+    let since = opt.dataset.since;
+    if (!since) {
+      const d = new Date();
+      d.setUTCDate(d.getUTCDate() - Number(opt.value));
+      since = d.toISOString().slice(0, 10);
+    }
+    return mine.filter((x) => x.date >= since);
   }
 
   const count = (arr, keyFn) => {
@@ -393,6 +399,7 @@
         el('span', { class: 'pill', text: MODE_LABELS[x.mode] || x.mode }),
         el('span', { class: 'pill', text: LANG_LABELS[x.lang] || x.lang }),
         x.site === 'preview' ? el('span', { class: 'pill', text: 'Preview' }) : null,
+        x.team ? el('span', { class: 'pill warn', text: 'Team test' }) : null,
         x.redacted ? el('span', { class: 'pill warn', text: 'Contact details removed' }) : null
       ),
       el('p', { class: 'meta', text: 'Sent ' + fmtDate(x.date) }),
@@ -424,7 +431,7 @@
   $('#refresh').addEventListener('click', load);
   $('#export').addEventListener('click', exportCsv);
   $('#lock').addEventListener('click', lock);
-  $('#period').addEventListener('change', () => { shown = PAGE; render(); if (window.USAGE_VIEW) window.USAGE_VIEW.render(); });
+  for (const id of ['#period', '#source']) $(id).addEventListener('change', () => { shown = PAGE; render(); if (window.USAGE_VIEW) window.USAGE_VIEW.render(); });
   for (const id of ['#flt-kind', '#flt-status']) $(id).addEventListener('change', () => { shown = PAGE; renderList(inPeriod()); });
   $('#flt-q').addEventListener('input', () => { shown = PAGE; renderList(inPeriod()); });
   $('#more').addEventListener('click', () => { shown += PAGE; renderList(inPeriod()); });

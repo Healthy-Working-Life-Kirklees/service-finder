@@ -8,8 +8,11 @@
   const API = String(cfg.apiBase || '').replace(/\/$/, '');
   const $ = (s) => document.querySelector(s);
   const SVGNS = 'http://www.w3.org/2000/svg';
-  let days = [];
+  let days = []; // real use
+  let teamDays = []; // Admin test mode
   let pass = '';
+  const team = () => $('#source') && $('#source').value === 'team';
+  const shownDays = () => (team() ? teamDays : days);
   let names = new Map();
 
   const LINK_LABELS = { referral: 'Referral form or link', website: 'Website', phone: 'Phone number', email: 'Email address', directions: 'Get directions', map: 'Show on map' };
@@ -67,11 +70,17 @@
     const box = $('#usage');
     if (!API || !box) return;
     try {
-      const res = await fetch(API + '/usage/days', { headers: { 'x-team-passcode': pass } });
+      const [res, resTeam] = await Promise.all([
+        fetch(API + '/usage/days', { headers: { 'x-team-passcode': pass } }),
+        fetch(API + '/usage/days?source=team', { headers: { 'x-team-passcode': pass } }),
+      ]);
       if (res.status === 404) { days = []; box.replaceChildren(el('p', { class: 'msg info', text: "Usage counting isn't switched on yet. Once the Worker update is live, counts start from that day." })); return; }
       const d = await res.json();
       if (!res.ok) throw new Error(d.error || 'Could not load the usage counts.');
       days = d.days || [];
+      // An older Worker ignores ?source=team and sends real use again: only keep team days it really marked.
+      const dt = resTeam.ok ? await resTeam.json() : {};
+      teamDays = resTeam.ok && JSON.stringify(dt.days) !== JSON.stringify(d.days) ? dt.days || [] : [];
       render();
     } catch (e) {
       box.replaceChildren(el('p', { class: 'msg err', text: e.message || 'Could not load the usage counts.' }));
@@ -79,21 +88,30 @@
   }
 
   async function exportCsv() {
-    const res = await fetch(API + '/usage/export.csv', { headers: { 'x-team-passcode': pass } });
+    const res = await fetch(API + '/usage/export.csv' + (team() ? '?source=team' : ''), { headers: { 'x-team-passcode': pass } });
     if (!res.ok) return;
-    const a = el('a', { href: URL.createObjectURL(await res.blob()), download: 'support-finder-usage-' + new Date().toISOString().slice(0, 10) + '.csv' });
+    const a = el('a', { href: URL.createObjectURL(await res.blob()), download: 'support-finder-usage' + (team() ? '-team-tests' : '') + '-' + new Date().toISOString().slice(0, 10) + '.csv' });
     document.body.append(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }
 
   // The dates in the chosen period, oldest first, including days with nothing counted.
   function periodDates() {
-    const p = $('#period').value;
+    const opt = $('#period').selectedOptions[0];
+    const p = opt.value;
     const end = new Date();
+    const today = end.toISOString().slice(0, 10);
+    const daysSince = (first) => Math.max(1, Math.round((Date.parse(today) - Date.parse(first)) / 86400000) + 1);
     let n;
+    if (opt.dataset.since) {
+      // "Since live testing started": that day to today (just that day while it's still in the future).
+      const out = [];
+      for (let d = new Date(opt.dataset.since + 'T00:00:00Z'); out.length === 0 || d.toISOString().slice(0, 10) <= today; d.setUTCDate(d.getUTCDate() + 1)) out.push(d.toISOString().slice(0, 10));
+      return out;
+    }
     if (p === 'all') {
-      const first = days.map((d) => d.date).sort()[0];
-      n = first ? Math.round((Date.parse(end.toISOString().slice(0, 10)) - Date.parse(first)) / 86400000) + 1 : 1;
+      const first = shownDays().map((d) => d.date).sort()[0];
+      n = first ? daysSince(first) : 1;
     } else n = Number(p);
     const out = [];
     for (let i = n - 1; i >= 0; i--) { const d = new Date(end); d.setUTCDate(d.getUTCDate() - i); out.push(d.toISOString().slice(0, 10)); }
@@ -107,7 +125,7 @@
     const byDay = new Map(dates.map((d) => [d, {}]));
     const t = { ev: {}, links: {}, linkByScheme: {}, shown: {}, contacted: {}, contactedByScheme: {}, summary: {}, answers: {}, a11y: {}, listen: {}, lang: {}, mode: {}, copy: 0, expand: 0, models: {}, unpriced: false };
     const add = (o, k, n) => { o[k] = (o[k] || 0) + n; };
-    for (const day of days) {
+    for (const day of shownDays()) {
       if (!inPeriod.has(day.date)) continue;
       for (const [key, n] of Object.entries(day.counts)) {
         const p = key.split('|');
@@ -260,6 +278,19 @@
     return wrap;
   }
 
+  // The AI cost of Admin test mode in the same period, so the whole spend is visible from the real-use view.
+  function teamCostNote(dates) {
+    const inPeriod = new Set(dates);
+    let cost = 0;
+    let calls = 0;
+    for (const day of teamDays) {
+      if (!inPeriod.has(day.date)) continue;
+      for (const [model, m] of Object.entries(day.tokens || {})) { cost += costOf(model, m) || 0; calls += m.calls || 0; }
+    }
+    if (!calls) return null;
+    return el('p', { class: 'hint', text: 'Admin team testing in this period used another ' + calls.toLocaleString('en-GB') + ' AI calls, an estimated ' + usd(cost) + '. Choose "Admin team testing" to see it.' });
+  }
+
   // ---------- the section ----------
   function render() {
     const box = $('#usage');
@@ -292,7 +323,9 @@
         el('button', { type: 'button', class: 'btn secondary small', text: 'Download usage as CSV', onclick: exportCsv })),
       el('p', { class: 'hint', text: 'Anonymous daily counts: no names, no IP addresses, nothing anyone typed. "Conversations" is the nearest honest measure of people using the finder, as the site deliberately doesn\'t recognise returning visitors.' }),
       el('div', { class: 'summary' }, tiles.map(([n, label]) => el('div', { class: 'stat' }, el('b', { text: n }), label))),
+      team() ? el('p', { class: 'msg info', text: 'Showing Admin team testing only: searches and button presses made in test mode. Delivery partners and the public are under "Delivery partners and the public".' }) : null,
       aiSection(dates, byDay, t, ev('conversation'), searches),
+      team() ? null : teamCostNote(dates),
       el('h3', { text: 'How the finder is used' }),
       el('div', { class: 'charts' },
         lineChart('Searches and conversations per day', dates, [

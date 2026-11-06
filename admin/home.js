@@ -66,7 +66,14 @@
 
   $('#lock').addEventListener('click', () => {
     AUTH.signOut();
+    try { sessionStorage.removeItem('hwlTeamTest'); } catch { /* ignore */ }
     show();
+  });
+
+  // Admin test mode: marks this tab, then opens the finder (site/team-test.js shows the bar and sends the marker).
+  $('#test-mode').addEventListener('click', () => {
+    try { sessionStorage.setItem('hwlTeamTest', '1'); } catch { /* ignore */ }
+    location.href = '../';
   });
 
   $('#by').value = AUTH.by();
