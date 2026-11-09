@@ -442,15 +442,11 @@
     },
     {
       "id": "proper-job-theatre-company",
-      "name": "Proper Job Theatre Company"
-    },
-    {
-      "id": "proper-job-theatre-company-ltd",
-      "name": "Proper Job Theatre Company Ltd"
-    },
-    {
-      "id": "proper-job-theatre-company-with-kltv-and-thread-re",
-      "name": "Proper Job Theatre Company, with KLTV and Thread Republic"
+      "name": "Proper Job Theatre Company",
+      "aliases": [
+        "Proper Job Theatre Company Ltd",
+        "Proper Job Theatre Company, with KLTV and Thread Republic"
+      ]
     },
     {
       "id": "ptsd-resolution",
