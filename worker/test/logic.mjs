@@ -1260,10 +1260,20 @@ r = await logCall('GET', '/log/orgs', null, { origin: null });
 check('orgs: the apply script (no Origin) can read them', r.status === 200 && r.body.orgs['proper-job-theatre-company-ltd']);
 {
   const d = fs.mkdtempSync(path.join(os.tmpdir(), 'org-'));
-  for (const id of ['p2p-proper-job', 'proper-progress', 'lab-project-proper-job', 'acas-helpline', 'acas-managing-disability']) fs.copyFileSync(path.join(root, 'data/services', id + '.json'), path.join(d, id + '.json'));
-  const orgsIn = JSON.parse(fs.readFileSync(path.join(root, 'data/organisations.json'), 'utf8'));
-  orgsIn.organisations.find((o) => o.id === 'proper-job-theatre-company-ltd').overview = 'Theatre company in Huddersfield.';
-  fs.writeFileSync(path.join(d, 'organisations.json'), JSON.stringify(orgsIn));
+  // Its own organisations and organisation names, so the test doesn't depend on what the team has since combined or
+  // renamed in the real data.
+  const orgOf = { 'p2p-proper-job': 'Proper Job Theatre Company Ltd', 'lab-project-proper-job': 'Proper Job Theatre Company', 'acas-helpline': 'Acas', 'acas-managing-disability': 'Acas' };
+  for (const [id, org] of Object.entries(orgOf)) {
+    const sv = JSON.parse(fs.readFileSync(path.join(root, 'data/services', id + '.json'), 'utf8'));
+    sv.organisation = org;
+    fs.writeFileSync(path.join(d, id + '.json'), JSON.stringify(sv, null, 2) + '\n');
+  }
+  const realOrgs = fs.readFileSync(path.join(root, 'data/organisations.json'), 'utf8');
+  fs.writeFileSync(path.join(d, 'organisations.json'), JSON.stringify({ organisations: [
+    { id: 'acas', name: 'Acas' },
+    { id: 'proper-job-theatre-company', name: 'Proper Job Theatre Company' },
+    { id: 'proper-job-theatre-company-ltd', name: 'Proper Job Theatre Company Ltd', overview: 'Theatre company in Huddersfield.' },
+  ] }));
   const inp = path.join(d, 'decisions.json');
   const acasNow = JSON.parse(fs.readFileSync(path.join(d, 'acas-helpline.json'), 'utf8'));
   fs.writeFileSync(inp, JSON.stringify({
@@ -1289,7 +1299,7 @@ check('orgs: the apply script (no Origin) can read them', r.status === 200 && r.
   check('apply orgs: a new organisation name makes a new organisation', svcIn('acas-managing-disability').organisation === 'Brand New Organisation' && o2.some((o) => o.name === 'Brand New Organisation' && o.id === 'brand-new-organisation') && /New organisations: Brand New Organisation/.test(out), out);
   check('apply orgs: summary says what happened', /Organisations changed \(2\)/.test(out) && /combined into Proper Job Theatre Company/.test(out), out);
   check('apply orgs: running again changes nothing more', /0 organisations changed/.test(execFileSync(process.execPath, [path.join(root, 'scripts/apply-decisions.mjs'), '--input', inp, '--dir', d], { encoding: 'utf8' })));
-  check('apply orgs: the real organisations file is untouched by a test run', fs.readFileSync(path.join(root, 'data/organisations.json'), 'utf8').includes('"name": "Proper Job Theatre Company Ltd"'));
+  check('apply orgs: the real organisations file is untouched by a test run', fs.readFileSync(path.join(root, 'data/organisations.json'), 'utf8') === realOrgs);
   void acasNow;
   fs.rmSync(d, { recursive: true, force: true });
 }
