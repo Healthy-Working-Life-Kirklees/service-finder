@@ -2,7 +2,6 @@
   "id": "solace-refugee-therapy",
   "name": "Solace – therapy for refugees and asylum seekers",
   "organisation": "Solace",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -19,10 +18,7 @@
   "email": "info@solace-uk.org.uk",
   "phone": "0113 824 6796",
   "social": [],
-  "locations": [
-    "Kirklees, Calderdale and Wakefield",
-    "HQ Leeds LS7 1PZ"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -43,11 +39,15 @@
     "allowed": "no",
     "note": "Needs a referral from a professional"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "trauma-therapy-for-refugees",
       "name": "Trauma therapy for refugees",
-      "summary": "Talking therapy for refugees and asylum seekers who've lived through war, torture or other trauma, with a Kirklees team.",
-      "duration": ""
+      "overview": "Talking therapy for refugees and asylum seekers who've lived through war, torture or other trauma, with a Kirklees team.",
+      "where": [
+        "Kirklees, Calderdale and Wakefield",
+        "HQ Leeds LS7 1PZ"
+      ]
     }
   ],
   "workExperience": "No",
@@ -59,7 +59,8 @@
     "foundVia": "District Provision Tool",
     "checkedUrl": "https://www.solace-uk.org.uk/therapy/",
     "evidence": "© 2026; 2025–28 strategy.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

@@ -2,7 +2,6 @@
   "id": "jobs-guarantee-18-21",
   "name": "Jobs Guarantee (18–21s)",
   "organisation": "DWP",
-  "status": "Not verified as running (web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -34,11 +33,11 @@
     "allowed": "tbc",
     "note": "To be completed."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "jobs-guarantee-18-21s",
       "name": "Jobs Guarantee (18–21s)",
-      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
-      "duration": ""
+      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
     }
   ],
   "workExperience": "Not known",
@@ -50,7 +49,8 @@
     "foundVia": "Web research or directory review (October 2026)",
     "evidence": "West Yorkshire not in Phase One; national roll-out 'later in 2026'.",
     "confidence": "low",
-    "checkedUrl": "https://www.gov.uk/government/publications/jobs-guarantee/jobs-guarantee-grant-guidance"
+    "checkedUrl": "https://www.gov.uk/government/publications/jobs-guarantee/jobs-guarantee-grant-guidance",
+    "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
     "decision": "review",

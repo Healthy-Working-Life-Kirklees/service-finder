@@ -15,6 +15,7 @@
 
   // Everything lives in memory only. Nothing is written to storage.
   let services = new Map();
+  let organisations = []; // [{ id, name, aliases? }] from services.json, for the suggest form's organisation box
   let history = [];
   let busy = false;
   // Tap-to-answer follow-up questions on the latest reply: { box, questions, picked: Map(index -> answer) }.
@@ -136,8 +137,17 @@
     return svg;
   };
 
-  function places(s) {
-    const lines = s.locations || [];
+  // The places for a card: the service's own, then those of the projects and cohorts being shown.
+  function placeLines(s, picked) {
+    const out = [...(s.locations || [])];
+    for (const x of picked || []) {
+      out.push(...(x.project.where || []));
+      for (const c of x.cohorts) out.push(...(c.cohort.where || []));
+    }
+    return [...new Set(out)];
+  }
+  function places(s, picked) {
+    const lines = placeLines(s, picked);
     const addresses = lines.filter((x) => POSTCODE_RE.test(x)).map((x) => {
       const m = x.match(POSTCODE_RE);
       return { text: x, query: x.slice(0, m.index + m[0].length) };
@@ -152,15 +162,15 @@
   }
 
   // The short place shown with the badges: the first town, or "Across Kirklees" / "Online".
-  function placeBadge(s) {
+  function placeBadge(s, picked) {
     const towns = (s.areas || []).filter((a) => a !== 'Kirklees-wide' && a !== 'Online');
-    const p = places(s);
+    const p = places(s, picked);
     const text = towns.length ? towns[0] + (towns.length > 1 ? ' +' + (towns.length - 1) : '') : p.labels[0];
     return text ? el('span', { class: 'badge place' }, pinSvg(), el('span', { ...(towns.length ? EN : {}), text })) : null;
   }
 
-  function whereBlock(s) {
-    const p = places(s);
+  function whereBlock(s, picked) {
+    const p = places(s, picked);
     if (!p.addresses.length && !p.labels.length && !p.others.length) return null;
     const list = el('ul', { class: 'places' });
     // Services can turn the map links off for a place that shouldn't be shown (for example a confidential venue).
@@ -185,22 +195,76 @@
     ];
   }
 
+  // ---------- projects and cohorts on a card ----------
+  // A service's projects (and a project's cohorts) each have their own dates. The Worker says which ones fit the
+  // person (rec.parts) and the date it used; only those that are open, or open to referrals soon, are shown
+  // (listing-logic.js). Dates are written in the page's language.
+  const LISTING = window.LISTING;
+  function dateWords(d, on) {
+    const w = [];
+    if (d.referralsFrom && d.referralsFrom > on) w.push(t('refOpenFrom', { date: fmtDate(d.referralsFrom) }));
+    if (d.referralsUntil) w.push(t('refUntil', { date: fmtDate(d.referralsUntil) }));
+    if (d.runsFrom && d.runsTo) w.push(t('runsRange', { from: fmtDate(d.runsFrom), to: fmtDate(d.runsTo) }));
+    else if (d.runsFrom && d.runsFrom > on) w.push(t('startsOn', { date: fmtDate(d.runsFrom) }));
+    else if (d.runsTo) w.push(t('runsUntil', { date: fmtDate(d.runsTo) }));
+    return w;
+  }
+  // The age to show with the badges: the one age of what is shown when they all have one, otherwise the service's.
+  function ageOf(s, picked) {
+    const ages = new Set();
+    for (const x of picked) {
+      if (x.cohorts.length) for (const c of x.cohorts) ages.add(c.cohort.age || x.project.age || s.age || '');
+      else ages.add(x.project.age || s.age || '');
+    }
+    return ages.size === 1 && [...ages][0] ? [...ages][0] : s.age;
+  }
+  // The lines about one project or cohort: when, how long, places, age, extra criteria and dates.
+  function partFacts(o, dates, on, s) {
+    const li = [];
+    if (o.when) li.push(el('li', {}, t('whenLabel'), el('span', { ...EN, text: o.when })));
+    if (o.duration) li.push(el('li', {}, t('howLong'), el('span', { ...EN, text: o.duration })));
+    if (o.places) li.push(el('li', {}, t('placesLabel'), el('span', { ...EN, text: o.places })));
+    if (o.age && o.age !== s.age) li.push(el('li', {}, t('age'), el('span', { ...EN, text: o.age })));
+    if ((o.eligibility || []).length) li.push(el('li', {}, t('extraCriteria'), el('span', { ...EN, text: o.eligibility.join('; ') })));
+    for (const w of dateWords(dates, on)) li.push(el('li', { class: 'dates', text: w }));
+    return li.length ? el('ul', { class: 'part-facts' }, li) : null;
+  }
+  function projectsBlock(s, picked, on) {
+    if (!picked.length) return null;
+    return [
+      el('h4', { text: t('whatWhere') }),
+      el('ul', { class: 'projects' }, picked.map((x) => el('li', {},
+        el('strong', { ...EN, text: x.project.name }),
+        x.project.overview ? el('p', { ...EN, text: x.project.overview }) : null,
+        partFacts(x.project, x.cohorts.length ? {} : x.dates, on, s),
+        x.cohorts.length ? el('ul', { class: 'cohorts' }, x.cohorts.map((c) => el('li', {},
+          el('span', { ...EN, class: 'cohort-name', text: c.cohort.name }),
+          partFacts({ ...c.cohort, age: c.cohort.age || x.project.age }, c.dates, on, s)))) : null))),
+    ];
+  }
+
   function card(rec, opts) {
     const s = services.get(rec.id);
     if (!s) return null;
+    const on = (opts && opts.date) || (LISTING ? LISTING.today() : new Date().toISOString().slice(0, 10));
+    const picked = LISTING ? LISTING.pick(s, rec.parts, on) : [];
+    // "Referrals open from ..." with the badges when everything shown opens to referrals soon.
+    const soon = picked.length && picked.every((x) => x.state === 'soon' && (!x.cohorts.length || x.cohorts.every((c) => c.state === 'soon')))
+      ? picked.map((x) => (x.cohorts.length ? x.cohorts.map((c) => c.dates.referralsFrom) : [x.dates.referralsFrom])).flat().filter(Boolean).sort()[0] : null;
+    const age = ageOf(s, picked);
 
     const badges = el('div', { class: 'badges' },
       rec.fit === 'strong' ? el('span', { class: 'badge fit-strong', text: t('fitStrong') }) : null,
       rec.fit === 'possible' ? el('span', { class: 'badge fit-possible', text: t('fitPossible') }) : null,
-      s.open ? el('span', { class: 'badge live', text: t('open') }) : el('span', { class: 'badge notopen', text: t('notOpen') }),
+      soon ? el('span', { class: 'badge soon', text: t('refOpenFrom', { date: fmtDate(soon) }) }) : s.open ? el('span', { class: 'badge live', text: t('open') }) : el('span', { class: 'badge notopen', text: t('notOpen') }),
       s.selfReferral && s.selfReferral.allowed === 'yes' ? el('span', { class: 'badge self', text: t('selfYes') }) : null,
       s.selfReferral && s.selfReferral.allowed === 'partly' ? el('span', { class: 'badge self', text: t('selfPartly') }) : null,
       s.selfReferral && s.selfReferral.allowed === 'tbc' ? el('span', { class: 'badge', text: t('selfTbc') }) : null,
       s.selfReferral && s.selfReferral.allowed === 'no' ? el('span', { class: 'badge', text: t('selfNo') }) : null,
       s.level === 'regional' ? el('span', { class: 'badge', text: t('levelRegional') }) : null,
       s.level === 'national' ? el('span', { class: 'badge', text: t('levelNational') }) : null,
-      s.age ? el('span', { class: 'badge' }, t('age'), el('span', { ...EN, text: s.age })) : null,
-      placeBadge(s)
+      age ? el('span', { class: 'badge' }, t('age'), el('span', { ...EN, text: age })) : null,
+      placeBadge(s, picked)
     );
 
     const contact = el('ul', { class: 'contact' });
@@ -215,21 +279,22 @@
     const more = el('div', { class: 'more', id: 'more-' + s.id + '-' + ++moreSeq },
       el('h4', { text: t('contact') }),
       contact,
-      whereBlock(s),
+      whereBlock(s, picked),
       el('h4', { text: t('howIn') }),
       el('ul', { class: 'routes' }, (s.referralRoutes || []).map(routeNode)),
       el('h4', { text: t('whoJoin') }),
       el('ul', {}, (s.eligibility || []).map((x) => el('li', { ...EN, text: x }))),
       s.exclusions && s.exclusions.length ? el('h4', { text: t('whoNot') }) : null,
       s.exclusions && s.exclusions.length ? el('ul', {}, s.exclusions.map((x) => el('li', { ...EN, text: x }))) : null,
-      (s.activities || []).length ? el('h4', { text: t('whatWhere') }) : null,
-      (s.activities || []).length ? el('ul', {}, s.activities.map((a) => el('li', { ...EN, text: a.name + ': ' + a.summary + (a.duration ? ' (' + a.duration + ')' : '') }))) : null,
-      (s.locations || []).length ? el('h4', { text: t('where') }) : null,
-      (s.locations || []).length ? el('ul', {}, s.locations.map((x) => el('li', { ...EN, text: x }))) : null,
+      projectsBlock(s, picked, on),
+      s.coachNotes ? el('h4', { text: t('goodToKnow') }) : null,
+      s.coachNotes ? el('p', { ...EN, text: s.coachNotes }) : null,
       s.cost ? el('h4', { text: t('cost') }) : null,
       s.cost ? el('ul', {}, el('li', { ...EN, text: s.cost })) : null,
       s.languages ? el('h4', { text: t('languages') }) : null,
       s.languages ? el('ul', {}, el('li', { ...EN, text: s.languages })) : null,
+      s.organisationOverview ? el('h4', { text: t('aboutOrg') }) : null,
+      s.organisationOverview ? el('p', { ...EN, text: s.organisationOverview }) : null,
       el('p', { class: 'meta', text: t('lastChecked', { date: fmtDate(s.lastUpdated) }) }));
     const toggle = moreToggle(s, more, Boolean(opts && opts.open));
 
@@ -247,8 +312,8 @@
       more,
       el('div', { class: 'tools' },
         toggle,
-        el('button', { type: 'button', class: 'btn secondary small', text: t('copy'), onclick: (e) => copyDetails(s, e.currentTarget) }),
-        window.ACCESS ? window.ACCESS.listenButton(() => spokenText(s), 'en-GB', t('listenTo', { name: s.name })) : null),
+        el('button', { type: 'button', class: 'btn secondary small', text: t('copy'), onclick: (e) => copyDetails(s, e.currentTarget, picked, on) }),
+        window.ACCESS ? window.ACCESS.listenButton(() => spokenText(s, picked), 'en-GB', t('listenTo', { name: s.name })) : null),
       // "Report a problem with this listing" (feedback.js). Only there when feedback is switched on.
       window.FEEDBACK ? window.FEEDBACK.cardControl(s) : null
     );
@@ -285,17 +350,22 @@
   }
 
   // What the Listen button on a card reads out. Scheme details are in English, so they are read in English.
-  function spokenText(s) {
+  function spokenText(s, picked) {
     const parts = [s.name + '. ' + s.organisation + '.'];
     if (s.whoFor) parts.push(s.whoFor);
+    for (const x of picked || []) parts.push(x.project.name + (x.cohorts.length ? ': ' + x.cohorts.map((c) => c.cohort.name).join(', ') : '') + '.');
     if (s.phone) parts.push('Phone: ' + s.phone + '.');
     if (s.email) parts.push('Email: ' + s.email + '.');
     if (s.referralRoutes && s.referralRoutes.length) parts.push('How to get in: ' + s.referralRoutes.join('. ') + '.');
     return parts.join(' ');
   }
 
-  function copyText(s) {
+  function copyText(s, picked, on) {
     const lines = [s.name + ' - ' + s.organisation, s.whoFor];
+    for (const x of picked || []) {
+      if (x.cohorts.length) for (const c of x.cohorts) lines.push(x.project.name + ', ' + c.cohort.name + [c.cohort.when, ...dateWords(c.dates, on)].filter(Boolean).map((w) => '. ' + w).join(''));
+      else lines.push(x.project.name + [x.project.when, ...dateWords(x.dates, on)].filter(Boolean).map((w) => '. ' + w).join(''));
+    }
     if (s.phone) lines.push(t('phone') + s.phone);
     if (s.email) lines.push(t('email') + s.email);
     if (s.webpage) lines.push(t('website') + s.webpage);
@@ -304,10 +374,10 @@
     return lines.join('\n');
   }
 
-  async function copyDetails(s, btn) {
+  async function copyDetails(s, btn, picked, on) {
     const old = btn.textContent;
     try {
-      await navigator.clipboard.writeText(copyText(s));
+      await navigator.clipboard.writeText(copyText(s, picked, on));
       btn.textContent = t('copied');
       if (window.USAGE) window.USAGE.track('copy', { s: s.id });
     } catch {
@@ -623,7 +693,8 @@
       }
       // The chat message comes first, with the scheme cards underneath it.
       const list = (data.recommendations || []).filter((r) => services.has(r.id));
-      const recs = list.map((r) => card(r, { open: list.length === 1 })).filter(Boolean);
+      const day = typeof data.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(data.date) ? data.date : null;
+      const recs = list.map((r) => card(r, { open: list.length === 1, date: day })).filter(Boolean);
       if (recs.length) {
         // A heading screen reader users can jump to; hidden on screen, where the cards speak for themselves.
         logEl.append(el('h2', { class: 'visually-hidden', text: t('resultsHeading') }));
@@ -778,7 +849,7 @@
   $('#safety-link').addEventListener('click', (e) => { e.currentTarget.href = 'safety.html' + location.search; });
 
   // Feedback links (feedback.js). They appear once the Worker's /health says feedback is on.
-  if (window.FEEDBACK) window.FEEDBACK.init({ el, announce, api: API, mode: () => mode() || 'public', services: () => services });
+  if (window.FEEDBACK) window.FEEDBACK.init({ el, announce, api: API, mode: () => mode() || 'public', services: () => services, organisations: () => organisations });
 
   // ---------- floating emergency footer ----------
   // The footer floats at the bottom of the screen when the page opens, fades out once the person scrolls
@@ -803,7 +874,7 @@
 
   fetch('services.json')
     .then((r) => r.json())
-    .then((d) => { services = new Map(d.services.map((s) => [s.id, s])); })
+    .then((d) => { services = new Map(d.services.map((s) => [s.id, s])); organisations = d.organisations || []; })
     .catch(() => bubble('error', t('loadFailed')));
 
   // On the preview site (see the preview workflow), a label so testers know this isn't the live version.

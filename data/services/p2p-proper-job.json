@@ -3,7 +3,6 @@
   "name": "Pathways to Possibilities (Proper Job Theatre Company)",
   "organisation": "Proper Job Theatre Company Ltd",
   "logo": "proper-job.webp",
-  "status": "Live - open to referrals",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -22,11 +21,7 @@
   "email": "engagement@properjob.org.uk",
   "phone": "01484 514687 or 07716 639494",
   "social": [],
-  "locations": [
-    "Proper Job Theatre Company Ltd, 46/47 Byram Arcade, Westgate, Huddersfield HD1 1ND",
-    "Community settings across Kirklees",
-    "Remote support (a mix of face-to-face and remote)"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Kirklees-wide",
@@ -53,15 +48,23 @@
     "allowed": "tbc",
     "note": "To be confirmed"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "pathways-to-possibilities",
       "name": "Pathways to Possibilities",
-      "summary": "Three strands: health and wellbeing (confidence, resilience, social connections); engaging and building confidence for learning; and preparation for employment. Connects people to volunteering, learning and employment opportunities. 50 places available.",
-      "duration": "Programme starts 1 September 2026; referrals close 1 March 2027. No fixed duration - flexible and person-centred"
+      "overview": "Three strands: health and wellbeing (confidence, resilience, social connections); engaging and building confidence for learning; and preparation for employment. Connects people to volunteering, learning and employment opportunities. 50 places available.",
+      "duration": "Programme starts 1 September 2026; referrals close 1 March 2027. No fixed duration - flexible and person-centred",
+      "where": [
+        "Proper Job Theatre Company Ltd, 46/47 Byram Arcade, Westgate, Huddersfield HD1 1ND",
+        "Community settings across Kirklees",
+        "Remote support (a mix of face-to-face and remote)"
+      ],
+      "runsFrom": "2026-09-01",
+      "referralsUntil": "2027-03-01"
     }
   ],
   "workExperience": "Yes - volunteering and work experience opportunities",
-  "notes": "Webpage and self-referral route still to be confirmed in the source document.",
+  "notes": "Webpage and self-referral route still to be confirmed in the source document.\n\nStatus before November 2026: Live - open to referrals",
   "lastUpdated": "2026-09-02",
   "reviewCycle": "Quarterly",
   "provenance": {

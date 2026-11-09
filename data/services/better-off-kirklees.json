@@ -2,7 +2,6 @@
   "id": "better-off-kirklees",
   "name": "Better Off Kirklees",
   "organisation": "Kirklees Council",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,9 +19,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -40,11 +37,14 @@
     "allowed": "yes",
     "note": "Use the website yourself."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "benefits-and-jobs-website",
       "name": "Benefits and jobs website",
-      "summary": "Website that works out benefits you might get, helps you apply or appeal, lists jobs and volunteering and tracks your job search.",
-      "duration": ""
+      "overview": "Website that works out benefits you might get, helps you apply or appeal, lists jobs and volunteering and tracks your job search.",
+      "where": [
+        "Online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -56,7 +56,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=8624",
     "evidence": "Directory updated 11 Aug 2026; site itself couldn't be read.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

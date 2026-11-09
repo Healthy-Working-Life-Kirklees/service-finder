@@ -2,7 +2,6 @@
   "id": "poppy-factory-employment",
   "name": "Poppy Factory employment support for veterans",
   "organisation": "The Poppy Factory",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -20,9 +19,7 @@
   "email": "support@poppyfactory.org",
   "phone": "020 8940 3305",
   "social": [],
-  "locations": [
-    "Consultants across England and Wales"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -45,11 +42,14 @@
     "allowed": "yes",
     "note": "Register online or be referred"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "employment-support-for-veterans",
       "name": "Employment support for veterans",
-      "summary": "An employment consultant helps veterans with a health condition find and keep work.",
-      "duration": ""
+      "overview": "An employment consultant helps veterans with a health condition find and keep work.",
+      "where": [
+        "Consultants across England and Wales"
+      ]
     }
   ],
   "workExperience": "No",
@@ -61,7 +61,8 @@
     "foundVia": "District Provision Tool",
     "checkedUrl": "https://www.poppyfactory.org/are-you-looking-for-work/",
     "evidence": "Current service; no 2026 date.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

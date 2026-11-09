@@ -2,7 +2,6 @@
   "id": "versus-arthritis-helpline",
   "name": "Versus Arthritis helpline and work advice",
   "organisation": "Versus Arthritis",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -20,9 +19,7 @@
   "email": null,
   "phone": "0800 5200 520",
   "social": [],
-  "locations": [
-    "Phone and online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -43,11 +40,14 @@
     "allowed": "yes",
     "note": "Phone the helpline or use the website"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "arthritis-helpline-and-work-advice",
       "name": "Arthritis helpline and work advice",
-      "summary": "Helpline for people with arthritis or joint and muscle pain, plus advice on rights at work and flexible working.",
-      "duration": ""
+      "overview": "Helpline for people with arthritis or joint and muscle pain, plus advice on rights at work and flexible working.",
+      "where": [
+        "Phone and online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -59,7 +59,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.versusarthritis.org/get-help/helpline/",
     "evidence": "Live; undated.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

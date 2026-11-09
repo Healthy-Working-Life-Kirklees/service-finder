@@ -2,7 +2,6 @@
   "id": "combat-stress",
   "name": "Combat Stress helpline and treatment",
   "organisation": "Combat Stress",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": "helpline@combatstress.org.uk",
   "phone": "0800 138 1619 (text 07537 173683)",
   "social": [],
-  "locations": [
-    "Phone and UK-wide"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -46,11 +43,14 @@
     "allowed": "yes",
     "note": "Call, text or email; professionals can also refer"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "veterans-trauma-support",
       "name": "Veterans trauma support",
-      "summary": "24-hour helpline and specialist treatment for military trauma and PTSD; support for families too.",
-      "duration": ""
+      "overview": "24-hour helpline and specialist treatment for military trauma and PTSD; support for families too.",
+      "where": [
+        "Phone and UK-wide"
+      ]
     }
   ],
   "workExperience": "No",
@@ -62,7 +62,8 @@
     "foundVia": "MECC Link; District Provision Tool",
     "checkedUrl": "https://combatstress.org.uk/",
     "evidence": "Page published Sept 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

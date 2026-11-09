@@ -3,7 +3,6 @@
   "name": "HappyMOMents Pathway to Employment: Wellbeing, Skills & Work Experience Programme for Vulnerable Women",
   "organisation": "HappyMOMents CIO",
   "logo": "happymoments.webp",
-  "status": "Referrals via the organisation's website, expected from early October 2026",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -22,9 +21,7 @@
   "email": "sumayya@happymoments.org.uk",
   "phone": "07792 131367",
   "social": [],
-  "locations": [
-    "Saviletown Children's Centre, Pentland I&N School, Pentland Road, Dewsbury, WF12 9JR"
-  ],
+  "locations": [],
   "areas": [
     "Dewsbury"
   ],
@@ -52,14 +49,19 @@
     "allowed": "tbc",
     "note": "Via the organisation's website once the referral page is live"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "pathway-to-employment-wellbeing-skills-and-work-ex",
       "name": "Pathway to Employment: Wellbeing, Skills & Work Experience Programme",
-      "summary": "Introduction to Early Years, paediatric first aid, mental health courses, hands-on experience working with children and families, and face-to-face professional development courses. Childcare and transport support is provided.",
-      "duration": "Two to three half-days a week for 15 weeks"
+      "overview": "Introduction to Early Years, paediatric first aid, mental health courses, hands-on experience working with children and families, and face-to-face professional development courses. Childcare and transport support is provided.",
+      "duration": "Two to three half-days a week for 15 weeks",
+      "where": [
+        "Saviletown Children's Centre, Pentland I&N School, Pentland Road, Dewsbury, WF12 9JR"
+      ]
     }
   ],
   "workExperience": "Yes - hands-on experience working with children and families",
+  "notes": "Status before November 2026: Referrals via the organisation's website, expected from early October 2026",
   "lastUpdated": "2026-09-14",
   "reviewCycle": "Quarterly",
   "provenance": {

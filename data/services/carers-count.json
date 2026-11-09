@@ -2,7 +2,6 @@
   "id": "carers-count",
   "name": "Carers Count – carers support service",
   "organisation": "Carers Count",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,9 +19,7 @@
   "email": "info@carerscount.org.uk",
   "phone": "0300 012 0231",
   "social": [],
-  "locations": [
-    "4th Floor, Empire House, Wakefield Old Road, Dewsbury WF12 8DJ"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -42,11 +39,14 @@
     "allowed": "yes",
     "note": "Refer yourself by phone or email."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "carers-support",
       "name": "Carers support",
-      "summary": "Advice, benefits advice, groups, training and advocacy for unpaid carers, including a team for those caring for someone with mental ill health or drug/alcohol problems.",
-      "duration": ""
+      "overview": "Advice, benefits advice, groups, training and advocacy for unpaid carers, including a team for those caring for someone with mental ill health or drug/alcohol problems.",
+      "where": [
+        "4th Floor, Empire House, Wakefield Old Road, Dewsbury WF12 8DJ"
+      ]
     }
   ],
   "workExperience": "No",
@@ -58,7 +58,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://carerscountkirklees.org.uk/how-can-we-help/support-and-training/",
     "evidence": "Checked by PL on 2026-11-05: various updates",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

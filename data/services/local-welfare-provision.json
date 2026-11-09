@@ -2,7 +2,6 @@
   "id": "local-welfare-provision",
   "name": "Local Welfare Provision (incl. Crisis Resilience Fund)",
   "organisation": "Kirklees Council",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -19,9 +18,7 @@
   "email": "lwp@kirklees.gov.uk",
   "phone": "01484 414782 (Mon–Fri 10–1)",
   "social": [],
-  "locations": [
-    "Kirklees"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -41,11 +38,14 @@
     "allowed": "yes",
     "note": "Apply by phone or email"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "emergency-crisis-help",
       "name": "Emergency crisis help",
-      "summary": "One-off emergency help in a crisis: food parcels, energy vouchers, grants and short-term help with rent.",
-      "duration": ""
+      "overview": "One-off emergency help in a crisis: food parcels, energy vouchers, grants and short-term help with rent.",
+      "where": [
+        "Kirklees"
+      ]
     }
   ],
   "workExperience": "No",
@@ -57,7 +57,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees.gov.uk/beta/benefits/local-welfare-provision.aspx",
     "evidence": "Checked by PL on 2026-11-04: checked eligibility",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

@@ -82,6 +82,8 @@ h1, h2, h3, h4, .kicker, .badge { font-family: var(--hf); }
 .svc-body p { margin: 0 0 1.5mm; overflow-wrap: anywhere; }
 .whofor { font-size: 1.12em; line-height: 1.4; font-weight: 600; }
 .dur { color: var(--grey); }
+ul.cohorts { margin: .15em 0 .2em; padding-left: 1.1em; }
+.orgabout { font-size: .95em; color: var(--grey); margin: .2em 0 .5em; }
 .areas span { font-weight: 700; }
 .contact { margin: 0; }
 .contact .ct { margin: 0 0 1.6mm; }

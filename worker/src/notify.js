@@ -47,11 +47,15 @@ export const LABELS = {
 };
 const ROLE_LABELS = { provider: 'Someone from the service', suggester: 'Someone who knows the service' };
 const SERVICE_LABELS = {
-  organisation: 'Organisation', description: 'Description', activities: 'What happens', running: 'Running', dates: 'Dates',
-  age: 'Age range', eligibility: 'Who can join', exclusions: "Who it can't help", healthNeed: 'Health need', conditions: 'Conditions',
-  audience: 'Who it is for', categories: 'Kinds of support', addresses: 'Addresses', noMap: 'No map', level: 'Level', phone: 'Phone',
+  organisation: 'Organisation', organisationOverview: 'About the organisation', addTo: 'New project of (service id)', whoFor: 'Who it is for', open: 'Taking referrals now',
+  projectName: 'Project', projectOverview: 'What happens', where: 'Where', when: 'Days and times', duration: 'How long', places: 'Places',
+  runsFrom: 'Runs from', runsTo: 'Runs until', referralsFrom: 'Referrals from', referralsUntil: 'Referrals until',
+  age: 'Age range', eligibility: 'Who can join', gate: 'Turn away if they do not have', exclusions: "Who it can't help", healthNeed: 'Health need', conditions: 'Conditions',
+  audience: 'Works with', categories: 'Kinds of support', noMap: 'No map', level: 'Level', phone: 'Phone',
   email: 'Email', social: 'Social media', referral: 'How people get referred', selfReferral: 'Self-referral', cost: 'Cost',
-  languages: 'Languages', workExperience: 'Work experience', logoOk: 'OK to use their logo', contactName: 'Contact name',
+  languages: 'Languages', workExperience: 'Work experience', coachNotes: 'Coaches should know', logoOk: 'OK to use their logo', contactName: 'Contact name',
+  // Older names, from a page loaded before November 2026.
+  description: 'Description', activities: 'What happens', running: 'Running', dates: 'Dates', addresses: 'Addresses',
 };
 const CONTACTED_LABELS = { yes: 'Yes', no: 'No', 'not-yet': 'Not yet', 'not-applicable': 'Not applicable' };
 const LANG_LABELS = { en: 'English', pl: 'Polish', ur: 'Urdu' };

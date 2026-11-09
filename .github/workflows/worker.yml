@@ -8,6 +8,7 @@ on:
       - "data/**"
       - "prompt/**"
       - "scripts/**"
+      - "site/listing-logic.js"
       - "package.json"
       - "package-lock.json"
       - ".github/workflows/worker.yml"

@@ -2,7 +2,6 @@
   "id": "op-courage-veterans",
   "name": "Op COURAGE – Veterans Mental Health (West & South Yorkshire)",
   "organisation": "Leeds and York Partnership NHS FT",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -19,9 +18,7 @@
   "email": "OpCourageNORTH@cntw.nhs.uk",
   "phone": "0300 373 3332 (8am–8pm, 7 days)",
   "social": [],
-  "locations": [
-    "Remote/Leeds base (no walk-ins)"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -47,11 +44,14 @@
     "allowed": "yes",
     "note": "Refer yourself, or be referred by your GP, family or a charity"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "veterans-mental-health-support",
       "name": "Veterans mental health support",
-      "summary": "NHS mental health support for veterans and service leavers, with links to help on jobs, money and housing.",
-      "duration": ""
+      "overview": "NHS mental health support for veterans and service leavers, with links to help on jobs, money and housing.",
+      "where": [
+        "Remote/Leeds base (no walk-ins)"
+      ]
     }
   ],
   "workExperience": "No",
@@ -63,7 +63,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.leedsandyorkpft.nhs.uk/our-services/op-courage-veterans-mental-health-wellbeing-service/",
     "evidence": "Pages updated Dec 2025 / June 2026; linked from council armed forces page.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

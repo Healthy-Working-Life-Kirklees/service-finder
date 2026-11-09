@@ -2,7 +2,6 @@
   "id": "unlock-helpline",
   "name": "Unlock helpline",
   "organisation": "Unlock",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": "01634 247350; WhatsApp 07824 113848",
   "social": [],
-  "locations": [
-    "Phone and online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -70,11 +67,14 @@
     "allowed": "yes",
     "note": "Phone, WhatsApp or use the online form"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "criminal-record-advice",
       "name": "Criminal record advice",
-      "summary": "Helpline for people with a criminal record on understanding their record and what to tell employers.",
-      "duration": ""
+      "overview": "Helpline for people with a criminal record on understanding their record and what to tell employers.",
+      "where": [
+        "Phone and online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -87,7 +87,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://unlock.org.uk/contact-us/",
     "evidence": "© 2026.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

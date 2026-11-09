@@ -2,7 +2,6 @@
   "id": "frank",
   "name": "FRANK drugs advice",
   "organisation": "UK Government",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -18,9 +17,7 @@
   "email": null,
   "phone": "0300 123 6600 (text 82111)",
   "social": [],
-  "locations": [
-    "Phone and online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -64,11 +61,14 @@
     "allowed": "yes",
     "note": "Phone, text or use the website"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "drug-and-alcohol-advice",
       "name": "Drug and alcohol advice",
-      "summary": "Free, honest advice about drugs and alcohol, and help finding local services.",
-      "duration": ""
+      "overview": "Free, honest advice about drugs and alcohol, and help finding local services.",
+      "where": [
+        "Phone and online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -80,7 +80,8 @@
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.talktofrank.com/",
     "evidence": "Live; undated.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

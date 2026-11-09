@@ -2,7 +2,6 @@
   "id": "s2r-support-to-recovery",
   "name": "S2R Support to Recovery",
   "organisation": "S2R",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,9 +19,7 @@
   "email": "contact@s2r.org.uk",
   "phone": "07933 358800; office 01484 539531",
   "social": [],
-  "locations": [
-    "5–7 Brook Street, Huddersfield HD1 1EB"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield"
   ],
@@ -43,11 +40,14 @@
     "allowed": "yes",
     "note": "Refer yourself online or at your first session."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "wellbeing-workshops",
       "name": "Wellbeing workshops",
-      "summary": "Creative, wellbeing and outdoor workshops like gardening, sewing and walking. No diagnosis needed.",
-      "duration": ""
+      "overview": "Creative, wellbeing and outdoor workshops like gardening, sewing and walking. No diagnosis needed.",
+      "where": [
+        "5–7 Brook Street, Huddersfield HD1 1EB"
+      ]
     }
   ],
   "workExperience": "Yes - volunteering",
@@ -59,7 +59,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.s2r.org.uk/",
     "evidence": "June 2026 activity schedule on site.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

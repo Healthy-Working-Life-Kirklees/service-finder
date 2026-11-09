@@ -2,7 +2,6 @@
   "id": "mind-helplines",
   "name": "Mind Infoline, Legal Line and Welfare Benefits Line",
   "organisation": "Mind",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -20,9 +19,7 @@
   "email": null,
   "phone": "Infoline 0300 123 3393; Legal 0300 466 6463; Benefits 0300 222 5782",
   "social": [],
-  "locations": [
-    "Phone"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -44,11 +41,14 @@
     "allowed": "yes",
     "note": "Phone the Infoline, Legal Line or Welfare Benefits Line"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "mental-health-information-lines",
       "name": "Mental health information lines",
-      "summary": "Information on mental health and local support, legal information on discrimination, and benefits advice.",
-      "duration": ""
+      "overview": "Information on mental health and local support, legal information on discrimination, and benefits advice.",
+      "where": [
+        "Phone"
+      ]
     }
   ],
   "workExperience": "No",
@@ -61,7 +61,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.mind.org.uk/information-support/helplines/",
     "evidence": "Lists 2026 closures.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

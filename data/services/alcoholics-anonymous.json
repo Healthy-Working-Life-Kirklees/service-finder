@@ -2,7 +2,6 @@
   "id": "alcoholics-anonymous",
   "name": "Alcoholics Anonymous",
   "organisation": "Alcoholics Anonymous GB",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -18,9 +17,7 @@
   "email": "help@aamail.org",
   "phone": "0800 917 7650",
   "social": [],
-  "locations": [
-    "Meetings across Kirklees and online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -64,11 +61,14 @@
     "allowed": "yes",
     "note": "Call or email, or find a meeting with the meeting finder"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "peer-support-meetings",
       "name": "Peer support meetings",
-      "summary": "Free peer support to stop drinking: helpline and local or online meetings.",
-      "duration": ""
+      "overview": "Free peer support to stop drinking: helpline and local or online meetings.",
+      "where": [
+        "Meetings across Kirklees and online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -80,7 +80,8 @@
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.alcoholics-anonymous.org.uk/",
     "evidence": "News Jul–Sep 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

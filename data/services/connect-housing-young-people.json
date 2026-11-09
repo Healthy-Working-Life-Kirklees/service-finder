@@ -2,7 +2,6 @@
   "id": "connect-housing-young-people",
   "name": "Young people's supported housing",
   "organisation": "Connect Housing",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -19,9 +18,7 @@
   "email": "hello@connecthousing.org.uk",
   "phone": "0300 5000 600",
   "social": [],
-  "locations": [
-    "Huddersfield and Heckmondwike"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Spen Valley"
@@ -42,11 +39,14 @@
     "allowed": "yes",
     "note": "Contact Connect Housing."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "supported-housing",
       "name": "Supported housing",
-      "summary": "Supported homes with 24-hour staff for young people who've been homeless or are leaving care, with help into education or training.",
-      "duration": ""
+      "overview": "Supported homes with 24-hour staff for young people who've been homeless or are leaving care, with help into education or training.",
+      "where": [
+        "Huddersfield and Heckmondwike"
+      ]
     }
   ],
   "workExperience": "No",
@@ -58,7 +58,8 @@
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=8075",
     "evidence": "Directory Oct 2026 only.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

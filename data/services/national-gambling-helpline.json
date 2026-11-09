@@ -2,7 +2,6 @@
   "id": "national-gambling-helpline",
   "name": "National Gambling Helpline",
   "organisation": "GamCare",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": "0808 8020 133",
   "social": [],
-  "locations": [
-    "Phone and online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -58,11 +55,14 @@
     "allowed": "yes",
     "note": "Phone, chat or WhatsApp, 24 hours a day"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "gambling-helpline",
       "name": "Gambling helpline",
-      "summary": "Free 24/7 helpline for anyone affected by gambling, linking to free treatment.",
-      "duration": ""
+      "overview": "Free 24/7 helpline for anyone affected by gambling, linking to free treatment.",
+      "where": [
+        "Phone and online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -74,7 +74,8 @@
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.gamcare.org.uk/",
     "evidence": "Modified Sept 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

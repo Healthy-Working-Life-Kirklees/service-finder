@@ -10,11 +10,37 @@ There are 215 at the moment (16 October 2026):
   - the 40 on the spreadsheet's "Not verified or closed" tab: 35 the research couldn't confirm as running, and 5 it found closed. Only what the spreadsheet gave is filled in (name, organisation, link and why it wasn't confirmed, in `notes`). Everything else the research didn't find says "To be completed", and the categories, level, areas and health focus are a first guess from the name. Confidence is `low`.
   - 7 rows left out of the October import: 3 crisis lines (Samaritans, CALM, Shout) and 4 directories (Kirklees Welcomes, MECC Link, the District Provision Tool, Hub of Hope). Their details are complete, copied from the spreadsheet.
 
+## How a listing is organised (November 2026)
+
+    organisation  >  service  >  project  >  cohort (optional)
+
+- An **organisation** has one record in `data/organisations.json`, shared by all its services: its name, a short overview and website. It never says whether something is a Healthy Working Life scheme: that is `hwlFunded` on each service, because an organisation can run other work too.
+- A **service** (one file in `data/services/`) is what a coach refers someone to. Who it is for, how to get in and the contact details are given **once, here**.
+- A service has one or more **projects**: what actually happens, where, when and for how long, with optional dates. A project only records what is *different* from the service (an extra criterion, a different age or audience). Most services have one project.
+- A project can have **cohorts** (or sessions): the same project run again at a different time or place, or for a different group, such as Raise Your Game's cohort for ages 18 to 24 and its cohort for 50 and over. A cohort also only records what is different.
+
+Nothing was dropped when the data was moved into this shape: `scripts/convert-structure.mjs` (a record of the one-off conversion) checks that every piece of text in each old listing is still there.
+
+### Dates and what is shown
+
+Projects and cohorts have four optional dates (`runsFrom`, `runsTo`, `referralsFrom`, `referralsUntil`, all `YYYY-MM-DD`). Blank means ongoing. A cohort without its own date uses its project's. The rules are in `site/listing-logic.js`, used by the page, the forms, the Worker, the directory and the checks:
+
+- After `runsTo` or `referralsUntil`: closed. Not suggested, not on the cards or in the directory.
+- `referralsFrom` within the next 31 days: suggested if it fits, marked "Referrals open from" the date.
+- `referralsFrom` further ahead: not suggested; the AI only mentions it if someone asks for it by name.
+- The AI says which projects or cohorts fit the person, and the card shows only those (a 20-year-old sees Raise Your Game's first cohort; with no age given, both).
+- Every morning the Worker emails the team about anything ending, or closing to referrals, in the next 30 days, with a fresh review link and an email to forward to the organisation (`worker/src/reminders.js`). The directory is rebuilt every morning too.
+
+### Character limits on the forms
+
+Organisation overview 300, "Who your service is for" 300, project overview 400, "Anything coaches should know" 500. Longer text already in the data is kept as it is: `npm run check-data` lists it, and Admin flags it, so it can be shortened when next checked.
+
 ## Files
 
 | File | What it is |
 |---|---|
 | `data/services/<id>.json` | One scheme. The file name must be the scheme's `id`. |
+| `data/organisations.json` | One record per organisation: `id`, `name`, and optional `overview` (up to 300 characters), `website`, `aliases` (older names, so services and suggestions using them still match) and team `notes`. A service's `organisation` must be one of these names. Renaming and combining organisations is done on the All services page in Admin; nothing is combined automatically. |
 | `data/meta.json` | `source`, `converted` and `notes` for the data as a whole. |
 | `data/schema.json` | The rules every scheme file must follow (a JSON Schema). The checks use it, and so can any tool or agent that edits the data. |
 | `data/services.json` | **Generated**, not kept in the repository. `npm run build-data` combines the scheme files on the live list (`listing.decision` is `include`) into it, sorted by id, for the page, the Worker and the tests. Don't edit it: changes are lost at the next build. |
@@ -53,11 +79,10 @@ Every scheme has every field below, except where it says "optional". An empty li
 |---|---|---|
 | `id` | text | A short, unique, lower-case label with hyphens, for example `employment-kirklees`. The file name is the id. The AI picks schemes by this ID, so don't change one casually. |
 | `name` | text | The scheme's name as it appears on the card. |
-| `organisation` | text | Who runs it, as it appears under the name. |
+| `organisation` | text | Who runs it, as it appears under the name. Must be a `name` in `data/organisations.json`. The organisation's overview is added to the generated files as `organisationOverview`. |
 | `logo` | text | Optional. The file name of the organisation's logo in `site/img/logos/`, for example `proper-job.webp`. Shown at the top left of the card. Several schemes can share one logo. Without it the card shows a coloured block instead. Keep logos small (about 320 pixels wide is plenty). `shared-goods.webp` is already in the folder, ready for when Shared Goods Charity's scheme is added. |
 | `mapLinks` | true / false | Optional. Cards show a **Get directions** and **Show on map** button (Google Maps) next to every location that has a full postcode. Set this to `false` for a service whose address shouldn't be pointed to, for example a confidential venue: the address text still shows, without the buttons. Leave it out normally. |
-| `status` | text | The scheme's status in words, for example "Live - open to referrals". For the imported services it says they were found running by web research in October 2026. |
-| `open` | true / false | Whether the scheme is live. **This is the one that matters.** The Worker only ever recommends schemes where this is `true`, and cards for others say "Not open yet". |
+| `open` | true / false | Whether the service is taking new referrals. The Worker only ever recommends services where this is `true` and at least one project or cohort is open (see "Dates and what is shown"). (The old `status` text was moved in November 2026: for Healthy Working Life schemes into the team `notes`, word for word, and for the others into `provenance.status`.) |
 | `hwlFunded` | true / false | `true` for the Healthy Working Life programme's own schemes. When an HWL scheme and another service fit about as well, the AI lists the HWL scheme first. |
 | `level` | text | `local` (based in Kirklees), `regional` (West Yorkshire or the wider region) or `national` (UK or England, usually by phone or online). Regional and national services get a badge on the card, and the AI prefers a local service when two fit about as well. |
 | `audience` | list | Who the scheme is for: `individual`, `employer`, `organisation` or `student`. A scheme can have more than one. One that is only for a particular group (students, say) doesn't list `individual`. The AI only recommends a non-individual scheme when the person clearly is that kind of person. |
@@ -88,7 +113,7 @@ Every scheme has every field below, except where it says "optional". An empty li
 
 | Field | Type | What it is |
 |---|---|---|
-| `locations` | list of text | The venues, addresses and times where the scheme runs, or how it's delivered (for example "Phone and online"). |
+| `locations` | list of text | Places used by **every** project (venues, addresses, or how it's delivered, for example "Phone and online"). A place used by one project goes in that project's `where`. With a full postcode, the card shows map and directions buttons. |
 | `areas` | list of text | The areas used for matching: `Batley`, `Colne Valley`, `Dewsbury`, `Holme Valley`, `Huddersfield`, `Kirkburton`, `Mirfield`, `Spen Valley`, plus `Kirklees-wide` and `Online`. Phone, regional and national services that any Kirklees resident can use are `Kirklees-wide`. `Online` means the support itself is online, not just a referral form. The finder works at town level only, not postcode. |
 
 ### How to get in
@@ -104,11 +129,13 @@ Every scheme has every field below, except where it says "optional". An empty li
 
 | Field | Type | What it is |
 |---|---|---|
-| `activities` | list | What the scheme offers. Each item has a `name`, a `summary` and a `duration`, all text. `duration` can be empty (the imported services have one activity, with the spreadsheet's "What it does" as the summary). |
+| `projects` | list | At least one. Each project has an `id` (lower-case with hyphens, unique in the service; the AI names it when only some projects fit), a `name` and an `overview` (what happens, up to 400 characters on the forms). Optional: `where` (list), `when`, `duration`, `places`, `age`, `audience` (list), `eligibility` and `gate` (lists, only what is extra to the service), the four dates, and `cohorts`. |
+| `projects[].cohorts` | list | Optional. The same project run again for a different time, place or group. Each has an `id` and `name`, and optionally `where`, `when`, `age`, `eligibility`, `gate`, `places` and the four dates: only what differs from the project. |
 | `workExperience` | text | Whether the scheme offers volunteering or work experience, as free text (for example `No`, `Yes - volunteering and placements`). |
 | `cost` | text | Optional. What it costs, for example `Free`, `Free if eligible; otherwise fees`, `£5 per 28 days`. Shown on the card. The AI mentions it when a service isn't free for everyone. |
 | `languages` | text | Optional. Interpreting, BSL, Welsh or other formats offered. Shown on the card. |
-| `notes` | text | Optional. Anything else worth knowing. |
+| `coachNotes` | text | Optional. "Anything coaches should know", from the service: waiting times, what to bring and so on. Shown on the card as "Good to know" and given to the AI. |
+| `notes` | text | Optional. **Team notes**: research and admin notes, including the old status wording of Healthy Working Life schemes. Never shown on cards or sent to the AI. |
 
 ### Keeping it fresh
 
@@ -116,7 +143,7 @@ Every scheme has every field below, except where it says "optional". An empty li
 |---|---|---|
 | `lastUpdated` | date | When the scheme's entry was last checked, as `YYYY-MM-DD`. Shown on the card as "Information last checked". If it's more than 135 days old, the card carries a warning and `npm run check-data` lists it. The imported services use 14 October 2026, the date of the web research. |
 | `reviewCycle` | text | How often the entry should be rechecked: `Quarterly`, `Six-monthly` or `Yearly`. At the moment it's `Quarterly` for every scheme. |
-| `provenance` | object | Where the details came from, so they can be rechecked by a person or a maintenance agent. `source` (required): the document, or the spreadsheet and row. Optional: `foundVia` (how the service was found, for example "Kirklees Community Directory"), `checkedUrl` (the page the details were checked against), `evidence` (why it's thought to be current), `confidence` (`high`, `medium` or `low`). Not sent to the AI or shown on cards; the Admin pages show the source and flags medium confidence. |
+| `provenance` | object | Where the details came from, so they can be rechecked by a person or a maintenance agent. `source` (required): the document, or the spreadsheet and row. Optional: `foundVia` (how the service was found, for example "Kirklees Community Directory"), `checkedUrl` (the page the details were checked against), `evidence` (why it's thought to be current), `confidence` (`high`, `medium` or `low`), `status` (the October 2026 web research's status wording, kept word for word). Not sent to the AI or shown on cards; the Admin pages show the source and flags medium confidence. |
 
 ### On the live list or not
 
@@ -133,8 +160,8 @@ The development team makes these decisions on the All services page, and can als
 
 These are worth knowing before you build anything that reads or filters the data.
 
-- **Several fields are free text and can't be reliably filtered:** `age`, `status`, `workExperience`, `cost` and `referralRoutes` are worded differently from scheme to scheme.
-- **`status` and `open` overlap.** `open` is the one the code uses. On the live list, only HWL Community Grants is currently `false`. The 5 closed services waiting for review are also `false`.
+- **Several fields are free text and can't be reliably filtered:** `age`, `when`, `duration`, `workExperience`, `cost` and `referralRoutes` are worded differently from scheme to scheme.
+- **Dates written as words.** Before November 2026 dates were only in the text. Four were turned into real dates by hand (Audio Boost, the two P2P schemes and Shared Hope); the wording is still in `duration`. Others may still have dates in words only, for the services to set when they check their listings.
 - **`listing` and `open` are different things.** `listing` decides whether the finder knows about a service at all; `open` whether it can be recommended.
 - **Some schemes are missing a web page, email or phone.** The cards simply leave out what isn't there.
 - **`areas` mixes towns with `Kirklees-wide` and `Online`** in the same list.

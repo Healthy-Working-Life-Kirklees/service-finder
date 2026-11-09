@@ -2,7 +2,6 @@
   "id": "moneyhelper",
   "name": "MoneyHelper",
   "organisation": "Money and Pensions Service",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": "0800 011 3797",
   "social": [],
-  "locations": [
-    "Phone and online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -41,11 +38,14 @@
     "allowed": "yes",
     "note": "Contact by phone, webchat or WhatsApp"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "money-and-pensions-guidance",
       "name": "Money and pensions guidance",
-      "summary": "Free guidance on money and pensions and finding free debt advice.",
-      "duration": ""
+      "overview": "Free guidance on money and pensions and finding free debt advice.",
+      "where": [
+        "Phone and online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -58,7 +58,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.moneyhelper.org.uk/en/contact-us",
     "evidence": "© 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

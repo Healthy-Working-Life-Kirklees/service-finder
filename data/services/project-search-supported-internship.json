@@ -2,7 +2,6 @@
   "id": "project-search-supported-internship",
   "name": "Project SEARCH supported internship",
   "organisation": "Mid Yorkshire Teaching NHS Trust / Kirklees College / Kirklees Council",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,9 +19,7 @@
   "email": null,
   "phone": "01924 541000",
   "social": [],
-  "locations": [
-    "Dewsbury and District Hospital"
-  ],
+  "locations": [],
   "areas": [
     "Dewsbury"
   ],
@@ -72,11 +69,14 @@
     "allowed": "yes",
     "note": "Apply through Kirklees College; there is an assessment day and places start each September."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "supported-hospital-internship",
       "name": "Supported hospital internship",
-      "summary": "Year-long hospital-based internship: young people with a learning disability try three jobs with a job coach, then get help into paid work.",
-      "duration": ""
+      "overview": "Year-long hospital-based internship: young people with a learning disability try three jobs with a job coach, then get help into paid work.",
+      "where": [
+        "Dewsbury and District Hospital"
+      ]
     }
   ],
   "workExperience": "Yes - year-long work placements",
@@ -88,7 +88,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.midyorks.nhs.uk/project-search",
     "evidence": "Trust news (Aug 2025) invited applications for 2026 places.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

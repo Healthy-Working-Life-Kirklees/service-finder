@@ -2,7 +2,6 @@
   "id": "business-disability-forum",
   "name": "Business Disability Forum Knowledge Hub",
   "organisation": "Business Disability Forum",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -41,11 +38,14 @@
     "allowed": "yes",
     "note": "Use the knowledge hub online"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "disability-inclusion-guidance",
       "name": "Disability inclusion guidance",
-      "summary": "Free online disability-inclusion guidance for employers; other services for paying members.",
-      "duration": ""
+      "overview": "Free online disability-inclusion guidance for employers; other services for paying members.",
+      "where": [
+        "Online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -57,7 +57,8 @@
     "foundVia": "Acas page",
     "checkedUrl": "https://businessdisabilityforum.org.uk",
     "evidence": "Events Oct–Nov 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

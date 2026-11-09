@@ -3,7 +3,6 @@
   "name": "Audio Boost",
   "organisation": "Yorkshire Sound Women Network",
   "logo": "yswn.webp",
-  "status": "Live - applications via the Yorkshire Sound Women Network website and social media; sessions start week commencing 4 January 2027",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -22,10 +21,7 @@
   "email": "info@yorkshiresoundwomen.com",
   "phone": "07946 531169",
   "social": [],
-  "locations": [
-    "Various locations in Huddersfield (to be confirmed), with online support",
-    "3M Buckley Innovation Centre, Firth Street, Huddersfield, HD1 3BD"
-  ],
+  "locations": [],
   "areas": [
     "Online",
     "Kirklees-wide"
@@ -54,14 +50,21 @@
     "allowed": "tbc",
     "note": "Applications open later in autumn 2026"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "audio-boost",
       "name": "Audio Boost",
-      "summary": "Hands-on workshops, talks and one-to-one support covering music technology roles such as producing tracks, DJing, engineering live events and making podcasts and radio shows, plus practical advice on finding work, in a friendly, supportive environment.",
-      "duration": "Six one-day workshops with online support throughout, starting week commencing 4 January 2027"
+      "overview": "Hands-on workshops, talks and one-to-one support covering music technology roles such as producing tracks, DJing, engineering live events and making podcasts and radio shows, plus practical advice on finding work, in a friendly, supportive environment.",
+      "duration": "Six one-day workshops with online support throughout, starting week commencing 4 January 2027",
+      "where": [
+        "Various locations in Huddersfield (to be confirmed), with online support",
+        "3M Buckley Innovation Centre, Firth Street, Huddersfield, HD1 3BD"
+      ],
+      "runsFrom": "2027-01-04"
     }
   ],
   "workExperience": "No",
+  "notes": "Status before November 2026: Live - applications via the Yorkshire Sound Women Network website and social media; sessions start week commencing 4 January 2027",
   "lastUpdated": "2026-11-02",
   "reviewCycle": "Quarterly",
   "provenance": {

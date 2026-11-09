@@ -2,7 +2,6 @@
   "id": "national-careers-service",
   "name": "National Careers Service (now DWP Jobs and Careers Service)",
   "organisation": "DWP",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": "0800 072 0288",
   "social": [],
-  "locations": [
-    "Phone and online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -41,11 +38,14 @@
     "allowed": "yes",
     "note": "Call or use the online tools"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "careers-advice",
       "name": "Careers advice",
-      "summary": "Free careers advice by phone and online, skills quiz and course search.",
-      "duration": ""
+      "overview": "Free careers advice by phone and online, skills quiz and course search.",
+      "where": [
+        "Phone and online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -57,7 +57,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://nationalcareers.service.gov.uk/contact-us",
     "evidence": "Moved in-house Oct 2026 — recheck phone and name.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

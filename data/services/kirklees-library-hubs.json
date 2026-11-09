@@ -2,7 +2,6 @@
   "id": "kirklees-library-hubs",
   "name": "Kirklees Library Hubs",
   "organisation": "Kirklees Council Libraries",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -21,9 +20,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "10 hubs: Dewsbury, Huddersfield, Holmfirth, Batley, Heckmondwike, Cleckheaton, Birstall, Ravensthorpe, Kirkburton, Almondbury"
-  ],
+  "locations": [],
   "areas": [
     "Dewsbury",
     "Huddersfield",
@@ -45,11 +42,14 @@
     "allowed": "yes",
     "note": "Drop in; most help needs no appointment"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "help-with-services-and-forms",
       "name": "Help with services and forms",
-      "summary": "Staff help with council services, benefits, housing and online forms, and link you to job, learning and health support. Free computers, Wi-Fi and printing.",
-      "duration": ""
+      "overview": "Staff help with council services, benefits, housing and online forms, and link you to job, learning and health support. Free computers, Wi-Fi and printing.",
+      "where": [
+        "10 hubs: Dewsbury, Huddersfield, Holmfirth, Batley, Heckmondwike, Cleckheaton, Birstall, Ravensthorpe, Kirkburton, Almondbury"
+      ]
     }
   ],
   "workExperience": "No",
@@ -61,7 +61,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees.gov.uk/beta/libraries/services-and-resources/library-hubs.aspx",
     "evidence": "Page created Aug 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

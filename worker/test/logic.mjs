@@ -301,12 +301,65 @@ check('guard: ips-cgl kept when mentioned in Polish', ids(r.body) === 'ips-cgl,w
 r = await call('claude-sonnet-5-5', { lang: 'ur', messages: [U('میں منشیات چھوڑنے کی کوشش کر رہا ہوں')] });
 check('guard: ips-cgl kept when mentioned in Urdu', ids(r.body) === 'ips-cgl,wellness-to-work', ids(r.body));
 
+// ----- Projects, cohorts and dates (site/listing-logic.js, shared with the page and the directory) -----
+await import(pathToFileURL(path.join(root, 'site/listing-logic.js')).href);
+const LS = globalThis.LISTING;
+{
+  const T = '2026-11-09';
+  const s1 = { open: true, projects: [
+    { id: 'a', name: 'A', overview: 'x' },
+    { id: 'b', name: 'B', overview: 'x', referralsUntil: '2026-11-01' },
+    { id: 'c', name: 'C', overview: 'x', referralsFrom: '2026-11-20' },
+    { id: 'd', name: 'D', overview: 'x', referralsFrom: '2027-02-01' },
+    { id: 'e', name: 'E', overview: 'x', runsTo: '2026-12-01', cohorts: [{ id: 'e1', name: 'E1' }, { id: 'e2', name: 'E2', runsTo: '2026-10-01' }] },
+  ] };
+  const st = Object.fromEntries(LS.parts(s1, T).map((x) => [x.project.id, x.state]));
+  check('dates: blank is open, past close is closed, soon and later', st.a === 'open' && st.b === 'closed' && st.c === 'soon' && st.d === 'later' && st.e === 'open', JSON.stringify(st));
+  check('dates: visible today is open and opening soon only', LS.visible(s1, T).map((x) => x.project.id).join() === 'a,c,e');
+  check('dates: a cohort uses its project\'s date, or its own', LS.visible(s1, T).find((x) => x.project.id === 'e').cohorts.map((c) => c.cohort.id).join() === 'e1');
+  check('dates: the service shows while anything is open', LS.isShown(s1, T) && !LS.isShown({ ...s1, open: false }, T) && !LS.isShown({ open: true, projects: [s1.projects[1]] }, T));
+  check('dates: closed on the day after the date, not on it', LS.state({ runsTo: T }, T) === 'open' && LS.state({ runsTo: T }, '2026-11-10') === 'closed');
+  check('dates: picking a cohort shows just that cohort', JSON.stringify(LS.pick(s1, ['e1'], T).map((x) => [x.project.id, x.cohorts.map((c) => c.cohort.id)])) === '[["e",["e1"]]]');
+  check('dates: picking nothing (or nothing real) shows everything visible', LS.pick(s1, [], T).length === 3 && LS.pick(s1, ['zzz'], T).length === 3);
+  check('dates: picking a project shows all its open cohorts', LS.pick(s1, ['e'], T)[0].cohorts.length === 1);
+  const ends = LS.endingSoon(s1, T).map((x) => x.project.id + (x.cohort ? '/' + x.cohort.id : '') + ':' + x.kind + ':' + x.daysLeft);
+  check('dates: ending in the next 30 days', ends.join() === 'e/e1:ends:22', ends.join());
+  check('dates: closed parts listed for Admin', LS.closedParts(s1, T).map((x) => x.project.id + (x.cohort ? '/' + x.cohort.id : '')).join() === 'b,e/e2');
+  check('dates: plain words', LS.dateWords({ referralsFrom: '2026-11-20', referralsUntil: '2027-03-01' }, T).join('; ') === 'Referrals open from 20 November 2026; Taking referrals until 1 March 2027');
+  check('dates: checks catch duplicates and wrong order', LS.checkParts([{ id: 'a', name: 'A', runsFrom: '2027-01-02', runsTo: '2027-01-01' }, { id: 'a', name: 'B' }]).length === 2);
+}
+check('data: every live service has at least one project', svc.every((x) => Array.isArray(x.projects) && x.projects.length));
+check('data: no status or activities left', svc.every((x) => !('status' in x) && !('activities' in x)));
+check('data: Raise Your Game has its two age cohorts', JSON.stringify(svc.find((x) => x.id === 'raise-your-game').projects[0].cohorts.map((c) => c.age)) === '["18 to 24","50+"]');
+check('data: the P2P projects stop taking referrals on 1 March 2027', ['p2p-fusion-housing', 'p2p-proper-job'].every((id) => svc.find((x) => x.id === id).projects[0].referralsUntil === '2027-03-01'));
+check('data: organisations carry no Healthy Working Life marker', JSON.parse(fs.readFileSync(path.join(root, 'data/organisations.json'), 'utf8')).organisations.every((o) => !('hwlFunded' in o) && !/healthy working life/i.test(o.overview || '')));
+{
+  // What the AI is sent today: no team notes, closed projects left out, a status on each project.
+  reply = tool(reply0());
+  await call('claude-sonnet-5-5');
+  const dataText = sent.system[1].text;
+  const sentData = JSON.parse(dataText.slice(dataText.indexOf('\n') + 1));
+  const ryg = sentData.find((x) => x.id === 'raise-your-game');
+  check('ai data: projects and cohorts sent with a status', ryg.projects[0].status === 'open' && ryg.projects[0].cohorts.length === 2 && ryg.projects[0].cohorts.every((c) => c.status === 'open'), JSON.stringify(ryg.projects).slice(0, 300));
+  check('ai data: no team notes, map buttons or listing decision', sentData.every((x) => !('notes' in x) && !('mapLinks' in x) && !('listing' in x)));
+  check('ai data: the date is in the data heading', dataText.startsWith('SERVICE DATA (JSON) for ' + new Date().toISOString().slice(0, 10)));
+  check('ai data: the reply tool asks which projects or cohorts fit', Boolean(sent.tools[0].input_schema.properties.matches.items.properties.parts));
+  check('prompt: explains projects, cohorts and parts', /"parts"/.test(sent.system[0].text) && /cohorts/.test(sent.system[0].text) && /referrals open later/.test(sent.system[0].text));
+}
+reply = tool(reply0({ matches: [{ ...m('raise-your-game'), parts: ['cohort-1', 'nonsense', 'cohort-1'] }] }));
+r = await call('claude-sonnet-5-5', { messages: [{ role: 'user', content: 'I am 20, not working, with a health condition, in Huddersfield' }] });
+check('parts: only real, open project or cohort ids are passed on, once each', JSON.stringify(r.body.recommendations[0].parts) === '["cohort-1"]', JSON.stringify(r.body.recommendations));
+check('parts: the reply says which day it was worked out for', r.body.date === new Date().toISOString().slice(0, 10));
+reply = tool(reply0({ matches: [m('raise-your-game')] }));
+r = await call('claude-sonnet-5-5');
+check('parts: none given is an empty list (the page shows everything open)', Array.isArray(r.body.recommendations[0].parts) && !r.body.recommendations[0].parts.length);
+
 // ----- Team issues log -----
 const mkStore = () => {
   const mem = new Map();
   const storage = {
-    get: async (k) => mem.get(k),
-    put: async (k, v) => { mem.set(k, v); },
+    get: async (k) => (Array.isArray(k) ? new Map(k.filter((x) => mem.has(x)).map((x) => [x, mem.get(x)])) : mem.get(k)),
+    put: async (k, v) => { if (typeof k === 'object') for (const [a, b] of Object.entries(k)) mem.set(a, b); else mem.set(k, v); },
     delete: async (k) => mem.delete(k),
     list: async ({ prefix }) => new Map([...mem.entries()].filter(([k]) => k.startsWith(prefix)).sort(([a], [b]) => a.localeCompare(b))),
   };
@@ -408,15 +461,36 @@ check('edits: saved with the cleaned changes, before values and who', r.status =
 const editErr = async (changes, extra = {}) => (await logCall('PUT', '/log/edits/kbop', { ...goodEdit, changes, ...extra })).body.error || '';
 check('edits: unknown area refused', /isn't allowed/.test(await editErr({ areas: ['Leeds'] })));
 check('edits: id and listing can\'t be changed here', /can't be changed/.test(await editErr({ id: 'x' })) && /can't be changed/.test(await editErr({ listing: { decision: 'include' } })));
-check('edits: bad web page refused', /web page/i.test(await editErr({ webpage: 'www.example.org' })));
+check('edits: bad website refused', /website/i.test(await editErr({ webpage: 'www.example.org' })));
 check('edits: bad email refused', /email/i.test(await editErr({ email: 'nope' })));
 check('edits: empty name refused', /can't be empty/.test(await editErr({ name: '  ' })));
 check('edits: categories need at least one', /at least one/.test(await editErr({ categories: [] })));
-check('edits: activities need a name and summary', /name and a summary/.test(await editErr({ activities: [{ name: 'x', summary: '' }] })));
+check('edits: each project needs an overview', /overview/.test(await editErr({ projects: [{ id: 'x', name: 'x', overview: '' }] })));
+// Projects, cohorts and dates.
+const proj = (o = {}) => ({ id: 'job-club', name: 'Job club', overview: 'CV help.', ...o });
+check('edits: a project with cohorts and dates is accepted', !(await editErr({ projects: [proj({ referralsUntil: '2027-03-01', cohorts: [{ id: 'cohort-1', name: 'Cohort 1', age: '18 to 24', eligibility: ['Aged 18 to 24'] }] })] })));
+check('edits: a date must be real', /real date/.test(await editErr({ projects: [proj({ runsTo: '2027-02-31x' })] })));
+check('edits: a project can\'t end before it starts', /ends before it starts/.test(await editErr({ projects: [proj({ runsFrom: '2027-03-01', runsTo: '2027-01-01' })] })));
+check('edits: a cohort uses its project\'s dates when checking the order', /stops taking referrals before it starts/.test(await editErr({ projects: [proj({ referralsFrom: '2027-03-01', cohorts: [{ id: 'c1', name: 'C1', referralsUntil: '2027-01-01' }] })] })));
+check('edits: project and cohort ids are unique in a service', /used twice/.test(await editErr({ projects: [proj(), proj({ name: 'Other' })] })));
+check('edits: a project can\'t carry other details', /can't be set/.test(await editErr({ projects: [proj({ status: 'Live' })] })));
+check('edits: a cohort can\'t carry other details', /can't be set/.test(await editErr({ projects: [proj({ cohorts: [{ id: 'c1', name: 'C1', overview: 'x' }] })] })));
+check('edits: a new project overview over 400 characters is refused', /too long/.test(await editErr({ projects: [proj({ overview: 'x'.repeat(401) })] })));
+{
+  // Text already in the data over the limit can be sent back unchanged (wellness-to-work's overview is 420).
+  const w2w = svc.find((x) => x.id === 'wellness-to-work');
+  const r2 = await logCall('PUT', '/log/edits/wellness-to-work', { changes: { projects: w2w.projects, phone: '01484 999999' }, before: {}, note: 'New phone', by: 'PL' });
+  check('edits: an overview already over the limit can be kept as it is', r2.status === 200 && w2w.projects[0].overview.length > 400, JSON.stringify(r2.body));
+  await logCall('DELETE', '/log/edits/wellness-to-work', { by: 'PL' });
+}
+check('edits: who it\'s for over 300 characters is refused when changed', /too long/.test(await editErr({ whoFor: 'x'.repeat(301) })));
+check('edits: an organisation overview over 300 characters is refused', /too long/.test(await editErr({ organisationOverview: 'x'.repeat(301) })));
+check('edits: an organisation overview may not say Healthy Working Life (that is marked on each service)', /Healthy Working Life/.test(await editErr({ organisationOverview: 'A charity delivering Healthy Working Life projects.' })) && /Healthy Working Life/.test(await editErr({ organisationOverview: 'Part of HWL.' })));
+check('edits: the team can set team-only details', !(await editErr({ hwlFunded: true, mapLinks: false, notes: 'Team note', coachNotes: 'Bring ID' })));
 check('edits: a reason is needed', /what changed/.test(await editErr(goodEdit.changes, { note: '' })));
 check('edits: where you checked must be a web address', /web address/.test(await editErr(goodEdit.changes, { checkedUrl: 'the website' })));
 r = await logCall('PUT', '/log/edits/kbop', { ...goodEdit, changes: { ...goodEdit.changes, phone: '01484 111111' }, by: 'AB' });
-check('edits: a second change replaces the first and keeps it in history', r.body.item.changes.phone === '01484 111111' && r.body.item.history.length === 1);
+check('edits: a second change replaces the first and keeps it in history', r.body.item.changes.phone === '01484 111111' && r.body.item.history.length >= 1);
 r = await logCall('GET', '/log/edits', null, { origin: null });
 check('edits: a script (no Origin) can read them', r.status === 200 && r.body.edits.kbop);
 r = await logCall('PUT', '/log/edits/kbop', goodEdit, { origin: null });
@@ -452,8 +526,8 @@ check('plinks: needs the contact name', r.status === 400);
 r = await logCall('POST', '/log/provider-links', { id: liveSvc.id, contact: 'Sam' }, { pass: 'nope' });
 check('plinks: making one needs the passcode', r.status === 401);
 r = await provCall('GET', tok);
-check('plinks: provider sees the service, the contact name and the choices', r.status === 200 && r.body.service.id === liveSvc.id && r.body.contact === 'Sam Provider' && r.body.choices.areas.includes('Batley') && r.body.lastReply === null, JSON.stringify(r.body).slice(0, 200));
-check('plinks: provider doesn\'t see provenance, listing or trigger words', !('provenance' in r.body.service) && !('listing' in r.body.service) && !('requiresMention' in r.body.service));
+check('plinks: provider sees the service, the contact name and the choices', r.status === 200 && r.body.service.id === liveSvc.id && r.body.contact === 'Sam Provider' && r.body.choices.healthFocus.includes('any') && r.body.organisations.length > 100 && r.body.lastReply === null, JSON.stringify(r.body).slice(0, 200));
+check('plinks: provider doesn\'t see provenance, listing, trigger words or team notes', !('provenance' in r.body.service) && !('listing' in r.body.service) && !('requiresMention' in r.body.service) && !('notes' in r.body.service) && !('categories' in r.body.service));
 r = await provCall('GET', tok, null, { origin: null });
 check('plinks: needs the page origin', r.status === 403);
 r = await provCall('GET', 'x'.repeat(32));
@@ -468,6 +542,12 @@ r = await provCall('POST', tok, { changes: { phone: '01484 222222', eligibility:
 check('plinks: provider can send changes', r.status === 200);
 r = await provCall('POST', tok, { changes: { level: 'national' } });
 check('plinks: provider can\'t change team-only fields', r.status === 400 && /can't be changed/.test(r.body.error));
+for (const k of ['areas', 'categories', 'notes', 'hwlFunded']) {
+  r = await provCall('POST', tok, { changes: { [k]: k === 'hwlFunded' ? true : k === 'notes' ? 'x' : ['Batley'] } });
+  check('plinks: provider can\'t change ' + k, r.status === 400 && /can't be changed/.test(r.body.error));
+}
+r = await provCall('POST', tok, { changes: { organisationOverview: 'We run community projects across Kirklees.', projects: [{ id: 'p1', name: 'Project one', overview: 'Weekly sessions.', referralsUntil: '2027-03-01' }] }, note: 'Updated', name: 'Sam P' });
+check('plinks: provider can change the organisation overview and projects', r.status === 200, JSON.stringify(r.body));
 r = await provCall('POST', tok, { changes: { email: 'nope' } });
 check('plinks: provider changes checked like team edits', r.status === 400 && /email/i.test(r.body.error));
 r = await provCall('POST', tok, { changes: {}, note: '' });
@@ -476,7 +556,7 @@ r = await provCall('POST', tok, { changes: {}, note: 'The venue is wrong but I a
 check('plinks: a comment alone is accepted', r.status === 200);
 r = await logCall('GET', '/log/provider-links');
 const gotLink = r.body.links.find((l) => l.token === tok);
-check('plinks: team sees the replies, with old values', r.status === 200 && gotLink.replies.length === 3 && gotLink.replies[0].allCorrect === true && gotLink.replies[1].changes.phone === '01484 222222' && 'phone' in gotLink.replies[1].before && gotLink.replies[1].name === 'Sam P', JSON.stringify(gotLink).slice(0, 300));
+check('plinks: team sees the replies, with old values', r.status === 200 && gotLink.replies.length === 4 && gotLink.replies[0].allCorrect === true && gotLink.replies[1].changes.phone === '01484 222222' && 'phone' in gotLink.replies[1].before && gotLink.replies[1].name === 'Sam P', JSON.stringify(gotLink).slice(0, 300));
 r = await provCall('GET', tok);
 check('plinks: provider sees their last reply', r.body.lastReply && r.body.lastReply.allCorrect === false);
 r = await logCall('POST', '/log/provider-links/' + tok + '/cancel', { by: 'PL' });
@@ -493,10 +573,10 @@ check('plinks: expired link stops working', r.status === 404);
 
 // new services added by the team
 const newSvc = () => ({
-  name: 'Batley Job Club', organisation: 'Batley Community Centre', status: 'Live - open to referrals', open: true, level: 'local', audience: ['individual'],
+  name: 'Batley Job Club', organisation: 'Batley Community Centre', open: true, level: 'local', audience: ['individual'],
   categories: ['Finding work'], whoFor: 'Anyone in Batley looking for work.', age: null, webpage: 'https://batleyjobclub.example', email: null, phone: '01924 000000',
   social: [], locations: ['Batley Community Centre, Tuesdays 10am to 12pm'], areas: ['Batley'], eligibility: [], exclusions: [], gate: [], healthFocus: [],
-  referralRoutes: ['Drop in'], selfReferral: { allowed: 'yes', note: 'Just turn up' }, activities: [{ name: 'Job club', summary: 'CV help and job search.', duration: 'Weekly' }],
+  referralRoutes: ['Drop in'], selfReferral: { allowed: 'yes', note: 'Just turn up' }, projects: [{ id: 'job-club', name: 'Job club', overview: 'CV help and job search.', duration: 'Weekly' }],
   workExperience: 'No', cost: 'Free', languages: null, notes: null, reviewCycle: 'Quarterly',
 });
 r = await logCall('GET', '/log/new');
@@ -507,7 +587,7 @@ r = await logCall('PUT', '/log/new/batley-job-club', { service: { ...newSvc(), p
 check('new: saving again updates it but keeps who first added it', r.body.item.service.phone === '01924 111111' && r.body.item.createdBy === 'PL' && r.body.item.by === 'AB' && r.body.item.history.length === 1);
 const missing = newSvc(); delete missing.referralRoutes;
 r = await logCall('PUT', '/log/new/batley-job-club', { service: missing, note: 'x y z', by: 'PL' });
-check('new: every required field must be there', r.status === 400 && /How to get in/.test(r.body.error), JSON.stringify(r.body));
+check('new: every required field must be there', r.status === 400 && /How people are referred/.test(r.body.error), JSON.stringify(r.body));
 r = await logCall('PUT', '/log/new/batley-job-club', { service: { ...newSvc(), listing: { decision: 'include' } }, note: 'x y z', by: 'PL' });
 check('new: can\'t set its own listing decision', r.status === 400);
 r = await logCall('PUT', '/log/new/acas-helpline', { service: newSvc(), note: 'x y z', by: 'PL' });
@@ -523,6 +603,8 @@ check('new: discard', r.status === 200 && Object.keys((await logCall('GET', '/lo
 {
   const d = fs.mkdtempSync(path.join(os.tmpdir(), 'dec-'));
   for (const id of ['kbop', 'samaritans-helpline', 'acas-helpline', 'hopeline247-papyrus']) fs.copyFileSync(path.join(root, 'data/services', id + '.json'), path.join(d, id + '.json'));
+  fs.copyFileSync(path.join(root, 'data/organisations.json'), path.join(d, 'organisations.json'));
+  const realOrgs = fs.readFileSync(path.join(root, 'data/organisations.json'), 'utf8');
   const inp = path.join(d, 'decisions.json');
   fs.writeFileSync(inp, JSON.stringify({ decisions: {
     kbop: { decision: 'include', by: 'PL', t: '2026-10-16T10:00:00Z' },
@@ -545,7 +627,7 @@ check('new: discard', r.status === 200 && Object.keys((await logCall('GET', '/lo
   const kb = JSON.parse(fs.readFileSync(path.join(d, 'kbop.json'), 'utf8'));
   const filled = {
     whoFor: 'Adults in Kirklees with complex needs.', referralRoutes: ['Referral from a support worker'], selfReferral: { allowed: 'no', note: 'Needs a referral' },
-    activities: [{ name: 'Key worker support', summary: 'One-to-one help.', duration: '' }], phone: '01484 000000', notes: null,
+    projects: [{ id: 'key-worker-support', name: 'Key worker support', overview: 'One-to-one help.' }], phone: '01484 000000', notes: null,
   };
   const before = Object.fromEntries(Object.keys(filled).map((k) => [k, kb[k] === undefined ? null : kb[k]]));
   const acas = JSON.parse(fs.readFileSync(path.join(d, 'acas-helpline.json'), 'utf8'));
@@ -580,7 +662,7 @@ check('new: discard', r.status === 200 && Object.keys((await logCall('GET', '/lo
   const out3 = run();
   const bj = JSON.parse(fs.readFileSync(path.join(d, 'batley-job-club.json'), 'utf8'));
   check('apply new: file created, waiting for review, with provenance', bj.id === 'batley-job-club' && bj.listing.decision === 'review' && bj.hwlFunded === false && bj.provenance.source.includes('PL') && bj.provenance.checkedUrl === 'https://batleyjobclub.example' && !('notes' in bj) && bj.lastUpdated === '2026-10-17', JSON.stringify(bj).slice(0, 400));
-  check('apply new: fields in the usual order', Object.keys(bj).slice(0, 4).join() === 'id,name,organisation,status', Object.keys(bj).join());
+  check('apply new: fields in the usual order', Object.keys(bj).slice(0, 4).join() === 'id,name,organisation,open', Object.keys(bj).join());
   check('apply new: a team decision to include applies straight away', JSON.parse(fs.readFileSync(path.join(d, 'second-new.json'), 'utf8')).listing.decision === 'include');
   check('apply new: duplicate name, id clash and schema failure reported, not created', !fs.existsSync(path.join(d, 'kbop-copy.json')) && !fs.existsSync(path.join(d, 'bad-new.json')) && out3.includes('same name and organisation') && out3.includes('already in the data') && out3.includes('Bad one'), out3);
   check('apply new: running again doesn\'t create it twice', /0 new services added, 2 already added/.test(run()), run());
@@ -696,6 +778,13 @@ const bad = [
   ['bad service email', gapFb({ missedService: { name: 'x', email: 'not an email' } })],
   ['description too long', gapFb({ missedService: { name: 'x', description: 'd'.repeat(801) } })],
   ['noMap not true/false', gapFb({ missedService: { name: 'x', noMap: 'yes' } })],
+  ['a date that is not a date', gapFb({ missedService: { name: 'x', organisation: 'y', role: 'provider', runsFrom: 'next week' } })],
+  ['an end date before the start date', gapFb({ missedService: { name: 'x', organisation: 'y', role: 'provider', runsFrom: '2027-03-01', runsTo: '2027-01-01' } })],
+  ['referrals closing before they open', gapFb({ missedService: { name: 'x', organisation: 'y', role: 'provider', referralsFrom: '2027-03-01', referralsUntil: '2027-01-01' } })],
+  ['"a new project of" a service not in the data', gapFb({ missedService: { name: 'x', organisation: 'y', role: 'provider', addTo: 'not-a-scheme' } })],
+  ['taking referrals not yes or no', gapFb({ missedService: { name: 'x', organisation: 'y', role: 'provider', open: 'maybe' } })],
+  ['project overview too long', gapFb({ missedService: { name: 'x', organisation: 'y', role: 'provider', projectOverview: 'p'.repeat(401) } })],
+  ['organisation overview too long', gapFb({ missedService: { name: 'x', organisation: 'y', role: 'provider', organisationOverview: 'o'.repeat(301) } })],
 ];
 for (const [name, body] of bad) {
   r = await send(body);
@@ -762,6 +851,14 @@ r = await send(gapFb({ missedService: { ...fullService, description: 'x'.repeat(
 check('suggestion: a long suggestion (over 4 KB) is allowed', r.status === 201, String(r.status));
 r = await fbCall('POST', '/feedback', null, { raw: JSON.stringify(cardFb({ text: 'x'.repeat(5000) })) });
 check('suggestion: other feedback is still limited to 4 KB', r.status === 413);
+// A full suggestion in the listing's shape: organisation, service, project, dates, and "a new project of".
+r = await send(gapFb({ missedService: { name: 'Raise Your Game', organisation: 'Huddersfield Town Foundation', role: 'provider', addTo: 'raise-your-game', organisationOverview: 'The charity of the football club.', whoFor: 'Adults out of work.', open: 'yes',
+  projectName: 'Cohort 3', projectOverview: 'Ten weeks of sessions.', where: 'Leeds Road, HD1 6PX', when: 'Mondays 10am', duration: '10 weeks', places: '15 places', runsFrom: '2027-01-11', runsTo: '2027-03-15', referralsUntil: '2027-01-04',
+  gate: 'Lives in Kirklees', coachNotes: 'Bring trainers.' } }));
+all = await items();
+const full = all[all.length - 1].missedService;
+check('feedback: a suggestion in the listing shape is kept as written (project, dates, new project of a listed service)', r.status === 201 && full && full.addTo === 'raise-your-game' && full.projectName === 'Cohort 3' && full.runsFrom === '2027-01-11' && full.referralsUntil === '2027-01-04' && full.open === 'yes' && full.gate === 'Lives in Kirklees' && full.coachNotes === 'Bring trainers.' && full.organisationOverview === 'The charity of the football club.', JSON.stringify(full));
+check('feedback: a suggestion from an older page (description, activities, running) is still accepted', (await send(gapFb({ missedService: { name: 'Old page', organisation: 'Org', role: 'suggester', description: 'Helps people.', activities: 'Weekly club', running: 'now', dates: 'From March', addresses: 'Batley' } }))).status === 201);
 const csvAll = (await fbCall('GET', '/feedback/export.csv', null, { pass: FB_PASS })).body;
 check('suggestion: CSV has the extra details column', csvAll.includes('"missedServiceDetails"') && csvAll.includes('organisation: Shared Goods Charity'), csvAll.slice(0, 300));
 r = await send(cardFb({ text: 'Number was [removed]' }));
@@ -1142,6 +1239,85 @@ const tCsv = (await fbCall('GET', '/feedback/export.csv', null, { pass: FB_PASS 
 check('team test: feedback CSV has a team column', tCsv.split('\r\n')[0].includes('"team"'));
 const notifyMod = await import(pathToFileURL(path.join(root, 'worker/src/notify.js')).href);
 check('team test: the email subject says [team test]', notifyMod.buildEmail({ id: 9, kind: 'reply', schemeIds: [], reasons: [], team: true }).subject.includes('[team test]'));
+
+// ----- Organisations: rename, overview, combine (teamlog.js /log/orgs, apply-decisions.mjs) -----
+store = mkStore();
+r = await logCall('GET', '/log/orgs');
+check('orgs: empty to start', r.status === 200 && !Object.keys(r.body.orgs).length);
+r = await logCall('PUT', '/log/orgs/proper-job-theatre-company-ltd', { changes: { mergeInto: 'proper-job-theatre-company' }, note: 'Same organisation', by: 'PL' });
+check('orgs: a combine is saved', r.status === 200 && r.body.item.changes.mergeInto === 'proper-job-theatre-company');
+r = await logCall('PUT', '/log/orgs/acas', { changes: { overview: 'x'.repeat(301) }, note: 'Too long', by: 'PL' });
+check('orgs: an overview over 300 characters is refused', r.status === 400 && /too long/.test(r.body.error));
+r = await logCall('PUT', '/log/orgs/acas', { changes: { overview: 'Runs Healthy Working Life schemes.' }, note: 'HWL', by: 'PL' });
+check('orgs: an organisation overview may not carry the Healthy Working Life marker', r.status === 400 && /Healthy Working Life/.test(r.body.error), JSON.stringify(r.body));
+r = await logCall('PUT', '/log/orgs/acas', { changes: { mergeInto: 'acas' }, note: 'Self', by: 'PL' });
+check('orgs: can\'t be combined into itself', r.status === 400);
+r = await logCall('PUT', '/log/orgs/acas', { changes: { hwlFunded: true }, note: 'No', by: 'PL' });
+check('orgs: only name, overview, website or combining can be changed', r.status === 400 && /can't be changed/.test(r.body.error));
+r = await logCall('PUT', '/log/orgs/acas', { changes: { overview: 'Free advice on workplace rights.' }, note: '', by: 'PL' });
+check('orgs: needs a reason', r.status === 400);
+r = await logCall('GET', '/log/orgs', null, { origin: null });
+check('orgs: the apply script (no Origin) can read them', r.status === 200 && r.body.orgs['proper-job-theatre-company-ltd']);
+{
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'org-'));
+  for (const id of ['p2p-proper-job', 'proper-progress', 'lab-project-proper-job', 'acas-helpline', 'acas-managing-disability']) fs.copyFileSync(path.join(root, 'data/services', id + '.json'), path.join(d, id + '.json'));
+  const orgsIn = JSON.parse(fs.readFileSync(path.join(root, 'data/organisations.json'), 'utf8'));
+  orgsIn.organisations.find((o) => o.id === 'proper-job-theatre-company-ltd').overview = 'Theatre company in Huddersfield.';
+  fs.writeFileSync(path.join(d, 'organisations.json'), JSON.stringify(orgsIn));
+  const inp = path.join(d, 'decisions.json');
+  const acasNow = JSON.parse(fs.readFileSync(path.join(d, 'acas-helpline.json'), 'utf8'));
+  fs.writeFileSync(inp, JSON.stringify({
+    orgs: {
+      'proper-job-theatre-company-ltd': { changes: { mergeInto: 'proper-job-theatre-company' }, note: 'Same organisation', by: 'PL', t: '2026-11-10T09:00:00Z' },
+      acas: { changes: { name: 'Acas (Advisory, Conciliation and Arbitration Service)', website: 'https://www.acas.org.uk' }, before: {}, note: 'Full name', by: 'PL', t: '2026-11-10T09:00:00Z' },
+    },
+    edits: {
+      'acas-helpline': { changes: { organisationOverview: 'Free, impartial advice on workplace rights.' }, before: {}, note: 'Overview from the provider', by: 'PL', t: '2026-11-10T09:00:00Z' },
+      'acas-managing-disability': { changes: { organisation: 'Brand New Organisation' }, before: {}, note: 'Moved', by: 'PL', t: '2026-11-10T09:00:00Z' },
+    },
+  }));
+  const out = execFileSync(process.execPath, [path.join(root, 'scripts/apply-decisions.mjs'), '--input', inp, '--dir', d], { encoding: 'utf8' });
+  const o2 = JSON.parse(fs.readFileSync(path.join(d, 'organisations.json'), 'utf8')).organisations;
+  const svcIn = (id) => JSON.parse(fs.readFileSync(path.join(d, id + '.json'), 'utf8'));
+  const pj = o2.find((o) => o.id === 'proper-job-theatre-company');
+  check('apply orgs: combining moves the services and keeps the old name as an alias', svcIn('p2p-proper-job').organisation === 'Proper Job Theatre Company' && !o2.find((o) => o.id === 'proper-job-theatre-company-ltd') && pj.aliases.includes('Proper Job Theatre Company Ltd'), out);
+  check('apply orgs: the combined organisation\'s overview is kept', pj.overview === 'Theatre company in Huddersfield.');
+  check('apply orgs: the services keep their own Healthy Working Life marker', svcIn('p2p-proper-job').hwlFunded === true && !('hwlFunded' in pj));
+  const acasOrg = o2.find((o) => o.id === 'acas');
+  check('apply orgs: a rename updates every service and keeps the old name', acasOrg.name.startsWith('Acas (') && acasOrg.aliases.includes('Acas') && svcIn('acas-helpline').organisation === acasOrg.name && acasOrg.website === 'https://www.acas.org.uk', JSON.stringify(acasOrg));
+  check('apply orgs: an organisation overview sent with a service goes on the organisation, not the service', acasOrg.overview === 'Free, impartial advice on workplace rights.' && !('organisationOverview' in svcIn('acas-helpline')), JSON.stringify(acasOrg));
+  check('apply orgs: a new organisation name makes a new organisation', svcIn('acas-managing-disability').organisation === 'Brand New Organisation' && o2.some((o) => o.name === 'Brand New Organisation' && o.id === 'brand-new-organisation') && /New organisations: Brand New Organisation/.test(out), out);
+  check('apply orgs: summary says what happened', /Organisations changed \(2\)/.test(out) && /combined into Proper Job Theatre Company/.test(out), out);
+  check('apply orgs: running again changes nothing more', /0 organisations changed/.test(execFileSync(process.execPath, [path.join(root, 'scripts/apply-decisions.mjs'), '--input', inp, '--dir', d], { encoding: 'utf8' })));
+  check('apply orgs: the real organisations file is untouched by a test run', fs.readFileSync(path.join(root, 'data/organisations.json'), 'utf8').includes('"name": "Proper Job Theatre Company Ltd"'));
+  void acasNow;
+  fs.rmSync(d, { recursive: true, force: true });
+}
+
+// ----- Morning reminders (reminders.js) -----
+{
+  const rem = await import(pathToFileURL(path.join(root, 'worker/src/reminders.js')).href);
+  store = mkStore();
+  const sentMail = [];
+  const remEnv = (extra = {}) => ({ ...logEnv(), FEEDBACK_EMAIL: { send: async (m) => { sentMail.push(m); } }, FEEDBACK_EMAIL_FROM: 'feedback@example.org', FEEDBACK_EMAIL_TO: 'team@example.org', SITE_URL: 'https://hwlsupportfinder.org.uk', ...extra });
+  const T = '2026-11-09';
+  const services = [
+    { id: 'p2p-proper-job', name: 'Pathways to Possibilities', organisation: 'Proper Job Theatre Company Ltd', open: true, projects: [{ id: 'p2p', name: 'Pathways to Possibilities', overview: 'x', referralsUntil: '2026-11-30' }] },
+    { id: 'later', name: 'Later', organisation: 'X', open: true, projects: [{ id: 'l', name: 'L', overview: 'x', runsTo: '2027-06-01' }] },
+    { id: 'paused', name: 'Paused', organisation: 'Y', open: false, projects: [{ id: 'q', name: 'Q', overview: 'x', runsTo: '2026-11-20' }] },
+  ];
+  let res = await rem.sendReminders(remEnv(), services, T);
+  const mail = sentMail[0];
+  check('reminders: one email to the team for what ends or closes in 30 days', res.sent && sentMail.length === 1 && mail.to === 'team@example.org' && /1 service has projects/.test(mail.subject), JSON.stringify(res));
+  check('reminders: says what and when, with a fresh review link and an email to forward', /stops taking referrals 30 November 2026 \(in 21 days\)/.test(mail.text) && /https:\/\/hwlsupportfinder\.org\.uk\/provider-check\.html#[A-Za-z0-9_-]{32}/.test(mail.text) && /projects stop showing in the Support Finder after their end date/i.test(mail.text) && /Suggest a service/.test(mail.text), mail.text);
+  check('reminders: nothing for later dates or paused services', !/Later|Paused/.test(mail.text));
+  check('reminders: the review link is a real provider link', (await logCall('GET', '/log/provider-links')).body.links.some((l) => l.id === 'p2p-proper-job' && l.by === 'Morning reminder'));
+  res = await rem.sendReminders(remEnv(), services, '2026-11-10');
+  check('reminders: each date is only reminded about once', !res.sent && sentMail.length === 1, JSON.stringify(res));
+  res = await rem.sendReminders(remEnv({ SITE_URL: '' }), services, T);
+  check('reminders: off without the email or site settings', !res.sent && res.reason === 'not set up');
+  check('reminders: the Worker runs them each morning', typeof worker.scheduled === 'function');
+}
 
 // ---------- "Apply changes now" (applynow.js) ----------
 {

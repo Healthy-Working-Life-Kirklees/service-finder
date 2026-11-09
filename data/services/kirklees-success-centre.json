@@ -2,7 +2,6 @@
   "id": "kirklees-success-centre",
   "name": "Kirklees Success Centre (incl. Early Years Skills Bootcamp)",
   "organisation": "Kirklees Council Learning Service",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,9 +19,7 @@
   "email": "success.centres@kirklees.gov.uk",
   "phone": "01484 234153",
   "social": [],
-  "locations": [
-    "The Glass Box, Huddersfield HD1 1RD"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield"
   ],
@@ -40,11 +37,14 @@
     "allowed": "yes",
     "note": "Phone or email to get the timetable."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "free-adult-courses",
       "name": "Free adult courses",
-      "summary": "Free confidence, wellbeing, maths and craft courses, training to volunteer in schools, and an Early Years bootcamp leading to an interview.",
-      "duration": ""
+      "overview": "Free confidence, wellbeing, maths and craft courses, training to volunteer in schools, and an Early Years bootcamp leading to an interview.",
+      "where": [
+        "The Glass Box, Huddersfield HD1 1RD"
+      ]
     }
   ],
   "workExperience": "Yes - training to volunteer in schools",
@@ -56,7 +56,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees.gov.uk/beta/employment-and-skills/kirklees-success-centre.aspx",
     "evidence": "Page changed June 2025; linked from July 2026 skills page. No 2026 bootcamp intake confirmed.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

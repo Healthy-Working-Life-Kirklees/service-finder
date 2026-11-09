@@ -2,7 +2,6 @@
   "id": "dual-diagnosis-community-links",
   "name": "Community Links Dual Diagnosis service",
   "organisation": "Community Links (KBOP)",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -19,9 +18,7 @@
   "email": "hello@KBOP.org",
   "phone": "01924 448977",
   "social": [],
-  "locations": [
-    "Batley Business Park WF17 6ER"
-  ],
+  "locations": [],
   "areas": [
     "Batley",
     "Kirklees-wide"
@@ -68,11 +65,14 @@
     "allowed": "yes",
     "note": "Refer yourself or be referred by an agency, by form or email"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "dual-diagnosis-support",
       "name": "Dual diagnosis support",
-      "summary": "Up to 18 months' support for people with both mental health problems and drug or alcohol use.",
-      "duration": ""
+      "overview": "Up to 18 months' support for people with both mental health problems and drug or alcohol use.",
+      "where": [
+        "Batley Business Park WF17 6ER"
+      ]
     }
   ],
   "workExperience": "No",
@@ -84,7 +84,8 @@
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "https://www.nhs.uk/services/service-directory/community-links-dual-diagnosis/N10991483",
     "evidence": "NHS directory Sept 2026; Kirklees directory Aug 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

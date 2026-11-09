@@ -2,7 +2,6 @@
   "id": "kings-trust",
   "name": "The King's Trust – Yorkshire and the Humber",
   "organisation": "The King's Trust",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -20,9 +19,7 @@
   "email": "yhoutreach@kingstrust.org.uk",
   "phone": null,
   "social": [],
-  "locations": [
-    "Yorkshire and the Humber"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -42,11 +39,14 @@
     "allowed": "yes",
     "note": "Email the regional outreach team or sign up online"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "courses-and-mentoring",
       "name": "Courses and mentoring",
-      "summary": "Free courses and mentoring to build confidence and skills to get a job or start a business.",
-      "duration": ""
+      "overview": "Free courses and mentoring to build confidence and skills to get a job or start a business.",
+      "where": [
+        "Yorkshire and the Humber"
+      ]
     }
   ],
   "workExperience": "No",
@@ -58,7 +58,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=1974",
     "evidence": "Kirklees directory updated 12 Oct 2026.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

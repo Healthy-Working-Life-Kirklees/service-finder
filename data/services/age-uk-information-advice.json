@@ -2,7 +2,6 @@
   "id": "age-uk-information-advice",
   "name": "Information and Advice (benefits checks)",
   "organisation": "Age UK Calderdale & Kirklees",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,9 +19,7 @@
   "email": "enquiry@ageukck.org.uk",
   "phone": "01422 252 040",
   "social": [],
-  "locations": [
-    "Covers Kirklees (office Halifax)"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -41,11 +38,14 @@
     "allowed": "yes",
     "note": "Phone or email, Monday to Friday 9am to 4pm"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "benefits-and-money-advice",
       "name": "Benefits and money advice",
-      "summary": "Free advice for older people and families: benefits checks and claim forms, housing, warmth and care.",
-      "duration": ""
+      "overview": "Free advice for older people and families: benefits checks and claim forms, housing, warmth and care.",
+      "where": [
+        "Covers Kirklees (office Halifax)"
+      ]
     }
   ],
   "workExperience": "No",
@@ -57,7 +57,8 @@
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.ageuk.org.uk/calderdaleandkirklees/our-services/information-and-advice/",
     "evidence": "© 2026; April 2026 statement of service.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

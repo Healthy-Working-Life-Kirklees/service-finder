@@ -1,7 +1,14 @@
 // Writes the development team's changes from the All services page into the scheme files, so they can go into a pull
-// request: first new services the team has added (each becomes data/services/<id>.json), then edits to a
-// service's details, then the listing decisions (include, review or exclude). A new service starts as "review"
-// and only goes on the live list if the team has also decided to include it.
+// request: first changes to organisations (data/organisations.json: rename, overview, website, combine), then new
+// services the team has added (each becomes data/services/<id>.json), then edits to a service's details, then the
+// listing decisions (include, review or exclude). A new service starts as "review" and only goes on the live list
+// if the team has also decided to include it.
+//
+// Organisations: a service names its organisation. A name that isn't an organisation yet becomes a new one. An
+// "organisationOverview" in a service's change is written to its organisation (once, for all its services).
+// Combining moves every service to the other organisation; the old name is kept there as an alias, and nothing in
+// its overview or website is lost (it goes into that organisation's notes if the other already has its own).
+// Organisations never carry the Healthy Working Life marker: that stays on each service.
 // Nothing reaches the live site until that pull request is merged.
 //
 // Usually run from GitHub: Actions > Apply team changes > Run workflow (.github/workflows/apply-team-changes.yml),
@@ -41,11 +48,14 @@ const opt = (name) => {
 const dryRun = args.includes('--dry-run');
 const dir = path.resolve(opt('--dir') || path.join(root, 'data', 'services'));
 const input = opt('--input');
+// The organisations file: data/organisations.json, or with --dir, an organisations.json next to the scheme files
+// (if there is one), so a test on a copy never touches the real one.
+const orgPath = opt('--orgs') ? path.resolve(opt('--orgs')) : opt('--dir') ? path.join(dir, 'organisations.json') : path.join(root, 'data', 'organisations.json');
 
 async function load() {
   if (input) {
     const d = JSON.parse(fs.readFileSync(input, 'utf8'));
-    return { decisions: d.decisions || {}, edits: d.edits || {}, added: d.added || {} };
+    return { decisions: d.decisions || {}, edits: d.edits || {}, added: d.added || {}, orgEdits: d.orgs || {} };
   }
   const url = String(process.env.WORKER_URL || '').replace(/\/$/, '');
   const pass = process.env.TEAM_PASSCODE || '';
@@ -61,7 +71,10 @@ async function load() {
     }
     return res.json();
   };
-  return { decisions: (await get('/log/decisions')).decisions || {}, edits: (await get('/log/edits')).edits || {}, added: (await get('/log/new')).added || {} };
+  return {
+    decisions: (await get('/log/decisions')).decisions || {}, edits: (await get('/log/edits')).edits || {}, added: (await get('/log/new')).added || {},
+    orgEdits: (await get('/log/orgs').catch(() => ({ orgs: {} }))).orgs || {},
+  };
 }
 
 const same = (a, b) => JSON.stringify(a === undefined ? null : a) === JSON.stringify(b === undefined ? null : b);
@@ -79,8 +92,102 @@ function open(id) {
   return files.get(id);
 }
 
-const { decisions, edits, added } = await load();
+const { decisions, edits, added, orgEdits } = await load();
 const unknown = new Set();
+
+// ---------- 0. organisations ----------
+const slug = (t) => String(t || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 50).replace(/-+$/, '');
+const orgFile = fs.existsSync(orgPath) ? JSON.parse(fs.readFileSync(orgPath, 'utf8')) : null;
+const orgs = orgFile ? orgFile.organisations : [];
+let orgsDirty = false;
+const orgByName = (name) => orgs.find((o) => o.name === name);
+const orgById = (id) => orgs.find((o) => o.id === id);
+// The organisation with this name, made if it isn't there yet.
+const orgsMade = [];
+function ensureOrg(name) {
+  if (!orgFile || !name) return null;
+  let o = orgByName(name);
+  if (o) return o;
+  let id = slug(name) || 'organisation';
+  for (let n = 2; orgById(id); n++) id = slug(name).slice(0, 46) + '-' + n;
+  o = { id, name };
+  orgs.push(o);
+  orgs.sort((a, b) => a.name.localeCompare(b.name, 'en-GB'));
+  orgsDirty = true;
+  orgsMade.push(name);
+  return o;
+}
+// Every scheme file, read once (organisation changes can touch many services).
+for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.json') && x !== 'organisations.json' && x !== 'decisions.json')) open(f.slice(0, -5));
+const servicesOf = (name) => [...files.values()].filter((f) => f && f.s && f.s.organisation === name);
+
+const orgChanged = [];
+const orgProblems = [];
+let orgsSame = 0;
+for (const [id, e] of Object.entries(orgEdits).sort(([a], [b]) => a.localeCompare(b))) {
+  if (!orgFile || !e || !e.changes) continue;
+  const o = orgById(id);
+  const c = e.changes;
+  if (!o) {
+    if (c.mergeInto && orgById(c.mergeInto)) orgsSame += 1; // already combined by an earlier run
+    else orgProblems.push({ id, by: e.by, why: "there's no organisation with this id (renamed or combined already?)" });
+    continue;
+  }
+  const clash = Object.keys(c).filter((k) => e.before && k in e.before && !same(o[k], e.before[k]) && !same(o[k], c[k]));
+  if (clash.length) {
+    orgProblems.push({ id, name: o.name, by: e.by, why: 'it has changed in the data since (' + clash.join(', ') + ')' });
+    continue;
+  }
+  const notes = [];
+  if (c.mergeInto) {
+    const into = orgById(c.mergeInto);
+    if (!into) { orgProblems.push({ id, name: o.name, by: e.by, why: `the organisation to combine it into (${c.mergeInto}) isn't there` }); continue; }
+    const moved = servicesOf(o.name);
+    for (const f of moved) { f.s.organisation = into.name; f.dirty = true; }
+    into.aliases = [...new Set([...(into.aliases || []), o.name, ...(o.aliases || [])])].filter((a) => a !== into.name);
+    for (const k of ['overview', 'website']) {
+      if (!o[k] || o[k] === into[k]) continue;
+      if (!into[k]) into[k] = o[k];
+      else into.notes = (into.notes ? into.notes + '\n\n' : '') + `${k === 'overview' ? 'Overview' : 'Website'} of ${o.name} before it was combined into this organisation: ${o[k]}`;
+    }
+    if (o.notes) into.notes = (into.notes ? into.notes + '\n\n' : '') + `Notes from ${o.name}: ${o.notes}`;
+    orgs.splice(orgs.indexOf(o), 1);
+    notes.push(`combined into ${into.name}; ${moved.length} service${moved.length === 1 ? '' : 's'} moved; "${o.name}" kept as another name`);
+  } else {
+    if (c.name && c.name !== o.name) {
+      if (orgByName(c.name)) { orgProblems.push({ id, name: o.name, by: e.by, why: `another organisation is already called "${c.name}" (combine them instead)` }); continue; }
+      for (const f of servicesOf(o.name)) { f.s.organisation = c.name; f.dirty = true; }
+      o.aliases = [...new Set([...(o.aliases || []), o.name])].filter((a) => a !== c.name);
+      notes.push(`renamed from "${o.name}" to "${c.name}"`);
+      o.name = c.name;
+    }
+    for (const k of ['overview', 'website']) {
+      if (!(k in c) || same(o[k], c[k])) continue;
+      if (c[k] === null) delete o[k];
+      else o[k] = c[k];
+      notes.push(`${k} ${c[k] === null ? 'removed' : 'set'}`);
+    }
+  }
+  if (!notes.length) { orgsSame += 1; continue; }
+  orgsDirty = true;
+  orgChanged.push({ id, name: o.name, by: e.by, note: e.note, what: notes.join('; ') });
+}
+// A service's view, with its organisation's overview, as the forms showed it.
+const view = (s) => {
+  const o = orgByName(s.organisation);
+  return o && o.overview ? { ...s, organisationOverview: o.overview } : { ...s };
+};
+// Writes a service's organisation details (name and overview) to the organisations file, and takes the
+// overview off the service itself.
+function settleOrg(s, overview, hasOverview) {
+  const o = ensureOrg(s.organisation);
+  if (o && hasOverview && !same(o.overview, overview)) {
+    if (overview) o.overview = overview;
+    else delete o.overview;
+    orgsDirty = true;
+  }
+  delete s.organisationOverview;
+}
 
 // ---------- 1. new services ----------
 // Every other service's name and organisation, to catch an obvious duplicate.
@@ -115,7 +222,10 @@ for (const [id, a] of Object.entries(added).sort(([x], [y]) => x.localeCompare(y
   }
   const date = String(a.created || a.t || '').slice(0, 10) || new Date().toISOString().slice(0, 10);
   const lastDate = String(a.t || '').slice(0, 10) || date;
-  const s = { id, ...a.service, hwlFunded: false };
+  const s = { id, hwlFunded: false, ...a.service };
+  const hasOv = 'organisationOverview' in s;
+  const ov = s.organisationOverview;
+  delete s.organisationOverview;
   for (const k of Object.keys(s)) if (s[k] === null && !REQUIRED.has(k)) delete s[k];
   s.lastUpdated = lastDate;
   s.reviewCycle = s.reviewCycle || 'Quarterly';
@@ -129,6 +239,7 @@ for (const [id, a] of Object.entries(added).sort(([x], [y]) => x.localeCompare(y
     newProblems.push({ id, name: s.name, by: a.by, why: "it wouldn't pass the data check: " + validate.errors.map((x) => `${x.instancePath || '(top)'} ${x.message}`).slice(0, 3).join('; ') });
     continue;
   }
+  settleOrg(ordered, ov, hasOv);
   files.set(id, { file, s: ordered, dirty: true });
   taken.set((s.name + ' | ' + s.organisation).toLowerCase(), id);
   created.push({ id, name: s.name, organisation: s.organisation, by: a.createdBy || a.by, date, note: a.note });
@@ -146,7 +257,7 @@ for (const [id, e] of Object.entries(edits).sort(([a], [b]) => a.localeCompare(b
     unknown.add(id);
     continue;
   }
-  const cur = f.s;
+  const cur = view(f.s);
   const keys = Object.keys(e.changes);
   const date0 = String(e.t || '').slice(0, 10);
   // No changes, only "checked and still right" (for example a provider said it's all correct): applied by moving
@@ -167,6 +278,9 @@ for (const [id, e] of Object.entries(edits).sort(([a], [b]) => a.localeCompare(b
     if (v === null && !REQUIRED.has(k)) delete next[k];
     else next[k] = v;
   }
+  const hasOv = 'organisationOverview' in e.changes;
+  const ov = next.organisationOverview;
+  delete next.organisationOverview;
   const date = String(e.t || '').slice(0, 10) || new Date().toISOString().slice(0, 10);
   if (e.checked) {
     next.lastUpdated = date;
@@ -177,7 +291,8 @@ for (const [id, e] of Object.entries(edits).sort(([a], [b]) => a.localeCompare(b
     invalid.push({ id, name: cur.name, by: e.by, errors: validate.errors.map((x) => `${x.instancePath || '(top)'} ${x.message}`).slice(0, 3) });
     continue;
   }
-  const changes = keys.filter((k) => !same(cur[k], next[k])).map((k) => `${k}: ${cut(show(cur[k]))} → ${cut(show(next[k]))}`);
+  const changes = keys.filter((k) => !same(cur[k], k === 'organisationOverview' ? ov : next[k])).map((k) => `${k}: ${cut(show(cur[k]))} → ${cut(show(k === 'organisationOverview' ? ov : next[k]))}`);
+  settleOrg(next, ov, hasOv);
   f.s = next;
   f.dirty = true;
   edited.push({ id, name: next.name, by: e.by, date, note: e.note, checked: Boolean(e.checked), changes });
@@ -216,11 +331,26 @@ for (const [id, d] of Object.entries(decisions).sort(([a], [b]) => a.localeCompa
   changed.push({ id, name: s.name, from: before.decision, to: d.decision, by: s.listing.by, date, reason: s.listing.reason });
 }
 
-if (!dryRun) for (const f of files.values()) if (f && f.dirty) fs.writeFileSync(f.file, JSON.stringify(f.s, null, 2) + '\n');
+if (!dryRun) {
+  for (const f of files.values()) if (f && f.dirty) fs.writeFileSync(f.file, JSON.stringify(f.s, null, 2) + '\n');
+  if (orgFile && orgsDirty) fs.writeFileSync(orgPath, JSON.stringify(orgFile, null, 2) + '\n');
+}
 
 // ---------- summary ----------
 const n = (k, one, many) => `${k} ${k === 1 ? one : many}`;
 const out = [`# Development team changes${dryRun ? ' (dry run: nothing changed)' : ''}`, ''];
+if (orgChanged.length || orgProblems.length || orgsSame) out.push(`${n(orgChanged.length, 'organisation', 'organisations')} changed, ${orgsSame} already up to date.`, '');
+if (orgChanged.length) {
+  out.push(`## Organisations changed (${orgChanged.length})`, '');
+  for (const c of orgChanged) out.push(`- **${c.name}** (\`${c.id}\`): ${c.what}. ${c.by}: ${c.note}`);
+  out.push('');
+}
+if (orgProblems.length) {
+  out.push(`## Organisation changes not applied (${orgProblems.length})`, '');
+  for (const c of orgProblems) out.push(`- **${c.name || c.id}**, changed by ${c.by}: ${c.why}.`);
+  out.push('');
+}
+if (orgsMade.length) out.push(`New organisations: ${orgsMade.join(', ')}.`, '');
 out.push(`${n(created.length, 'new service', 'new services')} added, ${addedSame} already added. ${n(edited.length, 'service', 'services')} with edited details, ${editsSame} already up to date. ${n(changed.length, 'listing decision', 'listing decisions')} applied, ${decisionsSame} already up to date.`, '');
 if (created.length) {
   out.push(`## New services (${created.length})`, '');

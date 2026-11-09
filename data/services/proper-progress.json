@@ -3,7 +3,6 @@
   "name": "Proper Progress",
   "organisation": "Proper Job Theatre Company, with KLTV and Thread Republic",
   "logo": "proper-job.webp",
-  "status": "Live - grant-funded project (status not stated in the pathways document)",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -52,29 +51,34 @@
     "allowed": "yes",
     "note": "Call or email directly"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "personalised-information-advice-and-guidance",
       "name": "Personalised information, advice and guidance",
-      "summary": "Outreach, assessment, goal setting, an individual learning plan and one-to-one progression support.",
+      "overview": "Outreach, assessment, goal setting, an individual learning plan and one-to-one progression support.",
       "duration": "One-to-one sessions as needed"
     },
     {
+      "id": "creative-learning-with-proper-job",
       "name": "Creative Learning with Proper Job",
-      "summary": "Creative drama, storytelling, role play and group activities to build confidence, communication, teamwork, resilience and wellbeing.",
+      "overview": "Creative drama, storytelling, role play and group activities to build confidence, communication, teamwork, resilience and wellbeing.",
       "duration": "18 guided learning hours"
     },
     {
+      "id": "digital-content-creation-with-kltv",
       "name": "Digital Content Creation with KLTV",
-      "summary": "Making digital content and short films to develop communication, digital and presentation skills.",
+      "overview": "Making digital content and short films to develop communication, digital and presentation skills.",
       "duration": "6 guided learning hours"
     },
     {
+      "id": "sustainability-upcycling-and-personal-presentation",
       "name": "Sustainability, Upcycling and Personal Presentation with Thread Republic",
-      "summary": "Practical upcycling and personal presentation skills to build confidence and self-esteem.",
+      "overview": "Practical upcycling and personal presentation skills to build confidence and self-esteem.",
       "duration": "6 guided learning hours"
     }
   ],
   "workExperience": "Prepares people for volunteering, learning and work; no placement stated",
+  "notes": "Status before November 2026: Live - grant-funded project (status not stated in the pathways document)",
   "lastUpdated": "2026-10-01",
   "reviewCycle": "Quarterly",
   "provenance": {

@@ -3,7 +3,6 @@
   "name": "TCD Healthy Futures",
   "organisation": "TCD",
   "logo": "tcd.webp",
-  "status": "Live - grant-funded project (status not stated in the pathways document)",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -22,9 +21,7 @@
   "email": "charitytcd@gmail.com",
   "phone": "07950 325836",
   "social": [],
-  "locations": [
-    "Jo Cox House, 90 Commercial Street, Batley, WF17 5DS"
-  ],
+  "locations": [],
   "areas": [
     "Batley",
     "Kirklees-wide"
@@ -52,14 +49,19 @@
     "allowed": "tbc",
     "note": "Referral is by Google form; the pathways document does not say whether people can refer themselves"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "healthy-futures-programme",
       "name": "Healthy Futures Programme",
-      "summary": "Peer support, physical and creative activities, volunteering and one-to-one support. Participants connect with others, develop new skills and get access to employment, training and wider support services, in a safe, welcoming space.",
-      "duration": "Weekly programme"
+      "overview": "Peer support, physical and creative activities, volunteering and one-to-one support. Participants connect with others, develop new skills and get access to employment, training and wider support services, in a safe, welcoming space.",
+      "duration": "Weekly programme",
+      "where": [
+        "Jo Cox House, 90 Commercial Street, Batley, WF17 5DS"
+      ]
     }
   ],
   "workExperience": "Volunteering opportunities as part of the programme",
+  "notes": "Status before November 2026: Live - grant-funded project (status not stated in the pathways document)",
   "lastUpdated": "2026-11-02",
   "reviewCycle": "Quarterly",
   "provenance": {

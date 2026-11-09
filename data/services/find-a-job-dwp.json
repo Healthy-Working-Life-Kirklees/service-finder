@@ -2,7 +2,6 @@
   "id": "find-a-job-dwp",
   "name": "Find a job",
   "organisation": "DWP",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -18,9 +17,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -38,11 +35,14 @@
     "allowed": "yes",
     "note": "Search and apply online"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "job-search-website",
       "name": "Job search website",
-      "summary": "Government website to search and apply for jobs.",
-      "duration": ""
+      "overview": "Government website to search and apply for jobs.",
+      "where": [
+        "Online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -54,7 +54,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.gov.uk/find-a-job",
     "evidence": "Updated Sep 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

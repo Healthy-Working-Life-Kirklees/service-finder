@@ -3,7 +3,6 @@
   "name": "Get Set Goal",
   "organisation": "University of Huddersfield",
   "logo": "university-of-huddersfield.webp",
-  "status": "Live - open to referrals",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -55,29 +54,34 @@
     "note": "Yes, via the online form",
     "url": "https://forms.office.com/pages/responsepage.aspx?id=2p8utZEGhUW9_FzK4c4YkKgnxFOY-bxNpu8du5KE9JtUQUpPN1ZMSzZEUlc5SU1KMVExNDBPMDQ4NSQlQCN0PWcu&route=shorturl"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "one-to-one-wellbeing-coaching",
       "name": "One-to-one wellbeing coaching",
-      "summary": "Tailored light-touch wellbeing support using goal setting to improve lifestyle choices and manage conditions, with signposting to other Healthy Working Life services. Wellbeing coaching only - it is not a counselling service. Delivered by University of Huddersfield healthcare students under clinical supervision.",
+      "overview": "Tailored light-touch wellbeing support using goal setting to improve lifestyle choices and manage conditions, with signposting to other Healthy Working Life services. Wellbeing coaching only - it is not a counselling service. Delivered by University of Huddersfield healthcare students under clinical supervision.",
       "duration": "Up to 6 weekly sessions, Monday to Friday 9am-4pm excluding bank holidays"
     },
     {
+      "id": "events-in-businesses-or-the-community",
       "name": "Events in businesses or the community",
-      "summary": "Awareness raising, initial health checks and the chance to book one-to-one sessions.",
+      "overview": "Awareness raising, initial health checks and the chance to book one-to-one sessions.",
       "duration": "One-off or regular"
     },
     {
+      "id": "wellbeing-workshops",
       "name": "Wellbeing workshops",
-      "summary": "Interactive workshops tailored to the business or organisation, for example managing stress, improving sleep and mental wellbeing.",
+      "overview": "Interactive workshops tailored to the business or organisation, for example managing stress, improving sleep and mental wellbeing.",
       "duration": "Usually 20-30 minutes"
     },
     {
+      "id": "health-checks",
       "name": "Health checks",
-      "summary": "Basic checks of blood pressure, oxygen level, pulse and respiration rate. Around 7% of people checked between April 2025 and March 2026 were signposted to their GP.",
+      "overview": "Basic checks of blood pressure, oxygen level, pulse and respiration rate. Around 7% of people checked between April 2025 and March 2026 were signposted to their GP.",
       "duration": "5-8 minutes per person"
     }
   ],
   "workExperience": "No",
+  "notes": "Status before November 2026: Live - open to referrals",
   "lastUpdated": "2026-08-03",
   "reviewCycle": "Quarterly",
   "provenance": {

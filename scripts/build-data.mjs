@@ -4,6 +4,11 @@
 //                           Worker (and so the AI) and the tests read this one.
 //   data/services-all.json  every service, whatever its decision, for the All services page in Admin.
 //
+// Each service names its organisation; the organisation's own details (its overview) are kept once, in
+// data/organisations.json, and copied into each service here as "organisationOverview", so the page, the AI and
+// the directory read one service at a time. Both files also list every organisation ("organisations"), for the
+// type-ahead on the forms.
+//
 // Run it before deploying, testing or running the Worker locally:
 //
 //   node scripts/build-data.mjs
@@ -36,8 +41,17 @@ const services = files.map((f) => {
 // Order by id, so the combined file (and the list the AI sees) only changes when the data does.
 services.sort((a, b) => String(a.id).localeCompare(String(b.id)));
 
+// Organisations: one record each. The overview is copied into each of its services.
+const orgs = JSON.parse(fs.readFileSync(path.join(root, 'data', 'organisations.json'), 'utf8')).organisations;
+const orgByName = new Map(orgs.map((o) => [o.name, o]));
+for (const s of services) {
+  const o = orgByName.get(s.organisation);
+  if (o && o.overview) s.organisationOverview = o.overview;
+}
+const orgList = orgs.map((o) => ({ id: o.id, name: o.name, ...(o.aliases ? { aliases: o.aliases } : {}) }));
+
 const live = services.filter((s) => s.listing && s.listing.decision === 'include');
-fs.writeFileSync(out, JSON.stringify({ ...meta, count: live.length, services: live }, null, 2) + '\n');
+fs.writeFileSync(out, JSON.stringify({ ...meta, count: live.length, organisations: orgList, services: live }, null, 2) + '\n');
 // The All services page's edit form offers the same choices the schema allows.
 const schema = JSON.parse(fs.readFileSync(path.join(root, 'data', 'schema.json'), 'utf8'));
 const P = schema.properties;
@@ -45,5 +59,5 @@ const choices = {
   level: P.level.enum, reviewCycle: P.reviewCycle.enum, audience: P.audience.items.enum, categories: P.categories.items.enum,
   areas: P.areas.items.enum, healthFocus: P.healthFocus.items.enum, selfReferral: P.selfReferral.properties.allowed.enum,
 };
-fs.writeFileSync(outAll, JSON.stringify({ ...meta, count: services.length, choices, services }, null, 2) + '\n');
+fs.writeFileSync(outAll, JSON.stringify({ ...meta, count: services.length, choices, organisations: orgs, services }, null, 2) + '\n');
 console.log(`Built data/services.json (${live.length} on the live list) and data/services-all.json (all ${services.length}).`);

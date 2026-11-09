@@ -2,7 +2,6 @@
   "id": "op-nova",
   "name": "Op NOVA (veterans in the justice system)",
   "organisation": "Forces Employment Charity (for NHS England)",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -21,9 +20,7 @@
   "email": null,
   "phone": "0121 262 3058 (charity main line)",
   "social": [],
-  "locations": [
-    "England"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -73,11 +70,14 @@
     "allowed": "yes",
     "note": "Self-refer or be referred using the online form"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "support-for-justice-involved-veterans",
       "name": "Support for justice-involved veterans",
-      "summary": "Help for veterans in contact with police, courts, prison or probation with housing, work, debt and health.",
-      "duration": ""
+      "overview": "Help for veterans in contact with police, courts, prison or probation with housing, work, debt and health.",
+      "where": [
+        "England"
+      ]
     }
   ],
   "workExperience": "No",
@@ -89,7 +89,8 @@
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.forcesemployment.org.uk/programmes/op-nova/",
     "evidence": "Page modified Aug 2026. MECC lists 0800 917 7299 and opnova@forcesemployment.org.uk — not on provider page.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

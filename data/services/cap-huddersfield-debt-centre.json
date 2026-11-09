@@ -2,7 +2,6 @@
   "id": "cap-huddersfield-debt-centre",
   "name": "Christians Against Poverty Huddersfield Debt Centre",
   "organisation": "CAP with Huddersfield churches",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": "0800 328 0006",
   "social": [],
-  "locations": [
-    "Jubilee Centre, Paddock, Huddersfield HD1 4SH"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Colne Valley",
@@ -43,11 +40,14 @@
     "allowed": "yes",
     "note": "Phone to book an appointment."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "debt-advice",
       "name": "Debt advice",
-      "summary": "Free debt help by appointment: a CAP worker helps you work out a plan.",
-      "duration": ""
+      "overview": "Free debt help by appointment: a CAP worker helps you work out a plan.",
+      "where": [
+        "Jubilee Centre, Paddock, Huddersfield HD1 4SH"
+      ]
     }
   ],
   "workExperience": "No",
@@ -59,7 +59,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationdetails.aspx?orgid=4826",
     "evidence": "Directory updated 5 Oct 2026.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

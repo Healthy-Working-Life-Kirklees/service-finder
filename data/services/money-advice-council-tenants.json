@@ -2,7 +2,6 @@
   "id": "money-advice-council-tenants",
   "name": "Money Advice Team (council tenants)",
   "organisation": "Kirklees Council (Homes & Neighbourhoods)",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": "01484 414975",
   "social": [],
-  "locations": [
-    "Kirklees"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -41,11 +38,14 @@
     "allowed": "yes",
     "note": "Refer yourself by online form or phone"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "money-and-benefits-advice",
       "name": "Money and benefits advice",
-      "summary": "Benefit checks and claims, budgeting, debts and bills. Can show whether you'd be better off in work and refer to employment support.",
-      "duration": ""
+      "overview": "Benefit checks and claims, budgeting, debts and bills. Can show whether you'd be better off in work and refer to employment support.",
+      "where": [
+        "Kirklees"
+      ]
     }
   ],
   "workExperience": "No",
@@ -57,7 +57,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees.gov.uk/money-advice",
     "evidence": "Page created March 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

@@ -2,7 +2,6 @@
   "id": "wy-business-growth-hub",
   "name": "West Yorkshire Business Growth Hub – start-up support",
   "organisation": "West Yorkshire Combined Authority",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -18,9 +17,7 @@
   "email": "business@westyorks-ca.gov.uk",
   "phone": "0113 348 1818",
   "social": [],
-  "locations": [
-    "Leeds LS1 2DE"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -38,11 +35,14 @@
     "allowed": "yes",
     "note": "Contact them yourself by phone or email"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "start-up-business-support",
       "name": "Start-up business support",
-      "summary": "Free first point of contact for anyone starting a business, linking to advice, grants, loans and training.",
-      "duration": ""
+      "overview": "Free first point of contact for anyone starting a business, linking to advice, grants, loans and training.",
+      "where": [
+        "Leeds LS1 2DE"
+      ]
     }
   ],
   "workExperience": "No",
@@ -54,7 +54,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.westyorks-ca.gov.uk/business/growth-hub/starting-a-business/",
     "evidence": "Events listed Sep–Nov 2026.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

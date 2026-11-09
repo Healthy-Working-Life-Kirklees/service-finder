@@ -2,7 +2,6 @@
   "id": "metrorover-jobseeker-permit",
   "name": "MetroRover jobseeker travel permit",
   "organisation": "West Yorkshire Metro / WYCA",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Travel Centres incl. Huddersfield and Dewsbury"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Dewsbury",
@@ -45,11 +42,14 @@
     "allowed": "partly",
     "note": "Get the form stamped at the Jobcentre, then take it to a Travel Centre with £5 and a photo"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "jobseeker-travel-pass",
       "name": "Jobseeker travel pass",
-      "summary": "Cheap 28-day pass for buses and trains across West Yorkshire to get to interviews, training and appointments.",
-      "duration": ""
+      "overview": "Cheap 28-day pass for buses and trains across West Yorkshire to get to interviews, training and appointments.",
+      "where": [
+        "Travel Centres incl. Huddersfield and Dewsbury"
+      ]
     }
   ],
   "workExperience": "No",
@@ -61,7 +61,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://admin.wymetro.com/tickets-and-passes/daysavers-and-family-tickets/metrorover-tickets-for-job-seekers/",
     "evidence": "Page live, undated; Weaver Network rebrand coming.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

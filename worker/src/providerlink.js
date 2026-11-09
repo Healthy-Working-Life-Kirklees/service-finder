@@ -16,10 +16,9 @@
 const TOKEN_RE = /^[A-Za-z0-9_-]{32}$/;
 const ID_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const DAY = 86400000;
-// Fields a provider can't change: how the team sorts and reviews the data.
-const TEAM_ONLY = new Set(['level', 'reviewCycle']);
 // Fields not shown to the provider: they can't change them here and they're about maintaining the data.
-const HIDDEN = new Set(['provenance', 'listing', 'requiresMention', 'logo', 'lastUpdated', 'reviewCycle', 'level', 'hwlFunded']);
+// (Which fields a provider can't change is checker.TEAM_ONLY, in serviceedit.js.)
+const HIDDEN = new Set(['provenance', 'listing', 'requiresMention', 'logo', 'lastUpdated', 'reviewCycle', 'level', 'hwlFunded', 'notes', 'mapLinks', 'areas', 'categories']);
 
 const clean = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
@@ -99,9 +98,10 @@ export async function handleProvider(request, env, url, cors, originOk, checker,
       expires: link.expires,
       service: shown,
       choices: {
-        audience: enumOf(P.audience), categories: enumOf(P.categories), areas: enumOf(P.areas), healthFocus: enumOf(P.healthFocus),
-        selfReferral: enumOf(P.selfReferral.properties.allowed),
+        audience: enumOf(P.audience), healthFocus: enumOf(P.healthFocus), selfReferral: enumOf(P.selfReferral.properties.allowed),
       },
+      // Every organisation's name, so the form can suggest them as the person types.
+      organisations: checker.organisations || [],
       lastReply: last ? { t: last.t, allCorrect: last.allCorrect } : null,
     }, 200, cors);
   }
@@ -122,12 +122,12 @@ export async function handleProvider(request, env, url, cors, originOk, checker,
   const allCorrect = body.allCorrect === true;
   if (!allCorrect) {
     const input = body.changes && typeof body.changes === 'object' && !Array.isArray(body.changes) ? body.changes : {};
-    const blocked = Object.keys(input).filter((k) => TEAM_ONLY.has(k));
+    const blocked = Object.keys(input).filter((k) => checker.TEAM_ONLY.includes(k));
     if (blocked.length) return json({ error: `"${blocked[0]}" can't be changed here.` }, 400, cors);
     if (!Object.keys(input).length) {
       if (note.length < 3) return json({ error: "Nothing has been changed. Change the details above, or tell us what's wrong in the box at the end." }, 400, cors);
     } else {
-      const checked = checker.checkChanges(input);
+      const checked = checker.checkChanges(input, service);
       if (checked.error) return json({ error: checked.error }, 400, cors);
       changes = checked.changes;
     }

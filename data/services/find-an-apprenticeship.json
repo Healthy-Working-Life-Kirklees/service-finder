@@ -2,7 +2,6 @@
   "id": "find-an-apprenticeship",
   "name": "Find an apprenticeship",
   "organisation": "Department for Education",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -42,11 +39,14 @@
     "allowed": "yes",
     "note": "Search and apply online"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "apprenticeship-search",
       "name": "Apprenticeship search",
-      "summary": "Official site to search and apply for apprenticeships in England.",
-      "duration": ""
+      "overview": "Official site to search and apply for apprenticeships in England.",
+      "where": [
+        "Online"
+      ]
     }
   ],
   "workExperience": "Yes - apprenticeships",
@@ -58,7 +58,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.gov.uk/apply-apprenticeship",
     "evidence": "Updated Oct 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

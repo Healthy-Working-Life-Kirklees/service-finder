@@ -2,7 +2,6 @@
   "id": "housing-solutions-kirklees",
   "name": "Housing Solutions Service",
   "organisation": "Kirklees Council",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,10 +19,7 @@
   "email": "housing.solutions@kirklees.gov.uk",
   "phone": "01484 221350 (24hr: 01484 414933)",
   "social": [],
-  "locations": [
-    "Huddersfield Library HD1 2YZ",
-    "Dewsbury Library WF12 8EQ"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Dewsbury",
@@ -46,11 +42,15 @@
     "allowed": "yes",
     "note": "Contact by phone, email, online form or in person"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "housing-and-homelessness-advice",
       "name": "Housing and homelessness advice",
-      "summary": "Free advice if you're homeless or might lose your home. Staff make a housing plan with you; in-person at Huddersfield and Dewsbury libraries.",
-      "duration": ""
+      "overview": "Free advice if you're homeless or might lose your home. Staff make a housing plan with you; in-person at Huddersfield and Dewsbury libraries.",
+      "where": [
+        "Huddersfield Library HD1 2YZ",
+        "Dewsbury Library WF12 8EQ"
+      ]
     }
   ],
   "workExperience": "No",
@@ -62,7 +62,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees.gov.uk/beta/housing/sleeping-rough.aspx",
     "evidence": "Pages changed Aug–Sept 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

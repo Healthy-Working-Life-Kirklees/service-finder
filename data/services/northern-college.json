@@ -2,7 +2,6 @@
   "id": "northern-college",
   "name": "Northern College – short and residential courses",
   "organisation": "Northern College (Barnsley College)",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -19,10 +18,7 @@
   "email": "info@barnsley.ac.uk",
   "phone": "01226 216216",
   "social": [],
-  "locations": [
-    "Wentworth Castle, Barnsley S75 3ET",
-    "online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -42,11 +38,15 @@
     "allowed": "yes",
     "note": "Apply online or contact the college"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "short-and-residential-courses",
       "name": "Short and residential courses",
-      "summary": "Short courses, often with a free overnight stay, to help adults return to learning, build confidence and gain qualifications.",
-      "duration": ""
+      "overview": "Short courses, often with a free overnight stay, to help adults return to learning, build confidence and gain qualifications.",
+      "where": [
+        "Wentworth Castle, Barnsley S75 3ET",
+        "online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -58,7 +58,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.northern.ac.uk/fees-and-funding",
     "evidence": "Campus page updated Aug 2026.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

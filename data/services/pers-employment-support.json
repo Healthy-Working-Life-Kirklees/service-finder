@@ -2,7 +2,6 @@
   "id": "pers-employment-support",
   "name": "Employment support (PERS)",
   "organisation": "Pay & Employment Rights Service Yorkshire",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,9 +19,7 @@
   "email": "info@pers.org.uk",
   "phone": "01924 428033",
   "social": [],
-  "locations": [
-    "Taleem Community Centre, Savile Town, Dewsbury WF12 9LT"
-  ],
+  "locations": [],
   "areas": [
     "Dewsbury"
   ],
@@ -42,11 +39,14 @@
     "allowed": "yes",
     "note": "Refer yourself by phone, email or WhatsApp."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "employment-support",
       "name": "Employment support",
-      "summary": "Local charity helping people get ready for, find and keep work, including confidence, training and starting a business.",
-      "duration": ""
+      "overview": "Local charity helping people get ready for, find and keep work, including confidence, training and starting a business.",
+      "where": [
+        "Taleem Community Centre, Savile Town, Dewsbury WF12 9LT"
+      ]
     }
   ],
   "workExperience": "No",
@@ -58,7 +58,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationdetails.aspx?orgid=8831",
     "evidence": "Directory updated Jan 2026; own website shows © 2024 and no current projects.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

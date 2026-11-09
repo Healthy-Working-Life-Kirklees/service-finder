@@ -2,7 +2,6 @@
   "id": "carers-count-mental-health",
   "name": "Carers Count Mental Health Service",
   "organisation": "Carers Count (Cloverleaf Advocacy)",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,9 +19,7 @@
   "email": "info@carerscount.org.uk",
   "phone": "0300 012 0231",
   "social": [],
-  "locations": [
-    "Empire House, Dewsbury WF12 8DJ"
-  ],
+  "locations": [],
   "areas": [
     "Dewsbury",
     "Kirklees-wide",
@@ -52,11 +49,14 @@
     "allowed": "yes",
     "note": "Refer yourself by phone or email"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "support-for-carers",
       "name": "Support for carers",
-      "summary": "One-to-one support, short breaks and groups for carers of someone with mental ill health, dementia, neurodiversity or drug/alcohol problems.",
-      "duration": ""
+      "overview": "One-to-one support, short breaks and groups for carers of someone with mental ill health, dementia, neurodiversity or drug/alcohol problems.",
+      "where": [
+        "Empire House, Dewsbury WF12 8DJ"
+      ]
     }
   ],
   "workExperience": "No",
@@ -68,7 +68,8 @@
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "https://carerscountkirklees.org.uk/contact-us/",
     "evidence": "Checked by PL on 2026-11-05: Checked areas",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

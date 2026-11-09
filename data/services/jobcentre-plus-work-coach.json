@@ -2,7 +2,6 @@
   "id": "jobcentre-plus-work-coach",
   "name": "Jobcentre Plus work coach and disability employment support",
   "organisation": "DWP",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Local Jobcentres"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Dewsbury",
@@ -40,11 +37,14 @@
     "allowed": "yes",
     "note": "Ask at your local Jobcentre"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "jobcentre-work-coach-support",
       "name": "Jobcentre work coach support",
-      "summary": "Work coaches help with job search and skills and can refer to a work psychologist or specialist help.",
-      "duration": ""
+      "overview": "Work coaches help with job search and skills and can refer to a work psychologist or specialist help.",
+      "where": [
+        "Local Jobcentres"
+      ]
     }
   ],
   "workExperience": "No",
@@ -56,7 +56,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.gov.uk/looking-for-work-if-disabled",
     "evidence": "Page updated Sep 2026, but still mentions old programmes.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

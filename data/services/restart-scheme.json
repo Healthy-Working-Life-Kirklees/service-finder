@@ -2,7 +2,6 @@
   "id": "restart-scheme",
   "name": "Restart Scheme",
   "organisation": "DWP",
-  "status": "Not verified as running (web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -33,11 +32,11 @@
     "allowed": "tbc",
     "note": "To be completed."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "restart-scheme",
       "name": "Restart Scheme",
-      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
-      "duration": ""
+      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
     }
   ],
   "workExperience": "Not known",
@@ -49,7 +48,8 @@
     "foundVia": "Web research or directory review (October 2026)",
     "evidence": "Referrals funded only to June 2026; probably closed to new people.",
     "confidence": "low",
-    "checkedUrl": "https://www.gov.uk/government/statistics/restart-scheme-statistics-to-april-2026/restart-scheme-statistics-to-april-2026"
+    "checkedUrl": "https://www.gov.uk/government/statistics/restart-scheme-statistics-to-april-2026/restart-scheme-statistics-to-april-2026",
+    "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
     "decision": "review",

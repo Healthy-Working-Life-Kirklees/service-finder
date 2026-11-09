@@ -25,6 +25,8 @@ PILOT_FEEDBACK = "true"
 FEEDBACK_EMAIL_FROM = "feedback@hwlsupportfinder.org.uk"
 # Linked from each feedback email.
 FEEDBACK_REVIEW_URL = "https://hwlsupportfinder.org.uk/admin/feedback.html"
+# The finder's address, for the review links in the morning reminder email (worker/src/reminders.js).
+SITE_URL = "https://hwlsupportfinder.org.uk/"
 # Anonymous usage counts (worker/src/usage.js): daily tallies only, nothing that identifies anyone. Set
 # USAGE_ENABLED to "false" to stop counting. MAX_USAGE_PER_DAY caps how many counts are added in a day.
 USAGE_ENABLED = "true"
@@ -39,6 +41,11 @@ GH_REPO = "Healthy-Working-Life-Kirklees/service-finder"
 # destination addresses in Email Routing, so it can't be used to email anyone else.
 [[send_email]]
 name = "FEEDBACK_EMAIL"
+
+# Each morning at 06:40 UK winter time (07:40 in summer): emails the team about projects that end or stop taking
+# referrals in the next 30 days, with a review link to forward to each organisation (worker/src/reminders.js).
+[triggers]
+crons = ["40 6 * * *"]
 
 # No Workers Logs: nothing about a conversation should be kept anywhere.
 [observability]
@@ -165,6 +172,10 @@ MAX_USAGE_PER_DAY = "5000"
 
 [env.preview.observability]
 enabled = false
+
+# No morning reminder emails from the preview.
+[env.preview.triggers]
+crons = []
 
 [[env.preview.ratelimits]]
 name = "IP_LIMITER"

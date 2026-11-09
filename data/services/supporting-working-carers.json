@@ -3,7 +3,6 @@
   "name": "Supporting Working Carers",
   "organisation": "Carers Count Kirklees (delivered by Cloverleaf Advocacy)",
   "logo": "carers-count.webp",
-  "status": "Live - open to referrals",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -52,30 +51,35 @@
     "note": "Yes - employers can register directly via any route",
     "url": "https://carerscountkirklees.org.uk/wp-content/uploads/CCK-CCC-Employer-Registration-Form-Editable-PDF.pdf"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "employer-awareness-training",
       "name": "Employer awareness training",
-      "summary": "A 30-minute online session on supporting employees who care, and to meet the team.",
+      "overview": "A 30-minute online session on supporting employees who care, and to meet the team.",
       "duration": "30 minutes, repeating dates through the year"
     },
     {
+      "id": "one-to-one-employer-support",
       "name": "One-to-one employer support",
-      "summary": "A one-to-one Teams call, then tailored support to identify carers in the workforce and put practical policies and culture in place.",
+      "overview": "A one-to-one Teams call, then tailored support to identify carers in the workforce and put practical policies and culture in place.",
       "duration": "Ongoing, tailored"
     },
     {
+      "id": "employer-forums",
       "name": "Employer forums",
-      "summary": "Quarterly forums for peer learning and awareness raising.",
+      "overview": "Quarterly forums for peer learning and awareness raising.",
       "duration": "Quarterly, 1.5 to 2 hours"
     },
     {
+      "id": "employer-training-session",
       "name": "Employer training session",
-      "summary": "Free online training on legal duties and carers' rights, recognising and supporting carers, reducing discrimination risk and managing flexible working.",
+      "overview": "Free online training on legal duties and carers' rights, recognising and supporting carers, reducing discrimination risk and managing flexible working.",
       "duration": "90 minutes, repeating dates through the year"
     }
   ],
   "workExperience": "No",
   "cost": "Free",
+  "notes": "Status before November 2026: Live - open to referrals",
   "lastUpdated": "2026-11-05",
   "reviewCycle": "Quarterly",
   "provenance": {

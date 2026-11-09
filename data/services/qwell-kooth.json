@@ -2,7 +2,6 @@
   "id": "qwell-kooth",
   "name": "Qwell / Kooth",
   "organisation": "Kooth plc",
-  "status": "Not verified as running (web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -35,11 +34,11 @@
     "allowed": "tbc",
     "note": "To be completed."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "qwell-kooth",
       "name": "Qwell / Kooth",
-      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
-      "duration": ""
+      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
     }
   ],
   "workExperience": "Not known",
@@ -51,7 +50,8 @@
     "foundVia": "Web research or directory review (October 2026)",
     "evidence": "Couldn't read; only free where locally commissioned.",
     "confidence": "low",
-    "checkedUrl": "https://www.qwell.io/"
+    "checkedUrl": "https://www.qwell.io/",
+    "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
     "decision": "review",

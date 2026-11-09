@@ -2,7 +2,6 @@
   "id": "kirklees-in-recovery",
   "name": "Kirklees in Recovery",
   "organisation": "Kirklees in Recovery CIC",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -18,10 +17,7 @@
   "email": "info@kirkleesinrecovery.com",
   "phone": "07469 967631",
   "social": [],
-  "locations": [
-    "Huddersfield",
-    "Kirklees-wide"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Kirklees-wide",
@@ -67,11 +63,15 @@
     "allowed": "yes",
     "note": "Get in touch through the website, Facebook, phone or email."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "recovery-community",
       "name": "Recovery community",
-      "summary": "Local recovery community linking people to mutual-aid groups and local services; Facebook help group.",
-      "duration": ""
+      "overview": "Local recovery community linking people to mutual-aid groups and local services; Facebook help group.",
+      "where": [
+        "Huddersfield",
+        "Kirklees-wide"
+      ]
     }
   ],
   "workExperience": "No",
@@ -83,7 +83,8 @@
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=8159",
     "evidence": "Directory July 2026; site's newest content 2021.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

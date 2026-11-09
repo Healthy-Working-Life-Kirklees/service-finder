@@ -1,0 +1,43 @@
+/* The listing form (listing-form.js), on the provider review page and in Admin (All services). Builds on style.css. */
+.lf-section { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem .5rem; margin: 1.25rem 0; }
+.lf-section > h2, .lf-section > h3 { margin: 0 0 .75rem; font-size: 1.3rem; color: var(--dark-blue); }
+.lf .lf-field { margin: 0 0 1.1rem; position: relative; }
+.lf label, .lf legend { display: block; font-weight: 700; margin-bottom: .2rem; }
+.lf .hint { margin: 0 0 .35rem; font-size: .92rem; color: var(--grey); max-width: 62ch; }
+.lf input[type=text], .lf input[type=url], .lf input[type=email], .lf input[type=tel], .lf input[type=date], .lf select, .lf textarea {
+  width: 100%; font: inherit; color: var(--text); background: #fff; border: 2px solid #8a9a98; border-radius: 6px; padding: .45rem .6rem;
+}
+.lf input[type=date], .lf select { width: auto; max-width: 100%; }
+.lf textarea { resize: vertical; line-height: 1.45; }
+.lf input:focus-visible, .lf select:focus-visible, .lf textarea:focus-visible { outline: 3px solid var(--focus); outline-offset: 0; box-shadow: 0 0 0 5px #000; }
+.lf fieldset { border: 1px solid var(--border); border-radius: 8px; padding: .5rem .9rem .7rem; margin: 0 0 1.1rem; min-width: 0; }
+.lf .choices { display: flex; flex-wrap: wrap; gap: .35rem 1.25rem; }
+.lf .choices label, .lf .lf-bool label { display: flex; align-items: center; gap: .4rem; font-weight: 400; margin: 0; }
+.lf .lf-bool label { font-weight: 700; }
+.lf .choices input, .lf .lf-bool input { width: 1.25rem; height: 1.25rem; margin: 0; accent-color: var(--blue); }
+.lf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 0 1rem; }
+.lf-row { display: flex; flex-wrap: wrap; gap: .6rem; margin: .5rem 0; }
+.lf-count { margin: .2rem 0 0; font-size: .88rem; color: var(--grey); }
+.lf-count.over { color: var(--crisis); font-weight: 700; }
+.lf-match { margin-top: .3rem; }
+
+/* Projects and cohorts */
+.lf-projects-box > .btn { margin-bottom: .5rem; }
+.lf fieldset.lf-proj { border: 2px solid var(--accent); background: var(--mint); padding: .7rem 1rem .5rem; }
+.lf fieldset.lf-proj > legend { font-size: 1.1rem; color: var(--dark-blue); padding: 0 .3rem; }
+.lf fieldset.lf-cohort { background: #fff; border-inline-start: 4px solid var(--accent); }
+.lf fieldset.lf-dates { background: rgba(255, 255, 255, .6); }
+.lf .lf-sub { margin: .8rem 0 .2rem; font-size: 1rem; }
+
+/* A detail the person has changed. */
+.lf .changed > input, .lf .changed > textarea, .lf .changed > select, .lf fieldset.changed, .lf .lf-projects-box.changed { border-color: var(--blue); background: var(--light); }
+.lf .lf-projects-box.changed { border-radius: 8px; padding: .4rem; }
+.lf .changed-tag { display: inline-block; margin: .3rem 0 0; padding: .05rem .5rem; border-radius: 999px; background: var(--blue); color: #fff; font-size: .8rem; font-weight: 700; }
+.lf .changed-tag[hidden] { display: none; }
+/* Still says "To be completed". */
+.lf .tbc > input, .lf .tbc > textarea, .lf fieldset.tbc { border-color: var(--warn); background: var(--warn-bg); }
+
+@media (max-width: 760px) {
+  .lf-section { padding: .85rem .9rem .3rem; }
+  .lf fieldset.lf-proj { padding: .6rem .6rem .3rem; }
+}

@@ -3,7 +3,6 @@
   "name": "Individual Placement and Support for Change Grow Live service users",
   "organisation": "Change Grow Live (CGL)",
   "logo": "change-grow-live.webp",
-  "status": "Live - open to referrals",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -21,10 +20,7 @@
   "email": "KirkleesIPS@cgl.org.uk",
   "phone": "07721 969722 or 01484 353333",
   "social": [],
-  "locations": [
-    "20 Manchester Road, Huddersfield HD1 3HJ",
-    "3 Wellington Street, Dewsbury WF13 1LY"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Dewsbury"
@@ -75,14 +71,20 @@
     "allowed": "yes",
     "note": "Yes, via any route"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "individual-placement-and-support",
       "name": "Individual Placement and Support",
-      "summary": "A 'place then train' approach matching people in recovery with paid work they want to do. An Employment Specialist builds a vocational profile, engages employers, supports CVs and interviews and agrees reasonable adjustments, then supports the person and their employer once in work.",
-      "duration": "Job coaching/placement up to 9 months; follow-along support for the first 4 months in work"
+      "overview": "A 'place then train' approach matching people in recovery with paid work they want to do. An Employment Specialist builds a vocational profile, engages employers, supports CVs and interviews and agrees reasonable adjustments, then supports the person and their employer once in work.",
+      "duration": "Job coaching/placement up to 9 months; follow-along support for the first 4 months in work",
+      "where": [
+        "20 Manchester Road, Huddersfield HD1 3HJ",
+        "3 Wellington Street, Dewsbury WF13 1LY"
+      ]
     }
   ],
   "workExperience": "Yes",
+  "notes": "Status before November 2026: Live - open to referrals",
   "lastUpdated": "2025-11-25",
   "reviewCycle": "Quarterly",
   "provenance": {

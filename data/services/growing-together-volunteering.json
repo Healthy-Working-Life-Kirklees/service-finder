@@ -3,7 +3,6 @@
   "name": "Growing Together - Volunteering Pathways",
   "organisation": "LS2Y and Dalton Together",
   "logo": "ls2y.webp",
-  "status": "Live - grant-funded project (status not stated in the pathways document)",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -22,9 +21,7 @@
   "email": "lisanewbold@ls2y.co.uk",
   "phone": "01484 516444",
   "social": [],
-  "locations": [
-    "The Chestnut Centre, 2A Chestnut Street, Huddersfield, HD2 1HJ"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield"
   ],
@@ -51,14 +48,19 @@
     "allowed": "yes",
     "note": "Get in touch directly with Lisa Newbold"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "growing-together-volunteering-pathways",
       "name": "Growing Together - Volunteering Pathways",
-      "summary": "One-to-one mentoring, employability and CV support, safeguarding and early years training, wellbeing activities, and supported volunteering placements in Stay & Play sessions and other community settings, leading to next steps in training, education or work.",
-      "duration": "Ongoing support"
+      "overview": "One-to-one mentoring, employability and CV support, safeguarding and early years training, wellbeing activities, and supported volunteering placements in Stay & Play sessions and other community settings, leading to next steps in training, education or work.",
+      "duration": "Ongoing support",
+      "where": [
+        "The Chestnut Centre, 2A Chestnut Street, Huddersfield, HD2 1HJ"
+      ]
     }
   ],
   "workExperience": "Yes - supported volunteering placements in Stay & Play sessions and community settings",
+  "notes": "Status before November 2026: Live - grant-funded project (status not stated in the pathways document)",
   "lastUpdated": "2026-09-14",
   "reviewCycle": "Quarterly",
   "provenance": {

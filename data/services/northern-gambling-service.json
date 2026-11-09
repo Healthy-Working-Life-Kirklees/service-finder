@@ -2,7 +2,6 @@
   "id": "northern-gambling-service",
   "name": "NHS Northern Gambling Service",
   "organisation": "NHS",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -19,9 +18,7 @@
   "email": "referral.ngs@nhs.net",
   "phone": "0300 300 1490",
   "social": [],
-  "locations": [
-    "North of England"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -57,11 +54,14 @@
     "allowed": "yes",
     "note": "Refer by phone, email or the website"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "gambling-harm-therapy",
       "name": "Gambling harm therapy",
-      "summary": "NHS therapy for people harmed by gambling, also looking at debt and mental health.",
-      "duration": ""
+      "overview": "NHS therapy for people harmed by gambling, also looking at debt and mental health.",
+      "where": [
+        "North of England"
+      ]
     }
   ],
   "workExperience": "No",
@@ -73,7 +73,8 @@
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.northerngamblingservice.nhs.uk/",
     "evidence": "Page Aug 2025; © 2026.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

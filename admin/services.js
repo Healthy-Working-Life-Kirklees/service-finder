@@ -31,6 +31,8 @@
   let added = null; // { <new id>: { service, note, by, created, createdBy, t, checkedUrl, history } } once signed in
   let baseServices = []; // the services in the data; services = these plus new ones waiting to be added
   let choices = {}; // the allowed values for the edit form, from services-all.json
+  let organisations = []; // every organisation record (data/organisations.json), from services-all.json
+  let orgChanges = null; // { <organisation id>: { changes, before, note, by, t } } waiting to be applied, once signed in
   const editing = new Set(); // services whose edit form is open
   let plinks = null; // provider review links (providerlink.js in the Worker), once signed in
   const prefill = {}; // <service id> -> { changes, note } from a provider's reply, opened in the edit form
@@ -87,7 +89,15 @@
     return t.decision === x.listing ? 'applied' : 'pending';
   }
   // A change to a service's details: none, waiting to be applied, or already in the data.
-  const norm = (v) => JSON.stringify(v === undefined || v === '' ? null : v);
+  // Compares values whatever order an object's keys are in, treating empty as missing.
+  const canon = (v) => {
+    if (v === undefined || v === '' || (Array.isArray(v) && !v.length)) return null;
+    if (Array.isArray(v)) return v.map(canon);
+    if (v && typeof v === 'object') return Object.fromEntries(Object.keys(v).sort().map((k) => [k, canon(v[k])]).filter(([, x]) => x !== null));
+    return v;
+  };
+  const norm = (v) => JSON.stringify(canon(v));
+  const LL = globalThis.LISTING; // shared project and date rules (../listing-logic.js)
   function editState(x) {
     const e = edits && edits[x.s.id];
     if (!e) return 'none';
@@ -123,19 +133,34 @@
     if (list(s.gate).length) g.add('gated');
     if (list(s.requiresMention).length) g.add('mention');
     if (notFree(s)) g.add('not-free');
+    if (LL.endingSoon(s).length) g.add('ending');
+    if (LL.closedParts(s).length) g.add('ended');
+    if (LL.parts(s).some((x) => x.state === 'later' || x.cohorts.some((c) => c.state === 'later'))) g.add('opening');
+    if (tooLong(s).length) g.add('too-long');
+    if (!s.organisationOverview) g.add('no-org-overview');
     return g;
+  }
+  // Text written before the character limits that is longer than them now. Kept as it is; flagged to shorten.
+  function tooLong(s) {
+    const out = [];
+    if (s.whoFor && s.whoFor.length > LL.LIMITS.whoFor) out.push('Who it\'s for (' + s.whoFor.length + ' of ' + LL.LIMITS.whoFor + ')');
+    if (s.organisationOverview && s.organisationOverview.length > LL.LIMITS.orgOverview) out.push('Organisation overview (' + s.organisationOverview.length + ' of ' + LL.LIMITS.orgOverview + ')');
+    if (s.coachNotes && s.coachNotes.length > LL.LIMITS.coachNotes) out.push('Anything coaches should know (' + s.coachNotes.length + ' of ' + LL.LIMITS.coachNotes + ')');
+    for (const p of list(s.projects)) if (p.overview && p.overview.length > LL.LIMITS.projectOverview) out.push('Overview of "' + p.name + '" (' + p.overview.length + ' of ' + LL.LIMITS.projectOverview + ')');
+    return out;
   }
 
   // Everything searchable, lower-cased once.
   function haystack(s) {
     const p = s.provenance || {};
     return [
-      s.id, s.name, s.organisation, s.status, s.whoFor, s.age, s.phone, s.email, s.webpage, s.cost, s.languages, s.notes, s.workExperience,
+      s.id, s.name, s.organisation, s.organisationOverview, s.whoFor, s.age, s.phone, s.email, s.webpage, s.cost, s.languages, s.notes, s.coachNotes, s.workExperience,
       ...list(s.categories), ...list(s.areas), ...list(s.locations), ...list(s.eligibility), ...list(s.exclusions), ...list(s.gate),
       ...list(s.referralRoutes), ...list(s.healthFocus).map((h) => HEALTH[h] || h), ...list(s.audience), LEVEL[s.level],
       s.hwlFunded ? 'healthy working life hwl' : '', s.selfReferral && s.selfReferral.note,
-      ...list(s.activities).flatMap((a) => [a.name, a.summary, a.duration]),
-      p.source, p.foundVia, p.evidence, s.listing && s.listing.reason,
+      ...list(s.projects).flatMap((a) => [a.name, a.overview, a.duration, a.when, a.places, a.age, ...list(a.where), ...list(a.eligibility), ...list(a.gate),
+        ...list(a.cohorts).flatMap((c) => [c.name, c.when, c.places, c.age, ...list(c.where), ...list(c.eligibility), ...list(c.gate)])]),
+      p.source, p.status, p.foundVia, p.evidence, s.listing && s.listing.reason,
     ].filter(Boolean).join(' \n ').toLowerCase();
   }
 
@@ -217,6 +242,24 @@
     dl.append(el('dt', { text: label }), dd);
   }
 
+  const partName = (x) => x.project.name + (x.cohort ? ' (' + x.cohort.name + ')' : '');
+  // Projects and cohorts with what is set for each, and whether they show today.
+  const STATE_WORDS = { open: 'Showing', soon: 'Showing: referrals open soon', later: 'Not shown yet: referrals open later', closed: 'Closed: not shown' };
+  function projectList(s) {
+    return LL.parts(s).map((x) => {
+      const p = x.project;
+      const bits = (o, dates, st) => [
+        o.where && o.where.length ? 'Where: ' + o.where.join('; ') : '', o.when ? 'When: ' + o.when : '', o.duration ? 'How long: ' + o.duration : '', o.places ? o.places : '',
+        o.age ? 'Age ' + o.age : '', list(o.eligibility).length ? 'Extra criteria: ' + o.eligibility.join('; ') : '', list(o.gate).length ? 'Turned away without: ' + o.gate.join('; ') : '',
+        list(o.audience).length ? 'Works with: ' + o.audience.join(', ') : '', ...LL.dateWords(dates), STATE_WORDS[st],
+      ].filter(Boolean).join('. ');
+      return el('div', { class: 'proj' },
+        el('strong', { text: p.name }), el('code', { class: 'pid', text: p.id }), ': ' + (p.overview || ''),
+        el('p', { class: 'hint', text: bits(p, x.dates, x.state) }),
+        x.cohorts.length ? el('ul', {}, x.cohorts.map((c) => el('li', {}, el('strong', { text: c.cohort.name }), el('code', { class: 'pid', text: c.cohort.id }), ' ' + bits(c.cohort, c.dates, c.state)))) : null);
+    });
+  }
+
   function entry(x) {
     const s = x.s;
     const days = daysSince(s.lastUpdated);
@@ -239,7 +282,10 @@
       s.selfReferral ? el('span', { class: 'pill' + (s.selfReferral.allowed === 'yes' ? ' ok' : ''), text: SELF[s.selfReferral.allowed] || s.selfReferral.allowed }) : null,
       x.confidence === 'medium' || x.confidence === 'low' ? el('span', { class: 'pill warn', text: 'Confidence: ' + x.confidence }) : null,
       x.gaps.has('mention') ? el('span', { class: 'pill', text: 'Only shown when mentioned' }) : null,
-      x.gaps.has('no-contact') ? el('span', { class: 'pill bad', text: 'No contact details' }) : null
+      x.gaps.has('no-contact') ? el('span', { class: 'pill bad', text: 'No contact details' }) : null,
+      ...LL.endingSoon(s).map((e) => el('span', { class: 'pill warn', text: partName(e) + (e.kind === 'ends' ? ' ends ' : ' stops taking referrals ') + LL.longDate(e.date) })),
+      ...LL.closedParts(s).map((c) => el('span', { class: 'pill bad', text: partName(c) + ' has closed: no longer shown' })),
+      x.gaps.has('too-long') ? el('span', { class: 'pill warn', text: 'Text over the character limits' }) : null
     );
 
     const dl = el('dl', { class: 'facts' });
@@ -260,20 +306,24 @@
       return m ? el('span', {}, m[1] ? m[1] + ': ' : '', link(m[2], m[2])) : r;
     }));
     row(dl, 'Self-referral', s.selfReferral ? (SELF[s.selfReferral.allowed] || '') + (s.selfReferral.note ? '. ' + s.selfReferral.note : '') : '');
-    row(dl, 'What it offers', list(s.activities).map((a) => a.name + ': ' + a.summary + (a.duration ? ' (' + a.duration + ')' : '')));
-    row(dl, 'Where', list(s.locations));
+    row(dl, 'Projects', projectList(s));
+    row(dl, 'Places used by every project', list(s.locations));
     row(dl, 'Areas', list(s.areas).join(', '));
     row(dl, 'Categories', list(s.categories).join(', '));
     row(dl, 'Work experience', s.workExperience);
     row(dl, 'Cost', s.cost);
     row(dl, 'Languages and formats', s.languages);
-    row(dl, 'Notes', s.notes);
-    row(dl, 'Status', s.status + (s.open ? '' : ' (not open: never recommended)'));
+    row(dl, 'Anything coaches should know', s.coachNotes);
+    row(dl, 'Team notes', s.notes ? el('span', { class: 'pre', text: s.notes }) : null);
+    row(dl, 'Taking new referrals', s.open ? 'Yes' : 'No (never recommended)');
+    row(dl, 'Organisation overview', s.organisationOverview || el('span', { class: 'gap', text: 'None yet' }));
+    row(dl, 'Over the character limits', tooLong(s));
     if (x.gaps.has('mention')) row(dl, 'Only shown if the person mentions', list(s.requiresMention).slice(0, 8).join(', ') + (s.requiresMention.length > 8 ? ' and ' + (s.requiresMention.length - 8) + ' more' : ''));
     row(dl, 'Source', p.source);
     row(dl, 'Found via', p.foundVia);
     row(dl, 'Checked against', p.checkedUrl ? link(p.checkedUrl, p.checkedUrl) : null);
     row(dl, 'Evidence it\'s current', p.evidence);
+    row(dl, 'Status in the October 2026 research', p.status);
     row(dl, 'Confidence', p.confidence ? p.confidence[0].toUpperCase() + p.confidence.slice(1) : 'Not rated');
     row(dl, 'Review cycle', s.reviewCycle);
 
@@ -352,25 +402,28 @@
 
   // ---------- editing details ----------
   const FIELD_LABEL = {
-    name: 'Name', organisation: 'Organisation', status: 'Status', open: 'Open to referrals', level: 'Level', whoFor: "Who it's for", age: 'Age',
-    webpage: 'Web page', email: 'Email', phone: 'Phone', social: 'Social media', locations: 'Where (venues, times or how it is delivered)',
-    areas: 'Areas', audience: 'Audience', categories: 'Categories', healthFocus: 'Health focus', eligibility: 'Eligibility', exclusions: "Can't help",
-    gate: 'Must already be', referralRoutes: 'How to get in', selfReferral: 'Self-referral', activities: 'What it offers', workExperience: 'Work experience',
-    cost: 'Cost', languages: 'Languages and formats', notes: 'Notes', reviewCycle: 'Review cycle',
+    name: 'Name of the service', organisation: 'Organisation', organisationOverview: 'Organisation overview', open: 'Taking new referrals', level: 'Level', whoFor: 'Who your service is for', age: 'Age',
+    webpage: 'Website', email: 'Email', phone: 'Phone', social: 'Social media', locations: 'Places used by every project',
+    areas: 'Where it runs', audience: 'Who do you work with?', categories: 'Categories', healthFocus: 'Health focus', eligibility: 'Who can use your service', exclusions: "Who you can't support",
+    gate: 'Would turn someone away for not having', referralRoutes: 'How to get in', selfReferral: 'Self-referral', projects: 'Projects', workExperience: 'Work experience',
+    cost: 'Cost', languages: 'Languages and formats', coachNotes: 'Anything coaches should know', notes: 'Team notes', reviewCycle: 'Review cycle',
+    hwlFunded: 'Healthy Working Life funded', mapLinks: 'Map buttons', logo: 'Logo', requiresMention: 'Only shown when mentioned',
+    // Older names, for changes saved before November 2026.
+    status: 'Status', activities: 'What it offers',
   };
-  const TEXT_FIELDS = ['name', 'organisation', 'status', 'age', 'phone', 'webpage', 'email', 'workExperience', 'cost', 'languages'];
-  const AREA_FIELDS = ['whoFor', 'notes'];
-  const LINE_FIELDS = ['locations', 'eligibility', 'exclusions', 'gate', 'referralRoutes', 'social'];
-  const CHECK_FIELDS = ['audience', 'categories', 'areas', 'healthFocus'];
-  const REQUIRED = new Set(['name', 'organisation', 'status', 'whoFor', 'workExperience']);
-  const HINT = {
-    age: 'For example 18+ or 16-25. Leave empty if not known.', webpage: 'Starting https://', gate: 'Things a person must already be, written "Is ..." or "Has ...".',
-    referralRoutes: 'At least one.', status: 'For example "Live - open to referrals".',
-  };
+
+  // A project list in a few words, for "old → new" in the changes waiting.
+  function projectWords(ps) {
+    return list(ps).map((p) => {
+      const d = LL.dateWords(LL.datesOf(p, null));
+      const cs = list(p.cohorts).map((c) => c.name + (LL.dateWords(LL.datesOf(p, c)).length ? ' (' + LL.dateWords(LL.datesOf(p, c)).join(', ') + ')' : ''));
+      return (p.name || '') + (p.overview || p.summary ? ': ' + (p.overview || p.summary) : '') + (p.where && p.where.length ? ' Where: ' + p.where.join('; ') + '.' : '') + (p.when ? ' When: ' + p.when + '.' : '') + (p.places ? ' ' + p.places + '.' : '') + (p.age ? ' Age ' + p.age + '.' : '') + (list(p.eligibility).length ? ' Extra criteria: ' + p.eligibility.join('; ') + '.' : '') + (list(p.gate).length ? ' Turned away without: ' + p.gate.join('; ') + '.' : '') + (d.length ? ' ' + d.join(', ') + '.' : '') + (cs.length ? ' Cohorts: ' + cs.join('; ') + '.' : '');
+    }).join(' | ');
+  }
 
   function waitingChanges(x) {
     const e = edits[x.s.id];
-    const fmtVal = (v) => (v == null || v === '' ? '(none)' : Array.isArray(v) ? (v.length ? v.map((a) => (typeof a === 'object' ? a.name + ': ' + a.summary : a)).join('; ') : '(none)') : typeof v === 'object' ? (SELF[v.allowed] || v.allowed) + '. ' + v.note + (v.url ? ' ' + v.url : '') : v === true ? 'Yes' : v === false ? 'No' : String(v));
+    const fmtVal = (v, k) => (k === 'projects' || k === 'activities' ? projectWords(v) || '(none)' : v == null || v === '' ? '(none)' : Array.isArray(v) ? (v.length ? v.join('; ') : '(none)') : typeof v === 'object' ? (SELF[v.allowed] || v.allowed) + '. ' + v.note + (v.url ? ' ' + v.url : '') : v === true ? 'Yes' : v === false ? 'No' : String(v));
     const discard = el('button', { type: 'button', class: 'btn secondary small', text: 'Discard these changes', onclick: async () => {
       if (!confirm('Discard the changes waiting for ' + x.s.name + '?')) return;
       try {
@@ -387,7 +440,7 @@
       el('p', { class: 'mt0' }, el('strong', { text: 'Changes waiting to be applied' }), ' (' + e.by + ', ' + when(e.t) + (e.checked ? ', checked as current' : '') + '): ' + e.note),
       Object.keys(e.changes).length ? null : el('p', { text: 'No changes to the details: the last-checked date moves on when applied.' }),
       el('dl', { class: 'facts' }, Object.keys(e.changes).flatMap((k) => [el('dt', { text: FIELD_LABEL[k] || k }),
-        el('dd', {}, el('del', { text: fmtVal(x.s[k]) }), ' → ', el('ins', { text: fmtVal(e.changes[k]) }))])),
+        el('dd', {}, el('del', { text: fmtVal(x.s[k], k) }), ' → ', el('ins', { text: fmtVal(e.changes[k], k) }))])),
       discard);
   }
 
@@ -446,7 +499,7 @@ Thank you,
     // The newest reply first, with what to do about it.
     const { reply: r, handled, count } = newestReply(s.id);
     if (r) {
-      const fmtVal = (v) => (v == null || v === '' ? '(none)' : Array.isArray(v) ? (v.length ? v.map((a) => (typeof a === 'object' ? a.name + ': ' + a.summary : a)).join('; ') : '(none)') : typeof v === 'object' ? (SELF[v.allowed] || v.allowed) + '. ' + v.note + (v.url ? ' ' + v.url : '') : v === true ? 'Yes' : v === false ? 'No' : String(v));
+      const fmtVal = (v, k) => (k === 'projects' || k === 'activities' ? projectWords(v) || '(none)' : v == null || v === '' ? '(none)' : Array.isArray(v) ? (v.length ? v.join('; ') : '(none)') : typeof v === 'object' ? (SELF[v.allowed] || v.allowed) + '. ' + v.note + (v.url ? ' ' + v.url : '') : v === true ? 'Yes' : v === false ? 'No' : String(v));
       const keys = Object.keys(r.changes || {});
       const who = r.name + (r.name !== r.link.contact ? ' (link sent to ' + r.link.contact + ')' : '');
       const recordChecked = el('button', { type: 'button', class: 'btn primary small', text: 'Record as checked with the provider', onclick: async () => {
@@ -473,7 +526,7 @@ Thank you,
           ' (' + who + ', ' + when(r.t) + ')' + (count > 1 ? '. ' + plural(count, 'reply', 'replies') + ' in all; this is the newest.' : '.')),
         r.note ? el('p', {}, el('em', { text: '"' + r.note + '"' })) : null,
         keys.length ? el('dl', { class: 'facts' }, keys.flatMap((k) => [el('dt', { text: FIELD_LABEL[k] || k }),
-          el('dd', {}, el('del', { text: fmtVal(r.before ? r.before[k] : s[k]) }), ' → ', el('ins', { text: fmtVal(r.changes[k]) }))])) : null,
+          el('dd', {}, el('del', { text: fmtVal(r.before ? r.before[k] : s[k], k) }), ' → ', el('ins', { text: fmtVal(r.changes[k], k) }))])) : null,
         handled ? el('p', { class: 'hint', text: 'The team has saved changes for this service since this reply.' }) : null,
         el('div', { class: 'row-end' }, r.allCorrect ? recordChecked : keys.length ? review : null)));
     }
@@ -533,63 +586,29 @@ Thank you,
   }
 
   // mode: 'edit' a service in the data, 'new' a new service waiting to be added, or 'add' a brand new one.
+  // The questions are the shared listing form (../listing-form.js), the same as the provider review page, plus the
+  // team-only questions.
   function editForm(x, mode = 'edit') {
     const s = x.s;
     const teamPending = (mode === 'edit' && edits[s.id] && editState(x) === 'pending' && edits[s.id].changes) || {};
     const fromProvider = mode === 'edit' ? prefill[s.id] : null;
     const pending = fromProvider ? { ...teamPending, ...fromProvider.changes } : teamPending;
-    const val = (k) => (k in pending ? pending[k] : s[k]);
     const id = (k) => 'ed-' + s.id + '-' + k;
-    const tbc = (v) => String(v == null ? '' : JSON.stringify(v)).includes(PLACEHOLDER);
-    const label = (k, extra) => el('label', { for: id(k), text: FIELD_LABEL[k] + (REQUIRED.has(k) ? '' : extra || '') });
-    const hint = (k) => (HINT[k] ? el('p', { class: 'hint', text: HINT[k] }) : null);
-    const field = (k, input) => el('div', { class: 'field' + (tbc(val(k)) ? ' tbc' : '') }, label(k), input, hint(k));
-    const form = el('form', { class: 'edit-form', novalidate: true });
-    const grid = el('div', { class: 'edit-grid' });
-
-    for (const k of ['name', 'organisation', 'status']) grid.append(field(k, el('input', { id: id(k), type: 'text', value: val(k) || '' })));
+    const lf = LISTING_FORM.build({
+      values: { ...s, ...pending }, original: s, mode: 'team', choices, organisations: orgNames(), prefix: 'ed-' + s.id, headingLevel: mode === 'add' ? 3 : 5,
+      onChange: () => lf && lf.mark(mode === 'edit' ? lf.changes() : {}),
+    });
+    if (mode === 'edit') lf.mark(lf.changes());
+    const form = el('form', { class: 'edit-form lf', novalidate: true });
     let idBox = null;
     let idTouched = false;
     if (mode === 'add') {
       idBox = el('input', { id: id('newid'), type: 'text', maxlength: '50', value: '', oninput: () => { idTouched = true; } });
-      grid.append(el('div', { class: 'field' }, el('label', { for: id('newid'), text: 'Id (used for the file name)' }), idBox, el('p', { class: 'hint', text: 'Made from the name. Lower-case letters, numbers and hyphens.' })));
-      grid.querySelector('#' + CSS.escape(id('name'))).addEventListener('input', (ev) => { if (!idTouched) idBox.value = slug(ev.target.value); });
+      form.append(el('div', { class: 'lf-field' }, el('label', { for: id('newid'), text: 'Id (used for the file name)' }), el('p', { class: 'hint', text: 'Made from the name. Lower-case letters, numbers and hyphens.' }), idBox));
+      lf.node.querySelector('#' + CSS.escape(id('name'))).addEventListener('input', (ev) => { if (!idTouched) idBox.value = slug(ev.target.value); });
       if (s.name) idBox.value = slug(s.name);
     }
-    grid.append(field('open', el('select', { id: id('open') }, el('option', { value: 'yes', text: 'Yes' }), el('option', { value: 'no', text: 'No (never recommended)' }))));
-    grid.append(field('level', el('select', { id: id('level') }, (choices.level || []).map((v) => el('option', { value: v, text: LEVEL[v] || v })))));
-    grid.append(field('reviewCycle', el('select', { id: id('reviewCycle') }, (choices.reviewCycle || []).map((v) => el('option', { value: v, text: v })))));
-    for (const k of ['age', 'phone', 'webpage', 'email', 'workExperience', 'cost', 'languages']) grid.append(field(k, el('input', { id: id(k), type: k === 'email' ? 'email' : k === 'webpage' ? 'url' : 'text', value: val(k) || '' })));
-    form.append(grid);
-    for (const k of AREA_FIELDS) form.append(field(k, el('textarea', { id: id(k), rows: '3', value: val(k) || '' })));
-
-    for (const k of CHECK_FIELDS) {
-      const have = new Set(list(val(k)));
-      form.append(el('fieldset', { class: 'checks', id: id(k) }, el('legend', { text: FIELD_LABEL[k] + (k === 'healthFocus' ? ' (none ticked means no health requirement)' : '') }),
-        el('div', { class: 'choices' }, (choices[k] || []).map((v) => el('label', {}, el('input', { type: 'checkbox', value: v, checked: have.has(v) }), k === 'healthFocus' ? HEALTH[v] || v : k === 'audience' ? v[0].toUpperCase() + v.slice(1) : v)))));
-    }
-    for (const k of LINE_FIELDS) form.append(el('div', { class: 'field' + (tbc(val(k)) ? ' tbc' : '') }, label(k, ''), el('textarea', { id: id(k), rows: '3', value: list(val(k)).join('\n') }), el('p', { class: 'hint', text: 'One per line. ' + (HINT[k] || '') })));
-
-    const sr = val('selfReferral') || { allowed: 'tbc', note: '' };
-    form.append(el('fieldset', { class: 'checks' + (tbc(sr) ? ' tbc' : '') }, el('legend', { text: 'Self-referral' }),
-      el('div', { class: 'edit-grid' },
-        el('div', { class: 'field' }, el('label', { for: id('sr-allowed'), text: 'Can people refer themselves?' }), el('select', { id: id('sr-allowed') }, (choices.selfReferral || []).map((v) => el('option', { value: v, text: SELF[v] || v })))),
-        el('div', { class: 'field' }, el('label', { for: id('sr-note'), text: 'Explanation' }), el('input', { id: id('sr-note'), type: 'text', value: sr.note || '' })),
-        el('div', { class: 'field' }, el('label', { for: id('sr-url'), text: 'Self-referral link (optional)' }), el('input', { id: id('sr-url'), type: 'url', value: sr.url || '' })))));
-
-    const acts = el('div', { class: 'acts' });
-    const addAct = (a = { name: '', summary: '', duration: '' }) => {
-      const n = acts.children.length;
-      const row = el('div', { class: 'act' + (tbc(a) ? ' tbc' : '') },
-        el('div', { class: 'field' }, el('label', { for: id('act-name-' + n), text: 'Name' }), el('input', { id: id('act-name-' + n), class: 'act-name', type: 'text', value: a.name })),
-        el('div', { class: 'field' }, el('label', { for: id('act-summary-' + n), text: 'Summary' }), el('textarea', { id: id('act-summary-' + n), class: 'act-summary', rows: '2', value: a.summary })),
-        el('div', { class: 'field' }, el('label', { for: id('act-duration-' + n), text: 'How long (optional)' }), el('input', { id: id('act-duration-' + n), class: 'act-duration', type: 'text', value: a.duration || '' })),
-        el('button', { type: 'button', class: 'btn secondary small', text: 'Remove', onclick: () => row.remove() }));
-      acts.append(row);
-    };
-    list(val('activities')).forEach((a) => addAct(a));
-    form.append(el('fieldset', { class: 'checks' }, el('legend', { text: 'What it offers' }), acts,
-      el('button', { type: 'button', class: 'btn secondary small', text: 'Add another', onclick: () => addAct() })));
+    form.append(lf.node);
 
     const checkedBox = el('input', { type: 'checkbox', id: id('checked'), checked: mode !== 'edit' || Boolean(fromProvider) });
     const where = el('input', { id: id('checked-url'), type: 'url', value: '' });
@@ -615,41 +634,18 @@ Thank you,
         el('button', { type: 'button', class: 'btn secondary small', text: 'Cancel', onclick: cancel }),
         msg)));
 
-    form.querySelector('#' + CSS.escape(id('open'))).value = val('open') === false ? 'no' : 'yes';
-    form.querySelector('#' + CSS.escape(id('level'))).value = val('level');
-    form.querySelector('#' + CSS.escape(id('reviewCycle'))).value = val('reviewCycle');
-    form.querySelector('#' + CSS.escape(id('sr-allowed'))).value = sr.allowed;
-
     form.addEventListener('submit', async (ev) => {
       ev.preventDefault();
-      const q = (k) => form.querySelector('#' + CSS.escape(id(k)));
-      const out = {};
-      for (const k of TEXT_FIELDS) out[k] = q(k).value.trim();
-      for (const k of AREA_FIELDS) out[k] = q(k).value.trim();
-      for (const k of ['age', 'phone', 'webpage', 'email', 'cost', 'languages', 'notes']) out[k] = out[k] || null;
-      out.open = q('open').value === 'yes';
-      out.level = q('level').value;
-      out.reviewCycle = q('reviewCycle').value;
-      // Keep the order the service already has (categories are most important first); newly ticked ones go last.
-      for (const k of CHECK_FIELDS) {
-        const ticked = [...q(k).querySelectorAll('input:checked')].map((i) => i.value);
-        const had = list(val(k)).filter((v) => ticked.includes(v));
-        out[k] = [...had, ...ticked.filter((v) => !had.includes(v))];
-      }
-      for (const k of LINE_FIELDS) out[k] = q(k).value.split('\n').map((l) => l.trim()).filter(Boolean);
-      const srOut = { allowed: q('sr-allowed').value, note: q('sr-note').value.trim() };
-      if (q('sr-url').value.trim()) srOut.url = q('sr-url').value.trim();
-      out.selfReferral = srOut;
-      out.activities = [...acts.querySelectorAll('.act')].map((r) => ({ name: r.querySelector('.act-name').value.trim(), summary: r.querySelector('.act-summary').value.trim(), duration: r.querySelector('.act-duration').value.trim() }));
-
+      const out = lf.read();
+      const problem = lf.check();
+      if (problem) { if (problem.el && problem.el.focus) problem.el.focus(); return say(problem.message, 'err'); }
       const by = $('#by').value.trim();
       if (mode !== 'edit') return saveNew(out, by);
 
       // Only what differs from the data is sent, with what the data said, so a later change can be spotted.
-      const changes = {};
+      const changes = lf.changes();
       const before = {};
-      for (const [k, v] of Object.entries(out)) if (norm(s[k]) !== norm(v)) { changes[k] = v; before[k] = s[k] === undefined ? null : s[k]; }
-      for (const k of REQUIRED) if (!out[k]) { q(k).focus(); return say(FIELD_LABEL[k] + " can't be empty.", 'err'); }
+      for (const k of Object.keys(changes)) before[k] = s[k] === undefined ? null : s[k];
       if (!Object.keys(changes).length) return say(edits[s.id] ? 'Nothing differs from the data. Use "Discard these changes" to drop the waiting changes.' : 'Nothing has changed.', 'err');
       if (!by) { $('#by').focus(); return say('Please put your name or initials at the top of the page first.', 'err'); }
       if (why.value.trim().length < 3) { why.focus(); return say('Please say briefly what changed and why.', 'err'); }
@@ -675,11 +671,6 @@ Thank you,
     // A new service (added now, or waiting to be added): the whole service is saved, not just what changed.
     let dupeWarned = '';
     async function saveNew(out, by) {
-      const q = (k) => form.querySelector('#' + CSS.escape(id(k)));
-      for (const k of REQUIRED) if (!out[k]) { q(k).focus(); return say(FIELD_LABEL[k] + " can't be empty.", 'err'); }
-      for (const k of ['categories', 'audience', 'areas']) if (!out[k].length) return say('Choose at least one for ' + FIELD_LABEL[k] + '.', 'err');
-      if (!out.referralRoutes.length) { q('referralRoutes').focus(); return say('Say at least one way to get in.', 'err'); }
-      if (!out.activities.length || out.activities.some((a) => !a.name || !a.summary)) return say('Each thing it offers needs a name and a summary.', 'err');
       const newId = mode === 'add' ? idBox.value.trim() : s.id;
       if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(newId) || newId.length > 50) { if (idBox) idBox.focus(); return say('The id must be lower-case letters, numbers and single hyphens (up to 50).', 'err'); }
       if (mode === 'add' && (services.some((y) => y.s.id === newId))) { idBox.focus(); return say('A service with that id already exists. Choose another id.', 'err'); }
@@ -723,7 +714,8 @@ Thank you,
     const heading = mode === 'add' ? 'Add a service' : 'Edit details';
     const intro = mode === 'add'
       ? 'The new service is saved for the team straight away, as "New: not yet in the data". It is reviewed and decided on like any other, and becomes part of the data when the team\'s changes are next applied. It is never put live without a team decision to include it.'
-      : (fromProvider ? 'The provider\'s changes are filled in below (on top of any changes already waiting). Check them, adjust anything, then save. ' : '') + 'Changes are saved for the team straight away and reach the finder once applied. Boxes still marked "' + PLACEHOLDER + '" are highlighted.';
+      : (fromProvider && fromProvider.from === 'suggestion' ? 'The project from the suggestion is added at the end of "Projects" below. Check it with the service, add what is missing, then save. '
+        : fromProvider ? 'The provider\'s changes are filled in below (on top of any changes already waiting). Check them, adjust anything, then save. ' : '') + 'Changes are saved for the team straight away and reach the finder once applied. Boxes still marked "' + PLACEHOLDER + '" are highlighted.';
     return el('section', { class: 'edit', 'aria-label': mode === 'add' ? heading : 'Edit ' + s.name }, el(mode === 'add' ? 'h2' : 'h4', { text: heading }), el('p', { class: 'hint', text: intro }),
       x.fromNote ? el('p', { class: 'msg warn from-suggestion', text: x.fromNote }) : null, form);
   }
@@ -741,9 +733,9 @@ Thank you,
 
   function blankService() {
     return {
-      id: 'new-service', name: '', organisation: '', status: 'Live - open to referrals', open: true, hwlFunded: false, level: 'local', audience: ['individual'],
+      id: 'new-service', name: '', organisation: '', open: true, hwlFunded: false, level: 'local', audience: ['individual'],
       categories: [], whoFor: '', age: null, webpage: null, email: null, phone: null, social: [], locations: [], areas: [], eligibility: [], exclusions: [],
-      gate: [], healthFocus: [], referralRoutes: [], selfReferral: { allowed: 'tbc', note: '' }, activities: [{ name: '', summary: '', duration: '' }],
+      gate: [], healthFocus: [], referralRoutes: [], selfReferral: { allowed: 'tbc', note: '' }, projects: [{ id: '', name: '', overview: '' }],
       workExperience: 'No', reviewCycle: 'Quarterly',
     };
   }
@@ -753,37 +745,53 @@ Thank you,
   const DRAFT_KEY = 'hwl-listing-draft';
   const lines = (t) => String(t || '').split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
   const STATUS_FROM = { now: 'Live - open to referrals', soon: 'Starting soon', paused: 'Paused', ended: 'Closed' };
+  // The project a suggestion describes. Suggestions sent before November 2026 used "activities", "addresses",
+  // "dates" and "running"; their words are kept (dates written as text go in "How long it lasts" for the team to
+  // turn into real dates).
+  function projectFromSuggestion(d) {
+    const p = { id: '', name: d.projectName || d.name || '', overview: d.projectOverview || d.activities || d.description || '' };
+    const where = lines(d.where || d.addresses);
+    if (where.length) p.where = where;
+    for (const k of ['when', 'duration', 'places']) if (d[k]) p[k] = d[k];
+    if (!d.duration && d.dates) p.duration = d.dates;
+    for (const k of LL.DATE_KEYS) if (/^\d{4}-\d{2}-\d{2}$/.test(d[k] || '')) p[k] = d[k];
+    return p;
+  }
   function fromSuggestion(d) {
     const s = blankService();
     const ok = (k, v) => (choices[k] || []).includes(v);
     s.name = d.name || '';
     s.organisation = d.organisation || '';
+    s.organisationOverview = d.organisationOverview || null;
     s.webpage = d.website || null;
     s.email = d.email || null;
     s.phone = d.phone || null;
     s.social = lines(d.social);
-    s.locations = lines(d.addresses);
     s.areas = d.area && ok('areas', d.area) ? [d.area] : [];
     if (ok('level', d.level)) s.level = d.level;
     s.audience = (d.audience || []).filter((a) => ok('audience', a));
     if (!s.audience.length) s.audience = ['individual'];
     s.categories = (d.categories || []).filter((c) => ok('categories', c));
-    s.whoFor = d.description || '';
+    s.whoFor = d.whoFor || d.description || '';
     s.age = d.age || null;
     s.eligibility = lines(d.eligibility);
     if (d.healthNeed === 'specific') s.eligibility.push('Has a health condition: ' + (d.conditions || 'to be checked with the service'));
+    s.gate = lines(d.gate);
     s.exclusions = lines(d.exclusions);
     s.healthFocus = d.healthNeed === 'any' ? ['any'] : [];
     s.referralRoutes = lines(d.referral);
     s.selfReferral = { allowed: ok('selfReferral', d.selfReferral) ? d.selfReferral : 'tbc', note: '' };
     s.cost = d.cost || null;
     s.languages = d.languages || null;
+    s.coachNotes = d.coachNotes || null;
     s.workExperience = d.workExperience || 'Not stated';
+    if (d.open) s.open = d.open === 'yes';
     if (d.running) {
-      s.status = STATUS_FROM[d.running] + (d.dates ? ', ' + d.dates : '');
       s.open = d.running === 'now';
+      s.notes = 'From the suggestion: ' + STATUS_FROM[d.running] + (d.dates ? ', ' + d.dates : '');
     }
-    s.activities = [{ name: d.name || '', summary: d.activities || d.description || '', duration: d.dates || '' }];
+    if (d.noMap) s.mapLinks = false;
+    s.projects = [projectFromSuggestion(d)];
     return s;
   }
   function suggestionNote(d) {
@@ -802,6 +810,19 @@ Thank you,
     let d;
     try { d = JSON.parse(raw); } catch { return; }
     const note = suggestionNote(d);
+    // A new project for a service already listed: open that service's edit form with the project added.
+    const target = d.addTo && services.find((y) => y.s.id === d.addTo && !y.isNew);
+    if (target && edits) {
+      const pending = (editState(target) === 'pending' && edits[target.s.id].changes) || {};
+      prefill[target.s.id] = { changes: { projects: [...list(pending.projects || target.s.projects), projectFromSuggestion(d)] }, note, from: 'suggestion' };
+      editing.add(target.s.id);
+      for (const f of FIELDS) if (f !== 'sort') input[f].value = '';
+      input.q.value = target.s.id;
+      update();
+      const box = document.getElementById('svc-' + target.s.id);
+      if (box) { box.scrollIntoView({ block: 'start' }); const f = box.querySelector('.lf-proj:last-of-type input'); if (f) f.focus(); }
+      return;
+    }
     openAdd({ s: fromSuggestion(d), why: note, fromNote: 'Filled in from a suggestion sent through the finder. Boxes it didn\'t answer are left blank or set to a default: check everything with the service, and add what is missing, before adding it for review.' });
     $('#add-panel').scrollIntoView({ block: 'start' });
   }
@@ -830,9 +851,9 @@ Thank you,
 
   // A new service waiting to be added, shaped like the others so it can be listed, filtered and decided on.
   function newX(id, entry) {
-    const s = { ...entry.service, id, hwlFunded: false, lastUpdated: String(entry.t).slice(0, 10), listing: { decision: 'review', reason: 'New service added on this page by ' + entry.createdBy + '.' },
+    const s = { hwlFunded: false, ...entry.service, id, lastUpdated: String(entry.t).slice(0, 10), listing: { decision: 'review', reason: 'New service added on this page by ' + entry.createdBy + '.' },
       provenance: { source: 'Added on the All services page by ' + entry.createdBy, evidence: entry.note, ...(entry.checkedUrl ? { checkedUrl: entry.checkedUrl } : {}) } };
-    for (const k of Object.keys(s)) if (s[k] === null && ['cost', 'languages', 'notes'].includes(k)) delete s[k];
+    for (const k of Object.keys(s)) if (s[k] === null && ['cost', 'languages', 'notes', 'coachNotes', 'logo', 'requiresMention'].includes(k)) delete s[k];
     return { s, isNew: true, entry, listing: 'new', incomplete: JSON.stringify(s).includes(PLACEHOLDER), review: review(s), confidence: confidence(s), gaps: gaps(s), text: haystack(s) };
   }
   function rebuild() {
@@ -963,6 +984,7 @@ Thank you,
     $('#signed-in').hidden = !team;
     $('#export-decisions').hidden = !team;
     $('#add-service').hidden = !team;
+    $('#open-orgs').hidden = !team;
     showApply();
     $('#signed-in-text').textContent = team ? 'Signed in' + (by ? ' as ' + by : '') + '. ' + plural(Object.keys(team).length, 'decision', 'decisions') + ', ' + plural(Object.keys(edits || {}).length, 'edited service', 'edited services') + ' and ' + plural(services.filter((y) => y.isNew).length, 'new service', 'new services') + ' so far.' : '';
   }
@@ -972,11 +994,12 @@ Thank you,
     const msg = $('#signin-msg');
     msg.hidden = true;
     try {
-      const [d, e, nw, pl] = await Promise.all([api('GET', '/log/decisions'), api('GET', '/log/edits'), api('GET', '/log/new'), api('GET', '/log/provider-links').catch(() => ({ links: [] }))]);
+      const [d, e, nw, pl, og] = await Promise.all([api('GET', '/log/decisions'), api('GET', '/log/edits'), api('GET', '/log/new'), api('GET', '/log/provider-links').catch(() => ({ links: [] })), api('GET', '/log/orgs').catch(() => ({ orgs: {} }))]);
       team = d.decisions || {};
       edits = e.edits || {};
       added = nw.added || {};
       plinks = list(pl.links);
+      orgChanges = og.orgs || {};
       rebuild();
     } catch (e) {
       team = null;
@@ -1014,6 +1037,9 @@ Thank you,
     rebuild();
     $('#add-panel').replaceChildren();
     $('#add-panel').hidden = true;
+    $('#orgs-panel').replaceChildren();
+    $('#orgs-panel').hidden = true;
+    orgChanges = null;
     pass = '';
     store.del(PASS_KEY);
     AUTH.refresh();
@@ -1113,6 +1139,128 @@ Thank you,
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  // ---------- organisations ----------
+  // One record per organisation (data/organisations.json). The team can give it an overview and website, rename it
+  // (the old name is kept as an alias) or combine it into another record when the same organisation is listed under
+  // two names. Nothing is combined automatically. Changes wait here until applied, like service edits. The
+  // Healthy Working Life marker stays on each service: an organisation record never carries it.
+  function orgNames() {
+    const names = new Set(organisations.map((o) => o.name));
+    for (const c of Object.values(orgChanges || {})) if (c.changes && c.changes.name) names.add(c.changes.name);
+    for (const y of services) if (y.s.organisation) names.add(y.s.organisation);
+    return [...names].sort((a, b) => a.localeCompare(b, 'en-GB', { sensitivity: 'base' }));
+  }
+  const servicesOf = (o) => services.filter((y) => y.s.organisation === o.name || list(o.aliases).includes(y.s.organisation));
+  const orgSimple = (t) => String(t || '').toLowerCase().replace(/\b(the|ltd|limited|cic|plc|charity|trust)\b/g, ' ').replace(/[^a-z0-9]+/g, ' ').trim();
+  function maybeSameOrgs() {
+    const out = [];
+    for (let i = 0; i < organisations.length; i++) for (let j = i + 1; j < organisations.length; j++) {
+      const a = orgSimple(organisations[i].name);
+      const b = orgSimple(organisations[j].name);
+      if (a && b && (a === b || (a.length > 5 && b.startsWith(a + ' ')) || (b.length > 5 && a.startsWith(b + ' ')))) out.push([organisations[i], organisations[j]]);
+    }
+    return out;
+  }
+
+  function openOrgs() {
+    const panel = $('#orgs-panel');
+    panel.hidden = false;
+    drawOrgs();
+    panel.scrollIntoView({ block: 'start' });
+    panel.querySelector('input').focus();
+  }
+
+  function drawOrgs(keepQuery) {
+    const panel = $('#orgs-panel');
+    const q = el('input', { id: 'org-q', type: 'search', autocomplete: 'off', value: keepQuery || '' });
+    const listBox = el('div', { class: 'org-list' });
+    const draw = () => {
+      const words = q.value.toLowerCase().split(/\s+/).filter(Boolean);
+      const hits = organisations.filter((o) => words.every((w) => (o.name + ' ' + list(o.aliases).join(' ') + ' ' + (o.overview || '')).toLowerCase().includes(w)));
+      listBox.replaceChildren(el('p', { class: 'count', text: plural(hits.length, 'organisation', 'organisations') }), ...hits.slice(0, 40).map(orgEntry));
+    };
+    q.addEventListener('input', draw);
+    const pairs = maybeSameOrgs();
+    const waiting = Object.entries(orgChanges || {});
+    panel.replaceChildren(
+      el('h2', { class: 'mt0', text: 'Organisations' }),
+      el('p', { class: 'hint', text: 'Each organisation has one record, shared by all its services. Give it a short overview (about two sentences, up to ' + LL.LIMITS.orgOverview + ' characters) and its website. If the same organisation is listed under two names, combine one into the other: its services move across and the old name is kept so it is still recognised. Nothing is combined automatically. The Healthy Working Life marker stays on each service, never on the organisation. Changes wait here until the team\'s changes are applied.' }),
+      waiting.length ? el('div', { class: 'waiting' }, el('p', { class: 'mt0' }, el('strong', { text: 'Organisation changes waiting to be applied' })),
+        el('ul', {}, waiting.map(([id, c]) => {
+          const o = organisations.find((x) => x.id === id);
+          const to = c.changes.mergeInto && organisations.find((x) => x.id === c.changes.mergeInto);
+          return el('li', {}, (o ? o.name : id) + ': ' + [c.changes.mergeInto ? 'combine into ' + (to ? to.name : c.changes.mergeInto) : '', c.changes.name ? 'rename to "' + c.changes.name + '"' : '', 'overview' in c.changes ? 'new overview' : '', 'website' in c.changes ? 'website ' + (c.changes.website || '(none)') : ''].filter(Boolean).join(', ') + ' (' + c.by + ', ' + when(c.t) + ': ' + c.note + ') ',
+            el('button', { type: 'button', class: 'btn secondary small', text: 'Discard', onclick: async () => {
+              if (!confirm('Discard this organisation change?')) return;
+              try { await api('DELETE', '/log/orgs/' + id, { by: $('#by').value.trim() || 'someone' }); delete orgChanges[id]; drawOrgs(q.value); } catch (err) { if (err.status === 401) return signOut('Your session has ended. Please enter the passcode again.'); alert(err.message); }
+            } }));
+        }))) : null,
+      pairs.length ? el('details', {}, el('summary', { text: plural(pairs.length, 'pair of names that may be the same organisation', 'pairs of names that may be the same organisation') }),
+        el('p', { class: 'hint', text: 'Check each pair: some are different organisations with similar names. To combine, open the one to remove and choose the one to keep.' }),
+        el('ul', {}, pairs.map(([a, b]) => el('li', {}, a.name + '  |  ' + b.name + ' ', el('button', { type: 'button', class: 'btn secondary small', text: 'Show both', onclick: () => { q.value = orgSimple(a.name).split(' ')[0]; draw(); } }))))) : null,
+      el('div', { class: 'field' }, el('label', { for: 'org-q', text: 'Find an organisation' }), q),
+      listBox,
+      el('p', {}, el('button', { type: 'button', class: 'btn secondary small', text: 'Close organisations', onclick: () => { panel.replaceChildren(); panel.hidden = true; $('#open-orgs').focus(); } })));
+    draw();
+  }
+
+  function orgEntry(o) {
+    const c = (orgChanges || {})[o.id];
+    const val = (k) => (c && k in c.changes ? c.changes[k] : o[k]);
+    const svcs = servicesOf(o);
+    const id = (k) => 'org-' + o.id + '-' + k;
+    const name = el('input', { id: id('name'), type: 'text', value: val('name') || '', maxlength: '150' });
+    const ov = el('textarea', { id: id('ov'), rows: '3', value: val('overview') || '' });
+    const count = el('p', { class: 'lf-count' });
+    const upd = () => { const n = ov.value.trim().length; count.textContent = n + ' of ' + LL.LIMITS.orgOverview + ' characters' + (n > LL.LIMITS.orgOverview ? ' (too long)' : ''); count.classList.toggle('over', n > LL.LIMITS.orgOverview); };
+    ov.addEventListener('input', upd);
+    upd();
+    const web = el('input', { id: id('web'), type: 'url', value: val('website') || '' });
+    const merge = el('select', { id: id('merge') }, el('option', { value: '', text: 'No, keep it separate' }),
+      organisations.filter((x) => x.id !== o.id).map((x) => el('option', { value: x.id, text: x.name })));
+    merge.value = val('mergeInto') || '';
+    const why = el('textarea', { id: id('why'), rows: '2', maxlength: '1000' });
+    const msg = el('p', { class: 'msg', role: 'status', hidden: true });
+    const say = (t, k) => { msg.className = 'msg ' + k; msg.textContent = t; msg.hidden = false; };
+    const save = el('button', { type: 'button', class: 'btn primary small', text: 'Save organisation changes', onclick: async () => {
+      const by = $('#by').value.trim();
+      const changes = {};
+      if (name.value.trim() !== o.name) changes.name = name.value.trim();
+      if (ov.value.trim() !== (o.overview || '')) changes.overview = ov.value.trim() || null;
+      if (web.value.trim() !== (o.website || '')) changes.website = web.value.trim() || null;
+      if (merge.value) changes.mergeInto = merge.value;
+      if (!Object.keys(changes).length) return say('Nothing has changed.', 'err');
+      if (!name.value.trim()) { name.focus(); return say('The organisation needs a name.', 'err'); }
+      if (changes.overview && changes.overview.length > LL.LIMITS.orgOverview) { ov.focus(); return say('The overview is too long: please keep it to ' + LL.LIMITS.orgOverview + ' characters.', 'err'); }
+      if (/healthy working life|\bhwl\b/i.test(changes.overview || '')) { ov.focus(); return say('The organisation overview describes the organisation as a whole, so it shouldn\'t say it is a Healthy Working Life project: that goes on the services that are.', 'err'); }
+      if (changes.website && !/^https?:\/\/\S+$/.test(changes.website)) { web.focus(); return say('The website must start with http:// or https://', 'err'); }
+      if (!by) { $('#by').focus(); return say('Please put your name or initials at the top of the page first.', 'err'); }
+      if (why.value.trim().length < 3) { why.focus(); return say('Please say briefly what changed and why.', 'err'); }
+      if (changes.mergeInto && !confirm('Combine ' + o.name + ' into ' + merge.selectedOptions[0].text + '? Its ' + plural(svcs.length, 'service moves', 'services move') + ' across when the changes are applied.')) return;
+      save.disabled = true;
+      try {
+        const d = await api('PUT', '/log/orgs/' + o.id, { changes, before: { name: o.name, overview: o.overview || null, website: o.website || null }, note: why.value.trim(), by });
+        orgChanges[o.id] = d.item;
+        drawOrgs($('#org-q').value);
+        const again = document.getElementById(id('name'));
+        if (again) again.closest('details').open = true;
+      } catch (err) {
+        save.disabled = false;
+        if (err.status === 401) return signOut('Your session has ended. Please enter the passcode again.');
+        say(err.message, 'err');
+      }
+    } });
+    return el('details', { class: 'entry org' },
+      el('summary', {}, el('strong', { text: o.name }), ' (' + plural(svcs.length, 'service', 'services') + ')' + (o.overview ? '' : ', no overview yet') + (c ? ', changes waiting' : '')),
+      el('p', { class: 'hint', text: 'Services: ' + (svcs.map((y) => y.s.name + (y.s.hwlFunded ? ' (HWL)' : '')).join('; ') || 'none') + (list(o.aliases).length ? '. Also known as: ' + o.aliases.join('; ') : '') }),
+      el('div', { class: 'field' }, el('label', { for: id('name'), text: 'Name' }), name, el('p', { class: 'hint', text: 'Renaming keeps the old name, so services and suggestions using it are still recognised.' })),
+      el('div', { class: 'field' }, el('label', { for: id('ov'), text: 'Organisation overview' }), el('p', { class: 'hint', text: "About two sentences on the organisation's wider work, shown with all its services. Not a description of one project, and no Healthy Working Life marker." }), ov, count),
+      el('div', { class: 'field' }, el('label', { for: id('web'), text: 'Website' }), web),
+      el('div', { class: 'field' }, el('label', { for: id('merge'), text: 'Combine into another organisation?' }), el('p', { class: 'hint', text: 'Only if this is the same organisation listed under another name. Its services move to the one you choose; its overview and website are kept on that one if it has none.' }), merge),
+      el('div', { class: 'field' }, el('label', { for: id('why'), text: 'What changed and why' }), why),
+      el('div', { class: 'row-end' }, save, msg));
+  }
+
   // ---------- start ----------
   // services-all.json (every service) is published with the Admin pages; fall back to the live list if it's missing.
   const getJson = (u) => fetch(u).then((r) => {
@@ -1123,6 +1271,7 @@ Thank you,
     .catch(() => getJson('../services.json'))
     .then((d) => {
       choices = d.choices || {};
+      organisations = list(d.organisations);
       baseServices = list(d.services).map((s) => ({ s, listing: listing(s), incomplete: JSON.stringify(s).includes(PLACEHOLDER), review: review(s), confidence: confidence(s), gaps: gaps(s), text: haystack(s) }));
       rebuild();
       const all = services.map((x) => x.s);
@@ -1164,6 +1313,7 @@ Thank you,
   $('#export').addEventListener('click', exportCsv);
   $('#export-decisions').addEventListener('click', exportDecisions);
   $('#add-service').addEventListener('click', () => openAdd());
+  $('#open-orgs').addEventListener('click', openOrgs);
   $('#by').value = store.get(BY_KEY);
   $('#by').addEventListener('change', () => { store.set(BY_KEY, $('#by').value.trim()); AUTH.refresh(); showSignedIn(); });
   $('#unlock').addEventListener('click', () => { if ($('#pass').value) signIn($('#pass').value); });

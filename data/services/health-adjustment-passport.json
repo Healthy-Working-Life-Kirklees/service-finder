@@ -2,7 +2,6 @@
   "id": "health-adjustment-passport",
   "name": "Health Adjustment Passport",
   "organisation": "DWP",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -20,9 +19,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -44,11 +41,14 @@
     "allowed": "yes",
     "note": "Download it from GOV.UK and fill it in yourself or with a work coach"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "workplace-adjustments-form",
       "name": "Workplace adjustments form",
-      "summary": "A free form to write down what changes and support would help you at work because of a health condition or disability. Use it to talk to your employer or to apply for Access to Work.",
-      "duration": ""
+      "overview": "A free form to write down what changes and support would help you at work because of a health condition or disability. Use it to talk to your employer or to apply for Access to Work.",
+      "where": [
+        "Online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -61,7 +61,8 @@
     "foundVia": "MECC Link (Y&H Work and Health); MECC Gateway",
     "checkedUrl": "https://www.gov.uk/government/publications/health-adjustment-passport",
     "evidence": "GOV.UK updated 26 Jan 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

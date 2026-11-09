@@ -2,7 +2,6 @@
   "id": "forces-employment-charity",
   "name": "Forces Employment Charity",
   "organisation": "Forces Employment Charity",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": "info@forcesemployment.org.uk",
   "phone": "0121 262 3058",
   "social": [],
-  "locations": [
-    "Remote and regional advisers"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -40,11 +37,14 @@
     "allowed": "yes",
     "note": "Register online"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "employment-support-for-veterans",
       "name": "Employment support for veterans",
-      "summary": "Careers advice, CV and interview help and job matching for anyone who's served.",
-      "duration": ""
+      "overview": "Careers advice, CV and interview help and job matching for anyone who's served.",
+      "where": [
+        "Remote and regional advisers"
+      ]
     }
   ],
   "workExperience": "No",
@@ -56,7 +56,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.forcesemployment.org.uk/contact-us/",
     "evidence": "© 2026.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

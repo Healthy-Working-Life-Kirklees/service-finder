@@ -2,7 +2,6 @@
   "id": "shout-85258",
   "name": "Shout 85258 text support",
   "organisation": "Mental Health Innovations",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -18,9 +17,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Text, UK-wide"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -37,11 +34,14 @@
     "allowed": "yes",
     "note": "Text SHOUT to 85258"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "listening-and-support",
       "name": "Listening and support",
-      "summary": "Free 24/7 text service: text and a trained volunteer texts back.",
-      "duration": ""
+      "overview": "Free 24/7 text service: text and a trained volunteer texts back.",
+      "where": [
+        "Text, UK-wide"
+      ]
     }
   ],
   "workExperience": "No",
@@ -54,7 +54,8 @@
     "foundVia": "MECC Link",
     "checkedUrl": "https://giveusashout.org/",
     "evidence": "News items Jul–Oct 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "review",

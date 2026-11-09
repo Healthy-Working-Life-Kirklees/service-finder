@@ -26,6 +26,7 @@ let usageSent = []; // anonymous usage events the page sent
 const decisions = {}; // listing decisions recorded on the All services page
 const edits = {}; // edits to details recorded on the All services page
 const added = {}; // new services added on the All services page
+const orgs = {}; // organisation changes made on the All services page
 const mk = (f, status) => {
   const t = new Date().toISOString();
   const it = { id: ++seq, type: f.type || 'Issue', title: f.title, details: f.details || '', area: f.area || 'Other', priority: f.priority || 'Medium', owner: f.owner || '', status: status || 'Open', created: t, updated: t, updates: [] };
@@ -122,6 +123,17 @@ async function worker(route) {
     if (url.pathname === '/log/decisions') return json({ decisions });
     if (url.pathname === '/log/edits') return json({ edits });
     if (url.pathname === '/log/new') return json({ added });
+    if (url.pathname === '/log/orgs') return json({ orgs });
+    const om = url.pathname.match(/^\/log\/orgs\/([a-z0-9-]+)$/);
+    if (om && req.method() === 'PUT') {
+      const b = JSON.parse(req.postData());
+      orgs[om[1]] = { ...b, t: new Date().toISOString(), history: [] };
+      return json({ id: om[1], item: orgs[om[1]] });
+    }
+    if (om && req.method() === 'DELETE') {
+      delete orgs[om[1]];
+      return json({ id: om[1], deleted: true });
+    }
     const nm = url.pathname.match(/^\/log\/new\/([a-z0-9-]+)$/);
     if (nm && req.method() === 'PUT') {
       const b = JSON.parse(req.postData());
@@ -401,18 +413,32 @@ async function worker(route) {
   await sub.locator('input[type=radio][value=provider]').check();
   const secs = await sub.locator('h3.fb-section').allTextContents();
   const order = await sub.locator('.fb-rest').evaluate((r) => [...r.querySelectorAll('h3, .fb-field > label, legend')].map((x) => x.textContent));
-  check('feedback: "I work for this service" shows the full questionnaire in sections, not folded, with a prompt to fill in as much as they can', !(await sub.locator('details.fb-more').isVisible()) && (await sub.locator('.fb-prompt').textContent()).includes('fill in as much as you can') && secs.join('|') === "About the service|Who it's for|Where it runs|Contact and referral|And finally", secs.join('|'));
-  check('feedback: name, organisation and website lead "About the service"; area sits under "Where it runs"; phone under "Contact and referral"', order.slice(0, 4).join('|') === 'About the service|Name of the service (mandatory)|Name of organisation (mandatory)|Its website' && order.indexOf('Area it covers') > order.indexOf('Where it runs') && order.indexOf('Its phone number') > order.indexOf('Contact and referral'), order.join('|'));
+  check('feedback: "I work for this service" shows the full questionnaire in sections, not folded, with a prompt to fill in as much as they can', !(await sub.locator('details.fb-more').isVisible()) && (await sub.locator('.fb-prompt').textContent()).includes('fill in as much as you can') && secs.join('|') === "About the organisation|About the service|The project|Who it's for|The area it covers|Contact and referral|And finally", secs.join('|'));
+  check('feedback: the questions follow a listing: organisation, then the service, then the project with its dates; area under "The area it covers"; phone under "Contact and referral"', order.slice(0, 2).join('|') === 'About the organisation|Name of organisation (mandatory)' && order.indexOf('Name of the service (mandatory)') > order.indexOf('About the service') && order.indexOf('Name of the project') > order.indexOf('The project') && order.indexOf('Taking referrals until') > order.indexOf('Name of the project') && order.indexOf('Area it covers') > order.indexOf('The area it covers') && order.indexOf('Its phone number') > order.indexOf('Contact and referral'), order.join('|'));
   const byLabel = (text) => sub.getByLabel(text, { exact: true });
-  check('feedback: examples under the eligibility question', (await sub.locator('.fb-hint').first().textContent()).startsWith('For example') && (await byLabel('Who can use it (eligibility)').getAttribute('aria-describedby')) === (await sub.locator('.fb-hint').first().getAttribute('id')));
+  check('feedback: examples under the eligibility question', (await byLabel('Who can use it (eligibility)').evaluate((x) => document.getElementById(x.getAttribute('aria-describedby')).textContent)).startsWith('For example'));
   check('feedback: "Which conditions?" only shows after "Yes, a specific condition"', !(await byLabel('Which conditions?').isVisible()));
   await byLabel('Does someone need a health condition or disability to use it?').selectOption('specific');
   check('feedback: ...and then it does', await byLabel('Which conditions?').isVisible());
   await byLabel('Which conditions?').fill('Back, neck or joint pain');
   await byLabel('Name of the service (mandatory)').fill('Batley Job Club');
   await byLabel('Name of organisation (mandatory)').fill('Batley Community Trust');
-  await byLabel('What the service does, in a sentence or two').fill('Weekly job club with CV help.');
-  await byLabel('Is it running now?').selectOption('now');
+  check('feedback: the organisation box suggests organisations already listed', (await sub.locator('datalist option').count()) > 100);
+  check('feedback: "a new project of a service we already list" only shows for a listed organisation', !(await sub.getByText('Is this a new project of a service we already list?').isVisible()));
+  await byLabel('Name of organisation (mandatory)').fill('Huddersfield Town Foundation');
+  check('feedback: ...and shows that organisation\'s services when it is one', await sub.getByText('Is this a new project of a service we already list?').isVisible() && (await sub.locator('input[value="raise-your-game"]').count()) === 1);
+  await sub.locator('input[value="raise-your-game"]').check();
+  await byLabel('Name of organisation (mandatory)').fill('Batley Community Trust');
+  check('feedback: ...and hides again for an organisation we don\'t list', !(await sub.getByText('Is this a new project of a service we already list?').isVisible()));
+  await byLabel('Who the service is for, in a sentence or two').fill('Anyone in Batley looking for work.');
+  await byLabel('Is it taking new referrals at the moment?').selectOption('yes');
+  await byLabel('Name of the project').fill('Job club');
+  await byLabel('What happens in the project, in a few sentences').fill('Weekly job club with CV help.');
+  await byLabel('Runs from').fill('2027-02-01');
+  await byLabel('Runs until').fill('2027-01-01');
+  await footForm.locator('button[type=submit]').click();
+  check('feedback: an end date before the start date is explained and not sent', (await footForm.locator('.fb-error').textContent()).includes('date') && lastSent() === sentFoot);
+  await byLabel('Runs until').fill('2027-07-31');
   await byLabel('Its phone number').fill('01924 000000');
   await byLabel('Email address for the service').fill('not an email');
   await footForm.locator('button[type=submit]').click();
@@ -428,7 +454,7 @@ async function worker(route) {
   await panel.locator('.fb-thanks').waitFor();
   const sentFull = lastSent();
   const fm = sentFull.missedService || {};
-  check('feedback: a full suggestion from the service is sent as written', sentFull.reasons.join() === 'missing-service' && fm.role === 'provider' && fm.name === 'Batley Job Club' && fm.organisation === 'Batley Community Trust' && fm.running === 'now' && fm.phone === '01924 000000' && fm.email === 'jobs@example.org' && fm.selfReferral === 'yes' && fm.audience.join() === 'individual' && fm.categories.join() === 'Carers' && fm.logoOk === true && fm.contactName === 'Sam' && fm.healthNeed === 'specific' && fm.conditions === 'Back, neck or joint pain' && !('noMap' in fm) && !('website' in fm && fm.website), JSON.stringify(sentFull));
+  check('feedback: a full suggestion from the service is sent as written', sentFull.reasons.join() === 'missing-service' && fm.role === 'provider' && fm.name === 'Batley Job Club' && fm.organisation === 'Batley Community Trust' && fm.open === 'yes' && fm.whoFor === 'Anyone in Batley looking for work.' && fm.projectName === 'Job club' && fm.runsFrom === '2027-02-01' && fm.runsTo === '2027-07-31' && !('addTo' in fm) && fm.phone === '01924 000000' && fm.email === 'jobs@example.org' && fm.selfReferral === 'yes' && fm.audience.join() === 'individual' && fm.categories.join() === 'Carers' && fm.logoOk === true && fm.contactName === 'Sam' && fm.healthNeed === 'specific' && fm.conditions === 'Back, neck or joint pain' && !('noMap' in fm) && !('website' in fm && fm.website), JSON.stringify(sentFull));
   await sugBtn.click();
   check('feedback: the button closes the panel too', !(await panel.isVisible()));
   const everything = JSON.stringify(fbSent);
@@ -648,8 +674,20 @@ async function worker(route) {
   await page.check('#ed-new-service-areas input[value=Batley]');
   await page.fill('#ed-new-service-referralRoutes', 'Drop in');
   await page.fill('#ed-new-service-sr-note', 'Just turn up');
-  await page.fill('#ed-new-service-act-name-0', 'Job club');
-  await page.fill('#ed-new-service-act-summary-0', 'CV help and job search.');
+  check('add: the organisation box suggests organisations already listed', (await page.locator('#add-panel datalist option').count()) > 100);
+  check('add: a new organisation name is accepted and shown as new', (await page.textContent('#add-panel .lf-match')).includes('new organisation'));
+  await page.locator('#add-panel .lf-proj input[type=text]').first().fill('Job club');
+  await page.locator('#add-panel .lf-proj textarea').first().fill('CV help and job search.');
+  await page.locator('#add-panel .lf-proj input[type=date]').nth(0).fill('2027-02-01');
+  await page.locator('#add-panel .lf-proj input[type=date]').nth(1).fill('2027-01-01');
+  await page.fill('#ed-new-service-why', 'Suggested by a work coach');
+  await page.click('#add-panel button[type=submit]');
+  check('add: a project that ends before it starts is caught', (await page.textContent('#add-panel .msg')).includes('ends before it starts'), await page.textContent('#add-panel .msg'));
+  await page.locator('#add-panel .lf-proj input[type=date]').nth(1).fill('');
+  await page.click('#add-panel .lf-proj button:has-text("Add a cohort or session")');
+  await page.click('#add-panel button[type=submit]');
+  check('add: a cohort needs a name', (await page.textContent('#add-panel .msg')).includes('cohort or session'), await page.textContent('#add-panel .msg'));
+  await page.locator('#add-panel .lf-cohort input[type=text]').first().fill('Tuesday group');
   await page.fill('#ed-new-service-why', 'Suggested by a work coach');
   await page.click('#add-panel button[type=submit]');
   check('add: warns about a possible duplicate first', (await page.textContent('#add-panel .msg')).includes('may already be listed') && (await page.textContent('#add-panel .msg')).includes('Acas helpline'), await page.textContent('#add-panel .msg'));
@@ -657,6 +695,8 @@ async function worker(route) {
   await page.click('#add-panel button[type=submit]');
   await page.waitForSelector('#svc-batley-job-club');
   check('add: saved to the Worker as a whole service', added['batley-job-club'] && added['batley-job-club'].service.areas.join() === 'Batley' && added['batley-job-club'].service.name === 'Batley Job Club');
+  const np = added['batley-job-club'].service.projects;
+  check('add: the project and cohort are saved with ids made from their names, and the start date', np.length === 1 && np[0].id === 'job-club' && np[0].runsFrom === '2027-02-01' && !np[0].runsTo && np[0].cohorts[0].id === 'tuesday-group' && np[0].cohorts[0].name === 'Tuesday group', JSON.stringify(np));
   check('add: listed as new, with the "new" filter on', (await page.locator('.svc').count()) === 1 && (await page.inputValue('#f-listing')) === 'new' && (await page.locator('#svc-batley-job-club .pill.blue', { hasText: 'New: not yet in the data' }).count()) === 1);
   check('add: can be decided on like any other', (await page.locator('#svc-batley-job-club .decide input[type=radio]').count()) === 3);
   await page.check('#svc-batley-job-club input[value=include]');
@@ -701,7 +741,8 @@ async function worker(route) {
   await page.fill('#ed-kbop-phone', '01484 000000');
   await page.fill('#ed-kbop-whoFor', 'Adults in Kirklees with complex needs.');
   await page.check('#ed-kbop-areas input[value=Batley]');
-  await page.fill('#ed-kbop-act-summary-0', 'One-to-one key worker support.');
+  await page.locator('#svc-kbop .lf-proj textarea').first().fill('One-to-one key worker support.');
+  check('edit: changed questions are marked', (await page.locator('#svc-kbop .lf-field.changed').count()) >= 2 && (await page.locator('#svc-kbop .lf-projects-box.changed').count()) === 1);
   await page.click('#svc-kbop form.edit-form button[type=submit]');
   check('edit: needs a reason', (await page.textContent('#svc-kbop .edit .msg')).includes('what changed'));
   await page.fill('#ed-kbop-why', 'Phoned the provider');
@@ -711,7 +752,7 @@ async function worker(route) {
   const sent = edits.kbop;
   check('edit: ticking an area keeps the existing order and adds it last', JSON.stringify(sent.changes.areas) === JSON.stringify([...ALL.find((x) => x.id === 'kbop').areas, 'Batley']), JSON.stringify(sent.changes.areas));
   check('edit: categories untouched are not sent (order kept)', !('categories' in sent.changes));
-  check('edit: only the changed fields are sent, with what the data said', sent && Object.keys(sent.changes).sort().join() === 'activities,areas,phone,whoFor' && sent.before.phone === null && sent.checked === true && sent.by === 'TB', JSON.stringify(sent && sent.changes));
+  check('edit: only the changed fields are sent, with what the data said', sent && Object.keys(sent.changes).sort().join() === 'areas,phone,projects,whoFor' && sent.before.phone === null && sent.checked === true && sent.by === 'TB', JSON.stringify(sent && sent.changes));
   check('edit: waiting changes shown, old and new', (await page.textContent('#svc-kbop .waiting')).includes('01484 000000') && (await page.locator('#svc-kbop .waiting del').count()) === 4);
   check('edit: badge says it is waiting to be applied', (await page.locator('#svc-kbop .pill.blue', { hasText: 'Details edited by TB' }).count()) === 1);
   await page.click('#svc-kbop .edit-open button');
@@ -725,6 +766,30 @@ async function worker(route) {
   await page.click('#svc-kbop .waiting button');
   await page.waitForSelector('#svc-kbop .waiting', { state: 'detached' });
   check('edit: waiting changes can be discarded', !edits.kbop);
+
+  // ---------- organisations ----------
+  await page.click('#open-orgs');
+  await page.waitForSelector('#orgs-panel:not([hidden]) .org');
+  check('orgs: the panel lists organisations and names that may be the same', (await page.locator('#orgs-panel details.org').count()) > 0 && (await page.textContent('#orgs-panel')).includes('may be the same organisation'));
+  await page.fill('#org-q', 'proper job');
+  const pj = page.locator('#orgs-panel details.org:has(summary strong:text-is("Proper Job Theatre Company Ltd"))');
+  await pj.locator('summary').click();
+  await pj.locator('textarea').first().fill('A theatre company. Runs Healthy Working Life projects.');
+  await pj.locator('textarea').last().fill('Same organisation');
+  await pj.locator('button:has-text("Save organisation changes")').click();
+  check('orgs: an overview mentioning Healthy Working Life is refused (it belongs on the service)', (await pj.locator('.msg').textContent()).includes('Healthy Working Life'));
+  await pj.locator('textarea').first().fill('');
+  await pj.locator('select').selectOption({ label: 'Proper Job Theatre Company' });
+  page.once('dialog', (d) => d.accept());
+  await pj.locator('button:has-text("Save organisation changes")').click();
+  await page.waitForSelector('#orgs-panel .waiting');
+  const oc = Object.values(orgs)[0];
+  check('orgs: combining is saved as a change waiting to be applied', oc && oc.changes.mergeInto === 'proper-job-theatre-company' && oc.by === 'TB' && (await page.textContent('#orgs-panel .waiting')).includes('combine into Proper Job Theatre Company'), JSON.stringify(orgs));
+  page.once('dialog', (d) => d.accept());
+  await page.click('#orgs-panel .waiting button:has-text("Discard")');
+  await page.waitForSelector('#orgs-panel .waiting', { state: 'detached' });
+  check('orgs: a waiting organisation change can be discarded', !Object.keys(orgs).length);
+  await page.click('#orgs-panel button:has-text("Close organisations")');
   await page.goto(ON + '/admin/services.html?decision=pending');
   await page.waitForSelector('.svc');
   const [dc] = await Promise.all([page.waitForEvent('download'), page.click('#export')]);

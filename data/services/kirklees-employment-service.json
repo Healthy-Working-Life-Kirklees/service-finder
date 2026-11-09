@@ -3,7 +3,6 @@
   "name": "Kirklees Employment Service",
   "organisation": "Waythrough (formerly Richmond Fellowship)",
   "logo": "waythrough.webp",
-  "status": "Live - open to referrals",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -61,34 +60,39 @@
     "allowed": "yes",
     "note": "Yes, via any route"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "one-to-one-adviser-support",
       "name": "One-to-one adviser support",
-      "summary": "Support from a named adviser, face to face, by phone, over Teams or email. An Employment Support Plan is agreed and reviewed at least every six months. Includes benefits guidance, careers information and supported job search, plus peer support workshops.",
+      "overview": "Support from a named adviser, face to face, by phone, over Teams or email. An Employment Support Plan is agreed and reviewed at least every six months. Includes benefits guidance, careers information and supported job search, plus peer support workshops.",
       "duration": "Contact within 3 working days of referral, initial meeting within 10 working days; typically a 6-month timeframe"
     },
     {
+      "id": "job-retention-and-job-change-support",
       "name": "Job retention and job change support",
-      "summary": "Helps people experiencing mental ill health at work to stay in their job or move to a more suitable role, including agreeing adjustments and in-work support when starting a new job.",
+      "overview": "Helps people experiencing mental ill health at work to stay in their job or move to a more suitable role, including agreeing adjustments and in-work support when starting a new job.",
       "duration": "Tailored to need"
     },
     {
+      "id": "peer-support-workshops-and-groups",
       "name": "Peer support workshops and groups",
-      "summary": "For people not yet ready for one-to-one support, or who prefer groups: assertiveness, self-esteem, resilience, confidence to work and ways to wellbeing. Online and in person.",
+      "overview": "For people not yet ready for one-to-one support, or who prefer groups: assertiveness, self-esteem, resilience, confidence to work and ways to wellbeing. Online and in person.",
       "duration": "Rolling programme"
     },
     {
+      "id": "volunteering-and-peer-champion-opportunities",
       "name": "Volunteering and Peer Champion opportunities",
-      "summary": "Roles where people draw on their own experience to support others and build skills and confidence.",
-      "duration": ""
+      "overview": "Roles where people draw on their own experience to support others and build skills and confidence."
     },
     {
+      "id": "employer-advice",
       "name": "Employer advice",
-      "summary": "Advice for employers on supporting employees with mental ill health: awareness and first aid training, reasonable adjustments, mental health champions, and specialist advice on employing people with autism, neurodivergent conditions, dementia or hidden disabilities.",
+      "overview": "Advice for employers on supporting employees with mental ill health: awareness and first aid training, reasonable adjustments, mental health champions, and specialist advice on employing people with autism, neurodivergent conditions, dementia or hidden disabilities.",
       "duration": "On request"
     }
   ],
   "workExperience": "Yes - including volunteering and placements",
+  "notes": "Status before November 2026: Live - open to referrals",
   "lastUpdated": "2026-09-03",
   "reviewCycle": "Quarterly",
   "provenance": {

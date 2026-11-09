@@ -2,7 +2,6 @@
   "id": "fit-note-guidance",
   "name": "Fit note guidance",
   "organisation": "DWP",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -20,9 +19,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -44,11 +41,14 @@
     "allowed": "yes",
     "note": "Read the guidance online or ask a healthcare professional"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "fit-note-guidance",
       "name": "Fit note guidance",
-      "summary": "Guidance on fit notes, who can issue them and how employers should use them.",
-      "duration": ""
+      "overview": "Guidance on fit notes, who can issue them and how employers should use them.",
+      "where": [
+        "Online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -60,7 +60,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.gov.uk/government/collections/fit-note",
     "evidence": "Guidance dated 2023; reform pending.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

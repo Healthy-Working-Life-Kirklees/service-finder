@@ -2,7 +2,6 @@
   "id": "hub-of-hope",
   "name": "Hub of Hope",
   "organisation": "Chasing the Stigma",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Online"
-  ],
+  "locations": [],
   "areas": [
     "Online"
   ],
@@ -38,11 +35,14 @@
     "allowed": "yes",
     "note": "Website or app"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "directory-of-services",
       "name": "Directory of services",
-      "summary": "Free website and app listing mental health support across the UK, searchable by postcode.",
-      "duration": ""
+      "overview": "Free website and app listing mental health support across the UK, searchable by postcode.",
+      "where": [
+        "Online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -55,7 +55,8 @@
     "foundVia": "Your list",
     "checkedUrl": "https://hubofhope.co.uk/about-us",
     "evidence": "© 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "review",

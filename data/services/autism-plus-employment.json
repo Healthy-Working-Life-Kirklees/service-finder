@@ -2,7 +2,6 @@
   "id": "autism-plus-employment",
   "name": "Autism Plus Employment Services",
   "organisation": "Autism Plus",
-  "status": "Not verified as running (web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -36,11 +35,11 @@
     "allowed": "tbc",
     "note": "To be completed."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "autism-plus-employment-services",
       "name": "Autism Plus Employment Services",
-      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
-      "duration": ""
+      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
     }
   ],
   "workExperience": "Not known",
@@ -52,7 +51,8 @@
     "foundVia": "Web research or directory review (October 2026)",
     "evidence": "Kirklees/WY coverage not confirmed.",
     "confidence": "low",
-    "checkedUrl": "https://www.autismplus-employmentservices.co.uk"
+    "checkedUrl": "https://www.autismplus-employmentservices.co.uk",
+    "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
     "decision": "review",

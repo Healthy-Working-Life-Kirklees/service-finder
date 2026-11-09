@@ -2,7 +2,6 @@
   "id": "howarth-foundation",
   "name": "Howarth Foundation – jobs and mentoring after homelessness",
   "organisation": "The Howarth Foundation",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -20,9 +19,7 @@
   "email": "info@howarthfoundation.org.uk",
   "phone": "01274 864999",
   "social": [],
-  "locations": [
-    "West Yorkshire"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -42,11 +39,14 @@
     "allowed": "partly",
     "note": "Usually a referral from a support organisation"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "jobs-and-mentoring",
       "name": "Jobs and mentoring",
-      "summary": "Finds jobs with partner employers for people who've been homeless, with mentoring for worker and employer.",
-      "duration": ""
+      "overview": "Finds jobs with partner employers for people who've been homeless, with mentoring for worker and employer.",
+      "where": [
+        "West Yorkshire"
+      ]
     }
   ],
   "workExperience": "No",
@@ -58,7 +58,8 @@
     "foundVia": "Treacle",
     "checkedUrl": "https://howarthfoundation.org.uk/about/",
     "evidence": "Site May 2026; events to Nov 2026.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

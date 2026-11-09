@@ -2,7 +2,6 @@
   "id": "kirklees-wellness-service",
   "name": "Kirklees Wellness Service",
   "organisation": "Kirklees Council",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -23,9 +22,7 @@
   "email": "wellness.service@kirklees.gov.uk",
   "phone": "01484 234095 (Mon–Fri 9–5)",
   "social": [],
-  "locations": [
-    "Venues across Kirklees"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Colne Valley",
@@ -56,11 +53,14 @@
     "allowed": "yes",
     "note": "Refer yourself by phone, email or the website, or drop in at Slaithwaite"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "health-and-wellbeing-support",
       "name": "Health and wellbeing support",
-      "summary": "One-to-one and group support for health goals: stopping smoking, eating well, getting active, feeling better in your mind. Phone or in person.",
-      "duration": ""
+      "overview": "One-to-one and group support for health goals: stopping smoking, eating well, getting active, feeling better in your mind. Phone or in person.",
+      "where": [
+        "Venues across Kirklees"
+      ]
     }
   ],
   "workExperience": "No",
@@ -73,7 +73,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://kirkleeswellnessservice.co.uk/",
     "evidence": "Checked by PL on 2026-11-05: clarified phone numbers and areas",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

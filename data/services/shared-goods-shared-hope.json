@@ -3,7 +3,6 @@
   "name": "Shared Hope",
   "organisation": "Shared Goods Charity",
   "logo": "shared-goods.webp",
-  "status": "Live - six-month programme for 10 people, 1 October 2026 to 31 March 2027",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -23,9 +22,7 @@
   "email": "Christinasimpkin@sharedgoodscharity.org",
   "phone": "07825 547938",
   "social": [],
-  "locations": [
-    "Packhorse Shopping Centre, King Street, Huddersfield, HD1 2RT"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield"
   ],
@@ -53,14 +50,22 @@
     "allowed": "yes",
     "note": "Contact Shared Goods Charity directly by phone or email"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "shared-hope",
       "name": "Shared Hope",
-      "summary": "A face-to-face pre-employment programme for refugees facing several barriers to settling in, wellbeing and work, including trauma, poor mental health, social isolation and limited English. Each person gets tailored support.",
-      "duration": "Six months, about 40 hours of tailored support each. Runs 1 October 2026 to 31 March 2027, 10 places"
+      "overview": "A face-to-face pre-employment programme for refugees facing several barriers to settling in, wellbeing and work, including trauma, poor mental health, social isolation and limited English. Each person gets tailored support.",
+      "duration": "Six months, about 40 hours of tailored support each. Runs 1 October 2026 to 31 March 2027, 10 places",
+      "where": [
+        "Packhorse Shopping Centre, King Street, Huddersfield, HD1 2RT"
+      ],
+      "runsFrom": "2026-10-01",
+      "runsTo": "2027-03-31",
+      "places": "10 places"
     }
   ],
   "workExperience": "Not stated",
+  "notes": "Status before November 2026: Live - six-month programme for 10 people, 1 October 2026 to 31 March 2027",
   "lastUpdated": "2026-11-02",
   "reviewCycle": "Quarterly",
   "provenance": {

@@ -2,7 +2,6 @@
   "id": "families-together",
   "name": "Families Together – emotional wellbeing (up to 25 with SEND)",
   "organisation": "Kirklees Council",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,9 +19,7 @@
   "email": null,
   "phone": "01484 456823",
   "social": [],
-  "locations": [
-    "Sheepridge, Slaithwaite, Dewsbury Moor, Birstall"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Colne Valley",
@@ -48,11 +45,14 @@
     "allowed": "yes",
     "note": "Use the online Gateway form, phone or visit a centre"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "family-early-help",
       "name": "Family early help",
-      "summary": "Early help for families and young people including emotional wellbeing support; up to age 25 for young people with SEND.",
-      "duration": ""
+      "overview": "Early help for families and young people including emotional wellbeing support; up to age 25 for young people with SEND.",
+      "where": [
+        "Sheepridge, Slaithwaite, Dewsbury Moor, Birstall"
+      ]
     }
   ],
   "workExperience": "No",
@@ -64,7 +64,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees.gov.uk/familiestogethergatewaysupportrequest",
     "evidence": "Page changed Oct 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

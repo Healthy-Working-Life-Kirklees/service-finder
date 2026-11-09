@@ -2,7 +2,6 @@
   "id": "refugee-integration-migration-yorkshire",
   "name": "Refugee Integration Service",
   "organisation": "Migration Yorkshire",
-  "status": "Not verified as running (web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -34,11 +33,11 @@
     "allowed": "tbc",
     "note": "To be completed."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "refugee-integration-service",
       "name": "Refugee Integration Service",
-      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
-      "duration": ""
+      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
     }
   ],
   "workExperience": "Not known",
@@ -50,7 +49,8 @@
     "foundVia": "Web research or directory review (October 2026)",
     "evidence": "Page last changed Aug 2023.",
     "confidence": "low",
-    "checkedUrl": "https://www.migrationyorkshire.org.uk/node/482"
+    "checkedUrl": "https://www.migrationyorkshire.org.uk/node/482",
+    "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
     "decision": "review",

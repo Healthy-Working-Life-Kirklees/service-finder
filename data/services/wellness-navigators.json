@@ -3,7 +3,6 @@
   "name": "Wellness Navigators",
   "organisation": "Ravensthorpe Community Centre (RCC) and Taleem Centre",
   "logo": "rccl.webp",
-  "status": "Live - grant-funded project (status not stated in the pathways document)",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -22,10 +21,7 @@
   "email": "shokran.sharaf@rccl.org",
   "phone": "07786 061121",
   "social": [],
-  "locations": [
-    "Ravensthorpe Community Centre, 24 Garden Street, Ravensthorpe, Dewsbury, WF13 3AR",
-    "Taleem Centre, 36 Orchard Street, Savile Town, Dewsbury, WF12 9LT"
-  ],
+  "locations": [],
   "areas": [
     "Dewsbury"
   ],
@@ -57,14 +53,20 @@
     "allowed": "no",
     "note": "Not at the moment, according to the pathways document"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "wellness-navigators-pathways-to-a-healthy-working",
       "name": "Wellness Navigators: Pathways to a Healthy Working Life",
-      "summary": "Weekly wellbeing and employability workshops, fortnightly one-to-one keyworker support, peer support, bilingual guidance and practical 'Taste of Work' activities. Links people on to Employment Kirklees, REAL Employment, Kirklees Adult Learning, supported volunteering and suitable jobs.",
-      "duration": "Six months, with weekly provision over two to three days"
+      "overview": "Weekly wellbeing and employability workshops, fortnightly one-to-one keyworker support, peer support, bilingual guidance and practical 'Taste of Work' activities. Links people on to Employment Kirklees, REAL Employment, Kirklees Adult Learning, supported volunteering and suitable jobs.",
+      "duration": "Six months, with weekly provision over two to three days",
+      "where": [
+        "Ravensthorpe Community Centre, 24 Garden Street, Ravensthorpe, Dewsbury, WF13 3AR",
+        "Taleem Centre, 36 Orchard Street, Savile Town, Dewsbury, WF12 9LT"
+      ]
     }
   ],
   "workExperience": "Yes - 'Taste of Work' activities and supported volunteering",
+  "notes": "Status before November 2026: Live - grant-funded project (status not stated in the pathways document)",
   "lastUpdated": "2026-10-01",
   "reviewCycle": "Quarterly",
   "provenance": {

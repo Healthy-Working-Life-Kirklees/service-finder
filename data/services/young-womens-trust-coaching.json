@@ -2,7 +2,6 @@
   "id": "young-womens-trust-coaching",
   "name": "Young Women's Trust coaching and CV help",
   "organisation": "Young Women's Trust",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -21,9 +20,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Remote"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -41,11 +38,14 @@
     "allowed": "yes",
     "note": "Sign up online"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "work-coaching-and-cv-help",
       "name": "Work coaching and CV help",
-      "summary": "Free coaching by phone, email or WhatsApp for problems at work or job goals, plus CV feedback and webinars.",
-      "duration": ""
+      "overview": "Free coaching by phone, email or WhatsApp for problems at work or job goals, plus CV feedback and webinars.",
+      "where": [
+        "Remote"
+      ]
     }
   ],
   "workExperience": "No",
@@ -57,7 +57,8 @@
     "foundVia": "District Provision Tool; Treacle",
     "checkedUrl": "https://www.youngwomenstrust.org",
     "evidence": "Live; no 2026 date.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

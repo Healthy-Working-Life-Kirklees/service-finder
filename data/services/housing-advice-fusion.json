@@ -2,7 +2,6 @@
   "id": "housing-advice-fusion",
   "name": "Housing advice service",
   "organisation": "Fusion Housing",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -18,10 +17,7 @@
   "email": "info@fusionhousing.org.uk",
   "phone": "01484 425522 / 01924 454770",
   "social": [],
-  "locations": [
-    "Pearl House, Huddersfield HD1 1BA",
-    "Empire House, Dewsbury"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Dewsbury",
@@ -41,11 +37,15 @@
     "allowed": "yes",
     "note": "Phone or visit."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "housing-advice",
       "name": "Housing advice",
-      "summary": "Free advice on any housing problem, from first questions to court.",
-      "duration": ""
+      "overview": "Free advice on any housing problem, from first questions to court.",
+      "where": [
+        "Pearl House, Huddersfield HD1 1BA",
+        "Empire House, Dewsbury"
+      ]
     }
   ],
   "workExperience": "No",
@@ -57,7 +57,8 @@
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=349",
     "evidence": "Directory Sept 2025 only.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

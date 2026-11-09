@@ -2,7 +2,6 @@
   "id": "maternity-action-advice",
   "name": "Maternity Action advice line",
   "organisation": "Maternity Action",
-  "status": "Not verified as running (web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -34,11 +33,11 @@
     "allowed": "tbc",
     "note": "To be completed."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "maternity-action-advice-line",
       "name": "Maternity Action advice line",
-      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
-      "duration": ""
+      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
     }
   ],
   "workExperience": "Not known",
@@ -50,7 +49,8 @@
     "foundVia": "Web research or directory review (October 2026)",
     "evidence": "Site blocks automated checks.",
     "confidence": "low",
-    "checkedUrl": "https://maternityaction.org.uk/"
+    "checkedUrl": "https://maternityaction.org.uk/",
+    "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
     "decision": "review",

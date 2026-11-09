@@ -2,7 +2,6 @@
   "id": "pre-apprenticeship-programme",
   "name": "Pre-Apprenticeship Programme 2026/27 (construction and trades)",
   "organisation": "Kirklees Council (Homes & Neighbourhoods)",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,9 +19,7 @@
   "email": null,
   "phone": "01484 221028",
   "social": [],
-  "locations": [
-    "Kirklees"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -40,11 +37,14 @@
     "allowed": "yes",
     "note": "Register interest using the online form on the tenants' employment support page"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "construction-pre-apprenticeship-course",
       "name": "Construction pre-apprenticeship course",
-      "summary": "Free hands-on course in joinery, plumbing, electrics and bricklaying with work experience, a Level 2 Multi-Skills qualification and help into an apprenticeship.",
-      "duration": ""
+      "overview": "Free hands-on course in joinery, plumbing, electrics and bricklaying with work experience, a Level 2 Multi-Skills qualification and help into an apprenticeship.",
+      "where": [
+        "Kirklees"
+      ]
     }
   ],
   "workExperience": "Yes - work experience",
@@ -56,7 +56,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees.gov.uk/employment-support",
     "evidence": "Labelled 2026/27; page changed March 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

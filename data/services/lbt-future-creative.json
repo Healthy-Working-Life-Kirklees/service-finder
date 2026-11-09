@@ -3,7 +3,6 @@
   "name": "Future Creative: Inclusive Volunteering",
   "organisation": "Lawrence Batley Theatre",
   "logo": "lawrence-batley-theatre.webp",
-  "status": "Live - grant-funded project (status not stated in the pathways document)",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -20,9 +19,7 @@
   "email": "dom@thelbt.org",
   "phone": "01484 430528",
   "social": [],
-  "locations": [
-    "Lawrence Batley Theatre, Queen Street, Huddersfield, HD1 2SP"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield"
   ],
@@ -50,14 +47,19 @@
     "allowed": "yes",
     "note": "Apply through the theatre's website, or phone for help"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "future-creative-inclusive-volunteering",
       "name": "Future Creative: Inclusive Volunteering",
-      "summary": "Formal and informal training and meaningful involvement in arts and cultural activities, to develop new skills and build confidence.",
-      "duration": "Ongoing programme"
+      "overview": "Formal and informal training and meaningful involvement in arts and cultural activities, to develop new skills and build confidence.",
+      "duration": "Ongoing programme",
+      "where": [
+        "Lawrence Batley Theatre, Queen Street, Huddersfield, HD1 2SP"
+      ]
     }
   ],
   "workExperience": "Yes - volunteering at the theatre",
+  "notes": "Status before November 2026: Live - grant-funded project (status not stated in the pathways document)",
   "lastUpdated": "2026-10-01",
   "reviewCycle": "Quarterly",
   "provenance": {
