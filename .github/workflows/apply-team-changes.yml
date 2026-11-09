@@ -92,7 +92,8 @@ jobs:
           REQUESTED_BY: ${{ inputs.requested_by }}
         run: |
           # git status, not git diff, so brand-new service files count too.
-          if [ -z "$(git status --porcelain -- data/services)" ]; then
+          # data/organisations.json too: combining or renaming an organisation can change only that file.
+          if [ -z "$(git status --porcelain -- data/services data/organisations.json)" ]; then
             echo "Nothing to apply: the data already matches the team's decisions and edits." | tee -a "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
@@ -103,7 +104,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$branch"
-          git add data/services
+          git add data/services data/organisations.json
           if [ -n "$REQUESTED_BY" ]; then who="Requested by $REQUESTED_BY on the All services page."; else who="Run by $ACTOR from the Apply team changes workflow."; fi
           git commit -q -m "Apply the development team's decisions and edits ($(date -u +%Y-%m-%d))" -m "$who"
           git push -q origin "$branch"

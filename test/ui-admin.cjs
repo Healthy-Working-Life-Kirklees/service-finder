@@ -786,6 +786,7 @@ async function worker(route) {
   await pj.locator('button:has-text("Save organisation changes")').click();
   await page.waitForSelector('#orgs-panel .waiting');
   const oc = Object.values(orgs)[0];
+  check('orgs: the waiting count includes organisation changes', /1 organisation change waiting/.test(await page.textContent('#apply-pending').catch(() => '')) || !(await page.locator('#apply-now').isVisible()));
   check('orgs: combining is saved as a change waiting to be applied', oc && oc.changes.mergeInto === target && oc.by === 'TB' && (await page.textContent('#orgs-panel .waiting')).includes('combine into ' + targetName), JSON.stringify(orgs));
   page.once('dialog', (d) => d.accept());
   await page.click('#orgs-panel .waiting button:has-text("Discard")');

@@ -901,7 +901,9 @@ Thank you,
     $('#apply-hint').hidden = Boolean(team && applyOn);
     if (!team || !applyOn) return;
     const n = waiting();
-    $('#apply-pending').textContent = n ? plural(n, 'service has', 'services have') + ' changes waiting to be applied.' : 'Nothing waiting to be applied.';
+    const o = Object.keys(orgChanges || {}).filter((id) => orgPending(id)).length;
+    const parts = [n ? plural(n, 'service has', 'services have') + ' changes' : '', o ? plural(o, 'organisation change', 'organisation changes') : ''].filter(Boolean);
+    $('#apply-pending').textContent = parts.length ? parts.join(' and ') + ' waiting to be applied.' : 'Nothing waiting to be applied.';
   }
 
   function applyMessage(text, kind, link) {
@@ -1144,9 +1146,20 @@ Thank you,
   // (the old name is kept as an alias) or combine it into another record when the same organisation is listed under
   // two names. Nothing is combined automatically. Changes wait here until applied, like service edits. The
   // Healthy Working Life marker stays on each service: an organisation record never carries it.
+  // An organisation change still waiting: not yet in data/organisations.json. (Applied changes stay in the team
+  // store, like service edits, and are recognised by comparing with the data.)
+  function orgPending(id) {
+    const c = (orgChanges || {})[id];
+    if (!c || !c.changes) return null;
+    const o = organisations.find((x) => x.id === id);
+    if (c.changes.mergeInto) return o ? c : null;
+    if (!o) return null;
+    const same = Object.entries(c.changes).every(([k, v]) => (k === 'name' ? o.name === v : (o[k] || null) === (v || null)));
+    return same ? null : c;
+  }
   function orgNames() {
     const names = new Set(organisations.map((o) => o.name));
-    for (const c of Object.values(orgChanges || {})) if (c.changes && c.changes.name) names.add(c.changes.name);
+    for (const id of Object.keys(orgChanges || {})) { const c = orgPending(id); if (c && c.changes.name) names.add(c.changes.name); }
     for (const y of services) if (y.s.organisation) names.add(y.s.organisation);
     return [...names].sort((a, b) => a.localeCompare(b, 'en-GB', { sensitivity: 'base' }));
   }
@@ -1181,7 +1194,7 @@ Thank you,
     };
     q.addEventListener('input', draw);
     const pairs = maybeSameOrgs();
-    const waiting = Object.entries(orgChanges || {});
+    const waiting = Object.keys(orgChanges || {}).map((id) => [id, orgPending(id)]).filter(([, c]) => c);
     panel.replaceChildren(
       el('h2', { class: 'mt0', text: 'Organisations' }),
       el('p', { class: 'hint', text: 'Each organisation has one record, shared by all its services. Give it a short overview (about two sentences, up to ' + LL.LIMITS.orgOverview + ' characters) and its website. If the same organisation is listed under two names, combine one into the other: its services move across and the old name is kept so it is still recognised. Nothing is combined automatically. The Healthy Working Life marker stays on each service, never on the organisation. Changes wait here until the team\'s changes are applied.' }),
@@ -1192,7 +1205,7 @@ Thank you,
           return el('li', {}, (o ? o.name : id) + ': ' + [c.changes.mergeInto ? 'combine into ' + (to ? to.name : c.changes.mergeInto) : '', c.changes.name ? 'rename to "' + c.changes.name + '"' : '', 'overview' in c.changes ? 'new overview' : '', 'website' in c.changes ? 'website ' + (c.changes.website || '(none)') : ''].filter(Boolean).join(', ') + ' (' + c.by + ', ' + when(c.t) + ': ' + c.note + ') ',
             el('button', { type: 'button', class: 'btn secondary small', text: 'Discard', onclick: async () => {
               if (!confirm('Discard this organisation change?')) return;
-              try { await api('DELETE', '/log/orgs/' + id, { by: $('#by').value.trim() || 'someone' }); delete orgChanges[id]; drawOrgs(q.value); } catch (err) { if (err.status === 401) return signOut('Your session has ended. Please enter the passcode again.'); alert(err.message); }
+              try { await api('DELETE', '/log/orgs/' + id, { by: $('#by').value.trim() || 'someone' }); delete orgChanges[id]; drawOrgs(q.value); showApply(); } catch (err) { if (err.status === 401) return signOut('Your session has ended. Please enter the passcode again.'); alert(err.message); }
             } }));
         }))) : null,
       pairs.length ? el('details', {}, el('summary', { text: plural(pairs.length, 'pair of names that may be the same organisation', 'pairs of names that may be the same organisation') }),
@@ -1205,7 +1218,7 @@ Thank you,
   }
 
   function orgEntry(o) {
-    const c = (orgChanges || {})[o.id];
+    const c = orgPending(o.id);
     const val = (k) => (c && k in c.changes ? c.changes[k] : o[k]);
     const svcs = servicesOf(o);
     const id = (k) => 'org-' + o.id + '-' + k;
@@ -1241,6 +1254,7 @@ Thank you,
       try {
         const d = await api('PUT', '/log/orgs/' + o.id, { changes, before: { name: o.name, overview: o.overview || null, website: o.website || null }, note: why.value.trim(), by });
         orgChanges[o.id] = d.item;
+        showApply();
         drawOrgs($('#org-q').value);
         const again = document.getElementById(id('name'));
         if (again) again.closest('details').open = true;
