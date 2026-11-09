@@ -2,7 +2,6 @@
   "id": "mecc-link",
   "name": "MECC Link (Yorkshire and Humber)",
   "organisation": "Y&H Public Health Network",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -18,9 +17,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Online"
-  ],
+  "locations": [],
   "areas": [
     "Online"
   ],
@@ -35,11 +32,14 @@
     "allowed": "yes",
     "note": "Online"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "directory-of-services",
       "name": "Directory of services",
-      "summary": "Signposting tool for staff and volunteers to point people to self-care and local and national support.",
-      "duration": ""
+      "overview": "Signposting tool for staff and volunteers to point people to self-care and local and national support.",
+      "where": [
+        "Online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -52,7 +52,8 @@
     "foundVia": "Your list",
     "checkedUrl": "https://www.mecclink.co.uk/",
     "evidence": "© 2026; Kirklees content is thin.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "exclude",

@@ -2,7 +2,6 @@
   "id": "clear-inspire-north",
   "name": "CLEAR (mental health recovery groups and courses)",
   "organisation": "Inspire North",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,10 +19,7 @@
   "email": "clear.huddersfield@inspirenorth.co.uk",
   "phone": "01484 519097",
   "social": [],
-  "locations": [
-    "Lion Chambers, Huddersfield HD1 1ES",
-    "North Kirklees venues"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield"
   ],
@@ -49,11 +45,15 @@
     "allowed": "yes",
     "note": "Refer yourself or be referred by a professional, by email form or phone"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "mental-health-recovery-groups",
       "name": "Mental health recovery groups",
-      "summary": "Groups and courses to recover mental health and build confidence and skills; personal plan for up to two years.",
-      "duration": ""
+      "overview": "Groups and courses to recover mental health and build confidence and skills; personal plan for up to two years.",
+      "where": [
+        "Lion Chambers, Huddersfield HD1 1ES",
+        "North Kirklees venues"
+      ]
     }
   ],
   "workExperience": "No",
@@ -65,7 +65,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://inspirenorth.co.uk/our-services/get-help-and-support-page/clear",
     "evidence": "Timetables for Jul–Dec 2026 on page.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

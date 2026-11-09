@@ -2,7 +2,6 @@
   "id": "tsl-volunteer-centre",
   "name": "TSL Kirklees Volunteering (Volunteer Centre)",
   "organisation": "Third Sector Leaders Kirklees",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -19,9 +18,7 @@
   "email": "volunteer@tslkirklees.org.uk",
   "phone": "01484 519053 (text/WhatsApp 07776 588691)",
   "social": [],
-  "locations": [
-    "Brian Jackson House, Huddersfield HD1 5JP (by appointment)"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Kirklees-wide",
@@ -45,11 +42,14 @@
     "allowed": "yes",
     "note": "Get in touch online, by phone, text or WhatsApp, or email"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "volunteering-support",
       "name": "Volunteering support",
-      "summary": "Official volunteer centre for Kirklees. Search roles, or get one-to-one help to choose, apply for and start a role.",
-      "duration": ""
+      "overview": "Official volunteer centre for Kirklees. Search roles, or get one-to-one help to choose, apply for and start a role.",
+      "where": [
+        "Brian Jackson House, Huddersfield HD1 5JP (by appointment)"
+      ]
     }
   ],
   "workExperience": "Yes - volunteering",
@@ -61,7 +61,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://tslkirklees.org.uk/volunteering-home/",
     "evidence": "Role listings from Oct 2026; directory updated May 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

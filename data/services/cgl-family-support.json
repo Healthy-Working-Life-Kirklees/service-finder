@@ -2,7 +2,6 @@
   "id": "cgl-family-support",
   "name": "Kirklees Drug and Alcohol Family Support",
   "organisation": "Change Grow Live",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,9 +19,7 @@
   "email": null,
   "phone": "01484 353333",
   "social": [],
-  "locations": [
-    "Huddersfield and Dewsbury hubs"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Dewsbury",
@@ -69,11 +66,14 @@
     "allowed": "yes",
     "note": "Phone, visit a hub, or ask the recovery coordinator."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "family-support",
       "name": "Family support",
-      "summary": "One-to-one help or group programme for family and loved ones of someone using drugs or alcohol.",
-      "duration": ""
+      "overview": "One-to-one help or group programme for family and loved ones of someone using drugs or alcohol.",
+      "where": [
+        "Huddersfield and Dewsbury hubs"
+      ]
     }
   ],
   "workExperience": "No",
@@ -85,7 +85,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.changegrowlive.org/drug-alcohol-kirklees/family-support",
     "evidence": "Live page on CGL Kirklees site (© 2026).",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

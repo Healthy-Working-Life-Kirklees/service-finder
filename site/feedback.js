@@ -41,6 +41,7 @@
   let api = '';
   let currentMode = () => 'public';
   let services = () => new Map();
+  let organisations = () => [];
   let enabled = false;
   let pilot = false;
   let lastIds = []; // the schemes shown in the most recent reply, for the pilot form
@@ -220,42 +221,90 @@
   //  - suggesting it: the name and organisation (needed), website, phone and area, with the other listing
   //    questions folded under "Know more about it?" (closed until they open it);
   //  - from the service: a prompt to fill in as much as they can, then the full questionnaire in sections, in
-  //    the order of a listing.
+  //    the same order and with the same questions as a listing (organisation, service, project, who it's for,
+  //    getting in), so a suggestion can become a listing without retyping.
+  // The organisation box suggests the organisations already listed. If the one typed is listed, they can say this
+  // is a new project of one of its services rather than a new service ("addTo").
   // The same boxes are moved between the two layouts, so nothing typed is lost if they change their answer.
+  const DATE_KEYS = ['runsFrom', 'runsTo', 'referralsFrom', 'referralsUntil'];
   function serviceQuestions() {
     const areas = fromData('areas');
     const categories = fromData('categories');
     const ids = {};
     const id = (k) => (ids[k] = ids[k] || uid('svc-' + k));
     const roleName = uid('role');
-    const eligHintId = uid('elig-hint');
+    const hinted = (field, key) => {
+      const hid = uid('hint');
+      const box = field.querySelector('input, textarea, select');
+      box.setAttribute('aria-describedby', hid);
+      field.insertBefore(el('p', { id: hid, class: 'fb-hint', text: t(key) }), box);
+      return field;
+    };
     const conditions = input(id('conditions'), t('fbConditions'), 300);
     conditions.hidden = true;
     const health = choice(id('healthNeed'), t('fbHealth'), [['none', 'fbHealthNone'], ['any', 'fbHealthAny'], ['specific', 'fbHealthSpecific']]);
     // "Yes, a specific condition" opens a box to say which.
     health.querySelector('select').addEventListener('change', (e) => { conditions.hidden = e.target.value !== 'specific'; });
-    const elig = textarea(id('eligibility'), t('fbElig'), 800);
-    elig.querySelector('textarea').setAttribute('aria-describedby', eligHintId);
-    elig.insertBefore(el('p', { id: eligHintId, class: 'fb-hint', text: t('fbEligHint') }), elig.querySelector('textarea'));
+
+    // The organisation, with the names already listed as suggestions.
+    const orgField = input(id('organisation'), t('fbOrg'), 150);
+    hinted(orgField, 'fbOrgHint');
+    const orgBox = orgField.querySelector('input');
+    const listId = uid('orgs');
+    orgBox.setAttribute('list', listId);
+    const datalist = el('datalist', { id: listId });
+    orgField.append(datalist);
+    const fillOrgs = () => { if (!datalist.children.length) datalist.append(...organisations().map((o) => el('option', { value: o.name }))); };
+    orgBox.addEventListener('focus', fillOrgs);
+    // "Is this a new project of a service we already list?", only when the organisation is one we list.
+    const addToName = uid('addto');
+    const addTo = el('fieldset', { class: 'fb-ticks', hidden: true }, el('legend', { text: t('fbAddToLegend') }), el('div', { class: 'fb-list' }));
+    const servicesOfOrg = (name) => {
+      const low = name.trim().toLowerCase();
+      const o = organisations().find((x) => x.name.toLowerCase() === low || (x.aliases || []).some((a) => a.toLowerCase() === low));
+      if (!o) return [];
+      const names = new Set([o.name, ...(o.aliases || [])]);
+      return [...services().values()].filter((s) => names.has(s.organisation));
+    };
+    const showAddTo = () => {
+      const svcs = servicesOfOrg(orgBox.value);
+      addTo.hidden = !svcs.length;
+      addTo.lastChild.replaceChildren(...(svcs.length ? [
+        el('div', { class: 'fb-tick' }, el('label', {}, el('input', { type: 'radio', name: addToName, value: '' }), el('span', { text: t('fbAddToNew') }))),
+        ...svcs.slice(0, 12).map((s) => el('div', { class: 'fb-tick' }, el('label', {}, el('input', { type: 'radio', name: addToName, value: s.id }), el('span', {}, t('fbAddToProject') + ' ', el('span', { lang: 'en', dir: 'auto', text: s.name }))))),
+      ] : []));
+    };
+    orgBox.addEventListener('change', showAddTo);
+    orgBox.addEventListener('input', showAddTo);
+
+    const dates = el('fieldset', { class: 'fb-ticks fb-dates' }, el('legend', { text: t('fbDatesLegend') }), el('p', { class: 'fb-hint', text: t('fbDatesHint') }),
+      el('div', { class: 'fb-grid' }, DATE_KEYS.map((k) => el('div', { class: 'fb-field' }, el('label', { for: id(k), text: t('fbDate_' + k) }), el('input', { id: id(k), type: 'date', dir: 'ltr' })))));
     const F = {
       name: input(id('name'), t('fbServiceName'), 100),
-      organisation: input(id('organisation'), t('fbOrg'), 150),
+      organisation: orgField,
+      addTo,
+      organisationOverview: textarea(id('organisationOverview'), t('fbOrgOverview'), 300),
       website: input(id('website'), t('fbServiceWebsite'), 200, 'url'),
       phone: input(id('phone'), t('fbPhone'), 80, 'tel'),
       area: select(id('area'), t('fbServiceArea'), areas),
-      description: textarea(id('description'), t('fbDescription'), 800),
-      activities: textarea(id('activities'), t('fbActivities'), 1200, 4),
-      running: choice(id('running'), t('fbRunning'), [['now', 'fbRunNow'], ['paused', 'fbRunPaused'], ['soon', 'fbRunSoon'], ['ended', 'fbRunEnded']]),
-      dates: input(id('dates'), t('fbDates'), 150),
+      whoFor: textarea(id('whoFor'), t('fbWhoFor'), 300),
+      open: choice(id('open'), t('fbOpen'), [['yes', 'fbOpenYes'], ['no', 'fbOpenNo']]),
+      projectName: hinted(input(id('projectName'), t('fbProjectName'), 150), 'fbProjectHint'),
+      projectOverview: textarea(id('projectOverview'), t('fbProjectOverview'), 400, 4),
+      where: hinted(textarea(id('where'), t('fbWhere'), 500, 2), 'fbWhereHint'),
+      when: input(id('when'), t('fbWhen'), 150),
+      duration: input(id('duration'), t('fbDuration'), 150),
+      places: input(id('places'), t('fbPlaces'), 60),
+      dates,
       audience: ticks([t('fbAudience')], [['individual', 'fbAudInd'], ['employer', 'fbAudEmp'], ['organisation', 'fbAudOrg'], ['student', 'fbAudStu']].map(([value, key]) => ({ value, label: t(key) })), 'audience'),
       age: input(id('age'), t('fbAge'), 60),
-      eligibility: elig,
+      eligibility: hinted(textarea(id('eligibility'), t('fbElig'), 800), 'fbEligHint'),
+      gate: hinted(textarea(id('gate'), t('fbGate'), 500, 2), 'fbGateHint'),
       exclusions: textarea(id('exclusions'), t('fbExcl'), 500, 2),
       healthNeed: health,
       conditions,
       categories: ticks([t('fbCats')], categories.map((c) => ({ value: c, label: c, lang: 'en' })), 'svccat'),
       level: choice(id('level'), t('fbLevel'), [['local', 'fbLevelLocal'], ['regional', 'fbLevelRegional'], ['national', 'fbLevelNational']]),
-      addresses: textarea(id('addresses'), t('fbAddresses'), 500, 2),
       noMap: checkbox(id('noMap'), t('fbNoMap')),
       email: input(id('email'), t('fbEmail'), 150, 'email'),
       social: input(id('social'), t('fbSocial'), 300),
@@ -264,24 +313,27 @@
       cost: input(id('cost'), t('fbCost'), 200),
       languages: input(id('languages'), t('fbLanguages'), 200),
       workExperience: input(id('workExperience'), t('fbWorkExp'), 300),
+      coachNotes: textarea(id('coachNotes'), t('fbCoachNotes'), 500, 2),
       logoOk: checkbox(id('logoOk'), t('fbLogo')),
       contactName: input(id('contactName'), t('fbContactName'), 100),
     };
     const heading = (key) => el('h3', { class: 'fb-section', text: t(key) });
     const note = () => el('p', { class: 'fb-note', text: t('fbDetailsNote') });
-    // From the service: everything, in sections.
+    // From the service: everything, in sections, in the order of a listing.
     const PROVIDER = [
       el('p', { class: 'fb-prompt', text: t('fbProviderPrompt') }),
-      heading('fbSecAbout'), 'name', 'organisation', 'website', 'description', 'activities', 'running', 'dates',
-      heading('fbSecWho'), 'audience', 'age', 'eligibility', 'exclusions', 'healthNeed', 'conditions', 'categories',
-      heading('fbSecWhere'), 'area', 'level', 'addresses', 'noMap',
-      heading('fbSecContact'), note(), 'phone', 'email', 'social', 'referral', 'selfReferral', 'cost', 'languages', 'workExperience',
+      heading('fbSecOrg'), 'organisation', 'addTo', 'organisationOverview',
+      heading('fbSecAbout'), 'name', 'whoFor', 'open', 'website',
+      heading('fbSecProject'), 'projectName', 'projectOverview', 'where', 'noMap', 'when', 'duration', 'places', 'dates',
+      heading('fbSecWho'), 'audience', 'age', 'eligibility', 'gate', 'exclusions', 'healthNeed', 'conditions', 'categories',
+      heading('fbSecWhere'), 'area', 'level',
+      heading('fbSecContact'), note(), 'phone', 'email', 'social', 'referral', 'selfReferral', 'cost', 'languages', 'workExperience', 'coachNotes',
       heading('fbSecLast'), 'logoOk', 'contactName',
     ];
     // Suggesting it: five boxes, then the rest folded away.
     const more = el('details', { class: 'fb-more' }, el('summary', { text: t('fbMoreDetails') }));
-    const SUGGESTER_TOP = ['name', 'organisation', 'website', 'phone', 'area'];
-    const SUGGESTER_MORE = [note(), 'description', 'activities', 'running', 'dates', 'audience', 'age', 'eligibility', 'exclusions', 'healthNeed', 'conditions', 'categories', 'level', 'addresses', 'noMap', 'email', 'social', 'referral', 'selfReferral', 'cost', 'languages', 'workExperience'];
+    const SUGGESTER_TOP = ['name', 'organisation', 'addTo', 'website', 'phone', 'area'];
+    const SUGGESTER_MORE = [note(), 'whoFor', 'open', 'projectName', 'projectOverview', 'where', 'noMap', 'when', 'duration', 'places', 'dates', 'audience', 'age', 'eligibility', 'exclusions', 'healthNeed', 'conditions', 'categories', 'level', 'email', 'social', 'referral', 'selfReferral', 'cost', 'languages', 'workExperience'];
     const nodes = (list) => list.map((x) => (typeof x === 'string' ? F[x] : x));
     const roleSet = el('fieldset', { class: 'fb-ticks' },
       el('legend', { text: t('fbRoleLegend') }),
@@ -313,17 +365,20 @@
         b.before(msg);
       }
       if (msg) msg.hidden = !on;
+      if (!b.dataset.hint) b.dataset.hint = b.getAttribute('aria-describedby') || '';
       if (on) {
         b.setAttribute('aria-invalid', 'true');
-        b.setAttribute('aria-describedby', msg.id);
+        b.setAttribute('aria-describedby', (msg.id + ' ' + b.dataset.hint).trim());
       } else {
         b.removeAttribute('aria-invalid');
-        b.removeAttribute('aria-describedby');
+        if (b.dataset.hint) b.setAttribute('aria-describedby', b.dataset.hint);
+        else b.removeAttribute('aria-describedby');
       }
     }
     for (const k of ['name', 'organisation']) box(k).addEventListener('input', () => { if (box(k).value.trim()) mark(k, false); });
     const val = (k) => box(k).value.trim();
     const showing = (k) => node.contains(F[k]);
+    const dateVal = (k) => (/^\d{4}-\d{2}-\d{2}$/.test(dates.querySelector('#' + id(k)).value) ? dates.querySelector('#' + id(k)).value : '');
     // Reads the answers. Returns { ms } or { error, focus }.
     function read(f) {
       if (!role) return { error: t('fbNeedRole'), focus: roleSet.querySelector('input') };
@@ -337,8 +392,13 @@
       if (website && !/^https?:\/\//i.test(website) && /^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(website)) website = 'https://' + website;
       if (website && !/^https?:\/\/[^\s/?#]+\.[^\s/?#]+\S*$/i.test(website)) return { error: t('fbBadWebsite'), focus: box('website') };
       if (val('email') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val('email'))) { more.open = true; return { error: t('fbBadEmail'), focus: box('email') }; }
+      const d = Object.fromEntries(DATE_KEYS.map((k) => [k, dateVal(k)]));
+      if ((d.runsFrom && d.runsTo && d.runsFrom > d.runsTo) || (d.referralsFrom && d.referralsUntil && d.referralsFrom > d.referralsUntil)) { more.open = true; return { error: t('fbBadDates'), focus: dates.querySelector('input') }; }
       const ms = { name, website, area: val('area'), role };
-      for (const k of ['organisation', 'description', 'activities', 'running', 'dates', 'age', 'eligibility', 'exclusions', 'healthNeed', 'addresses', 'level', 'phone', 'email', 'social', 'referral', 'selfReferral', 'cost', 'languages', 'workExperience']) if (val(k)) ms[k] = val(k);
+      for (const k of ['organisation', 'organisationOverview', 'whoFor', 'open', 'projectName', 'projectOverview', 'where', 'when', 'duration', 'places', 'age', 'eligibility', 'gate', 'exclusions', 'healthNeed', 'level', 'phone', 'email', 'social', 'referral', 'selfReferral', 'cost', 'languages', 'workExperience', 'coachNotes']) if (showing(k) && val(k)) ms[k] = val(k);
+      for (const k of DATE_KEYS) if (d[k]) ms[k] = d[k];
+      const pick = addTo.querySelector('input:checked');
+      if (!addTo.hidden && pick && pick.value) ms.addTo = pick.value;
       if (ms.healthNeed === 'specific' && val('conditions')) ms.conditions = val('conditions');
       const aud = ticked(f, 'audience');
       if (aud.length) ms.audience = aud;
@@ -605,6 +665,7 @@
     api = o.api;
     currentMode = o.mode;
     services = o.services;
+    organisations = o.organisations || (() => []);
     if (!api) return Promise.resolve(false);
     // Feedback is shown only when the Worker says it is on.
     return fetch(api + '/health')

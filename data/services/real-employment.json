@@ -3,7 +3,6 @@
   "name": "REAL Employment",
   "organisation": "Kirklees Council",
   "logo": "kirklees-council.webp",
-  "status": "Live - open to referrals",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -78,19 +77,20 @@
     "note": "Yes, via the online form",
     "url": "https://my.kirklees.gov.uk/service/Jobs___Contact_REAL_Employment"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "supported-employment-and-job-matching",
       "name": "Supported employment and job matching",
-      "summary": "Job Coach support to match interests and skills to a job the person wants, including job searching, applications and interview techniques. Training can be part of the journey.",
-      "duration": ""
+      "overview": "Job Coach support to match interests and skills to a job the person wants, including job searching, applications and interview techniques. Training can be part of the journey."
     },
     {
+      "id": "employer-support",
       "name": "Employer support",
-      "summary": "Works with employers who have vacancies to match candidates to the role and support the placement.",
-      "duration": ""
+      "overview": "Works with employers who have vacancies to match candidates to the role and support the placement."
     }
   ],
   "workExperience": "No - not offered as a standalone service",
+  "notes": "Status before November 2026: Live - open to referrals",
   "lastUpdated": "2026-08-03",
   "reviewCycle": "Quarterly",
   "provenance": {

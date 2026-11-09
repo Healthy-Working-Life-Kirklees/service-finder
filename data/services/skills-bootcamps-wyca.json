@@ -2,7 +2,6 @@
   "id": "skills-bootcamps-wyca",
   "name": "Skills Bootcamps / Targeted Employment Programmes",
   "organisation": "WYCA",
-  "status": "Not verified as running (web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -34,11 +33,11 @@
     "allowed": "tbc",
     "note": "To be completed."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "skills-bootcamps-targeted-employment-programmes",
       "name": "Skills Bootcamps / Targeted Employment Programmes",
-      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
-      "duration": ""
+      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
     }
   ],
   "workExperience": "Not known",
@@ -50,7 +49,8 @@
     "foundVia": "Web research or directory review (October 2026)",
     "evidence": "Moving to TEPs; no current courses or dates published.",
     "confidence": "low",
-    "checkedUrl": "https://www.westyorks-ca.gov.uk/skills/for-adults/training-courses/"
+    "checkedUrl": "https://www.westyorks-ca.gov.uk/skills/for-adults/training-courses/",
+    "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
     "decision": "review",

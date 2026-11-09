@@ -2,7 +2,6 @@
   "id": "kirklees-hips",
   "name": "Kirklees HIPS (Horton Intervention and Prevention Service)",
   "organisation": "Horton Housing (part of KBOP)",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,9 +19,7 @@
   "email": "hips@hortonhousing.co.uk",
   "phone": "01484 411870",
   "social": [],
-  "locations": [
-    "Bradley Business Park, Huddersfield HD2 1GN"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Kirklees-wide"
@@ -42,11 +39,14 @@
     "allowed": "tbc",
     "note": "Referral is through the KBOP form."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "housing-support-worker",
       "name": "Housing support worker",
-      "summary": "A worker helps with housing, health and work goals; some accommodation.",
-      "duration": ""
+      "overview": "A worker helps with housing, health and work goals; some accommodation.",
+      "where": [
+        "Bradley Business Park, Huddersfield HD2 1GN"
+      ]
     }
   ],
   "workExperience": "No",
@@ -58,7 +58,8 @@
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=2789",
     "evidence": "Directory May 2026; provider doesn't name HIPS.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

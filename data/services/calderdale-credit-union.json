@@ -2,7 +2,6 @@
   "id": "calderdale-credit-union",
   "name": "Calderdale Credit Union",
   "organisation": "Calderdale Credit Union",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -19,9 +18,7 @@
   "email": "admin@calderdalecreditunion.co.uk",
   "phone": "01422 386060",
   "social": [],
-  "locations": [
-    "Halifax HX1 1HJ"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -41,11 +38,14 @@
     "allowed": "yes",
     "note": "Phone, email or join online."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "savings-and-affordable-loans",
       "name": "Savings and affordable loans",
-      "summary": "Not-for-profit savings and fair loans for people who live or work in Calderdale or Kirklees.",
-      "duration": ""
+      "overview": "Not-for-profit savings and fair loans for people who live or work in Calderdale or Kirklees.",
+      "where": [
+        "Halifax HX1 1HJ"
+      ]
     }
   ],
   "workExperience": "No",
@@ -57,7 +57,8 @@
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.calderdalecreditunion.co.uk/",
     "evidence": "Directory Sept 2025; MECC's Huddersfield office no longer shown.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

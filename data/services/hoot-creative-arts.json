@@ -2,7 +2,6 @@
   "id": "hoot-creative-arts",
   "name": "hoot creative arts",
   "organisation": "hoot creative arts",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,11 +19,7 @@
   "email": "info@hootcreativearts.co.uk",
   "phone": "01484 516224",
   "social": [],
-  "locations": [
-    "Bates Mill, Huddersfield HD1 3DX",
-    "Dewsbury/Dalton",
-    "online"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Dewsbury",
@@ -50,11 +45,16 @@
     "allowed": "yes",
     "note": "Refer yourself or be referred through the website, or come to a Welcome Taster Wednesday."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "creative-arts-sessions",
       "name": "Creative arts sessions",
-      "summary": "Free music, singing, art and writing sessions to help adults look after their mental health; sessions for adults with learning disabilities, autism or dementia.",
-      "duration": ""
+      "overview": "Free music, singing, art and writing sessions to help adults look after their mental health; sessions for adults with learning disabilities, autism or dementia.",
+      "where": [
+        "Bates Mill, Huddersfield HD1 3DX",
+        "Dewsbury/Dalton",
+        "online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -66,7 +66,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.hootcreativearts.co.uk/",
     "evidence": "News posts June–Aug 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

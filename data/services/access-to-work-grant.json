@@ -2,7 +2,6 @@
   "id": "access-to-work-grant",
   "name": "Access to Work grant",
   "organisation": "DWP",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -20,9 +19,7 @@
   "email": null,
   "phone": "0800 121 7479",
   "social": [],
-  "locations": [
-    "Online and phone"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -47,11 +44,14 @@
     "allowed": "yes",
     "note": "Apply online or call the helpline"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "work-support-grant",
       "name": "Work support grant",
-      "summary": "Money for equipment, a support worker or taxi fares so disabled people or people with health conditions can work. Not repaid; doesn't affect benefits.",
-      "duration": ""
+      "overview": "Money for equipment, a support worker or taxi fares so disabled people or people with health conditions can work. Not repaid; doesn't affect benefits.",
+      "where": [
+        "Online and phone"
+      ]
     }
   ],
   "workExperience": "No",
@@ -64,7 +64,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.gov.uk/access-to-work/apply",
     "evidence": "GOV.UK updated 5 Oct 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

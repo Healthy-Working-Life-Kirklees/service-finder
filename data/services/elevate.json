@@ -3,7 +3,6 @@
   "name": "elevate",
   "organisation": "Fresh Futures",
   "logo": "fresh-futures.webp",
-  "status": "Live - open to referrals",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -53,19 +52,22 @@
     "allowed": "yes",
     "note": "Yes, via any route"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "community-programme",
       "name": "Community programme",
-      "summary": "Weekly group session plus weekly drop-in to build friendships, confidence, life skills and wellbeing. Activities co-designed with young people, such as yoga and gardening, arts and crafts, outings and volunteering.",
+      "overview": "Weekly group session plus weekly drop-in to build friendships, confidence, life skills and wellbeing. Activities co-designed with young people, such as yoga and gardening, arts and crafts, outings and volunteering.",
       "duration": "Weekly group session, plus weekly drop-in"
     },
     {
+      "id": "employability-programme",
       "name": "Employability programme",
-      "summary": "One-week programmes for young people at risk of becoming NEET or unsure about career options. Mornings cover CV writing, interview preparation and job searching; afternoons have workshops and guest speakers. Breakfast, lunch and travel support provided. Key worker support and a 10 day work placement.",
+      "overview": "One-week programmes for young people at risk of becoming NEET or unsure about career options. Mornings cover CV writing, interview preparation and job searching; afternoons have workshops and guest speakers. Breakfast, lunch and travel support provided. Key worker support and a 10 day work placement.",
       "duration": "One-week programmes, running multiple times a year"
     }
   ],
   "workExperience": "10 day work placement",
+  "notes": "Status before November 2026: Live - open to referrals",
   "lastUpdated": "2025-10-16",
   "reviewCycle": "Quarterly",
   "provenance": {

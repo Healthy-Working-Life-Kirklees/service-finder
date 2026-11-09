@@ -2,7 +2,6 @@
   "id": "citizens-advice-kirklees",
   "name": "Kirklees Citizens Advice and Law Centre (KCALC)",
   "organisation": "Kirklees Citizens Advice and Law Centre",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -23,10 +22,7 @@
   "social": [
     "https://www.facebook.com/KirkleesCALC"
   ],
-  "locations": [
-    "Dewsbury: Empire House, WF12 8DJ (Mon & Tue 9.30–3)",
-    "Huddersfield: Fusion Housing, Pearl House, HD1 1BA (Fri 10–1)"
-  ],
+  "locations": [],
   "areas": [
     "Dewsbury",
     "Huddersfield",
@@ -54,11 +50,15 @@
     "allowed": "yes",
     "note": "Request a call back online or go to a drop-in"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "advice-on-money-housing-and-work",
       "name": "Advice on money, housing and work",
-      "summary": "Free advice on benefits, debt, housing, work problems, discrimination and immigration. Request a call back online or go to a drop-in.",
-      "duration": ""
+      "overview": "Free advice on benefits, debt, housing, work problems, discrimination and immigration. Request a call back online or go to a drop-in.",
+      "where": [
+        "Dewsbury: Empire House, WF12 8DJ (Mon & Tue 9.30–3)",
+        "Huddersfield: Fusion Housing, Pearl House, HD1 1BA (Fri 10–1)"
+      ]
     }
   ],
   "workExperience": "No",
@@ -70,7 +70,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://kcalc.org.uk/",
     "evidence": "Checked by PL on 2026-11-04: checked online access only - no phone",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

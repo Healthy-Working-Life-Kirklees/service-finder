@@ -2,7 +2,6 @@
   "id": "platform-1",
   "name": "Platform 1",
   "organisation": "Platform 1",
-  "status": "Not verified as running (web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -36,11 +35,11 @@
     "allowed": "tbc",
     "note": "To be completed."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "platform-1",
       "name": "Platform 1",
-      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
-      "duration": ""
+      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
     }
   ],
   "workExperience": "Not known",
@@ -52,7 +51,8 @@
     "foundVia": "Web research or directory review (October 2026)",
     "evidence": "Site last changed Jan 2025; counselling by GP referral; groups suspended.",
     "confidence": "low",
-    "checkedUrl": "https://platform-1.co.uk/"
+    "checkedUrl": "https://platform-1.co.uk/",
+    "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
     "decision": "review",

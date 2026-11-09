@@ -2,7 +2,6 @@
   "id": "msk-pain-service-cora",
   "name": "Kirklees MSK and Pain Service (physio self-referral)",
   "organisation": "Cora Health",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,9 +19,7 @@
   "email": null,
   "phone": "01924 792075",
   "social": [],
-  "locations": [
-    "Clinics incl. Liversedge, Huddersfield Leisure Centre, Princess Royal, Holme Valley, Batley, Dewsbury"
-  ],
+  "locations": [],
   "areas": [
     "Spen Valley",
     "Huddersfield",
@@ -49,11 +46,14 @@
     "allowed": "partly",
     "note": "Refer yourself online for physio, no GP needed; pain clinics need a GP referral"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "physiotherapy-and-rehab",
       "name": "Physiotherapy and rehab",
-      "summary": "NHS physio and rehab for back, neck, joint and muscle problems. Refer yourself online — no GP needed.",
-      "duration": ""
+      "overview": "NHS physio and rehab for back, neck, joint and muscle problems. Refer yourself online — no GP needed.",
+      "where": [
+        "Clinics incl. Liversedge, Huddersfield Leisure Centre, Princess Royal, Holme Valley, Batley, Dewsbury"
+      ]
     }
   ],
   "workExperience": "No",
@@ -65,7 +65,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.corahealth.co.uk/locations/yorkshire-and-the-humber/kirklees/referrals/",
     "evidence": "Referral page updated March 2026. Separate from Flippin' Pain.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

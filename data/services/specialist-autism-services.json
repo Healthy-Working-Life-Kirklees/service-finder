@@ -2,7 +2,6 @@
   "id": "specialist-autism-services",
   "name": "Specialist Autism Services employment",
   "organisation": "Specialist Autism Services",
-  "status": "Not verified as running (web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -36,11 +35,11 @@
     "allowed": "tbc",
     "note": "To be completed."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "specialist-autism-services-employment",
       "name": "Specialist Autism Services employment",
-      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
-      "duration": ""
+      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
     }
   ],
   "workExperience": "Not known",
@@ -52,7 +51,8 @@
     "foundVia": "Web research or directory review (October 2026)",
     "evidence": "Hubs Bradford/Calderdale only.",
     "confidence": "low",
-    "checkedUrl": "http://www.specialistautismservices.org"
+    "checkedUrl": "http://www.specialistautismservices.org",
+    "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
     "decision": "review",

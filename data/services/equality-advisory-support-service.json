@@ -2,7 +2,6 @@
   "id": "equality-advisory-support-service",
   "name": "Equality Advisory and Support Service (EASS)",
   "organisation": "EASS (government-funded)",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -20,9 +19,7 @@
   "email": null,
   "phone": "0808 800 0082 (Mon–Fri 9–7, Sat 10–2)",
   "social": [],
-  "locations": [
-    "Phone and online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -42,11 +39,14 @@
     "allowed": "yes",
     "note": "Phone, use web chat or the contact form"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "discrimination-advice-helpline",
       "name": "Discrimination advice helpline",
-      "summary": "Free helpline if you think you've been treated unfairly or discriminated against, for example at work because of a disability. Explains your rights and next steps.",
-      "duration": ""
+      "overview": "Free helpline if you think you've been treated unfairly or discriminated against, for example at work because of a disability. Explains your rights and next steps.",
+      "where": [
+        "Phone and online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -59,7 +59,8 @@
     "foundVia": "Acas page; Treacle",
     "checkedUrl": "https://www.equalityhumanrights.com/contact-us",
     "evidence": "EHRC contact page updated April 2026 gives these details.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

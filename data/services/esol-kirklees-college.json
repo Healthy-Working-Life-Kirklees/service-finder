@@ -2,7 +2,6 @@
   "id": "esol-kirklees-college",
   "name": "ESOL (English for Speakers of Other Languages)",
   "organisation": "Kirklees College",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,11 +19,7 @@
   "email": "info@kirkleescollege.ac.uk",
   "phone": "01484 437000",
   "social": [],
-  "locations": [
-    "Pioneer Higher Skills Centre, Dewsbury WF13 1BD",
-    "Springfield Sixth Form Centre WF13 2NP",
-    "Huddersfield"
-  ],
+  "locations": [],
   "areas": [
     "Dewsbury",
     "Huddersfield"
@@ -43,11 +38,16 @@
     "allowed": "yes",
     "note": "Contact the college to enrol"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "english-classes-esol",
       "name": "English classes (ESOL)",
-      "summary": "Part-time English classes for adults from complete beginners upwards; full-time courses for 16–18s.",
-      "duration": ""
+      "overview": "Part-time English classes for adults from complete beginners upwards; full-time courses for 16–18s.",
+      "where": [
+        "Pioneer Higher Skills Centre, Dewsbury WF13 1BD",
+        "Springfield Sixth Form Centre WF13 2NP",
+        "Huddersfield"
+      ]
     }
   ],
   "workExperience": "No",
@@ -59,7 +59,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationdetails.aspx?orgid=2729",
     "evidence": "Directory updated 22 June 2026; in Sept 2026 guide.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

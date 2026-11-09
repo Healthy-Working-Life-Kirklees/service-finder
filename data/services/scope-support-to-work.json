@@ -2,7 +2,6 @@
   "id": "scope-support-to-work",
   "name": "Support to Work",
   "organisation": "Scope",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -20,9 +19,7 @@
   "email": "supporttowork@scope.org.uk",
   "phone": "0300 222 5742",
   "social": [],
-  "locations": [
-    "Online and phone"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -43,11 +40,14 @@
     "allowed": "yes",
     "note": "Register online"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "employment-support-for-disabled-people",
       "name": "Employment support for disabled people",
-      "summary": "Free employment adviser for disabled people: CV, job search, interviews, talking to employers about adjustments, and support once in work.",
-      "duration": ""
+      "overview": "Free employment adviser for disabled people: CV, job search, interviews, talking to employers about adjustments, and support once in work.",
+      "where": [
+        "Online and phone"
+      ]
     }
   ],
   "workExperience": "No",
@@ -59,7 +59,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.scope.org.uk/employment-services/support-to-work/",
     "evidence": "Sign-up open; no 2026 date.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

@@ -2,7 +2,6 @@
   "id": "disability-confident",
   "name": "Disability Confident employer scheme",
   "organisation": "DWP",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -41,11 +38,14 @@
     "allowed": "yes",
     "note": "Sign up online"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "disability-inclusive-employer-scheme",
       "name": "Disability-inclusive employer scheme",
-      "summary": "Government scheme helping employers hire and keep disabled staff and staff with health conditions.",
-      "duration": ""
+      "overview": "Government scheme helping employers hire and keep disabled staff and staff with health conditions.",
+      "where": [
+        "Online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -57,7 +57,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.gov.uk/government/collections/disability-confident-campaign",
     "evidence": "Guidance updated July–Aug 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

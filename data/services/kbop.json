@@ -2,7 +2,6 @@
   "id": "kbop",
   "name": "Kirklees Better Outcomes Partnership (KBOP)",
   "organisation": "Bridges Outcomes Partnerships",
-  "status": "Not verified as running (web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -34,11 +33,11 @@
     "allowed": "tbc",
     "note": "To be completed."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "kirklees-better-outcomes-partnership-kbop",
       "name": "Kirklees Better Outcomes Partnership (KBOP)",
-      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
-      "duration": ""
+      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
     }
   ],
   "workExperience": "Not known",
@@ -50,7 +49,8 @@
     "foundVia": "Web research or directory review (October 2026)",
     "evidence": "Official site blocks fetching / footer 2018; job ads to Oct 2026 suggest it's running but referral rules unconfirmed; may be retendered. Directory now only describes its Dual Diagnosis team, added as 'Community Links Dual Diagnosis service'.",
     "confidence": "low",
-    "checkedUrl": "https://www.kirkleesbetteroutcomespartnership.org/"
+    "checkedUrl": "https://www.kirkleesbetteroutcomespartnership.org/",
+    "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
     "decision": "review",

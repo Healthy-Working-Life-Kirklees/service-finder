@@ -2,7 +2,6 @@
   "id": "carers-uk-helpline",
   "name": "Carers UK helpline (incl. work rights)",
   "organisation": "Carers UK",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -20,9 +19,7 @@
   "email": null,
   "phone": "0808 808 7777",
   "social": [],
-  "locations": [
-    "Phone and online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -43,11 +40,14 @@
     "allowed": "yes",
     "note": "Phone or use the email form"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "carers-advice-helpline",
       "name": "Carers advice helpline",
-      "summary": "Advice for unpaid carers on flexible working, Carer's Leave and Carer's Allowance.",
-      "duration": ""
+      "overview": "Advice for unpaid carers on flexible working, Carer's Leave and Carer's Allowance.",
+      "where": [
+        "Phone and online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -59,7 +59,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.carersuk.org/help-and-advice/helpline-and-other-support/",
     "evidence": "References Carers Rights Day Nov 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

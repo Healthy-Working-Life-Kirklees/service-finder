@@ -2,7 +2,6 @@
   "id": "rural-veterans-hubs-kirklees",
   "name": "Rural Veterans Hubs Kirklees",
   "organisation": "Rural Veteran Hubs (Kirklees)",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -19,10 +18,7 @@
   "email": "Ruralveteranshubs@gmail.com",
   "phone": "07769 583334",
   "social": [],
-  "locations": [
-    "Shelley Village Hall HD8 8HE (1st Tue)",
-    "Denby Dale First School HD8 8SG (2nd Thu)"
-  ],
+  "locations": [],
   "areas": [
     "Kirkburton"
   ],
@@ -44,11 +40,15 @@
     "allowed": "yes",
     "note": "Turn up, or get in touch first."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "veterans-drop-in-hubs",
       "name": "Veterans drop-in hubs",
-      "summary": "Monthly drop-in hubs run by veterans for veterans, with lunch, talks and help reaching British Legion, SSAFA and housing support.",
-      "duration": ""
+      "overview": "Monthly drop-in hubs run by veterans for veterans, with lunch, talks and help reaching British Legion, SSAFA and housing support.",
+      "where": [
+        "Shelley Village Hall HD8 8HE (1st Tue)",
+        "Denby Dale First School HD8 8SG (2nd Thu)"
+      ]
     }
   ],
   "workExperience": "No",
@@ -60,7 +60,8 @@
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "https://www.cobseo.org.uk/members/directory/rural-veterans-hubs-kirklees/",
     "evidence": "Directory updated May 2026; provider events calendar still 2025.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

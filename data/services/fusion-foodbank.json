@@ -2,7 +2,6 @@
   "id": "fusion-foodbank",
   "name": "Fusion Foodbank",
   "organisation": "Fusion Housing",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": "01484 414782 (LWP food claims)",
   "social": [],
-  "locations": [
-    "Dewsbury office"
-  ],
+  "locations": [],
   "areas": [
     "Dewsbury",
     "Kirklees-wide"
@@ -41,11 +38,14 @@
     "allowed": "partly",
     "note": "Go through the Local Welfare Provision phone line, the Dewsbury office, or a support worker."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "food-packs",
       "name": "Food packs",
-      "summary": "Free food packs for people who can't afford food.",
-      "duration": ""
+      "overview": "Free food packs for people who can't afford food.",
+      "where": [
+        "Dewsbury office"
+      ]
     }
   ],
   "workExperience": "No",
@@ -57,7 +57,8 @@
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.fusionhousing.org.uk/Our-Services/fusion-foodbank-and-more/",
     "evidence": "Page undated.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

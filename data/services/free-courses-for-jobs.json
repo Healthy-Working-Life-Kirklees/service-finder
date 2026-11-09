@@ -2,7 +2,6 @@
   "id": "free-courses-for-jobs",
   "name": "Free Courses for Jobs (Level 2 and 3)",
   "organisation": "Department for Education",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -18,9 +17,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Local colleges and online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -40,11 +37,14 @@
     "allowed": "yes",
     "note": "Search the course finder and contact the course provider"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "free-level-2-and-3-courses",
       "name": "Free Level 2 and 3 courses",
-      "summary": "Free Level 3 courses in accounting, digital, care etc. and Level 2 in construction and engineering.",
-      "duration": ""
+      "overview": "Free Level 3 courses in accounting, digital, care etc. and Level 2 in construction and engineering.",
+      "where": [
+        "Local colleges and online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -56,7 +56,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.gov.uk/guidance/free-courses-for-jobs",
     "evidence": "No end date stated.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

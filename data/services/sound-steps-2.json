@@ -3,7 +3,6 @@
   "name": "Sound Steps 2",
   "organisation": "Yorkshire Youth & Music and Umbrella Yoga",
   "logo": "yorkshire-youth-music.webp",
-  "status": "Live - grant-funded project (status not stated in the pathways document)",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -21,9 +20,7 @@
   "email": "becky@yym.org.uk",
   "phone": "07977 223679",
   "social": [],
-  "locations": [
-    "LG31 The Media Centre, 7 Northumberland Street, Huddersfield, HD1 1RL"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield"
   ],
@@ -51,14 +48,19 @@
     "note": "Yes, using the sign-up link on the website",
     "url": "https://www.yym.org.uk/sound-steps"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "sound-steps-2",
       "name": "Sound Steps 2",
-      "summary": "Weekly sessions in songwriting, beat-making, recording, music production and DJing, led by experienced professional music leaders, supporting wellbeing, teamwork and personal development.",
-      "duration": "23 weeks"
+      "overview": "Weekly sessions in songwriting, beat-making, recording, music production and DJing, led by experienced professional music leaders, supporting wellbeing, teamwork and personal development.",
+      "duration": "23 weeks",
+      "where": [
+        "LG31 The Media Centre, 7 Northumberland Street, Huddersfield, HD1 1RL"
+      ]
     }
   ],
   "workExperience": "No",
+  "notes": "Status before November 2026: Live - grant-funded project (status not stated in the pathways document)",
   "lastUpdated": "2026-09-21",
   "reviewCycle": "Quarterly",
   "provenance": {

@@ -2,130 +2,497 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/Healthy-Working-Life-Kirklees/service-finder/data/schema.json",
   "title": "Support Finder scheme",
-  "description": "One scheme or service, stored as data/services/<id>.json. See docs/data-dictionary.md for what each field means.",
+  "description": "One service, stored as data/services/<id>.json. A service belongs to one organisation (data/organisations.json, matched by name) and has one or more projects; a project can have cohorts or sessions. See docs/data-dictionary.md for what each field means.",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "id", "name", "organisation", "status", "open", "hwlFunded", "level", "audience", "categories",
-    "whoFor", "age", "webpage", "email", "phone", "social", "locations", "areas", "eligibility",
-    "exclusions", "gate", "healthFocus", "referralRoutes", "selfReferral", "activities", "workExperience",
-    "lastUpdated", "reviewCycle", "provenance", "listing"
+    "id",
+    "name",
+    "organisation",
+    "open",
+    "hwlFunded",
+    "level",
+    "audience",
+    "categories",
+    "whoFor",
+    "age",
+    "webpage",
+    "email",
+    "phone",
+    "social",
+    "locations",
+    "areas",
+    "eligibility",
+    "exclusions",
+    "gate",
+    "healthFocus",
+    "referralRoutes",
+    "selfReferral",
+    "projects",
+    "workExperience",
+    "lastUpdated",
+    "reviewCycle",
+    "provenance",
+    "listing"
   ],
   "$defs": {
-    "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
-    "textList": { "type": "array", "items": { "$ref": "#/$defs/text" } },
-    "nullableText": { "anyOf": [{ "$ref": "#/$defs/text" }, { "type": "null" }] },
-    "url": { "type": "string", "pattern": "^https?://\\S+$" },
-    "date": { "type": "string", "pattern": "^20\\d\\d-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$" }
-  },
-  "properties": {
-    "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "maxLength": 50 },
-    "name": { "$ref": "#/$defs/text" },
-    "organisation": { "$ref": "#/$defs/text" },
-    "logo": { "type": "string", "pattern": "^[\\w.-]+\\.(png|jpe?g|webp|svg)$" },
-    "mapLinks": { "type": "boolean" },
-    "status": { "$ref": "#/$defs/text" },
-    "open": { "type": "boolean" },
-    "hwlFunded": { "type": "boolean" },
-    "level": { "enum": ["local", "regional", "national"] },
-    "audience": {
-      "type": "array", "minItems": 1, "uniqueItems": true,
-      "items": { "enum": ["individual", "employer", "organisation", "student"] }
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
     },
-    "categories": {
-      "type": "array", "minItems": 1, "uniqueItems": true,
+    "textList": {
+      "type": "array",
       "items": {
-        "enum": [
-          "Apprenticeships", "Benefits and money", "Bereavement", "Carers", "Debt", "Digital skills",
-          "Disability & neurodiversity", "Drug/alcohol", "Employers", "Employment rights", "ESOL",
-          "Finding work", "Health linked to work", "Housing", "Long-term conditions", "Men", "Mental health",
-          "MSK", "Older workers", "Prison leavers", "Refugees and new arrivals", "Returning to learning",
-          "Self-employment", "Skills", "Staying in work", "Travel", "Veterans", "Volunteering", "Wellbeing",
-          "Women", "Young people"
-        ]
+        "$ref": "#/$defs/text"
       }
     },
-    "whoFor": { "$ref": "#/$defs/text" },
-    "age": { "$ref": "#/$defs/nullableText" },
-    "webpage": { "anyOf": [{ "$ref": "#/$defs/url" }, { "type": "null" }] },
-    "email": { "anyOf": [{ "type": "string", "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$" }, { "type": "null" }] },
-    "phone": { "$ref": "#/$defs/nullableText" },
-    "social": { "$ref": "#/$defs/textList" },
-    "locations": { "$ref": "#/$defs/textList" },
-    "areas": {
-      "type": "array", "minItems": 1, "uniqueItems": true,
-      "items": {
-        "enum": [
-          "Batley", "Colne Valley", "Dewsbury", "Holme Valley", "Huddersfield", "Kirkburton", "Mirfield",
-          "Spen Valley", "Kirklees-wide", "Online"
-        ]
-      }
+    "nullableText": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/text"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
-    "eligibility": { "$ref": "#/$defs/textList" },
-    "exclusions": { "$ref": "#/$defs/textList" },
-    "gate": { "$ref": "#/$defs/textList" },
-    "healthFocus": {
-      "type": "array", "uniqueItems": true,
-      "items": {
-        "enum": [
-          "any", "mental-health", "severe-mental-illness", "musculoskeletal-pain", "substance-use",
-          "learning-disability-autism", "unpaid-caring"
-        ]
-      }
+    "url": {
+      "type": "string",
+      "pattern": "^https?://\\S+$"
     },
-    "requiresMention": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/text" } },
-    "referralRoutes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/text" } },
-    "selfReferral": {
+    "date": {
+      "type": "string",
+      "pattern": "^20\\d\\d-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$"
+    },
+    "shortText": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S",
+      "maxLength": 200
+    },
+    "partId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 50
+    },
+    "cohort": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["allowed", "note"],
+      "required": [
+        "id",
+        "name"
+      ],
+      "description": "The same project run at a different time, place or for a different group. Only what differs from its project is recorded.",
       "properties": {
-        "allowed": { "enum": ["yes", "partly", "no", "tbc"] },
-        "note": { "$ref": "#/$defs/text" },
-        "url": { "$ref": "#/$defs/url" }
-      }
-    },
-    "activities": {
-      "type": "array", "minItems": 1,
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["name", "summary", "duration"],
-        "properties": {
-          "name": { "$ref": "#/$defs/text" },
-          "summary": { "$ref": "#/$defs/text" },
-          "duration": { "type": "string" }
+        "id": {
+          "$ref": "#/$defs/partId"
+        },
+        "name": {
+          "$ref": "#/$defs/shortText"
+        },
+        "where": {
+          "$ref": "#/$defs/textList"
+        },
+        "when": {
+          "$ref": "#/$defs/text"
+        },
+        "age": {
+          "$ref": "#/$defs/shortText"
+        },
+        "eligibility": {
+          "$ref": "#/$defs/textList"
+        },
+        "gate": {
+          "$ref": "#/$defs/textList"
+        },
+        "places": {
+          "$ref": "#/$defs/shortText"
+        },
+        "runsFrom": {
+          "$ref": "#/$defs/date"
+        },
+        "runsTo": {
+          "$ref": "#/$defs/date"
+        },
+        "referralsFrom": {
+          "$ref": "#/$defs/date"
+        },
+        "referralsUntil": {
+          "$ref": "#/$defs/date"
         }
       }
     },
-    "workExperience": { "$ref": "#/$defs/text" },
-    "cost": { "$ref": "#/$defs/text" },
-    "languages": { "$ref": "#/$defs/text" },
-    "notes": { "$ref": "#/$defs/text" },
-    "lastUpdated": { "$ref": "#/$defs/date" },
-    "reviewCycle": { "enum": ["Quarterly", "Six-monthly", "Yearly"] },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "overview"
+      ],
+      "description": "Something different that happens, or a different group it is for. Who it's for is set on the service; a project only records what is different.",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/partId"
+        },
+        "name": {
+          "$ref": "#/$defs/text"
+        },
+        "overview": {
+          "$ref": "#/$defs/text"
+        },
+        "where": {
+          "$ref": "#/$defs/textList"
+        },
+        "when": {
+          "$ref": "#/$defs/text"
+        },
+        "duration": {
+          "$ref": "#/$defs/text"
+        },
+        "places": {
+          "$ref": "#/$defs/shortText"
+        },
+        "age": {
+          "$ref": "#/$defs/shortText"
+        },
+        "audience": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "individual",
+              "employer",
+              "organisation",
+              "student"
+            ]
+          }
+        },
+        "eligibility": {
+          "$ref": "#/$defs/textList"
+        },
+        "gate": {
+          "$ref": "#/$defs/textList"
+        },
+        "runsFrom": {
+          "$ref": "#/$defs/date"
+        },
+        "runsTo": {
+          "$ref": "#/$defs/date"
+        },
+        "referralsFrom": {
+          "$ref": "#/$defs/date"
+        },
+        "referralsUntil": {
+          "$ref": "#/$defs/date"
+        },
+        "cohorts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/cohort"
+          }
+        }
+      }
+    }
+  },
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 50
+    },
+    "name": {
+      "$ref": "#/$defs/text"
+    },
+    "organisation": {
+      "$ref": "#/$defs/text",
+      "description": "The organisation's name, exactly as in data/organisations.json."
+    },
+    "logo": {
+      "type": "string",
+      "pattern": "^[\\w.-]+\\.(png|jpe?g|webp|svg)$"
+    },
+    "mapLinks": {
+      "type": "boolean"
+    },
+    "open": {
+      "type": "boolean"
+    },
+    "hwlFunded": {
+      "type": "boolean"
+    },
+    "level": {
+      "enum": [
+        "local",
+        "regional",
+        "national"
+      ]
+    },
+    "audience": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "individual",
+          "employer",
+          "organisation",
+          "student"
+        ]
+      }
+    },
+    "categories": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "Apprenticeships",
+          "Benefits and money",
+          "Bereavement",
+          "Carers",
+          "Debt",
+          "Digital skills",
+          "Disability & neurodiversity",
+          "Drug/alcohol",
+          "Employers",
+          "Employment rights",
+          "ESOL",
+          "Finding work",
+          "Health linked to work",
+          "Housing",
+          "Long-term conditions",
+          "Men",
+          "Mental health",
+          "MSK",
+          "Older workers",
+          "Prison leavers",
+          "Refugees and new arrivals",
+          "Returning to learning",
+          "Self-employment",
+          "Skills",
+          "Staying in work",
+          "Travel",
+          "Veterans",
+          "Volunteering",
+          "Wellbeing",
+          "Women",
+          "Young people"
+        ]
+      }
+    },
+    "whoFor": {
+      "$ref": "#/$defs/text"
+    },
+    "age": {
+      "$ref": "#/$defs/nullableText"
+    },
+    "webpage": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/url"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "email": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "phone": {
+      "$ref": "#/$defs/nullableText"
+    },
+    "social": {
+      "$ref": "#/$defs/textList"
+    },
+    "locations": {
+      "$ref": "#/$defs/textList",
+      "description": "Places used by every project. Empty when each project has its own places."
+    },
+    "areas": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "Batley",
+          "Colne Valley",
+          "Dewsbury",
+          "Holme Valley",
+          "Huddersfield",
+          "Kirkburton",
+          "Mirfield",
+          "Spen Valley",
+          "Kirklees-wide",
+          "Online"
+        ]
+      }
+    },
+    "eligibility": {
+      "$ref": "#/$defs/textList"
+    },
+    "exclusions": {
+      "$ref": "#/$defs/textList"
+    },
+    "gate": {
+      "$ref": "#/$defs/textList"
+    },
+    "healthFocus": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "any",
+          "mental-health",
+          "severe-mental-illness",
+          "musculoskeletal-pain",
+          "substance-use",
+          "learning-disability-autism",
+          "unpaid-caring"
+        ]
+      }
+    },
+    "requiresMention": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/text"
+      }
+    },
+    "referralRoutes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/text"
+      }
+    },
+    "selfReferral": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed",
+        "note"
+      ],
+      "properties": {
+        "allowed": {
+          "enum": [
+            "yes",
+            "partly",
+            "no",
+            "tbc"
+          ]
+        },
+        "note": {
+          "$ref": "#/$defs/text"
+        },
+        "url": {
+          "$ref": "#/$defs/url"
+        }
+      }
+    },
+    "projects": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/project"
+      }
+    },
+    "workExperience": {
+      "$ref": "#/$defs/text"
+    },
+    "cost": {
+      "$ref": "#/$defs/text"
+    },
+    "languages": {
+      "$ref": "#/$defs/text"
+    },
+    "coachNotes": {
+      "$ref": "#/$defs/text",
+      "description": "Anything coaches should know. Shown on the card."
+    },
+    "notes": {
+      "$ref": "#/$defs/text",
+      "description": "Team notes. Never shown on the cards or sent to the AI."
+    },
+    "lastUpdated": {
+      "$ref": "#/$defs/date"
+    },
+    "reviewCycle": {
+      "enum": [
+        "Quarterly",
+        "Six-monthly",
+        "Yearly"
+      ]
+    },
     "provenance": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["source"],
+      "required": [
+        "source"
+      ],
       "properties": {
-        "source": { "$ref": "#/$defs/text" },
-        "foundVia": { "$ref": "#/$defs/text" },
-        "checkedUrl": { "$ref": "#/$defs/url" },
-        "evidence": { "$ref": "#/$defs/text" },
-        "confidence": { "enum": ["high", "medium", "low"] }
+        "source": {
+          "$ref": "#/$defs/text"
+        },
+        "foundVia": {
+          "$ref": "#/$defs/text"
+        },
+        "checkedUrl": {
+          "$ref": "#/$defs/url"
+        },
+        "evidence": {
+          "$ref": "#/$defs/text"
+        },
+        "confidence": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/text",
+          "description": "The listing's status line before November 2026 (web research verdict), kept for the record."
+        }
       }
     },
     "listing": {
       "description": "Whether the service is on the live list. Only 'include' services reach the public page and the AI. The development team decides on the All services page; scripts/apply-decisions.mjs writes their decisions here.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["decision", "reason"],
+      "required": [
+        "decision",
+        "reason"
+      ],
       "properties": {
-        "decision": { "enum": ["include", "review", "exclude"] },
-        "reason": { "$ref": "#/$defs/text" },
-        "by": { "$ref": "#/$defs/text" },
-        "date": { "$ref": "#/$defs/date" }
+        "decision": {
+          "enum": [
+            "include",
+            "review",
+            "exclude"
+          ]
+        },
+        "reason": {
+          "$ref": "#/$defs/text"
+        },
+        "by": {
+          "$ref": "#/$defs/text"
+        },
+        "date": {
+          "$ref": "#/$defs/date"
+        }
       }
     }
   }

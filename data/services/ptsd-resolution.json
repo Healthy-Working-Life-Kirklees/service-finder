@@ -2,7 +2,6 @@
   "id": "ptsd-resolution",
   "name": "PTSD Resolution therapy",
   "organisation": "PTSD Resolution",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,10 +18,7 @@
   "email": null,
   "phone": "0300 302 0551",
   "social": [],
-  "locations": [
-    "UK-wide",
-    "online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -47,11 +43,15 @@
     "allowed": "yes",
     "note": "Self-refer online or by phone"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "talking-therapy-for-veterans",
       "name": "Talking therapy for veterans",
-      "summary": "Free, quick talking therapy for ex-forces, reservists and families, for trauma, stress, anxiety and depression.",
-      "duration": ""
+      "overview": "Free, quick talking therapy for ex-forces, reservists and families, for trauma, stress, anxiety and depression.",
+      "where": [
+        "UK-wide",
+        "online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -63,7 +63,8 @@
     "foundVia": "MECC Link",
     "checkedUrl": "https://ptsdresolution.org/",
     "evidence": "Active in 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

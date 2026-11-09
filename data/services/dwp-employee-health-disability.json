@@ -2,7 +2,6 @@
   "id": "dwp-employee-health-disability",
   "name": "Support with employee health and disability",
   "organisation": "DWP",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -41,11 +38,14 @@
     "allowed": "yes",
     "note": "Use the website; no sign-up needed"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "employer-health-and-disability-advice",
       "name": "Employer health and disability advice",
-      "summary": "Free step-by-step online advice for employers on keeping staff with health conditions in work and returning after sickness.",
-      "duration": ""
+      "overview": "Free step-by-step online advice for employers on keeping staff with health conditions in work and returning after sickness.",
+      "where": [
+        "Online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -57,7 +57,8 @@
     "foundVia": "Your list",
     "checkedUrl": "https://www.hse.gov.uk/disability/best-practice/index.htm",
     "evidence": "Site blocks automated checks; HSE (2025) and Acas link to it.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

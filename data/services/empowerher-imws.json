@@ -3,7 +3,6 @@
   "name": "EmpowerHer: Steps to Wellbeing and Work Project",
   "organisation": "IMWS",
   "logo": "imws.webp",
-  "status": "Live - grant-funded project (status not stated in the pathways document)",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -23,9 +22,7 @@
   "email": "shamim.ali@imws.org.uk",
   "phone": "01924 500555",
   "social": [],
-  "locations": [
-    "Al Hikmah Centre, 28 Track Road, Batley, WF17 7AA"
-  ],
+  "locations": [],
   "areas": [
     "Batley"
   ],
@@ -52,14 +49,19 @@
     "allowed": "yes",
     "note": "Phone the Centre directly"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "empowerher-steps-to-wellbeing-and-work-project",
       "name": "EmpowerHer: Steps to Wellbeing and Work Project",
-      "summary": "Beginner ESOL (English) classes, digital skills classes, wellbeing activities, confidence building and one-to-one mentoring.",
-      "duration": "One day a week"
+      "overview": "Beginner ESOL (English) classes, digital skills classes, wellbeing activities, confidence building and one-to-one mentoring.",
+      "duration": "One day a week",
+      "where": [
+        "Al Hikmah Centre, 28 Track Road, Batley, WF17 7AA"
+      ]
     }
   ],
   "workExperience": "No",
+  "notes": "Status before November 2026: Live - grant-funded project (status not stated in the pathways document)",
   "lastUpdated": "2026-09-30",
   "reviewCycle": "Quarterly",
   "provenance": {

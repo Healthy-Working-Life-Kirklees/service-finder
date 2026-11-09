@@ -3,7 +3,6 @@
   "name": "Kirklees Talking Therapies Employment Advice",
   "organisation": "South West Yorkshire Partnership NHS Foundation Trust (NHS Kirklees Talking Therapies)",
   "logo": "swypft.webp",
-  "status": "Live - open to referrals",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -23,9 +22,7 @@
   "social": [
     "https://www.facebook.com/Kirklees.TalkingTherapies/"
   ],
-  "locations": [
-    "Across Kirklees, via Kirklees Talking Therapies venues, libraries and remote appointments"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -54,14 +51,20 @@
     "allowed": "yes",
     "note": "Yes - self-refer to Talking Therapies by phone or online, then access employment advice through the service"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "integrated-employment-advice-alongside-therapy",
       "name": "Integrated employment advice alongside therapy",
-      "summary": "Employment advisors work jointly with therapists. One-to-one, client-led support on goals, CVs, gaps in employment, disclosure, applications and interviews, training needs, and an agreed action plan. Free and confidential. In person, by phone, video or the SilverCloud platform.",
-      "duration": "Up to ten appointments"
+      "overview": "Employment advisors work jointly with therapists. One-to-one, client-led support on goals, CVs, gaps in employment, disclosure, applications and interviews, training needs, and an agreed action plan. Free and confidential. In person, by phone, video or the SilverCloud platform.",
+      "duration": "Up to ten appointments",
+      "where": [
+        "Across Kirklees, via Kirklees Talking Therapies venues, libraries and remote appointments"
+      ]
     }
   ],
   "workExperience": "No",
+  "languages": "Interpreters available",
+  "notes": "Status before November 2026: Live - open to referrals",
   "lastUpdated": "2026-11-06",
   "reviewCycle": "Quarterly",
   "provenance": {
@@ -71,6 +74,5 @@
   "listing": {
     "decision": "include",
     "reason": "Healthy Working Life scheme, on the live list from the start."
-  },
-  "languages": "Interpreters available"
+  }
 }

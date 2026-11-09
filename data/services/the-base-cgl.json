@@ -2,7 +2,6 @@
   "id": "the-base-cgl",
   "name": "The Base – young people's drug and alcohol service",
   "organisation": "Change Grow Live",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,9 +19,7 @@
   "email": "Thebase@cgl.org.uk",
   "phone": "01484 541589",
   "social": [],
-  "locations": [
-    "Brian Jackson House, Huddersfield HD1 5JP"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield"
   ],
@@ -65,11 +62,14 @@
     "allowed": "yes",
     "note": "Refer yourself or be referred by a professional"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "young-people-s-drug-and-alcohol-support",
       "name": "Young people's drug and alcohol support",
-      "summary": "Free, private help for young people who use drugs or alcohol, plus advice for parents and workers.",
-      "duration": ""
+      "overview": "Free, private help for young people who use drugs or alcohol, plus advice for parents and workers.",
+      "where": [
+        "Brian Jackson House, Huddersfield HD1 5JP"
+      ]
     }
   ],
   "workExperience": "No",
@@ -81,7 +81,8 @@
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "https://www.changegrowlive.org/the-base-kirklees",
     "evidence": "© 2026; directory Oct 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

@@ -2,7 +2,6 @@
   "id": "peertalk-groups",
   "name": "PeerTalk peer support groups",
   "organisation": "PeerTalk",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -18,10 +17,7 @@
   "email": "enquiries@peertalk.org.uk",
   "phone": "07719 562 617",
   "social": [],
-  "locations": [
-    "Batley: Central Methodist Church WF17 5DS (Wed 11–12.30)",
-    "Dalton: St Paul's Methodist HD5 8DE (Thu 7.30–9pm)"
-  ],
+  "locations": [],
   "areas": [
     "Batley",
     "Huddersfield"
@@ -43,11 +39,15 @@
     "allowed": "yes",
     "note": "Just turn up, no booking needed"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "peer-support-groups",
       "name": "Peer support groups",
-      "summary": "Free weekly groups for adults feeling stressed, low or anxious to talk with people who understand. No booking.",
-      "duration": ""
+      "overview": "Free weekly groups for adults feeling stressed, low or anxious to talk with people who understand. No booking.",
+      "where": [
+        "Batley: Central Methodist Church WF17 5DS (Wed 11–12.30)",
+        "Dalton: St Paul's Methodist HD5 8DE (Thu 7.30–9pm)"
+      ]
     }
   ],
   "workExperience": "No",
@@ -59,7 +59,8 @@
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "https://www.peertalk.org.uk/support-groups",
     "evidence": "© 2026; leaflet March 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

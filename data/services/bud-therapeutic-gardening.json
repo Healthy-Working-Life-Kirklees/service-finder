@@ -2,7 +2,6 @@
   "id": "bud-therapeutic-gardening",
   "name": "Bud – therapeutic gardening",
   "organisation": "Growing Works",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,9 +19,7 @@
   "email": "info@growingworks.org.uk",
   "phone": "07845 415289",
   "social": [],
-  "locations": [
-    "Wakefield Road Allotments, Dalton HD5 9XN (Tue & Thu 10–1)"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield"
   ],
@@ -46,11 +43,14 @@
     "allowed": "yes",
     "note": "Refer yourself or be referred by a service; email first"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "therapeutic-gardening-groups",
       "name": "Therapeutic gardening groups",
-      "summary": "Small allotment groups gardening and learning outdoor skills, sharing soup from what they grow; volunteering available.",
-      "duration": ""
+      "overview": "Small allotment groups gardening and learning outdoor skills, sharing soup from what they grow; volunteering available.",
+      "where": [
+        "Wakefield Road Allotments, Dalton HD5 9XN (Tue & Thu 10–1)"
+      ]
     }
   ],
   "workExperience": "Yes - volunteering",
@@ -62,7 +62,8 @@
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "http://www.growingworks.org.uk",
     "evidence": "Sept 2026 news.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

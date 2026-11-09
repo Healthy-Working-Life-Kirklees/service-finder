@@ -2,7 +2,6 @@
   "id": "macmillan-help-with-work",
   "name": "Macmillan Support Line and Help with Work",
   "organisation": "Macmillan Cancer Support",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -21,9 +20,7 @@
   "email": null,
   "phone": "0808 808 00 00",
   "social": [],
-  "locations": [
-    "Phone and online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -47,11 +44,14 @@
     "allowed": "yes",
     "note": "Phone the support line or use the website"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "cancer-and-work-support",
       "name": "Cancer and work support",
-      "summary": "Help for people with cancer on talking to employers, rights at work and self-employment, plus money advice.",
-      "duration": ""
+      "overview": "Help for people with cancer on talking to employers, rights at work and self-employment, plus money advice.",
+      "where": [
+        "Phone and online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -63,7 +63,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.macmillan.org.uk/cancer-information-and-support/get-help/help-with-work",
     "evidence": "© 2026.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

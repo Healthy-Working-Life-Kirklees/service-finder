@@ -2,7 +2,6 @@
   "id": "business-kirklees-start-up",
   "name": "Business Kirklees – start-up support",
   "organisation": "Kirklees Council",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -19,9 +18,7 @@
   "email": "business.enquiries@kirklees.gov.uk",
   "phone": "01484 221000",
   "social": [],
-  "locations": [
-    "Kirklees-wide"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -41,11 +38,14 @@
     "allowed": "yes",
     "note": "Contact by phone, email or the website"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "business-start-up-advice",
       "name": "Business start-up advice",
-      "summary": "Council advice for starting or growing a business: funding, premises, skills.",
-      "duration": ""
+      "overview": "Council advice for starting or growing a business: funding, premises, skills.",
+      "where": [
+        "Kirklees-wide"
+      ]
     }
   ],
   "workExperience": "No",
@@ -57,7 +57,8 @@
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "https://businesskirklees.com/",
     "evidence": "Sept 2026 news.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

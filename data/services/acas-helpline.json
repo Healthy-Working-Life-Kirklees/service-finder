@@ -2,7 +2,6 @@
   "id": "acas-helpline",
   "name": "Acas helpline",
   "organisation": "Acas",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -21,9 +20,7 @@
   "email": null,
   "phone": "0300 123 1100",
   "social": [],
-  "locations": [
-    "Phone and online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -43,11 +40,14 @@
     "allowed": "yes",
     "note": "Phone the helpline or get advice online"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "workplace-rights-advice",
       "name": "Workplace rights advice",
-      "summary": "Free, impartial advice on rights at work, including sickness absence and returning after illness.",
-      "duration": ""
+      "overview": "Free, impartial advice on rights at work, including sickness absence and returning after illness.",
+      "where": [
+        "Phone and online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -60,7 +60,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.acas.org.uk/contact/get-advice",
     "evidence": "Guidance updated June 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

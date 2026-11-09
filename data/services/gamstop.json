@@ -2,7 +2,6 @@
   "id": "gamstop",
   "name": "GAMSTOP self-exclusion",
   "organisation": "GAMSTOP",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -18,9 +17,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -31,31 +28,6 @@
   "exclusions": [],
   "gate": [],
   "healthFocus": [],
-  "referralRoutes": [
-    "Register online"
-  ],
-  "selfReferral": {
-    "allowed": "yes",
-    "note": "Register on the website"
-  },
-  "activities": [
-    {
-      "name": "Gambling self-exclusion",
-      "summary": "Free tool that blocks UK-licensed gambling sites and apps.",
-      "duration": ""
-    }
-  ],
-  "workExperience": "No",
-  "cost": "Free",
-  "lastUpdated": "2026-10-14",
-  "reviewCycle": "Quarterly",
-  "provenance": {
-    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 126",
-    "foundVia": "MECC Link",
-    "checkedUrl": "https://www.gamstop.co.uk/",
-    "evidence": "© 2026.",
-    "confidence": "medium"
-  },
   "requiresMention": [
     "gambl",
     "betting",
@@ -73,6 +45,35 @@
     "جوئے",
     "\\bjua\\b"
   ],
+  "referralRoutes": [
+    "Register online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Register on the website"
+  },
+  "projects": [
+    {
+      "id": "gambling-self-exclusion",
+      "name": "Gambling self-exclusion",
+      "overview": "Free tool that blocks UK-licensed gambling sites and apps.",
+      "where": [
+        "Online"
+      ]
+    }
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "lastUpdated": "2026-10-14",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 126",
+    "foundVia": "MECC Link",
+    "checkedUrl": "https://www.gamstop.co.uk/",
+    "evidence": "© 2026.",
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
+  },
   "listing": {
     "decision": "include",
     "reason": "On the live list since the October 2026 import, before the development team review."

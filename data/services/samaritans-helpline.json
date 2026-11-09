@@ -2,7 +2,6 @@
   "id": "samaritans-helpline",
   "name": "Samaritans helpline",
   "organisation": "Samaritans",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -18,9 +17,7 @@
   "email": null,
   "phone": "116 123",
   "social": [],
-  "locations": [
-    "Phone, UK-wide"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -37,15 +34,19 @@
     "allowed": "yes",
     "note": "Call any time"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "listening-and-support",
       "name": "Listening and support",
-      "summary": "Someone to talk to day or night if you're struggling. Free from any phone.",
-      "duration": ""
+      "overview": "Someone to talk to day or night if you're struggling. Free from any phone.",
+      "where": [
+        "Phone, UK-wide"
+      ]
     }
   ],
   "workExperience": "No",
   "cost": "Free",
+  "languages": "Welsh line 0808 164 0123",
   "notes": "A crisis or listening line. The finder already shows urgent contacts in its crisis panel and gives no cards when someone mentions suicide or self-harm.",
   "lastUpdated": "2026-10-14",
   "reviewCycle": "Quarterly",
@@ -54,11 +55,11 @@
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.samaritans.org/how-we-can-help/contact-samaritan/",
     "evidence": "Current official contact page; email service has closed.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "review",
     "reason": "Left out of the October import because the crisis panel covers crisis support. Added so the development team can decide."
-  },
-  "languages": "Welsh line 0808 164 0123"
+  }
 }

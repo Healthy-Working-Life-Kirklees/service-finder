@@ -2,7 +2,6 @@
   "id": "snackos-training-cafe",
   "name": "Snacko's training café",
   "organisation": "Snacko's / Stanley's Training Project",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Heckmondwike WF16 0NW"
-  ],
+  "locations": [],
   "areas": [
     "Spen Valley"
   ],
@@ -41,11 +38,14 @@
     "allowed": "yes",
     "note": "Get in touch through Facebook."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "catering-work-training",
       "name": "Catering work training",
-      "summary": "Catering project where people learn work skills serving the public, helping into paid or voluntary work.",
-      "duration": ""
+      "overview": "Catering project where people learn work skills serving the public, helping into paid or voluntary work.",
+      "where": [
+        "Heckmondwike WF16 0NW"
+      ]
     }
   ],
   "workExperience": "Yes - work experience in a café",
@@ -57,7 +57,8 @@
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=7572",
     "evidence": "Directory June 2026 only.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

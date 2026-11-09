@@ -2,7 +2,6 @@
   "id": "ck-careers-adult-guidance",
   "name": "Adult careers and employability guidance",
   "organisation": "C+K Careers",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -19,9 +18,7 @@
   "email": "enquiries@ckcareers.co.uk",
   "phone": "01484 242000",
   "social": [],
-  "locations": [
-    "Brian Jackson House, Huddersfield HD1 5JP"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Kirklees-wide"
@@ -40,11 +37,14 @@
     "allowed": "yes",
     "note": "Phone or email and ask for the adult team."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "careers-advice",
       "name": "Careers advice",
-      "summary": "Free, impartial careers advice for adults on jobs, training and next steps.",
-      "duration": ""
+      "overview": "Free, impartial careers advice for adults on jobs, training and next steps.",
+      "where": [
+        "Brian Jackson House, Huddersfield HD1 5JP"
+      ]
     }
   ],
   "workExperience": "No",
@@ -56,7 +56,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=318",
     "evidence": "Directory Oct 2025; council pages (to Oct 2026) still point to it. Separate from My Way Forward.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

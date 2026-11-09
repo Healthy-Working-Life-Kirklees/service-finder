@@ -2,7 +2,6 @@
   "id": "silver-line",
   "name": "Silver Line helpline",
   "organisation": "Age UK",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": "0800 4 70 80 90",
   "social": [],
-  "locations": [
-    "Phone"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -38,11 +35,14 @@
     "allowed": "yes",
     "note": "Call any time, day or night"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "helpline-for-older-people",
       "name": "Helpline for older people",
-      "summary": "Free 24/7 line for older people to talk or get support.",
-      "duration": ""
+      "overview": "Free 24/7 line for older people to talk or get support.",
+      "where": [
+        "Phone"
+      ]
     }
   ],
   "workExperience": "No",
@@ -54,7 +54,8 @@
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.thesilverline.org.uk/",
     "evidence": "Current 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

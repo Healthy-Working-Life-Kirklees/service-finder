@@ -13,6 +13,10 @@ on:
       - "package-lock.json"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
+  # Every morning, so the printable directory PDF drops projects that have closed (their end or referral close
+  # date has passed). The finder itself hides them as soon as the date passes, with no rebuild needed.
+  schedule:
+    - cron: "15 5 * * *"
 
 permissions:
   contents: read

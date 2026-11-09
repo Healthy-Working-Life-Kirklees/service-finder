@@ -2,7 +2,6 @@
   "id": "atw-mental-health-able-futures",
   "name": "Access to Work Mental Health Support – Able Futures",
   "organisation": "Able Futures (for DWP)",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": "0800 321 3137",
   "social": [],
-  "locations": [
-    "Online and phone"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -48,11 +45,14 @@
     "allowed": "yes",
     "note": "Refer yourself online or by phone"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "mental-health-support-at-work",
       "name": "Mental health support at work",
-      "summary": "Nine months of private support from a mental health professional to cope at work and plan changes with your employer.",
-      "duration": ""
+      "overview": "Nine months of private support from a mental health professional to cope at work and plan changes with your employer.",
+      "where": [
+        "Online and phone"
+      ]
     }
   ],
   "workExperience": "No",
@@ -64,7 +64,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://able-futures.co.uk/",
     "evidence": "Named on GOV.UK (Oct 2026).",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

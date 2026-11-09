@@ -5,8 +5,11 @@
 // 1. Each file matches data/schema.json (required fields, allowed values, date and web address formats).
 // 2. Rules a schema can't express: the file name matches the id, logos exist, requiresMention patterns
 //    are valid, dates aren't in the future, and a service on the live list ("listing": include) has no
-//    "To be completed" placeholders left in it.
-// It also reports (without failing) entries overdue for a check, so they are easy to spot.
+//    "To be completed" placeholders left in it. Project and cohort ids are unique within a service, and
+//    their dates are in order.
+// 3. data/organisations.json: one record per organisation, and every service's organisation is in it.
+// It also reports (without failing) entries overdue for a check, organisations with no services, and text
+// longer than the forms' character limits (kept as it is, for the partner to shorten when they check it).
 //
 // Exits with an error if anything fails, which stops the deploy or marks the pull request as failing.
 
@@ -14,6 +17,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Ajv2020 from 'ajv/dist/2020.js';
+import '../site/listing-logic.js';
+
+const { LIMITS, checkParts } = globalThis.LISTING;
 
 const PLACEHOLDER = 'To be completed';
 const STALE_DAYS = 135; // the same threshold the page uses for its "may be out of date" warning
@@ -38,6 +44,34 @@ try {
 if (meta) {
   for (const k of ['source', 'converted', 'notes']) if (typeof meta[k] !== 'string' || !meta[k].trim()) fail(metaFile, `"${k}" is missing`);
   for (const k of Object.keys(meta)) if (!['source', 'converted', 'notes'].includes(k)) fail(metaFile, `unexpected field "${k}"`);
+}
+
+// Organisations.
+const orgFile = 'data/organisations.json';
+const orgNames = new Map(); // name -> id
+const orgUsed = new Set();
+const overLimit = [];
+try {
+  const o = JSON.parse(fs.readFileSync(path.join(root, orgFile), 'utf8'));
+  if (!o || !Array.isArray(o.organisations)) fail(orgFile, 'must be { "organisations": [...] }');
+  const ids = new Set();
+  for (const [i, x] of (o.organisations || []).entries()) {
+    const where = `${orgFile} organisations[${i}]`;
+    if (!x || typeof x !== 'object') { fail(where, 'is not an object'); continue; }
+    for (const k of Object.keys(x)) if (!['id', 'name', 'overview', 'website', 'aliases', 'notes'].includes(k)) fail(where, `unexpected field "${k}"`);
+    if (typeof x.id !== 'string' || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(x.id) || x.id.length > 50) fail(where, 'needs an id of lower-case letters, numbers and hyphens');
+    if (typeof x.name !== 'string' || !x.name.trim()) fail(where, 'needs a name');
+    for (const k of ['overview', 'website', 'notes']) if (k in x && (typeof x[k] !== 'string' || !x[k].trim())) fail(where, `"${k}" must be text (leave it out if there is none)`);
+    if ('website' in x && !/^https?:\/\/\S+$/.test(x.website)) fail(where, 'website must start with http:// or https://');
+    if ('aliases' in x && (!Array.isArray(x.aliases) || x.aliases.some((a) => typeof a !== 'string' || !a.trim()))) fail(where, 'aliases must be a list of names');
+    if (ids.has(x.id)) fail(where, `id "${x.id}" is used twice`);
+    if (orgNames.has(x.name)) fail(where, `"${x.name}" is listed twice`);
+    ids.add(x.id);
+    orgNames.set(x.name, x.id);
+    if (x.overview && x.overview.length > LIMITS.orgOverview) overLimit.push(`organisation ${x.id}: overview ${x.overview.length} characters (limit ${LIMITS.orgOverview})`);
+  }
+} catch (e) {
+  fail(orgFile, `can't be read as JSON (${e.message})`);
 }
 
 const today = new Date().toISOString().slice(0, 10);
@@ -80,6 +114,12 @@ for (const f of files.sort()) {
   if (s.listing.decision === 'include' && JSON.stringify(s).includes(PLACEHOLDER)) {
     fail(rel, `is on the live list ("listing": include) but still says "${PLACEHOLDER}". Fill in the details first, or set the decision to review.`);
   }
+  if (orgNames.size && !orgNames.has(s.organisation)) fail(rel, `organisation "${s.organisation}" isn't in data/organisations.json (add it there, or use the name exactly as it is there)`);
+  orgUsed.add(s.organisation);
+  for (const p of checkParts(s.projects)) fail(rel, p);
+  if (s.whoFor.length > LIMITS.whoFor) overLimit.push(`${s.id}: who it's for ${s.whoFor.length} characters (limit ${LIMITS.whoFor})`);
+  for (const p of s.projects) if (p.overview.length > LIMITS.projectOverview) overLimit.push(`${s.id}: "${p.name}" overview ${p.overview.length} characters (limit ${LIMITS.projectOverview})`);
+  if (s.coachNotes && s.coachNotes.length > LIMITS.coachNotes) overLimit.push(`${s.id}: anything coaches should know ${s.coachNotes.length} characters (limit ${LIMITS.coachNotes})`);
   decisions[s.listing.decision] += 1;
   const key = (s.name + ' | ' + s.organisation).toLowerCase();
   if (names.has(key)) fail(rel, `same name and organisation as ${names.get(key)}`);
@@ -89,6 +129,9 @@ for (const f of files.sort()) {
 
 if (!files.length) fail('data/services/', 'no scheme files found');
 
+const unused = [...orgNames.keys()].filter((n) => !orgUsed.has(n));
+if (unused.length) console.log(`Note: ${unused.length} organisations have no services: ${unused.join(', ')}`);
+if (overLimit.length) console.log(`Note: ${overLimit.length} texts are longer than the forms allow (kept as they are; shorten them when next checked):\n  ${overLimit.join('\n  ')}`);
 if (overdue.length) console.log(`Note: ${overdue.length} open entries on the live list are overdue for a check: ${overdue.join(', ')}`);
 if (errors.length) {
   console.error(`\n${errors.length} problem${errors.length === 1 ? '' : 's'} in the scheme data:\n  ` + errors.join('\n  '));

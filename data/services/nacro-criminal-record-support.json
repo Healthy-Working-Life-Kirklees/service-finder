@@ -2,7 +2,6 @@
   "id": "nacro-criminal-record-support",
   "name": "Nacro Criminal Record Support Service",
   "organisation": "Nacro",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": "helpline@nacro.org.uk",
   "phone": null,
   "social": [],
-  "locations": [
-    "Phone and email"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -67,11 +64,14 @@
     "allowed": "yes",
     "note": "Email the helpline"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "criminal-record-advice",
       "name": "Criminal record advice",
-      "summary": "Advice on what's on your record, what to tell employers and applying for jobs.",
-      "duration": ""
+      "overview": "Advice on what's on your record, what to tell employers and applying for jobs.",
+      "where": [
+        "Phone and email"
+      ]
     }
   ],
   "workExperience": "No",
@@ -83,7 +83,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://nacro.org.uk/?p=26243",
     "evidence": "Page Aug 2025, © 2026. Phone came back truncated — confirm before publishing.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

@@ -2,7 +2,6 @@
   "id": "611-asylum-work",
   "name": "611 Asylum Work",
   "organisation": "Huddersfield Elim Pentecostal Church",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -19,9 +18,7 @@
   "email": "info@huddelim.org.uk",
   "phone": "01484 535554 (appts 01484 986110)",
   "social": [],
-  "locations": [
-    "Oasis Centre, Huddersfield HD1 5BW (Fri 10.30–2.30)"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield"
   ],
@@ -41,11 +38,14 @@
     "allowed": "yes",
     "note": "Come to the Friday drop-in or phone Monday to Thursday to book."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "practical-help-for-refugees",
       "name": "Practical help for refugees",
-      "summary": "Practical help for asylum seekers and refugees with forms, letters and calls; signposting and a Friday drop-in with food.",
-      "duration": ""
+      "overview": "Practical help for asylum seekers and refugees with forms, letters and calls; signposting and a Friday drop-in with food.",
+      "where": [
+        "Oasis Centre, Huddersfield HD1 5BW (Fri 10.30–2.30)"
+      ]
     }
   ],
   "workExperience": "No",
@@ -57,7 +57,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationdetails.aspx?orgid=7376",
     "evidence": "Directory updated 30 June 2026.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

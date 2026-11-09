@@ -2,7 +2,6 @@
   "id": "adult-skills-fund",
   "name": "Adult Skills Fund – free courses",
   "organisation": "West Yorkshire Combined Authority",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -20,9 +19,7 @@
   "email": "future.goals@westyorks-ca.gov.uk",
   "phone": "0113 251 7272",
   "social": [],
-  "locations": [
-    "23 providers incl. Kirklees College and Kirklees Council"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -41,11 +38,14 @@
     "allowed": "yes",
     "note": "Choose a provider from the list and contact them"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "free-adult-courses",
       "name": "Free adult courses",
-      "summary": "Pays for adults to study free, from basic English, maths and digital up to Level 3, through local providers.",
-      "duration": ""
+      "overview": "Pays for adults to study free, from basic English, maths and digital up to Level 3, through local providers.",
+      "where": [
+        "23 providers incl. Kirklees College and Kirklees Council"
+      ]
     }
   ],
   "workExperience": "No",
@@ -57,7 +57,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.westyorks-ca.gov.uk/skills/for-adults/funding/",
     "evidence": "Page live; undated.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

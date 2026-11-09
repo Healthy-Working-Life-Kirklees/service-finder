@@ -2,7 +2,6 @@
   "id": "wy-staff-wellbeing-hub",
   "name": "West Yorkshire Staff Mental Health and Wellbeing Hub",
   "organisation": "WY Health & Care Partnership",
-  "status": "Closed or not running (web research, October 2026)",
   "open": false,
   "hwlFunded": false,
   "level": "regional",
@@ -37,11 +36,11 @@
     "allowed": "tbc",
     "note": "To be completed."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "west-yorkshire-staff-mental-health-and-wellbeing-h",
       "name": "West Yorkshire Staff Mental Health and Wellbeing Hub",
-      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
-      "duration": ""
+      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
     }
   ],
   "workExperience": "Not known",
@@ -53,7 +52,8 @@
     "foundVia": "Web research or directory review (October 2026)",
     "evidence": "Closed March 2026 — do not list.",
     "confidence": "low",
-    "checkedUrl": "https://forumcentral.org.uk/west-yorkshire-staff-mental-health-and-wellbeing-hub-closure-update/"
+    "checkedUrl": "https://forumcentral.org.uk/west-yorkshire-staff-mental-health-and-wellbeing-hub-closure-update/",
+    "status": "Closed or not running (web research, October 2026)"
   },
   "listing": {
     "decision": "review",

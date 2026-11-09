@@ -2,7 +2,6 @@
   "id": "adult-community-learning",
   "name": "Adult and Community Learning (Adult Learning Kirklees)",
   "organisation": "Kirklees Council Learning Service",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -21,9 +20,7 @@
   "email": "adult.learning@kirklees.gov.uk",
   "phone": "01484 225016",
   "social": [],
-  "locations": [
-    "Community venues across Kirklees"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -43,11 +40,14 @@
     "allowed": "yes",
     "note": "Book a course on the website, or phone or email"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "community-courses",
       "name": "Community courses",
-      "summary": "Free friendly courses in community venues on confidence, wellbeing, getting ready for work, volunteering and computer skills.",
-      "duration": ""
+      "overview": "Free friendly courses in community venues on confidence, wellbeing, getting ready for work, volunteering and computer skills.",
+      "where": [
+        "Community venues across Kirklees"
+      ]
     }
   ],
   "workExperience": "No",
@@ -59,7 +59,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees.gov.uk/beta/employment-and-skills/skills-support.aspx",
     "evidence": "Skills page changed July 2026; mentions Adult Learners' Awards 22 Oct 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

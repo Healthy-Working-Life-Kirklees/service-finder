@@ -2,7 +2,6 @@
   "id": "op-restore",
   "name": "Op RESTORE (veterans' physical health)",
   "organisation": "Imperial College Healthcare NHS Trust",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "England"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -44,11 +41,14 @@
     "allowed": "no",
     "note": "Needs a referral from your GP"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "veterans-physical-health-service",
       "name": "Veterans' physical health service",
-      "summary": "NHS service for veterans with physical injuries or health problems caused by military service.",
-      "duration": ""
+      "overview": "NHS service for veterans with physical injuries or health problems caused by military service.",
+      "where": [
+        "England"
+      ]
     }
   ],
   "workExperience": "No",
@@ -60,7 +60,8 @@
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.imperial.nhs.uk/our-services/op-restore",
     "evidence": "Current referral process, page undated.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

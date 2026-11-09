@@ -2,7 +2,6 @@
   "id": "cfo-evolution-huddersfield",
   "name": "CFO Evolution – Huddersfield Activity Hub",
   "organisation": "HMPPS CFO, led by The Growth Company",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -20,9 +19,7 @@
   "email": "CFOEvolution@growthco.uk",
   "phone": "01942 423444 (service desk)",
   "social": [],
-  "locations": [
-    "Norwich Union House, Market Street, Huddersfield HD1 2LR"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Kirklees-wide"
@@ -71,11 +68,14 @@
     "allowed": "partly",
     "note": "Referral form, usually through probation; community referrals can be made by email."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "resettlement-and-work-support",
       "name": "Resettlement and work support",
-      "summary": "Help for people on probation or leaving prison: getting ready for work, wellbeing and resettling. Hub in Huddersfield.",
-      "duration": ""
+      "overview": "Help for people on probation or leaving prison: getting ready for work, wellbeing and resettling. Hub in Huddersfield.",
+      "where": [
+        "Norwich Union House, Market Street, Huddersfield HD1 2LR"
+      ]
     }
   ],
   "workExperience": "No",
@@ -87,7 +87,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.creatingfutureopportunities.gov.uk/?p=3483",
     "evidence": "Page modified May 2026; runs to at least April 2027.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

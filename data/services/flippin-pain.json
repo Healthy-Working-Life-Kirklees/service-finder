@@ -3,7 +3,6 @@
   "name": "Flippin' Pain (incl. Why We Hurt)",
   "organisation": "Cora Health (formerly Connect Health)",
   "logo": "cora-health.webp",
-  "status": "Live - open to referrals",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -44,20 +43,21 @@
     "allowed": "partly",
     "note": "Yes, where a link has been shared by a referring professional or through campaign activity"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "why-we-hurt-digital-patient-activation-programme",
       "name": "Why We Hurt - digital patient activation programme",
-      "summary": "Seven short (about 5 minute) videos with transcripts, interactive exercises, a library of information and a peer discussion forum, helping people understand pain and manage it, including staying physically, socially and economically active. Endorsed by the British Pain Society and the European Pain Federation. Optional health coach moderation.",
+      "overview": "Seven short (about 5 minute) videos with transcripts, interactive exercises, a library of information and a peer discussion forum, helping people understand pain and manage it, including staying physically, socially and economically active. Endorsed by the British Pain Society and the European Pain Federation. Optional health coach moderation.",
       "duration": "Unlimited access for up to 12 months from sign-up"
     },
     {
+      "id": "targeted-workforce-development",
       "name": "Targeted workforce development",
-      "summary": "Education on modern pain science for professionals working across the integrated care system.",
-      "duration": ""
+      "overview": "Education on modern pain science for professionals working across the integrated care system."
     }
   ],
   "workExperience": "No",
-  "notes": "1,000 Why We Hurt licences funded by NHS West Yorkshire ICB. DPIA completed; Cora Health is data controller.",
+  "notes": "1,000 Why We Hurt licences funded by NHS West Yorkshire ICB. DPIA completed; Cora Health is data controller.\n\nStatus before November 2026: Live - open to referrals",
   "lastUpdated": "2026-08-03",
   "reviewCycle": "Quarterly",
   "provenance": {

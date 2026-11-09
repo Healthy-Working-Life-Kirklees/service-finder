@@ -2,7 +2,6 @@
   "id": "kirklees-drug-alcohol-cgl",
   "name": "Kirklees Drug and Alcohol Service",
   "organisation": "Change Grow Live",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,10 +19,7 @@
   "email": null,
   "phone": "01484 353333",
   "social": [],
-  "locations": [
-    "20 Manchester Road, Huddersfield HD1 3HJ",
-    "3 Wellington Street, Dewsbury WF13 1LY"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Dewsbury",
@@ -69,11 +65,15 @@
     "allowed": "yes",
     "note": "Phone, use the online 'Get support' page or visit a hub"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "drug-and-alcohol-support",
       "name": "Drug and alcohol support",
-      "summary": "Free, confidential help with drugs or alcohol: advice, treatment, detox, mental health support and recovery groups.",
-      "duration": ""
+      "overview": "Free, confidential help with drugs or alcohol: advice, treatment, detox, mental health support and recovery groups.",
+      "where": [
+        "20 Manchester Road, Huddersfield HD1 3HJ",
+        "3 Wellington Street, Dewsbury WF13 1LY"
+      ]
     }
   ],
   "workExperience": "No",
@@ -85,7 +85,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.changegrowlive.org/drug-alcohol-s-kirklees/drugs-alcohol",
     "evidence": "Site © 2026 with current hours. Separate from IPS for CGL service users.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

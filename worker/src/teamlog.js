@@ -14,6 +14,11 @@
 //
 // And it holds provider review links (providerlink.js): a private link for one named contact at one scheme, so they
 // can check its details and send changes. Their replies wait here for the team, who choose what to apply.
+//
+// And changes to organisations (one waiting change per organisation): its name, overview and website, or combining
+// it into another organisation. They reach data/organisations.json the same way (scripts/apply-decisions.mjs).
+//
+// And which project end dates the morning reminder has already told the team about (reminders.js).
 
 import { teamLinks } from './providerlink.js';
 
@@ -169,6 +174,48 @@ export class LogStore {
       return Response.json({ id: body.id, deleted: true });
     }
 
+    // ----- organisation changes -----
+    if (url.pathname === '/orgs/list') {
+      const m = await s.list({ prefix: 'org:' });
+      const orgs = {};
+      for (const [k, v] of m) orgs[k.slice(4)] = v;
+      return Response.json({ orgs });
+    }
+
+    if (url.pathname === '/orgs/set') {
+      const key = 'org:' + body.id;
+      const prev = await s.get(key);
+      if (!prev && ((await s.get('orgCount')) || 0) >= 500) return Response.json({ error: 'Too many organisation changes waiting.' }, { status: 400 });
+      const history = prev ? [...(prev.history || []), { changes: prev.changes, note: prev.note, by: prev.by, t: prev.t }].slice(-10) : [];
+      const item = { changes: body.changes, before: body.before, note: body.note, by: body.by, t: now, history };
+      await s.put(key, item);
+      if (!prev) await s.put('orgCount', ((await s.get('orgCount')) || 0) + 1);
+      return Response.json({ id: body.id, item });
+    }
+
+    if (url.pathname === '/orgs/delete') {
+      const key = 'org:' + body.id;
+      if (!(await s.get(key))) return Response.json({ error: 'Not found.' }, { status: 404 });
+      await s.delete(key);
+      await s.put('orgCount', Math.max(0, ((await s.get('orgCount')) || 1) - 1));
+      return Response.json({ id: body.id, deleted: true });
+    }
+
+    // ----- morning reminders (see reminders.js) -----
+    if (url.pathname === '/remind/check') {
+      const keys = (Array.isArray(body.keys) ? body.keys : []).slice(0, 500);
+      const got = await s.get(keys.map((k) => 'remind:' + k));
+      return Response.json({ unseen: keys.filter((k) => !got.get('remind:' + k)) });
+    }
+
+    if (url.pathname === '/remind/mark') {
+      const keys = (Array.isArray(body.keys) ? body.keys : []).slice(0, 500);
+      const entries = {};
+      for (const k of keys) entries['remind:' + k] = now;
+      if (keys.length) await s.put(entries);
+      return Response.json({ marked: keys.length });
+    }
+
     // ----- provider review links (see providerlink.js) -----
     if (url.pathname === '/plinks/list') {
       const m = await s.list({ prefix: 'plink:' });
@@ -223,6 +270,35 @@ export class LogStore {
 
     return Response.json({ error: 'Not found.' }, { status: 404 });
   }
+}
+
+// An organisation change: { name?, overview?, website?, mergeInto? }. null removes the overview or website.
+// mergeInto is another organisation's id: its services move to that organisation and this one's name is kept
+// as an alias (other name) there.
+export function checkOrgChanges(input) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return { error: 'Nothing to change.' };
+  const out = {};
+  for (const [k, v] of Object.entries(input)) {
+    if (k === 'name') {
+      const t = clean(v, 200);
+      if (t.length < 2 || t.length > 150) return { error: 'The organisation name must be 2 to 150 characters.' };
+      out.name = t;
+    } else if (k === 'overview') {
+      const t = v === null ? '' : clean(v, 1000);
+      if (t.length > 300) return { error: 'The organisation overview is too long (at most 300 characters).' };
+      if (/healthy\s+working\s+life|\bhwl\b/i.test(t)) return { error: "The organisation overview describes the whole organisation, so it mustn't say it is Healthy Working Life: that is marked on each service that is." };
+      out.overview = t || null;
+    } else if (k === 'website') {
+      const t = v === null ? '' : clean(v, 600);
+      if (t && !/^https?:\/\/\S+$/.test(t)) return { error: 'The website must start with http:// or https://.' };
+      out.website = t || null;
+    } else if (k === 'mergeInto') {
+      if (typeof v !== 'string' || !ID_RE.test(v)) return { error: 'Choose the organisation to combine it into.' };
+      out.mergeInto = v;
+    } else return { error: `"${k}" can't be changed here.` };
+  }
+  if (!Object.keys(out).length) return { error: 'Nothing has changed.' };
+  return { changes: out };
 }
 
 // ---------- the HTTP side (called from the Worker's fetch) ----------
@@ -310,7 +386,7 @@ export async function handleLog(request, env, url, cors, checker) {
     // No changes at all is allowed only to record that the details were checked and are still right
     // (for example a provider said everything is correct).
     const noChanges = body.changes && typeof body.changes === 'object' && !Array.isArray(body.changes) && !Object.keys(body.changes).length;
-    const checked = noChanges && body.checked === true ? { changes: {} } : checker.checkChanges(body.changes);
+    const checked = noChanges && body.checked === true ? { changes: {} } : checker.checkChanges(body.changes, checker.byId && checker.byId.get(e[1]));
     if (checked.error) return json({ error: checked.error }, 400, cors);
     const note = clean(body.note, 1000);
     if (note.length < 3) return json({ error: 'Please say briefly what changed and why.' }, 400, cors);
@@ -351,6 +427,30 @@ export async function handleLog(request, env, url, cors, checker) {
   }
 
   if (path.startsWith('/log/provider-links')) return teamLinks(request, path, body, call, cors, checker);
+
+  // ----- organisations: rename, overview, website, or combine into another -----
+  if (request.method === 'GET' && path === '/log/orgs') {
+    return json(await call('/orgs/list'), 200, cors);
+  }
+  const o = path.match(/^\/log\/orgs\/([a-z0-9-]{1,50})$/);
+  if (o && (request.method === 'PUT' || request.method === 'DELETE')) {
+    if (!ID_RE.test(o[1])) return json({ error: 'Unknown organisation.' }, 400, cors);
+    const by = clean(body.by, 40);
+    if (!by) return json({ error: 'Please give your name or initials.' }, 400, cors);
+    if (request.method === 'DELETE') {
+      const res = await call('/orgs/delete', { id: o[1] });
+      return json(res, res.error ? 404 : 200, cors);
+    }
+    const r = checkOrgChanges(body.changes);
+    if (r.error) return json({ error: r.error }, 400, cors);
+    if (r.changes.mergeInto === o[1]) return json({ error: "An organisation can't be combined into itself." }, 400, cors);
+    const note = clean(body.note, 1000);
+    if (note.length < 3) return json({ error: 'Please say briefly what changed and why.' }, 400, cors);
+    const before = {};
+    if (body.before && typeof body.before === 'object') for (const k of Object.keys(r.changes)) if (k in body.before) before[k] = body.before[k];
+    const res = await call('/orgs/set', { id: o[1], changes: r.changes, before, note, by });
+    return json(res, res.error ? 400 : 200, cors);
+  }
 
   const m = path.match(/^\/log\/items\/(\d{1,9})$/);
   if (request.method === 'PATCH' && m) {

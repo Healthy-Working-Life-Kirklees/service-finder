@@ -2,7 +2,6 @@
   "id": "calm-helpline",
   "name": "CALM helpline and webchat",
   "organisation": "Campaign Against Living Miserably",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": "0800 58 58 58",
   "social": [],
-  "locations": [
-    "Phone and online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -39,11 +36,14 @@
     "allowed": "yes",
     "note": "Call, chat or WhatsApp, 5pm–midnight daily"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "listening-and-support",
       "name": "Listening and support",
-      "summary": "Free, anonymous helpline and webchat for anyone finding life hard or thinking about suicide.",
-      "duration": ""
+      "overview": "Free, anonymous helpline and webchat for anyone finding life hard or thinking about suicide.",
+      "where": [
+        "Phone and online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -56,7 +56,8 @@
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.thecalmzone.net/suicide-prevention-helpline",
     "evidence": "© 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "review",

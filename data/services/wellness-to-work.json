@@ -3,7 +3,6 @@
   "name": "Wellness to Work",
   "organisation": "Locala Community Partnerships CIC",
   "logo": "locala.webp",
-  "status": "Live - open to referrals",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -23,11 +22,7 @@
   "email": "wellnesstowork@locala.org.uk",
   "phone": "0300 304 5555",
   "social": [],
-  "locations": [
-    "Princess Royal Health Centre, Greenhead Rd, Huddersfield HD1 4EW",
-    "Batley Health Centre, 130 Upper Commercial St, Batley WF17 5ED",
-    "Dewsbury Health Centre, Wellington Road, Dewsbury WF13 1HN"
-  ],
+  "locations": [],
   "areas": [
     "Batley",
     "Colne Valley",
@@ -61,14 +56,21 @@
     "note": "Yes, via any route",
     "url": "https://www.locala.org.uk/services/wellness-to-work"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "wellness-to-work",
       "name": "Wellness to Work",
-      "summary": "A personalised holistic assessment of barriers (health, confidence, skills, general wellbeing), clinical triage where needed, and a dedicated Employment Navigator and health professional who build an action plan. Includes MSK fast-track physiotherapy and occupational therapy vocational rehabilitation. Connects people to partners such as Get Set Goal, Kirklees Active Leisure, Kirklees College and Third Sector Leaders.",
-      "duration": "3-6 months, with coordination for up to 3 months afterwards, plus in-work support for people who get a job"
+      "overview": "A personalised holistic assessment of barriers (health, confidence, skills, general wellbeing), clinical triage where needed, and a dedicated Employment Navigator and health professional who build an action plan. Includes MSK fast-track physiotherapy and occupational therapy vocational rehabilitation. Connects people to partners such as Get Set Goal, Kirklees Active Leisure, Kirklees College and Third Sector Leaders.",
+      "duration": "3-6 months, with coordination for up to 3 months afterwards, plus in-work support for people who get a job",
+      "where": [
+        "Princess Royal Health Centre, Greenhead Rd, Huddersfield HD1 4EW",
+        "Batley Health Centre, 130 Upper Commercial St, Batley WF17 5ED",
+        "Dewsbury Health Centre, Wellington Road, Dewsbury WF13 1HN"
+      ]
     }
   ],
   "workExperience": "No",
+  "notes": "Status before November 2026: Live - open to referrals",
   "lastUpdated": "2026-09-08",
   "reviewCycle": "Quarterly",
   "provenance": {

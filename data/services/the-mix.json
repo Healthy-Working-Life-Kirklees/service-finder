@@ -2,7 +2,6 @@
   "id": "the-mix",
   "name": "The Mix (support for under-25s)",
   "organisation": "Mental Health Innovations",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -21,9 +20,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -42,11 +39,14 @@
     "allowed": "yes",
     "note": "Use the website; text 85258 for urgent help"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "online-support-for-young-people",
       "name": "Online support for young people",
-      "summary": "Free online support for young people: peer chat, counselling, groups and advice on mental health, money, work and housing.",
-      "duration": ""
+      "overview": "Free online support for young people: peer chat, counselling, groups and advice on mental health, money, work and housing.",
+      "where": [
+        "Online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -58,7 +58,8 @@
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.themix.org.uk/",
     "evidence": "© 2026. MECC still lists an old phone line that no longer appears on the site.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

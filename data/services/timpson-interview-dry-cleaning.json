@@ -2,7 +2,6 @@
   "id": "timpson-interview-dry-cleaning",
   "name": "Free interview outfit dry cleaning",
   "organisation": "Timpson",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -18,9 +17,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Timpson shops"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -41,11 +38,14 @@
     "allowed": "yes",
     "note": "Take your interview outfit to a Timpson dry-cleaning shop"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "free-interview-dry-cleaning",
       "name": "Free interview dry cleaning",
-      "summary": "Timpson dry cleans one outfit free for unemployed people going to an interview.",
-      "duration": ""
+      "overview": "Timpson dry cleans one outfit free for unemployed people going to an interview.",
+      "where": [
+        "Timpson shops"
+      ]
     }
   ],
   "workExperience": "No",
@@ -57,7 +57,8 @@
     "foundVia": "District Provision Tool",
     "checkedUrl": "https://www.timpson.co.uk/services/dry-cleaners/dry-cleaning-unemployed-interview",
     "evidence": "Current, no end date.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

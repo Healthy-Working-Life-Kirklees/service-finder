@@ -2,7 +2,6 @@
   "id": "changes-inspire-north",
   "name": "Changes service",
   "organisation": "Inspire North",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -19,9 +18,7 @@
   "email": "changes@inspirenorth.co.uk",
   "phone": "01924 448975 / 07891 598183",
   "social": [],
-  "locations": [
-    "25 Trinity Street, Batley WF17 7JZ"
-  ],
+  "locations": [],
   "areas": [
     "Batley"
   ],
@@ -72,11 +69,14 @@
     "allowed": "no",
     "note": "Needs a referral from any service"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "complex-needs-support-groups",
       "name": "Complex needs support groups",
-      "summary": "Support and weekly groups for adults with complex needs and past trauma who've offended or are at risk of offending.",
-      "duration": ""
+      "overview": "Support and weekly groups for adults with complex needs and past trauma who've offended or are at risk of offending.",
+      "where": [
+        "25 Trinity Street, Batley WF17 7JZ"
+      ]
     }
   ],
   "workExperience": "No",
@@ -88,7 +88,8 @@
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "https://www.inspirenorth.co.uk/our-services/get-help-and-support-page/changes/",
     "evidence": "2026 timetable on page.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

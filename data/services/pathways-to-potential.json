@@ -3,7 +3,6 @@
   "name": "Pathways to Potential",
   "organisation": "Community Platform Together CIC and The Branch",
   "logo": "community-platform.webp",
-  "status": "Live - grant-funded project (status not stated in the pathways document)",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -22,9 +21,7 @@
   "email": "dave@communityplatform.org.uk",
   "phone": "07557 916 390",
   "social": [],
-  "locations": [
-    "The Branch, Jubilee Centre, Huddersfield, HD1 4SH - a welcoming, accessible community space"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield"
   ],
@@ -52,14 +49,19 @@
     "allowed": "yes",
     "note": "Yes"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "pathways-to-potential-programme",
       "name": "Pathways to Potential Programme",
-      "summary": "Group workshops and one-to-one guidance covering wellbeing and mindfulness, digital confidence and basic IT skills (including AI), CVs, job searching and interviews, and volunteering and community connections.",
-      "duration": "10 sessions over eight weeks (three cohorts, 30 places in total)"
+      "overview": "Group workshops and one-to-one guidance covering wellbeing and mindfulness, digital confidence and basic IT skills (including AI), CVs, job searching and interviews, and volunteering and community connections.",
+      "duration": "10 sessions over eight weeks (three cohorts, 30 places in total)",
+      "where": [
+        "The Branch, Jubilee Centre, Huddersfield, HD1 4SH - a welcoming, accessible community space"
+      ]
     }
   ],
   "workExperience": "Volunteering opportunities",
+  "notes": "Status before November 2026: Live - grant-funded project (status not stated in the pathways document)",
   "lastUpdated": "2026-10-01",
   "reviewCycle": "Quarterly",
   "provenance": {

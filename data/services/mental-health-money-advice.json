@@ -2,7 +2,6 @@
   "id": "mental-health-money-advice",
   "name": "Mental Health & Money Advice",
   "organisation": "Mental Health UK",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -20,9 +19,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -42,11 +39,14 @@
     "allowed": "yes",
     "note": "Use the website"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "mental-health-and-money-advice",
       "name": "Mental health and money advice",
-      "summary": "Website with advice on benefits, money and mental health, including a budget planner.",
-      "duration": ""
+      "overview": "Website with advice on benefits, money and mental health, including a budget planner.",
+      "where": [
+        "Online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -59,7 +59,8 @@
     "foundVia": "District Provision Tool",
     "checkedUrl": "https://www.mentalhealthandmoneyadvice.org/",
     "evidence": "Updated Oct 2025.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

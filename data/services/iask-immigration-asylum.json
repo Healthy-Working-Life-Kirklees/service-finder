@@ -2,7 +2,6 @@
   "id": "iask-immigration-asylum",
   "name": "Immigration and Asylum Support Kirklees (IASK)",
   "organisation": "IASK",
-  "status": "Not verified as running (web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -33,11 +32,11 @@
     "allowed": "tbc",
     "note": "To be completed."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "immigration-and-asylum-support-kirklees-iask",
       "name": "Immigration and Asylum Support Kirklees (IASK)",
-      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
-      "duration": ""
+      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
     }
   ],
   "workExperience": "Not known",
@@ -49,7 +48,8 @@
     "foundVia": "Web research or directory review (October 2026)",
     "evidence": "Site © 2023; advice only, no employment offer. Directory Oct 2025, no closure notice; Quakers House, Paddock HD1 4TR.",
     "confidence": "low",
-    "checkedUrl": "https://www.i-ask.co.uk"
+    "checkedUrl": "https://www.i-ask.co.uk",
+    "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
     "decision": "review",

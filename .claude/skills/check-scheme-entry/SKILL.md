@@ -30,12 +30,13 @@ Never take contact details, eligibility or opening times from aggregators, forum
 Work through the entry and note for each: **confirmed**, **changed** (old → new, with source URL), **sources disagree** (HWL schemes), or **couldn't confirm**.
 
 Priority order:
-- **Still running?** → `open`, `status`. If closed or paused, propose `open: false` and a `status` saying so (and when). Don't delete the file.
+- **Still running?** → `open` and each project's (and cohort's) dates: `runsFrom`, `runsTo`, `referralsFrom`, `referralsUntil`. If it has closed, propose an end date (it then stops showing by itself) or `open: false` if it isn't taking referrals at all. Note the source in the team `notes`. Don't delete the file.
 - **Contact**: `webpage` (does it load, is it the right page?), `email`, `phone`, `selfReferral.url`. Copy exactly from the provider; never tidy or guess.
 - **Who it's for**: `whoFor`, `age`, `eligibility`, `exclusions`, `gate`, `healthFocus`, `audience`.
-- **Where**: `locations`, `areas` (allowed values only: Batley, Colne Valley, Dewsbury, Holme Valley, Huddersfield, Kirkburton, Mirfield, Spen Valley, Kirklees-wide, Online).
+- **Where**: each project's `where` (and `locations` for places every project uses), `areas` (allowed values only: Batley, Colne Valley, Dewsbury, Holme Valley, Huddersfield, Kirkburton, Mirfield, Spen Valley, Kirklees-wide, Online).
 - **How to get in**: `referralRoutes`, `selfReferral.allowed` (`yes`/`partly`/`no`/`tbc`) and `note`.
-- **What it does**: `activities`, `cost`, `workExperience`, `languages`.
+- **What it does**: `projects` (name, overview up to 400 characters, `when`, `duration`, `places`, and cohorts if it runs more than once for different groups; a project or cohort only records what differs from the service), `cost`, `workExperience`, `languages`, `coachNotes`.
+- **The organisation**: its overview and website live in `data/organisations.json`, shared by all its services. Never mention Healthy Working Life there.
 - Any remaining `"To be completed"` placeholders.
 - `categories`: only from the schema list, most important first.
 
@@ -44,7 +45,7 @@ Priority order:
 Show the person a short table: field | now | proposed | source (for HWL schemes add a column for the Pathways doc). Then list anything you couldn't confirm and any disagreements. Ask for a go-ahead before writing, unless they've already said "just update it".
 
 Rules for the proposed values:
-- House style: plain, informal, UK spelling, reading age about 11 for anything shown on cards (`whoFor`, activity summaries, notes).
+- House style: plain, informal, UK spelling, reading age about 11 for anything shown on cards (`whoFor`, project overviews, `coachNotes`). `notes` are team notes and never shown.
 - **Never change `id`.** The model, tests and smoke checks depend on it.
 - **Never add a helpline or urgent phone number to the prompt or `URGENT_CONTACTS`.** Scheme `phone` fields are fine if copied from the provider.
 - Don't change `listing.decision` yourself. That's the development team's call via the All services page. You can recommend one, e.g. "suggest exclude: service closed March 2026".

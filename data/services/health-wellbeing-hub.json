@@ -3,7 +3,6 @@
   "name": "Health & Wellbeing Hub",
   "organisation": "Kirklees College",
   "logo": "kirklees-college.webp",
-  "status": "Live - open to referrals",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -50,19 +49,20 @@
     "allowed": "yes",
     "note": "Yes, via any route"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "health-and-wellbeing-coaching",
       "name": "Health and Wellbeing Coaching",
-      "summary": "Early, holistic, work-focused support from the Student Service Hub: one-to-one coaching, on-campus health services (health checks, BACP-accredited counselling plus TAC Access online counselling, screenings), group activities and workshops, and supported inclusive work opportunities. Employment support through the on-site Job Shop with the DWP Jobs and Careers Service, including a Disability Employment Advisor.",
-      "duration": ""
+      "overview": "Early, holistic, work-focused support from the Student Service Hub: one-to-one coaching, on-campus health services (health checks, BACP-accredited counselling plus TAC Access online counselling, screenings), group activities and workshops, and supported inclusive work opportunities. Employment support through the on-site Job Shop with the DWP Jobs and Careers Service, including a Disability Employment Advisor."
     },
     {
+      "id": "embedding-health-and-wellbeing-across-the-college",
       "name": "Embedding health and wellbeing across the college",
-      "summary": "Health programmes in the personal development curriculum, staff training including mental health first aid, student mental health ambassadors, and a school nurse pilot.",
-      "duration": ""
+      "overview": "Health programmes in the personal development curriculum, staff training including mental health first aid, student mental health ambassadors, and a school nurse pilot."
     }
   ],
   "workExperience": "Yes",
+  "notes": "Status before November 2026: Live - open to referrals",
   "lastUpdated": "2026-08-24",
   "reviewCycle": "Quarterly",
   "provenance": {

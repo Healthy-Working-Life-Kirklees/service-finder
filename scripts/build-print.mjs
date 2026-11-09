@@ -18,6 +18,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import QRCode from 'qrcode';
+import '../site/listing-logic.js';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const OUT = path.join(ROOT, 'print', 'out');
@@ -37,11 +38,20 @@ const SITE_DIR = siteArg > -1 ? path.resolve(process.argv[siteArg + 1] || '') : 
 if (siteArg > -1 && !process.argv[siteArg + 1]) throw new Error('--site needs a folder, for example --site _site');
 
 // ---------- data ----------
+const TODAY = new Date().toISOString().slice(0, 10);
+const L = globalThis.LISTING;
+const ORGS = (() => {
+  try { return JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'organisations.json'), 'utf8')).organisations; } catch { return []; }
+})();
+const orgOverview = (name) => (ORGS.find((o) => o.name === name || (o.aliases || []).includes(name)) || {}).overview || '';
 const dir = path.join(ROOT, 'data', 'services');
 const services = fs.readdirSync(dir)
   .filter((f) => f.endsWith('.json'))
   .map((f) => JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')))
   .filter((s) => s.listing && s.listing.decision === 'include')
+  // Only services with a project or cohort open (or opening to referrals soon) on the day it is built. The
+  // directory is rebuilt each morning, so closed projects drop out on their own (site/listing-logic.js).
+  .filter((s) => globalThis.LISTING.visible(s, TODAY).length > 0)
   .sort((a, b) => a.name.localeCompare(b.name, 'en-GB', { sensitivity: 'base' }));
 
 const today = new Date();
@@ -190,17 +200,24 @@ async function servicePage(s, n) {
   const self = SELF[s.selfReferral?.allowed] || null;
   const badges = [
     s.hwlFunded ? '<span class="badge hwlb">Healthy Working Life scheme</span>' : '',
-    s.open ? '<span class="badge live">Open to referrals</span>' : '<span class="badge notopen">Not open yet</span>',
+    L.visible(s, TODAY).every((x) => x.state === 'soon') ? `<span class="badge notopen">Referrals open soon</span>` : s.open ? '<span class="badge live">Open to referrals</span>' : '<span class="badge notopen">Not open yet</span>',
     self ? `<span class="badge ${self[0]}">${self[1]}</span>` : '',
     s.level === 'regional' ? '<span class="badge">Regional service</span>' : '',
     s.level === 'national' ? '<span class="badge">National service</span>' : '',
     s.age ? `<span class="badge">Age: ${esc(s.age)}</span>` : '',
   ].join('');
 
-  const acts = (s.activities || []).map((a) => {
-    const showName = a.name && a.name.trim().toLowerCase() !== s.name.trim().toLowerCase();
-    return `<li>${showName ? `<strong>${esc(a.name)}.</strong> ` : ''}${esc(a.summary)}${a.duration ? ` <span class="dur">(${esc(a.duration)})</span>` : ''}</li>`;
+  // The projects (and cohorts) open or opening soon on the day the directory is built, with their own details.
+  const facts = (o, dates) => [o.when, o.duration, o.places, o.age && o.age !== s.age ? 'Age ' + o.age : '', (o.eligibility || []).length ? 'Also: ' + o.eligibility.join('; ') : '', ...L.dateWords(dates, TODAY)].filter(Boolean);
+  const shown = L.visible(s, TODAY);
+  const acts = shown.map((x) => {
+    const p = x.project;
+    const showName = p.name && p.name.trim().toLowerCase() !== s.name.trim().toLowerCase();
+    const own = facts(p, x.cohorts.length ? {} : x.dates);
+    const cohorts = x.cohorts.map((c) => `<li><strong>${esc(c.cohort.name)}.</strong> ${esc(facts({ ...c.cohort, age: c.cohort.age || p.age }, c.dates).join('. '))}</li>`).join('');
+    return `<li>${showName ? `<strong>${esc(p.name)}.</strong> ` : ''}${esc(p.overview || '')}${own.length ? ` <span class="dur">(${esc(own.join('. '))})</span>` : ''}${cohorts ? `<ul class="cohorts">${cohorts}</ul>` : ''}</li>`;
   }).join('');
+  const where = [...new Set([...(s.locations || []), ...shown.flatMap((x) => [...(x.project.where || []), ...x.cohorts.flatMap((c) => c.cohort.where || [])])])];
 
   const contact = [
     s.phone ? `<div class="ct"><dt>Phone</dt><dd>${esc(s.phone)}</dd></div>` : '',
@@ -215,6 +232,7 @@ async function servicePage(s, n) {
     s.cost ? `<h3>Cost</h3><p>${esc(s.cost)}</p>` : '',
     s.languages ? `<h3>Languages and formats</h3><p>${esc(s.languages)}</p>` : '',
     s.workExperience && !/^no$|^not known$/i.test(s.workExperience) ? `<h3>Volunteering or work experience</h3><p>${esc(s.workExperience)}</p>` : '',
+    s.coachNotes ? `<h3>Good to know</h3><p>${esc(s.coachNotes)}</p>` : '',
   ].join('');
 
   const qrBlock = s.webpage ? `<div class="qr">${await qr(s.webpage)}<span>Scan to open the website</span></div>` : '';
@@ -226,11 +244,11 @@ async function servicePage(s, n) {
   <header class="svc-head">${thumb}<div class="ttl"><h2>${esc(s.name)}</h2><p class="org">${esc(s.organisation)}</p><div class="badges">${badges}</div></div></header>
   <div class="fit"><div class="svc-body">
     <div class="main">
-      <p class="whofor">${esc(s.whoFor)}</p>
+      <p class="whofor">${esc(s.whoFor)}</p>${orgOverview(s.organisation) ? `<p class="orgabout"><strong>About ${esc(s.organisation)}:</strong> ${esc(orgOverview(s.organisation))}</p>` : ''}
       <h3>What they offer</h3><ul class="acts">${acts}</ul>
       ${(s.eligibility || []).length ? `<h3>Who can join</h3>${list(s.eligibility)}` : ''}
       ${(s.exclusions || []).length ? `<h3>Who they can't help</h3>${list(s.exclusions)}` : ''}
-      <h3>Where</h3>${list(s.locations)}${areaLine ? `<p class="areas"><span>Areas:</span> ${esc(areaLine)}</p>` : ''}
+      <h3>Where</h3>${list(where)}${areaLine ? `<p class="areas"><span>Areas:</span> ${esc(areaLine)}</p>` : ''}
     </div>
     <aside class="side">
       <h3>Contact</h3><dl class="contact">${contact}</dl>

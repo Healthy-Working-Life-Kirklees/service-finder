@@ -2,7 +2,6 @@
   "id": "veterans-guaranteed-interview",
   "name": "Guaranteed Interview Scheme for veterans",
   "organisation": "Kirklees Council",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": null,
   "social": [],
-  "locations": [
-    "Kirklees"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -43,11 +40,14 @@
     "allowed": "yes",
     "note": "Apply through the scheme's candidate portal or the council jobs site"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "guaranteed-job-interviews",
       "name": "Guaranteed job interviews",
-      "summary": "UK armed forces veterans who meet the essential criteria for a council job are guaranteed an interview.",
-      "duration": ""
+      "overview": "UK armed forces veterans who meet the essential criteria for a council job are guaranteed an interview.",
+      "where": [
+        "Kirklees"
+      ]
     }
   ],
   "workExperience": "No",
@@ -59,7 +59,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees.gov.uk/armedforces",
     "evidence": "Page changed Oct 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

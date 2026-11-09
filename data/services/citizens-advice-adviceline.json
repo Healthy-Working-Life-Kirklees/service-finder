@@ -2,7 +2,6 @@
   "id": "citizens-advice-adviceline",
   "name": "Citizens Advice Adviceline",
   "organisation": "Citizens Advice",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -21,9 +20,7 @@
   "email": null,
   "phone": "0800 144 8848",
   "social": [],
-  "locations": [
-    "Phone and webchat"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -42,11 +39,14 @@
     "allowed": "yes",
     "note": "Phone or use webchat"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "benefits-work-and-debt-advice",
       "name": "Benefits, work and debt advice",
-      "summary": "Free advice on sick pay, rights at work, benefits, debt and housing.",
-      "duration": ""
+      "overview": "Free advice on sick pay, rights at work, benefits, debt and housing.",
+      "where": [
+        "Phone and webchat"
+      ]
     }
   ],
   "workExperience": "No",
@@ -58,7 +58,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.citizensadvice.org.uk/about-us/contact-us/contact-us/contact-us/",
     "evidence": "Contact page live © 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

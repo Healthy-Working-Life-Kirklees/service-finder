@@ -2,7 +2,6 @@
   "id": "kirklees-talking-therapies",
   "name": "Kirklees Talking Therapies (main therapy service)",
   "organisation": "South West Yorkshire Partnership NHS FT",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -20,10 +19,7 @@
   "email": "Kirklees.talkingtherapies@swyt.nhs.uk",
   "phone": "01484 343700",
   "social": [],
-  "locations": [
-    "Folly Hall Mills, Huddersfield",
-    "online and phone"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Kirklees-wide",
@@ -48,11 +44,15 @@
     "allowed": "yes",
     "note": "Refer yourself online or through your GP"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "talking-therapies",
       "name": "Talking therapies",
-      "summary": "NHS talking therapy for stress, anxiety, low mood, panic and sleep problems: guided self-help, online therapy, CBT, counselling and groups.",
-      "duration": ""
+      "overview": "NHS talking therapy for stress, anxiety, low mood, panic and sleep problems: guided self-help, online therapy, CBT, counselling and groups.",
+      "where": [
+        "Folly Hall Mills, Huddersfield",
+        "online and phone"
+      ]
     }
   ],
   "workExperience": "No",
@@ -64,7 +64,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees-talkingtherapies.nhs.uk/",
     "evidence": "Site modified May 2026. Separate from the Employment Advice service already listed. MECC Link still lists an old IAPT number (01484 434625/6) — ignore.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

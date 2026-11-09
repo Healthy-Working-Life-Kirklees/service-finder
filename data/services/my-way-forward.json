@@ -3,7 +3,6 @@
   "name": "My Way Forward",
   "organisation": "C+K Careers Ltd",
   "logo": "c-k-careers.webp",
-  "status": "Live - open to referrals",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -26,10 +25,7 @@
     "https://www.facebook.com/CKCareers",
     "https://www.instagram.com/ckcareers"
   ],
-  "locations": [
-    "Brian Jackson House, Huddersfield",
-    "Community settings, e.g. Batley and Dewsbury Libraries"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Batley",
@@ -55,14 +51,20 @@
     "allowed": "yes",
     "note": "Yes, via any route"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "my-way-forward",
       "name": "My Way Forward",
-      "summary": "1:1 coaching on career opportunities, barriers and benefits; peer group sessions including social hubs and job clubs (online and in person); confidence and resilience activities; support to access health and wellbeing services; basic skills and job-specific training; volunteering and work experience; peer mentoring; and for some, job search, CV and interview help.",
-      "duration": "Open-ended, depending on need"
+      "overview": "1:1 coaching on career opportunities, barriers and benefits; peer group sessions including social hubs and job clubs (online and in person); confidence and resilience activities; support to access health and wellbeing services; basic skills and job-specific training; volunteering and work experience; peer mentoring; and for some, job search, CV and interview help.",
+      "duration": "Open-ended, depending on need",
+      "where": [
+        "Brian Jackson House, Huddersfield",
+        "Community settings, e.g. Batley and Dewsbury Libraries"
+      ]
     }
   ],
   "workExperience": "Yes",
+  "notes": "Status before November 2026: Live - open to referrals",
   "lastUpdated": "2025-11-13",
   "reviewCycle": "Quarterly",
   "provenance": {

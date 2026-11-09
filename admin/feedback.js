@@ -314,7 +314,7 @@
         if (!q) return true;
         const ms = x.missedService || {};
         const ct = x.contact || {};
-        const hay = [x.text, x.note, ct.name, ct.email, ms.name, ms.website, ms.area, ms.organisation, ms.description, x.gapArea, ...(x.gapCategories || []), ...(x.schemeIds || []).map(nameOf), ...(x.reasons || []).map(reason)].join(' ').toLowerCase();
+        const hay = [x.text, x.note, ct.name, ct.email, ms.name, ms.website, ms.area, ms.organisation, ms.whoFor, ms.projectName, ms.description, x.gapArea, ...(x.gapCategories || []), ...(x.schemeIds || []).map(nameOf), ...(x.reasons || []).map(reason)].join(' ').toLowerCase();
         return hay.includes(q);
       })
       .sort((a, b) => b.id - a.id);
@@ -322,15 +322,20 @@
 
   // Fields from "Suggest a service" (worker/src/feedback.js SERVICE_FIELDS), with labels for the team.
   const SUGGESTION_FIELDS = [
-    ['organisation', 'Organisation'], ['description', 'What it does'], ['activities', 'What happens and where'],
-    ['running', 'Running now?'], ['dates', 'Dates'], ['age', 'Age'], ['eligibility', 'Who can use it'], ['exclusions', "Who it isn't for"],
-    ['healthNeed', 'Health condition needed?'], ['conditions', 'Which conditions'], ['audience', 'Who it is for'], ['categories', 'Kinds of support'],
-    ['addresses', 'Addresses or venues'], ['noMap', 'Online or phone only'], ['level', 'Covers'],
+    ['organisation', 'Organisation'], ['addTo', 'A new project of'], ['organisationOverview', 'About the organisation'], ['whoFor', 'Who the service is for'], ['open', 'Taking new referrals?'],
+    ['projectName', 'Project name'], ['projectOverview', 'What happens in the project'], ['where', 'Where it runs'], ['when', 'Days and times'], ['duration', 'How long it lasts'], ['places', 'Places'],
+    ['runsFrom', 'Runs from'], ['runsTo', 'Runs until'], ['referralsFrom', 'Taking referrals from'], ['referralsUntil', 'Taking referrals until'],
+    ['age', 'Age'], ['eligibility', 'Who can use it'], ['gate', 'Would turn someone away for not having'], ['exclusions', "Who it isn't for"],
+    ['healthNeed', 'Health condition needed?'], ['conditions', 'Which conditions'], ['audience', 'Who it works with'], ['categories', 'Kinds of support'],
+    ['noMap', 'Online or phone only'], ['level', 'Covers'],
     ['phone', 'Phone'], ['email', 'Email'], ['social', 'Social media'], ['referral', 'How to get referred'],
-    ['selfReferral', 'Self-referral'], ['cost', 'Cost'], ['languages', 'Languages'], ['workExperience', 'Work experience or volunteering'],
+    ['selfReferral', 'Self-referral'], ['cost', 'Cost'], ['languages', 'Languages'], ['workExperience', 'Work experience or volunteering'], ['coachNotes', 'Anything coaches should know'],
     ['logoOk', 'OK to use their logo'], ['contactName', 'Contact name (work)'],
+    // Older names, from suggestions sent before November 2026.
+    ['description', 'What it does'], ['activities', 'What happens and where'], ['running', 'Running now?'], ['dates', 'Dates'], ['addresses', 'Addresses or venues'],
   ];
   const SUGGESTION_CHOICES = {
+    'open:yes': 'Yes', 'open:no': 'No, not at the moment',
     'running:now': 'Yes', 'running:paused': 'Paused', 'running:soon': 'Starting soon', 'running:ended': 'Ended',
     'healthNeed:none': 'No, anyone', 'healthNeed:any': 'Any health condition or disability', 'healthNeed:specific': 'A specific condition',
     'level:local': 'Kirklees', 'level:regional': 'West Yorkshire', 'level:national': 'UK-wide',
@@ -368,12 +373,13 @@
         if (v === undefined || v === '' || (Array.isArray(v) && !v.length)) continue;
         if (Array.isArray(v)) v = v.map((a) => SUGGESTION_CHOICES[a] || a).join(', ');
         else if (v === true) v = 'Yes';
+        else if (k === 'addTo') v = nameOf(v);
         else v = SUGGESTION_CHOICES[k + ':' + v] || v;
         details.append(el('dt', { text: label }), el('dd', { class: 'comment', text: String(v) }));
       }
       // Opens "Add a service" on All services with the boxes filled in from this suggestion. The details go by
       // this browser tab only (sessionStorage), are read once and then removed; the contact name is never passed on.
-      const startListing = el('button', { type: 'button', class: 'btn secondary small', text: 'Start a new listing from this', onclick: () => {
+      const startListing = el('button', { type: 'button', class: 'btn secondary small', text: ms.addTo ? 'Add this project to ' + nameOf(ms.addTo) : 'Start a new listing from this', onclick: () => {
         const { contactName, ...rest } = ms;
         try { sessionStorage.setItem('hwl-listing-draft', JSON.stringify({ ...rest, from: x.id, date: x.date })); } catch { /* ignore */ }
         location.href = 'services.html';
@@ -381,7 +387,9 @@
       if (details.children.length) {
         fact('Details they gave', el('details', { class: 'suggest-details' }, el('summary', { text: (details.children.length / 2) + ' details. Check with the service before using "Add a service".' }), details));
       }
-      fact('Make a listing', el('span', { class: 'stack' }, startListing, el('span', { class: 'hint', text: 'Opens "Add a service" on All services with these details filled in, for you to check and finish. Nothing goes live until the team decides to include it.' })));
+      fact('Make a listing', el('span', { class: 'stack' }, startListing, el('span', { class: 'hint', text: ms.addTo
+        ? 'They said this is a new project of a service we already list. Opens that service on All services with the project added under "Projects", for you to check and save. Nothing changes until the team\'s changes are applied.'
+        : 'Opens "Add a service" on All services with these details filled in, for you to check and finish. Nothing goes live until the team decides to include it.' })));
     }
     if (x.gapCategories && x.gapCategories.length) fact('Support they looked for', x.gapCategories.join(', '));
     if (x.gapArea) fact('Area', x.gapArea);

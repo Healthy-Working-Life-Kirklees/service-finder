@@ -3,7 +3,6 @@
   "name": "Healthy Working Life Community Grants Programme",
   "organisation": "Kirklees Council Employment & Skills Service",
   "logo": "kirklees-council.webp",
-  "status": "Future - not yet open to referrals. Grants awarded; no information on individual grant-funded schemes until awards are confirmed",
   "open": false,
   "hwlFunded": true,
   "level": "local",
@@ -21,9 +20,7 @@
   "email": "Trailblazer@kirklees.gov.uk",
   "phone": null,
   "social": [],
-  "locations": [
-    "Community settings across Kirklees - hyperlocal delivery by VCSE and grassroots organisations"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -44,14 +41,19 @@
     "allowed": "tbc",
     "note": "To be confirmed following grant awards"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "community-grants-to-vcse-and-grassroots-organisati",
       "name": "Community grants to VCSE and grassroots organisations",
-      "summary": "Grants of 3,000 to 10,000 pounds for single organisations and up to 20,000 pounds for joint applications, funding community-based pre-employment and wellbeing activity. Organisations must be registered on the Kirklees Grant Access Point.",
-      "duration": "Projects start by 1 October 2026 at the latest"
+      "overview": "Grants of 3,000 to 10,000 pounds for single organisations and up to 20,000 pounds for joint applications, funding community-based pre-employment and wellbeing activity. Organisations must be registered on the Kirklees Grant Access Point.",
+      "duration": "Projects start by 1 October 2026 at the latest",
+      "where": [
+        "Community settings across Kirklees - hyperlocal delivery by VCSE and grassroots organisations"
+      ]
     }
   ],
   "workExperience": "Yes - where offered by funded projects",
+  "notes": "Status before November 2026: Future - not yet open to referrals. Grants awarded; no information on individual grant-funded schemes until awards are confirmed",
   "lastUpdated": "2026-08-03",
   "reviewCycle": "Quarterly",
   "provenance": {

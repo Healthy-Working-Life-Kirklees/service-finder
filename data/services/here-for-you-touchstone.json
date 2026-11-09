@@ -2,7 +2,6 @@
   "id": "here-for-you-touchstone",
   "name": "Here For You (out-of-hours safe space)",
   "organisation": "Touchstone",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -18,9 +17,7 @@
   "email": null,
   "phone": "07741 900395",
   "social": [],
-  "locations": [
-    "25 Trinity Street, Batley WF17 7JZ"
-  ],
+  "locations": [],
   "areas": [
     "Batley",
     "Kirklees-wide"
@@ -42,11 +39,14 @@
     "allowed": "yes",
     "note": "Call or text on the night."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "out-of-hours-safe-space",
       "name": "Out-of-hours safe space",
-      "summary": "Evening support if you're struggling to cope, in a calm space or by phone.",
-      "duration": ""
+      "overview": "Evening support if you're struggling to cope, in a calm space or by phone.",
+      "where": [
+        "25 Trinity Street, Batley WF17 7JZ"
+      ]
     }
   ],
   "workExperience": "No",
@@ -58,7 +58,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://touchstonesupport.org.uk/hereforyou/",
     "evidence": "On council page (Sep 2026). Hours and age differ between sources — check.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

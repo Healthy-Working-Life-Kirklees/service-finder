@@ -3,7 +3,6 @@
   "name": "Individual Placement and Support for Severe Mental Illness (SMI)",
   "organisation": "South West Yorkshire Partnership NHS Foundation Trust",
   "logo": "swypft.webp",
-  "status": "Live - open to referrals",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -22,10 +21,7 @@
   "email": "kirkleesipsservice@swyt.nhs.uk",
   "phone": null,
   "social": [],
-  "locations": [
-    "Folly Hall Mills, St Thomas Road, Huddersfield, HD1 3LT",
-    "Beckside Court, 286 Bradford Road, Batley, WF17 5PW"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield",
     "Batley"
@@ -77,14 +73,20 @@
     "allowed": "yes",
     "note": "Yes, via the online expression of interest form"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "work-retention-support-using-the-principles-of-ips",
       "name": "Work retention support using the principles of IPS",
-      "summary": "Employment specialists work with community mental health services to explore interests, skills and goals, build an employment plan and address barriers. Rapid, intensive support from referral, support for both the person and their employer, help with disclosure and reasonable adjustments, and information about workplace rights.",
-      "duration": "Time-unlimited follow-along support for as long as the person wishes"
+      "overview": "Employment specialists work with community mental health services to explore interests, skills and goals, build an employment plan and address barriers. Rapid, intensive support from referral, support for both the person and their employer, help with disclosure and reasonable adjustments, and information about workplace rights.",
+      "duration": "Time-unlimited follow-along support for as long as the person wishes",
+      "where": [
+        "Folly Hall Mills, St Thomas Road, Huddersfield, HD1 3LT",
+        "Beckside Court, 286 Bradford Road, Batley, WF17 5PW"
+      ]
     }
   ],
   "workExperience": "Yes",
+  "notes": "Status before November 2026: Live - open to referrals",
   "lastUpdated": "2025-12-08",
   "reviewCycle": "Quarterly",
   "provenance": {

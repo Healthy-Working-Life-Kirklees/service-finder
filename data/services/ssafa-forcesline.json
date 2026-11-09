@@ -2,7 +2,6 @@
   "id": "ssafa-forcesline",
   "name": "SSAFA Forcesline",
   "organisation": "SSAFA",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -21,10 +20,7 @@
   "email": null,
   "phone": "0800 260 6780",
   "social": [],
-  "locations": [
-    "Phone, UK-wide",
-    "WY office"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -48,11 +44,15 @@
     "allowed": "yes",
     "note": "Call, use live chat or find a local branch"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "forces-support-line",
       "name": "Forces support line",
-      "summary": "Free phone line giving practical, money and emotional help to serving forces, veterans and families; links to local branches.",
-      "duration": ""
+      "overview": "Free phone line giving practical, money and emotional help to serving forces, veterans and families; links to local branches.",
+      "where": [
+        "Phone, UK-wide",
+        "WY office"
+      ]
     }
   ],
   "workExperience": "No",
@@ -64,7 +64,8 @@
     "foundVia": "MECC Link; Kirklees Community Directory",
     "checkedUrl": "https://www.ssafa.org.uk/get-help",
     "evidence": "2026 appeals on site.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

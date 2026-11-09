@@ -2,7 +2,6 @@
   "id": "better-in-kirklees",
   "name": "Better in Kirklees (social prescribing for long-term conditions)",
   "organisation": "Touchstone",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -21,9 +20,7 @@
   "email": "bik@touchstonesupport.org.uk",
   "phone": "01924 846808",
   "social": [],
-  "locations": [
-    "Dewsbury Business Centre WF13 1HF"
-  ],
+  "locations": [],
   "areas": [
     "Dewsbury",
     "Kirklees-wide"
@@ -45,11 +42,14 @@
     "allowed": "tbc",
     "note": "Referral from a professional; unclear whether you can refer yourself."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "social-prescribing",
       "name": "Social prescribing",
-      "summary": "Helps adults with long-term conditions find local groups and activities to feel less lonely and more confident.",
-      "duration": ""
+      "overview": "Helps adults with long-term conditions find local groups and activities to feel less lonely and more confident.",
+      "where": [
+        "Dewsbury Business Centre WF13 1HF"
+      ]
     }
   ],
   "workExperience": "No",
@@ -61,7 +61,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees.gov.uk/beta/health-and-well-being/better-in-kirklees.aspx",
     "evidence": "Council page Feb 2025; no 2026 confirmation.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

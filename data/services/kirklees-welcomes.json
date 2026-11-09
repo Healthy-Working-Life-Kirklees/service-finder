@@ -2,7 +2,6 @@
   "id": "kirklees-welcomes",
   "name": "Kirklees Welcomes (refugee and asylum directory)",
   "organisation": "Kirklees Welcomes (via KCALC)",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -19,9 +18,7 @@
   "email": "pathways@kcalc.org.uk",
   "phone": null,
   "social": [],
-  "locations": [
-    "Online"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -37,11 +34,14 @@
     "allowed": "yes",
     "note": "Use the website"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "directory-of-services",
       "name": "Directory of services",
-      "summary": "Online list of local, regional and national services for asylum seekers and refugees in Kirklees, mainly for workers and volunteers.",
-      "duration": ""
+      "overview": "Online list of local, regional and national services for asylum seekers and refugees in Kirklees, mainly for workers and volunteers.",
+      "where": [
+        "Online"
+      ]
     }
   ],
   "workExperience": "No",
@@ -54,7 +54,8 @@
     "foundVia": "Kirklees Community Directory; District Provision Tool",
     "checkedUrl": "https://www.kirkleeswelcomes.org.uk/",
     "evidence": "Directory updated Aug 2026; in DPT (Apr 2026); site undated.",
-    "confidence": "medium"
+    "confidence": "medium",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "review",

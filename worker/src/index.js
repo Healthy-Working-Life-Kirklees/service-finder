@@ -19,6 +19,11 @@ import { handleProvider } from './providerlink.js';
 import { makeChecker } from './serviceedit.js';
 import { handleFeedback, feedbackOn, pilotOn, isTeamTest } from './feedback.js';
 import { handleUsage, usageOn, addUsage, chatKeys, addTokens, emptyTokens } from './usage.js';
+import { sendReminders } from './reminders.js';
+// Projects, cohorts and their dates: the same rules as the page and the directory (site/listing-logic.js).
+import '../../site/listing-logic.js';
+
+const LISTING = globalThis.LISTING;
 
 // The team issues log lives in its own Durable Object class (see teamlog.js).
 export { LogStore } from './teamlog.js';
@@ -60,13 +65,52 @@ const CRISIS_RE = new RegExp(
 const SERVICES = data.services;
 // Checks changes to a service's details made by the development team on the All services page.
 // byId is also used by provider review links (providerlink.js), which only work for services on the live list.
-const EDIT_CHECKER = { ...makeChecker(schema), liveIds: new Set(SERVICES.map((s) => s.id)), byId: new Map(SERVICES.map((s) => [s.id, s])) };
+const EDIT_CHECKER = {
+  ...makeChecker(schema),
+  liveIds: new Set(SERVICES.map((s) => s.id)),
+  byId: new Map(SERVICES.map((s) => [s.id, s])),
+  organisations: (data.organisations || []).map((o) => o.name),
+};
 // What Claude is sent about each scheme. Contact details are left out (the page draws them from the data, so the
 // AI never writes them), as are fields only people or the Worker use: requiresMention is applied below by the
-// Worker itself, and provenance, logo and review dates are for maintaining the data. This keeps each request smaller.
-const NOT_FOR_AI = new Set(['webpage', 'email', 'phone', 'social', 'logo', 'requiresMention', 'provenance', 'lastUpdated', 'reviewCycle']);
-const AI_SERVICES = SERVICES.map((s) => Object.fromEntries(Object.entries(s).filter(([k]) => !NOT_FOR_AI.has(k))));
+// Worker itself; provenance, logo, map buttons, review dates and the team's own notes are for maintaining the data.
+// This keeps each request smaller.
+const NOT_FOR_AI = new Set(['webpage', 'email', 'phone', 'social', 'logo', 'mapLinks', 'requiresMention', 'provenance', 'lastUpdated', 'reviewCycle', 'notes', 'listing']);
+
+// What the AI is told about each service on a given day. Projects and cohorts that have closed are left out. Ones
+// opening to referrals later say so, and whether they may be suggested yet. "open" is true only when the service
+// is taking referrals and has something open or opening soon today: only those can be shown as cards.
+const STATE_WORDS = {
+  open: 'open',
+  soon: 'referrals open soon (see referralsFrom): you can suggest it if it fits; say when referrals open',
+  later: "referrals open later (see referralsFrom): don't suggest it; only mention it if the person asks about it by name",
+};
+function aiView(s, today) {
+  const v = Object.fromEntries(Object.entries(s).filter(([k]) => !NOT_FOR_AI.has(k)));
+  v.open = LISTING.isShown(s, today);
+  v.projects = LISTING.parts(s, today)
+    .filter((x) => x.state !== 'closed')
+    .map((x) => {
+      const p = { ...x.project, status: STATE_WORDS[x.state] };
+      if (x.cohorts.length) p.cohorts = x.cohorts.filter((c) => c.state !== 'closed').map((c) => ({ ...c.cohort, status: STATE_WORDS[c.state] }));
+      return p;
+    });
+  return v;
+}
+// Worked out once a day (the dates only change what's open from one day to the next), so the AI's copy of the
+// data stays the same all day and keeps benefiting from prompt caching.
+let DAY = null;
+function catalogue(today) {
+  if (DAY && DAY.today === today) return DAY;
+  DAY = {
+    today,
+    text: JSON.stringify(SERVICES.map((s) => aiView(s, today))),
+    open: new Set(SERVICES.filter((s) => LISTING.isShown(s, today)).map((s) => s.id)),
+  };
+  return DAY;
+}
 const IDS = SERVICES.map((s) => s.id);
+const BY_ID = new Map(SERVICES.map((s) => [s.id, s]));
 const ID_SET = new Set(IDS);
 // What feedback may refer to: the scheme ids, and the areas and categories already used in the data.
 const FEEDBACK_DATA = {
@@ -75,8 +119,6 @@ const FEEDBACK_DATA = {
   areas: [...new Set(SERVICES.flatMap((s) => s.areas || []))].sort(),
   categories: [...new Set(SERVICES.flatMap((s) => s.categories || []))].sort(),
 };
-// Only schemes that are open to referrals can ever be shown as cards.
-const OPEN_SET = new Set(SERVICES.filter((s) => s.open === true).map((s) => s.id));
 // Schemes built for a specific circumstance are only shown if the person's own words mention it.
 const MENTION = new Map(
   SERVICES.filter((s) => Array.isArray(s.requiresMention) && s.requiresMention.length).map((s) => [s.id, new RegExp(s.requiresMention.join('|'), 'i')])
@@ -197,6 +239,7 @@ function respondTool(questionsLeft) {
           fit: { type: 'string', enum: ['strong', 'possible'] },
           reason: { type: 'string', description: 'Plain English, under 30 words, neutral wording.' },
           check_first: { type: 'string', description: 'What to check before relying on this match. Empty for a strong match with nothing to check.' },
+          parts: { type: 'array', items: { type: 'string' }, description: 'When only some of the service\'s projects or cohorts fit the person (for example by age), the ids of those that fit. Empty when they all fit or you can\'t tell.' },
         },
         required: ['service_id', 'fit', 'reason', 'check_first'],
       },
@@ -254,7 +297,7 @@ export default {
     // Team issues log (Admin pages): off unless the TEAM_PASSCODE secret is set.
     // Reading the team's listing decisions is also allowed with no Origin at all (not from a browser), so
     // scripts/apply-decisions.mjs can fetch them with the passcode, like the feedback digest does.
-    const scriptRead = !origin && request.method === 'GET' && ['/log/decisions', '/log/edits', '/log/new'].includes(url.pathname);
+    const scriptRead = !origin && request.method === 'GET' && ['/log/decisions', '/log/edits', '/log/new', '/log/orgs'].includes(url.pathname);
     if (url.pathname.startsWith('/log/')) return originOk || scriptRead ? handleLog(request, env, url, cors, EDIT_CHECKER) : json({ error: 'Not allowed.' }, 403, cors);
     // Provider review links: a scheme's named contact checks its details. Off unless TEAM_PASSCODE is set.
     if (url.pathname.startsWith('/provider/')) return handleProvider(request, env, url, cors, originOk, EDIT_CHECKER, schema);
@@ -295,6 +338,9 @@ export default {
     if (!cap.allowed) return json({ error: 'The prototype has reached its daily limit. Please try again tomorrow.' }, 503, cors);
 
     const questionsLeft = MAX_QUESTIONS - questionsAsked(messages);
+    const today = new Date().toISOString().slice(0, 10);
+    const day = catalogue(today);
+    const OPEN_SET = day.open;
     const payload = {
       model: env.ANTHROPIC_MODEL || 'claude-haiku-4-5-20251001',
       max_tokens: 1500,
@@ -302,11 +348,11 @@ export default {
         { type: 'text', text: SYSTEM_PROMPT.trim() },
         {
           type: 'text',
-          text: `SERVICE DATA (JSON). Source: ${data.source}.\n${JSON.stringify(AI_SERVICES)}`,
+          text: `SERVICE DATA (JSON) for ${today}. Source: ${data.source}.\n${day.text}`,
           cache_control: { type: 'ephemeral' },
         },
         { type: 'text', text: `${MODE_NOTES[mode]}${lang === 'en' ? '' : '\n' + LANG_NOTES[lang]}
-Today's date: ${new Date().toISOString().slice(0, 10)}.
+Today's date: ${today}.
 FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole conversation).` },
       ],
       tools: [respondTool(questionsLeft)],
@@ -419,7 +465,12 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
         : list(input.matches)
             .filter((x) => x && ID_SET.has(x.service_id) && OPEN_SET.has(x.service_id) && (!MENTION.has(x.service_id) || MENTION.get(x.service_id).test(userText)) && !seen.has(x.service_id) && seen.add(x.service_id))
             .slice(0, 5)
-            .map((x) => ({ id: x.service_id, why: clean(x.reason, 600), fit: x.fit === 'strong' ? 'strong' : 'possible', check_first: clean(x.check_first, 400) }));
+            .map((x) => {
+              // Which projects or cohorts fit: only ones that exist and are open (or opening soon) today.
+              const ok = LISTING.visibleIds(BY_ID.get(x.service_id), today);
+              const parts = list(x.parts).filter((id, i, a) => typeof id === 'string' && ok.has(id) && a.indexOf(id) === i).slice(0, 20);
+              return { id: x.service_id, why: clean(x.reason, 600), fit: x.fit === 'strong' ? 'strong' : 'possible', check_first: clean(x.check_first, 400), parts };
+            });
 
     // Anonymous usage counts for this answer (search, results or not, services shown). Nothing from the
     // conversation is counted. Done after the reply is sent where the platform allows it.
@@ -432,6 +483,8 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
         status,
         message: input.message.slice(0, 3000),
         recommendations,
+        // The date the reply was worked out for, so the page shows the same projects and cohorts.
+        date: today,
         safety_concern: urgent,
         urgent_types: urgent ? urgentTypes : [],
         pii_detected: input.pii_detected === true,
@@ -443,5 +496,11 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
       200,
       cors
     );
+  },
+
+  // Each morning (the cron in wrangler.toml): emails the team about projects and cohorts that end or close to
+  // referrals in the next 30 days, with a ready-written message and a fresh review link to forward (reminders.js).
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(sendReminders(env, SERVICES, new Date().toISOString().slice(0, 10)));
   },
 };

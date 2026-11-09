@@ -3,7 +3,6 @@
   "name": "Employment Kirklees",
   "organisation": "Paddock Community Trust, in partnership with Kirklees Council",
   "logo": "paddock-trust.webp",
-  "status": "Live - open to referrals",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -49,24 +48,28 @@
     "allowed": "yes",
     "note": "Yes, via any route"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "one-to-one-employment-support",
       "name": "One-to-one employment support",
-      "summary": "Starts with an assessment of the person's situation, skills and goals. Covers strengths and transferable skills, CVs, job applications and interviews, benefits and financial advice, and volunteering, training and education opportunities. Helps with barriers such as childcare, low confidence or lack of skills.",
+      "overview": "Starts with an assessment of the person's situation, skills and goals. Covers strengths and transferable skills, CVs, job applications and interviews, benefits and financial advice, and volunteering, training and education opportunities. Helps with barriers such as childcare, low confidence or lack of skills.",
       "duration": "Flexible and open-ended, at the person's own pace"
     },
     {
+      "id": "group-workshops",
       "name": "Group workshops",
-      "summary": "Course-based workshops in community settings on personal development, wellbeing, goal setting, CV writing, job searching and interview techniques, alongside 1-to-1 guidance.",
+      "overview": "Course-based workshops in community settings on personal development, wellbeing, goal setting, CV writing, job searching and interview techniques, alongside 1-to-1 guidance.",
       "duration": "Course-based"
     },
     {
+      "id": "connecting-to-local-opportunities-and-services",
       "name": "Connecting to local opportunities and services",
-      "summary": "Links people to local employers, vacancies, training providers and wider community support, including digital inclusion, information and advice, and wellbeing services delivered by Paddock Trust.",
+      "overview": "Links people to local employers, vacancies, training providers and wider community support, including digital inclusion, information and advice, and wellbeing services delivered by Paddock Trust.",
       "duration": "Ongoing"
     }
   ],
   "workExperience": "Volunteering and work-related opportunities identified as part of the plan",
+  "notes": "Status before November 2026: Live - open to referrals",
   "lastUpdated": "2026-08-03",
   "reviewCycle": "Quarterly",
   "provenance": {

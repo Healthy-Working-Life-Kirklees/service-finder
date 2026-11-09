@@ -3,7 +3,6 @@
   "name": "Shaping Healthy Working Life",
   "organisation": "Shaping Care in Kirklees CIC",
   "logo": "shaping-care-kirklees.webp",
-  "status": "Live - grant-funded project (status not stated in the pathways document)",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -22,9 +21,7 @@
   "email": "info@shapingcarekirklees.org",
   "phone": "07597 122074",
   "social": [],
-  "locations": [
-    "Gledholt Methodist Church, 30 Edgerton Grove Road, Marsh, Huddersfield, HD1 5QX"
-  ],
+  "locations": [],
   "areas": [
     "Huddersfield"
   ],
@@ -51,14 +48,19 @@
     "allowed": "yes",
     "note": "Email or phone directly"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "shaping-healthy-working-life",
       "name": "Shaping Healthy Working Life",
-      "summary": "Practical support to overcome challenges, rebuild daily routines and boost confidence, connecting people with local providers, voluntary groups and activities to prepare for volunteering, work or study.",
-      "duration": "Regular sessions, weekly or fortnightly"
+      "overview": "Practical support to overcome challenges, rebuild daily routines and boost confidence, connecting people with local providers, voluntary groups and activities to prepare for volunteering, work or study.",
+      "duration": "Regular sessions, weekly or fortnightly",
+      "where": [
+        "Gledholt Methodist Church, 30 Edgerton Grove Road, Marsh, Huddersfield, HD1 5QX"
+      ]
     }
   ],
   "workExperience": "Volunteering and training opportunities",
+  "notes": "Status before November 2026: Live - grant-funded project (status not stated in the pathways document)",
   "lastUpdated": "2026-10-01",
   "reviewCycle": "Quarterly",
   "provenance": {

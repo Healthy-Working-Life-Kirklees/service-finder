@@ -2,7 +2,6 @@
   "id": "start-up-loans",
   "name": "Start Up Loans",
   "organisation": "British Business Bank",
-  "status": "Not verified as running (web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -34,11 +33,11 @@
     "allowed": "tbc",
     "note": "To be completed."
   },
-  "activities": [
+  "projects": [
     {
+      "id": "start-up-loans",
       "name": "Start Up Loans",
-      "summary": "To be completed: the research found the service but did not confirm what it currently offers.",
-      "duration": ""
+      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
     }
   ],
   "workExperience": "Not known",
@@ -50,7 +49,8 @@
     "foundVia": "Web research or directory review (October 2026)",
     "evidence": "Loan at interest; decide if it fits.",
     "confidence": "low",
-    "checkedUrl": "https://www.startuploans.co.uk/"
+    "checkedUrl": "https://www.startuploans.co.uk/",
+    "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
     "decision": "review",

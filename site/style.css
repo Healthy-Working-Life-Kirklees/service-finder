@@ -121,6 +121,16 @@ fieldset.mode input { width: 1.4rem; height: 1.4rem; margin-top: .15rem; accent-
 .badge { font-size: .85rem; font-weight: 600; padding: .1rem .55rem; border-radius: 6px; background: #f4f1ea; border: 1px solid var(--border); color: var(--text); }
 .badge.live { background: #d9efe2; border-color: #b6dcc6; color: #00562a; }
 .badge.notopen { background: var(--warn-bg); border-color: #ecd49a; color: var(--warn); }
+.badge.soon { background: #dbe9f7; border-color: #b7cfe8; color: #0b3d6b; }
+/* Projects and cohorts on a card */
+.card ul.projects { list-style: none; padding: 0; }
+.card ul.projects > li { border-inline-start: 3px solid var(--accent); padding-inline-start: .7rem; margin: 0 0 .8rem; }
+.card ul.projects p { margin: .2rem 0; }
+.card ul.part-facts { margin: .2rem 0; padding-inline-start: 1.1rem; }
+.card ul.part-facts li.dates { font-weight: 600; }
+.card ul.cohorts { list-style: none; padding: 0; margin: .3rem 0 0; }
+.card ul.cohorts > li { margin: 0 0 .4rem; }
+.card .cohort-name { font-weight: 600; }
 .badge.self { background: #dff0ef; border-color: #bfe0dd; color: var(--dark-blue); }
 .badge.fit-strong { background: var(--dark-blue); border-color: var(--dark-blue); color: #fff; }
 .badge.fit-possible { background: #fff; color: var(--text); border: 1px solid var(--grey); }
@@ -280,6 +290,7 @@ html.high-contrast .form textarea::placeholder { color: #333; }
 html.high-contrast .badge { background: #fff; border: 1px solid #000; color: #000; }
 html.high-contrast .badge.fit-strong,
 html.high-contrast .badge.live { background: #000; color: #fff; }
+html.high-contrast .badge.soon { background: #fff; color: #000; border-color: #000; }
 html.high-contrast .btn.primary { background: #000; box-shadow: none; }
 html.high-contrast .btn.primary:hover { background: #333; }
 html.high-contrast .btn.secondary,

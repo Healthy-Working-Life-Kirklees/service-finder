@@ -2,7 +2,6 @@
   "id": "alzheimers-dementia-support-line",
   "name": "Alzheimer's Society Dementia Support Line",
   "organisation": "Alzheimer's Society",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "national",
@@ -19,9 +18,7 @@
   "email": null,
   "phone": "0333 150 3456",
   "social": [],
-  "locations": [
-    "Phone"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -42,11 +39,14 @@
     "allowed": "yes",
     "note": "Phone the support line"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "dementia-support-line",
       "name": "Dementia support line",
-      "summary": "Talk to a dementia adviser about diagnosis, care and caring.",
-      "duration": ""
+      "overview": "Talk to a dementia adviser about diagnosis, care and caring.",
+      "where": [
+        "Phone"
+      ]
     }
   ],
   "workExperience": "No",
@@ -59,7 +59,8 @@
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.alzheimers.org.uk/get-support/dementia-support-line",
     "evidence": "Leaflet July 2026.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

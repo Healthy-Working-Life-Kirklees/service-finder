@@ -2,7 +2,6 @@
   "id": "tenant-employment-support",
   "name": "Employment, skills and training support for tenants",
   "organisation": "Kirklees Council (Homes & Neighbourhoods)",
-  "status": "Running (checked by web research, October 2026)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -22,9 +21,7 @@
   "email": null,
   "phone": "01484 221028 (Mon–Thu 9–5, Fri 9–4.30)",
   "social": [],
-  "locations": [
-    "Kirklees-wide"
-  ],
+  "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
@@ -47,11 +44,14 @@
     "allowed": "yes",
     "note": "Refer yourself by online form or phone"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "employment-and-skills-mentoring",
       "name": "Employment and skills mentoring",
-      "summary": "One-to-one mentor and personal plan covering confidence, job search, CVs, interviews, apprenticeships, digital skills and devices, placements, training and volunteering.",
-      "duration": ""
+      "overview": "One-to-one mentor and personal plan covering confidence, job search, CVs, interviews, apprenticeships, digital skills and devices, placements, training and volunteering.",
+      "where": [
+        "Kirklees-wide"
+      ]
     }
   ],
   "workExperience": "Yes - placements and volunteering",
@@ -63,7 +63,8 @@
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees.gov.uk/employment-support",
     "evidence": "Page created March 2026; advertises 2026/27 programmes.",
-    "confidence": "high"
+    "confidence": "high",
+    "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",

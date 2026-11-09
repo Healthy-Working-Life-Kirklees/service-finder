@@ -104,11 +104,29 @@ function list(v, allowed, label, { min = 0, max = allowed.length } = {}) {
 }
 
 // ---------- a suggested service's details ----------
-export const SERVICE_FIELDS = ['name', 'website', 'area', 'role', 'organisation', 'description', 'activities', 'running', 'dates', 'age', 'eligibility', 'exclusions', 'healthNeed', 'conditions', 'audience', 'categories', 'addresses', 'noMap', 'level', 'phone', 'email', 'social', 'referral', 'selfReferral', 'cost', 'languages', 'workExperience', 'logoOk', 'contactName'];
-const SERVICE_TEXT = { organisation: 150, description: 800, activities: 1200, dates: 150, age: 60, eligibility: 800, exclusions: 500, conditions: 300, addresses: 500, phone: 80, email: 150, social: 300, referral: 600, cost: 200, languages: 200, workExperience: 300, contactName: 100 };
-const SERVICE_CHOICES = { role: ['provider', 'suggester'], running: ['now', 'paused', 'soon', 'ended'], healthNeed: ['none', 'any', 'specific'], level: ['local', 'regional', 'national'], selfReferral: ['yes', 'partly', 'no'] };
+// The questions a suggestion can answer. They match a listing (organisation > service > project), so the team can
+// turn a suggestion into a listing in Admin without retyping. The older names (description, activities, running,
+// dates, addresses) are still accepted from a page loaded before November 2026, and labelled on the review page.
+export const SERVICE_FIELDS = ['name', 'website', 'area', 'role', 'organisation', 'organisationOverview', 'addTo', 'whoFor', 'open', 'projectName', 'projectOverview', 'where', 'when', 'duration', 'places',
+  'runsFrom', 'runsTo', 'referralsFrom', 'referralsUntil', 'age', 'eligibility', 'gate', 'exclusions', 'healthNeed', 'conditions', 'audience', 'categories', 'noMap', 'level', 'phone', 'email', 'social',
+  'referral', 'selfReferral', 'cost', 'languages', 'workExperience', 'coachNotes', 'logoOk', 'contactName',
+  'description', 'activities', 'running', 'dates', 'addresses'];
+const SERVICE_TEXT = {
+  organisation: 150, organisationOverview: 300, whoFor: 300, projectName: 150, projectOverview: 400, where: 500, when: 150, duration: 150, places: 60,
+  age: 60, eligibility: 800, gate: 500, exclusions: 500, conditions: 300, phone: 80, email: 150, social: 300, referral: 600, cost: 200, languages: 200, workExperience: 300,
+  coachNotes: 500, contactName: 100,
+  description: 800, activities: 1200, dates: 150, addresses: 500,
+};
+const SERVICE_DATES = ['runsFrom', 'runsTo', 'referralsFrom', 'referralsUntil'];
+const SERVICE_CHOICES = { role: ['provider', 'suggester'], open: ['yes', 'no'], running: ['now', 'paused', 'soon', 'ended'], healthNeed: ['none', 'any', 'specific'], level: ['local', 'regional', 'national'], selfReferral: ['yes', 'partly', 'no'] };
 const AUDIENCES = ['individual', 'employer', 'organisation', 'student'];
-const LABELS = { organisation: 'The organisation', description: 'The description', activities: 'What happens', dates: 'The dates', age: 'The age range', eligibility: 'Who can join', exclusions: "Who it can't help", addresses: 'The addresses', phone: 'The phone number', email: 'The email address', social: 'Social media', referral: 'How people get referred', cost: 'The cost', languages: 'The languages', workExperience: 'Work experience', contactName: 'The contact name' };
+const LABELS = {
+  organisation: 'The organisation', organisationOverview: 'About the organisation', whoFor: 'Who the service is for', projectName: 'The project name', projectOverview: 'What happens in the project',
+  where: 'Where it runs', when: 'The days and times', duration: 'How long it lasts', places: 'The number of places', age: 'The age range', eligibility: 'Who can use it', gate: 'What you would turn someone away for not having',
+  exclusions: "Who it isn't for", conditions: 'The conditions', phone: 'The phone number', email: 'The email address', social: 'Social media', referral: 'How people get referred', cost: 'The cost',
+  languages: 'The languages', workExperience: 'Work experience', coachNotes: 'What coaches should know', contactName: 'The contact name',
+  description: 'The description', activities: 'What happens', dates: 'The dates', addresses: 'The addresses',
+};
 
 function serviceDetails(ms, ctx) {
   const out = {};
@@ -122,6 +140,17 @@ function serviceDetails(ms, ctx) {
     if (ms[k] === undefined || ms[k] === null || ms[k] === '') continue;
     if (!allowed.includes(ms[k])) return { error: 'Please choose from the list.' };
     out[k] = ms[k];
+  }
+  for (const k of SERVICE_DATES) {
+    if (ms[k] === undefined || ms[k] === null || ms[k] === '') continue;
+    if (typeof ms[k] !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(ms[k]) || Number.isNaN(Date.parse(ms[k]))) return { error: 'Please give the dates as day, month and year.' };
+    out[k] = ms[k];
+  }
+  if ((out.runsFrom && out.runsTo && out.runsFrom > out.runsTo) || (out.referralsFrom && out.referralsUntil && out.referralsFrom > out.referralsUntil)) return { error: 'One of the end dates is before its start date.' };
+  // "A new project of a service we already list": one of the services in the data.
+  if (ms.addTo !== undefined && ms.addTo !== null && ms.addTo !== '') {
+    if (typeof ms.addTo !== 'string' || !(ctx.ids && ctx.ids.has(ms.addTo))) return { error: 'Please choose a service from the list.' };
+    out.addTo = ms.addTo;
   }
   for (const k of ['noMap', 'logoOk']) {
     if (ms[k] === undefined || ms[k] === false) continue;

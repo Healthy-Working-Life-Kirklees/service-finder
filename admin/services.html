@@ -7,6 +7,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.workers.dev; base-uri 'none'; form-action 'none'">
   <title>All services | Kirklees HWL Support Finder</title>
   <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../listing-form.css">
   <link rel="stylesheet" href="admin.css">
   <script src="team-auth.js"></script>
 </head>
@@ -155,6 +156,11 @@
             <option value="gated">Has a gate</option>
             <option value="mention">Only shown when mentioned</option>
             <option value="not-free">Not free for everyone</option>
+            <option value="ending">A project ends or closes to referrals within 30 days</option>
+            <option value="ended">A project or cohort has closed</option>
+            <option value="opening">A project opens to referrals later</option>
+            <option value="too-long">Text over the new character limits</option>
+            <option value="no-org-overview">No organisation overview</option>
           </select></div>
         <div><label for="f-sort">Sort by</label>
           <select id="f-sort">
@@ -168,9 +174,11 @@
     </details>
 
     <section id="add-panel" class="add-panel" hidden></section>
+    <section id="orgs-panel" class="add-panel" hidden></section>
 
     <div class="toolbar">
       <button id="add-service" class="btn primary small" type="button" hidden>Add a service</button>
+      <button id="open-orgs" class="btn secondary small" type="button" hidden>Organisations</button>
       <button id="clear" class="btn secondary small" type="button">Clear search and filters</button>
       <button id="expand" class="btn secondary small" type="button">Show all details</button>
       <button id="export" class="btn secondary small" type="button">Download these as CSV</button>
@@ -184,6 +192,8 @@
   </main>
 
   <script src="../config.js"></script>
+  <script src="../listing-logic.js"></script>
+  <script src="../listing-form.js"></script>
   <script src="services.js" defer></script>
 </body>
 </html>

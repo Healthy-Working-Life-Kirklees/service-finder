@@ -3,7 +3,6 @@
   "name": "Fitness for Work",
   "organisation": "Kirklees Active Leisure",
   "logo": "kirklees-active-leisure.webp",
-  "status": "Live - open to referrals",
   "open": true,
   "hwlFunded": true,
   "level": "local",
@@ -71,19 +70,22 @@
     "note": "Yes, via the online form",
     "url": "https://secure.refer-all.net/referrals/Kirklees/ReferKirklees?id=6040&name=Fitness%20for%20Work"
   },
-  "activities": [
+  "projects": [
     {
+      "id": "fitness-for-work",
       "name": "Fitness for Work",
-      "summary": "A structured 12-week physical activity programme with one weekly exercise-specialist-led session (studio class, water-based class or gym session) plus full KAL membership for the duration. Aimed at people with mental health or musculoskeletal conditions. Individual support from a Specialist Exercise Co-ordinator and Exercise Referral Specialists.",
+      "overview": "A structured 12-week physical activity programme with one weekly exercise-specialist-led session (studio class, water-based class or gym session) plus full KAL membership for the duration. Aimed at people with mental health or musculoskeletal conditions. Individual support from a Specialist Exercise Co-ordinator and Exercise Referral Specialists.",
       "duration": "12 weeks"
     },
     {
+      "id": "post-12-week-programme",
       "name": "Post 12 week programme",
-      "summary": "Access to KAL's active movers membership (full access), recommendations of suitable classes and groups, graduation events and gym floor support.",
+      "overview": "Access to KAL's active movers membership (full access), recommendations of suitable classes and groups, graduation events and gym floor support.",
       "duration": "Ongoing"
     }
   ],
   "workExperience": "No",
+  "notes": "Status before November 2026: Live - open to referrals",
   "lastUpdated": "2026-08-21",
   "reviewCycle": "Quarterly",
   "provenance": {
