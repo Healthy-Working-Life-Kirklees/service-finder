@@ -39,6 +39,7 @@
   "gate": [],
   "healthFocus": [],
   "referralRoutes": [
+    "Online enquiry and registration on My Kirklees ('Make an enquiry to Employment and Skills Support'): https://my.kirklees.gov.uk/service/Jobs_and_training___Make_an_enquiry_to_Employment_and_Skills_Support",
     "Online enquiry via the Paddock Trust website",
     "Phone",
     "In person - via community venues and drop-ins",
@@ -46,7 +47,8 @@
   ],
   "selfReferral": {
     "allowed": "yes",
-    "note": "Yes, via any route"
+    "note": "Yes, via any route",
+    "url": "https://my.kirklees.gov.uk/service/Jobs_and_training___Make_an_enquiry_to_Employment_and_Skills_Support"
   },
   "projects": [
     {
@@ -73,7 +75,7 @@
   "lastUpdated": "2026-08-03",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026); registration link from the Employment Kirklees flyer (Word document, 11 Oct 2026)"
   },
   "listing": {
     "decision": "include",
