@@ -47,13 +47,15 @@
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 41",
     "foundVia": "Web research or directory review (October 2026)",
-    "evidence": "Couldn't be fetched (blocked). In Kirklees this is delivered as Employment Kirklees (HWL scheme).",
+    "evidence": "Couldn't be fetched (blocked). In Kirklees this is delivered as Employment Kirklees (HWL scheme). WYCA form passed to the Council Employment and Skills Service in Kirklees: confirmed by Phil Longworth, 10 Nov 2026.",
     "confidence": "low",
     "checkedUrl": "https://www.wybusiness-skills.com/business-support/skills-and-training/employment-west-yorkshire/",
     "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
-    "decision": "review",
-    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+    "decision": "exclude",
+    "reason": "In Kirklees, WYCA's form is passed to the Council's Employment and Skills Service, which is already listed (employment-skills-service-kirklees).",
+    "by": "PL",
+    "date": "2026-11-10"
   }
 }

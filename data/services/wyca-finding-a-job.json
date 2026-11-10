@@ -56,12 +56,14 @@
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 82",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.westyorks-ca.gov.uk/skills/for-adults/finding-a-job/",
-    "evidence": "Live sign-up form Oct 2026; page undated. In Kirklees this is delivered as Employment Kirklees (already an HWL scheme) — may be a duplicate route.",
+    "evidence": "Live sign-up form Oct 2026; page undated. In Kirklees this is delivered as Employment Kirklees (already an HWL scheme) — may be a duplicate route. WYCA form passed to the Council Employment and Skills Service in Kirklees: confirmed by Phil Longworth, 10 Nov 2026.",
     "confidence": "medium",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
-    "decision": "include",
-    "reason": "On the live list since the October 2026 import, before the development team review."
+    "decision": "exclude",
+    "reason": "In Kirklees, WYCA's form is passed to the Council's Employment and Skills Service, which is already listed (employment-skills-service-kirklees).",
+    "by": "PL",
+    "date": "2026-11-10"
   }
 }

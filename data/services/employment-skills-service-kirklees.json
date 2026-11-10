@@ -33,11 +33,12 @@
   "referralRoutes": [
     "Phone",
     "Email",
-    "Online enquiry form on my.kirklees.gov.uk"
+    "Online enquiry form on My Kirklees ('Make an enquiry to Employment and Skills Support'): https://my.kirklees.gov.uk/service/Jobs_and_training___Make_an_enquiry_to_Employment_and_Skills_Support"
   ],
   "selfReferral": {
     "allowed": "yes",
-    "note": "Refer yourself by phone, email or the online enquiry form"
+    "note": "Refer yourself by phone, email or the online enquiry form",
+    "url": "https://my.kirklees.gov.uk/service/Jobs_and_training___Make_an_enquiry_to_Employment_and_Skills_Support"
   },
   "projects": [
     {
@@ -54,10 +55,10 @@
   "lastUpdated": "2026-10-14",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 14",
+    "source": "Kirklees additional services spreadsheet v3 (October 2026), row 14; enquiry form link from the Employment Kirklees flyer (Word document, 11 Oct 2026)",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://jobs.kirklees.gov.uk/employment-support",
-    "evidence": "Page changed Aug 2025; council Armed Forces page (Oct 2026) still refers to it. Also runs the care-leaver strand of Connect to Work.",
+    "evidence": "Page changed Aug 2025; council Armed Forces page (Oct 2026) still refers to it. Also runs the care-leaver strand of Connect to Work. WYCA's 'Finding a job' form is passed to this service in Kirklees (confirmed by Phil Longworth, 10 Nov 2026).",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
