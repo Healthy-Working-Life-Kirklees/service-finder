@@ -644,9 +644,9 @@
       if (!checked && hasCards && !data.safety_concern && data.status === 'results' && data.understood_needs.length) {
         const box = checkBox(data);
         logEl.append(box);
-        if (data.pii_detected) box.append(el('p', { class: 'pii-note', text: t('pii') }));
+        box.append(privacyNote(data));
         pendingCheck = { data, box };
-        announce([...box.querySelectorAll('h2, p:not([hidden]), li')].map((n) => n.textContent.trim()).join(' '));
+        announce([...box.querySelectorAll('h2, p:not([hidden]), li')].filter((n) => !n.matches('.privacy-note:not(.pii-note)')).map((n) => n.textContent.trim()).join(' '));
         box.scrollIntoView({ block: 'start', behavior: 'smooth' });
         return;
       }
@@ -661,6 +661,17 @@
       // Put the cursor back in the message box without scrolling down to it.
       input.focus({ preventScroll: true });
     }
+  }
+
+  // Under every reply: a reminder that nothing typed is saved. When the message looks like it holds personal
+  // details, a fuller note says so and reassures. The AI flags names, addresses and dates of birth (pii_detected);
+  // the page also checks the latest message itself for emails, phone numbers, postcodes and NI numbers, using
+  // the same patterns as feedback, so the note still shows if the AI misses them.
+  function privacyNote(data) {
+    const last = [...history].reverse().find((m) => m.role === 'user');
+    const own = !!(last && window.FEEDBACK && window.FEEDBACK.redact && window.FEEDBACK.redact(last.content) !== last.content);
+    const personal = data.pii_detected === true || own;
+    return el('p', { class: 'privacy-note' + (personal ? ' pii-note' : ''), dir: 'auto', text: t(personal ? 'pii' : 'notStored') });
   }
 
   // Shows a reply from the AI (its message, any questions, and the scheme cards) and adds it to the history.
@@ -685,11 +696,11 @@
       // Shown only under results that didn't go through the summary check (for example, no services found).
       // Not under questions (the check comes next) and not once the summary has been checked.
       if (needs.length && !data.safety_concern && data.status === 'results' && !checked) b.append(el('p', { class: 'understood', dir: 'auto', text: t('understood') + needs.join(t('listSep')) + t('end') }));
-      if (data.pii_detected) b.append(el('p', { class: 'pii-note', text: t('pii') }));
+      b.append(privacyNote(data));
       // Listen button: reads the whole reply, including any urgent support panel and questions, in the page's language.
       if (window.ACCESS) {
         const reply = b;
-        b.append(el('div', { class: 'bubble-tools' }, window.ACCESS.listenButton(() => [...reply.querySelectorAll('p:not([hidden]), li, legend, .answer-option span')].map((p) => p.textContent).join(' '), window.I18N.locale)));
+        b.append(el('div', { class: 'bubble-tools' }, window.ACCESS.listenButton(() => [...reply.querySelectorAll('p:not([hidden]), li, legend, .answer-option span')].filter((p) => !p.matches('.privacy-note:not(.pii-note)')).map((p) => p.textContent).join(' '), window.I18N.locale)));
       }
       // The chat message comes first, with the scheme cards underneath it.
       const list = (data.recommendations || []).filter((r) => services.has(r.id));
@@ -727,7 +738,7 @@
       // Screen readers hear the reply (and any questions) and how many services
       // were suggested, but not the cards themselves; they can move through those with their heading keys.
       // The urgent support panel is left out here because it announces itself (role=alert).
-      const replyText = [...b.querySelectorAll('p:not([hidden]), li, legend')].filter((n) => !n.closest('.bubble-tools, .crisis')).map((n) => n.textContent.trim()).join(' ');
+      const replyText = [...b.querySelectorAll('p:not([hidden]), li, legend')].filter((n) => !n.closest('.bubble-tools, .crisis') && !n.matches('.privacy-note:not(.pii-note)')).map((n) => n.textContent.trim()).join(' ');
       announce(replyText + (recs.length ? ' ' + (recs.length === 1 ? t('servicesOne') : t('servicesMany', { n: recs.length })) : ''));
       // Keep the reader at the start of the reply, with the cards below it, rather than at the end of the cards.
       b.scrollIntoView({ block: 'start', behavior: 'smooth' });
