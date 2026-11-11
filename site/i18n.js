@@ -152,7 +152,8 @@
       checkThanks: 'Thanks for checking.',
       previewBar: 'Preview version: this is for trying out new changes. It is not the main site.',
       understood: 'What I have understood so far: ',
-      pii: "Please don't type names, addresses, dates of birth or NHS numbers. You don't need to share them to get matches.",
+      pii: "It looks like this includes personal details, like a name or phone number. Don't worry: we don't save your messages or anything in them, and the conversation is gone when you close or refresh the page. You don't need these details to get matches, so please leave them out.",
+      notStored: "We don't save your messages or any personal details in them. The conversation is gone when you close or refresh the page.",
       listSep: '; ',
       end: '.',
       // User feedback (feedback.js)
@@ -466,7 +467,8 @@
       checkThanks: 'Dziękujemy za sprawdzenie.',
       previewBar: 'Wersja podglądowa: służy do testowania nowych zmian. To nie jest główna strona.',
       understood: 'Co udało się ustalić do tej pory: ',
-      pii: 'Prosimy nie wpisywać imion i nazwisk, adresów, dat urodzenia ani numerów NHS. Nie są potrzebne do znalezienia dopasowań.',
+      pii: 'Wygląda na to, że wiadomość zawiera dane osobowe, na przykład imię lub numer telefonu. Bez obaw: nie zapisujemy Twoich wiadomości ani niczego, co w nich jest, a rozmowa znika po zamknięciu lub odświeżeniu strony. Te dane nie są potrzebne do znalezienia dopasowań, więc prosimy ich nie podawać.',
+      notStored: 'Nie zapisujemy Twoich wiadomości ani zawartych w nich danych osobowych. Rozmowa znika po zamknięciu lub odświeżeniu strony.',
       listSep: '; ',
       end: '.',
       // Opinie użytkowników (feedback.js)
@@ -778,7 +780,8 @@
       checkThanks: 'دیکھنے کا شکریہ۔',
       previewBar: 'آزمائشی ورژن: یہ نئی تبدیلیوں کو جانچنے کے لیے ہے، اصل سائٹ نہیں۔',
       understood: 'اب تک ہم نے یہ سمجھا ہے: ',
-      pii: 'براہِ کرم نام، پتے، تاریخِ پیدائش یا NHS نمبر نہ لکھیں۔ مناسب سروسز تلاش کرنے کے لیے ان کی ضرورت نہیں۔',
+      pii: 'لگتا ہے کہ اس میں ذاتی معلومات شامل ہیں، جیسے نام یا فون نمبر۔ فکر نہ کریں: ہم آپ کے پیغامات یا ان میں موجود کوئی چیز محفوظ نہیں کرتے، اور صفحہ بند یا ریفریش کرنے پر بات چیت ختم ہو جاتی ہے۔ مناسب سروسز تلاش کرنے کے لیے ان معلومات کی ضرورت نہیں، اس لیے براہِ کرم انہیں شامل نہ کریں۔',
+      notStored: 'ہم آپ کے پیغامات یا ان میں موجود ذاتی معلومات محفوظ نہیں کرتے۔ صفحہ بند یا ریفریش کرنے پر بات چیت ختم ہو جاتی ہے۔',
       listSep: '؛ ',
       end: '۔',
       // صارفین کی رائے (feedback.js)
