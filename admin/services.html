@@ -167,6 +167,16 @@
             <option value="times-in-words">Days and times written in words, to turn into sessions</option>
             <option value="no-groups">"Who it's for" groups not ticked yet</option>
           </select></div>
+        <div><label for="f-provider">Checked with the provider</label>
+          <select id="f-provider" aria-describedby="f-provider-hint">
+            <option value="">All</option>
+            <option value="not-sent">Not sent to the provider</option>
+            <option value="live-not-sent">On the live list, not sent yet</option>
+            <option value="sent">Sent to the provider</option>
+            <option value="no-reply">Sent, no reply yet</option>
+            <option value="replied">Provider has replied</option>
+            <option value="reply-waiting">Reply waiting for the team</option>
+          </select><p id="f-provider-hint" class="hint">Needs you to be signed in. "Sent" means a review link has been made for it.</p></div>
         <div><label for="f-sort">Sort by</label>
           <select id="f-sort">
             <option value="name">Name (A to Z)</option>

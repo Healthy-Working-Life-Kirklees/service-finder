@@ -187,10 +187,10 @@
   }
 
   // ---------- state, kept in the address ----------
-  const FIELDS = ['q', 'listing', 'decision', 'type', 'level', 'area', 'category', 'health', 'audience', 'self', 'review', 'confidence', 'gap', 'sort'];
+  const FIELDS = ['q', 'listing', 'decision', 'type', 'level', 'area', 'category', 'health', 'audience', 'self', 'review', 'confidence', 'gap', 'provider', 'sort'];
   const input = {
     q: $('#q'), listing: $('#f-listing'), decision: $('#f-decision'), type: $('#f-type'), level: $('#f-level'), area: $('#f-area'), category: $('#f-category'), health: $('#f-health'),
-    audience: $('#f-audience'), self: $('#f-self'), review: $('#f-review'), confidence: $('#f-confidence'), gap: $('#f-gap'), sort: $('#f-sort'),
+    audience: $('#f-audience'), self: $('#f-self'), review: $('#f-review'), confidence: $('#f-confidence'), gap: $('#f-gap'), provider: $('#f-provider'), sort: $('#f-sort'),
   };
 
   function readUrl() {
@@ -238,6 +238,8 @@
     if (v('review') && x.review !== v('review')) return false;
     if (v('confidence') && x.confidence !== v('confidence')) return false;
     if (v('gap') && !x.gaps.has(v('gap'))) return false;
+    // Checked with the provider: from the review links, so only once signed in (ignored otherwise).
+    if (v('provider') && plinks && providerState(x) !== v('provider') && !(PROVIDER_GROUP[v('provider')] || []).includes(providerState(x))) return false;
     const words = input.q.value.toLowerCase().split(/\s+/).filter(Boolean);
     return words.every((w) => x.text.includes(w));
   }
@@ -503,6 +505,19 @@
     const e = edits && edits[id];
     return { reply: r || null, handled: Boolean(r && e && e.t > r.t), count: replies.length };
   }
+  // Where a service is with the provider: not sent (live or not), sent with no reply, or replied (the newest reply
+  // still waiting for the team, or dealt with). "Sent" means a review link was made, whatever its state now.
+  function providerState(x) {
+    if (!linksFor(x.s.id).length) return x.listing === 'include' ? 'live-not-sent' : 'not-sent-other';
+    const { reply, handled } = newestReply(x.s.id);
+    if (!reply) return 'no-reply';
+    return handled ? 'replied-handled' : 'reply-waiting';
+  }
+  const PROVIDER_GROUP = {
+    'not-sent': ['live-not-sent', 'not-sent-other'],
+    sent: ['no-reply', 'reply-waiting', 'replied-handled'],
+    replied: ['reply-waiting', 'replied-handled'],
+  };
   function providerNews(x) {
     if (!plinks) return '';
     const { reply, handled } = newestReply(x.s.id);
