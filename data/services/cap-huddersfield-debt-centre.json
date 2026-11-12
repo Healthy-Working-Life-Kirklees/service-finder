@@ -45,8 +45,11 @@
       "id": "debt-advice",
       "name": "Debt advice",
       "overview": "Free debt help by appointment: a CAP worker helps you work out a plan.",
-      "where": [
-        "Jubilee Centre, Paddock, Huddersfield HD1 4SH"
+      "sessions": [
+        {
+          "id": "jubilee-centre",
+          "venue": "jubilee-centre"
+        }
       ]
     }
   ],

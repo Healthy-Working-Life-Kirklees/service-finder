@@ -4,10 +4,10 @@
 .lf .lf-field { margin: 0 0 1.1rem; position: relative; }
 .lf label, .lf legend { display: block; font-weight: 700; margin-bottom: .2rem; }
 .lf .hint { margin: 0 0 .35rem; font-size: .92rem; color: var(--grey); max-width: 62ch; }
-.lf input[type=text], .lf input[type=url], .lf input[type=email], .lf input[type=tel], .lf input[type=date], .lf select, .lf textarea {
+.lf input[type=text], .lf input[type=url], .lf input[type=email], .lf input[type=tel], .lf input[type=date], .lf input[type=time], .lf select, .lf textarea {
   width: 100%; font: inherit; color: var(--text); background: #fff; border: 2px solid #8a9a98; border-radius: 6px; padding: .45rem .6rem;
 }
-.lf input[type=date], .lf select { width: auto; max-width: 100%; }
+.lf input[type=date], .lf input[type=time], .lf select { width: auto; max-width: 100%; }
 .lf textarea { resize: vertical; line-height: 1.45; }
 .lf input:focus-visible, .lf select:focus-visible, .lf textarea:focus-visible { outline: 3px solid var(--focus); outline-offset: 0; box-shadow: 0 0 0 5px #000; }
 .lf fieldset { border: 1px solid var(--border); border-radius: 8px; padding: .5rem .9rem .7rem; margin: 0 0 1.1rem; min-width: 0; }
@@ -21,11 +21,22 @@
 .lf-count.over { color: var(--crisis); font-weight: 700; }
 .lf-match { margin-top: .3rem; }
 
-/* Projects and cohorts */
+/* Projects and sessions */
 .lf-projects-box > .btn { margin-bottom: .5rem; }
 .lf fieldset.lf-proj { border: 2px solid var(--accent); background: var(--mint); padding: .7rem 1rem .5rem; }
 .lf fieldset.lf-proj > legend { font-size: 1.1rem; color: var(--dark-blue); padding: 0 .3rem; }
-.lf fieldset.lf-cohort { background: #fff; border-inline-start: 4px solid var(--accent); }
+.lf fieldset.lf-session { background: #fff; border-inline-start: 4px solid var(--accent); }
+.lf fieldset.lf-days, .lf fieldset.lf-runs { border: 0; padding: 0; }
+.lf .lf-lab { font-weight: 700; margin: 0 0 .2rem; }
+.lf .lf-elig, .lf .lf-venue-row { display: flex; flex-wrap: wrap; gap: .5rem .75rem; align-items: center; margin: 0 0 .5rem; }
+.lf .lf-elig > input[type=text] { flex: 1 1 18rem; width: auto; }
+.lf .lf-venue-row > .lf-venue { flex: 1 1 22rem; margin: 0; }
+.lf .lf-ess { display: flex; align-items: center; gap: .35rem; font-weight: 700; margin: 0; }
+.lf .lf-ess input { width: 1.25rem; height: 1.25rem; accent-color: var(--blue); }
+.lf .lf-newvenue { background: var(--light); border-radius: 8px; padding: .5rem .75rem; margin-top: .4rem; }
+.lf details.lf-more { margin: 0 0 .8rem; }
+.lf details.lf-more > summary { cursor: pointer; font-weight: 700; color: var(--dark-blue); padding: .3rem 0; }
+.lf input[type=time] { width: auto; }
 .lf fieldset.lf-dates { background: rgba(255, 255, 255, .6); }
 .lf .lf-sub { margin: .8rem 0 .2rem; font-size: 1rem; }
 

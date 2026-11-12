@@ -21,9 +21,10 @@
   "email": null,
   "phone": "01484 221581 (Monday to Friday, 8.30am-4.30pm)",
   "social": [],
-  "locations": [
-    "Civic Centre 3, High Street, Huddersfield, HD1 2TG",
-    "Dewsbury Town Hall, Wakefield Old Road, Dewsbury, WF12 8DG"
+  "locations": [],
+  "venues": [
+    "civic-centre-3",
+    "dewsbury-town-hall"
   ],
   "areas": [
     "Huddersfield",

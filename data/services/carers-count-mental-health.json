@@ -54,8 +54,11 @@
       "id": "support-for-carers",
       "name": "Support for carers",
       "overview": "One-to-one support, short breaks and groups for carers of someone with mental ill health, dementia, neurodiversity or drug/alcohol problems.",
-      "where": [
-        "Empire House, Dewsbury WF12 8DJ"
+      "sessions": [
+        {
+          "id": "empire-house",
+          "venue": "empire-house"
+        }
       ]
     }
   ],

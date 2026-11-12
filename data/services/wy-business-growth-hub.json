@@ -40,8 +40,11 @@
       "id": "start-up-business-support",
       "name": "Start-up business support",
       "overview": "Free first point of contact for anyone starting a business, linking to advice, grants, loans and training.",
-      "where": [
-        "Leeds LS1 2DE"
+      "sessions": [
+        {
+          "id": "leeds",
+          "venue": "leeds-2"
+        }
       ]
     }
   ],

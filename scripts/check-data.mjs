@@ -8,6 +8,7 @@
 //    "To be completed" placeholders left in it. Project and cohort ids are unique within a service, and
 //    their dates are in order.
 // 3. data/organisations.json: one record per organisation, and every service's organisation is in it.
+// 4. data/venues.json: one record per place, and every venue a service uses is in it.
 // It also reports (without failing) entries overdue for a check, organisations with no services, and text
 // longer than the forms' character limits (kept as it is, for the partner to shorten when they check it).
 //
@@ -19,7 +20,7 @@ import { fileURLToPath } from 'node:url';
 import Ajv2020 from 'ajv/dist/2020.js';
 import '../site/listing-logic.js';
 
-const { LIMITS, checkParts } = globalThis.LISTING;
+const { LIMITS, checkParts, venueIds: venueIdsOf } = globalThis.LISTING;
 
 const PLACEHOLDER = 'To be completed';
 const STALE_DAYS = 135; // the same threshold the page uses for its "may be out of date" warning
@@ -74,6 +75,32 @@ try {
   fail(orgFile, `can't be read as JSON (${e.message})`);
 }
 
+// Venues: one record per place, shared by every service that meets there. "ward", "wardCode", "lat" and "lng" are
+// filled in from the postcode by scripts/lookup-venues.mjs (run by the "Apply team changes" workflow).
+const venueFile = 'data/venues.json';
+const venueIds = new Set();
+const venueUsed = new Set();
+const VENUE_FIELDS = ['id', 'name', 'address', 'postcode', 'ward', 'wardCode', 'lat', 'lng', 'aliases', 'notes'];
+try {
+  const o = JSON.parse(fs.readFileSync(path.join(root, venueFile), 'utf8'));
+  if (!o || !Array.isArray(o.venues)) fail(venueFile, 'must be { "venues": [...] }');
+  for (const [i, x] of (o.venues || []).entries()) {
+    const where = `${venueFile} venues[${i}]`;
+    if (!x || typeof x !== 'object') { fail(where, 'is not an object'); continue; }
+    for (const k of Object.keys(x)) if (!VENUE_FIELDS.includes(k)) fail(where, `unexpected field "${k}"`);
+    if (typeof x.id !== 'string' || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(x.id) || x.id.length > 50) fail(where, 'needs an id of lower-case letters, numbers and hyphens');
+    for (const k of ['name', 'address']) if (typeof x[k] !== 'string' || !x[k].trim()) fail(where, `needs ${k === 'name' ? 'a name' : 'an address'}`);
+    if (typeof x.postcode !== 'string' || !/^[A-Z]{1,2}\d[A-Z\d]? \d[A-Z]{2}$/.test(x.postcode)) fail(where, 'needs a full postcode in capitals with one space, such as WF17 5DR');
+    for (const k of ['ward', 'wardCode', 'notes']) if (k in x && (typeof x[k] !== 'string' || !x[k].trim())) fail(where, `"${k}" must be text (leave it out if there is none)`);
+    for (const k of ['lat', 'lng']) if (k in x && typeof x[k] !== 'number') fail(where, `"${k}" must be a number`);
+    if ('aliases' in x && (!Array.isArray(x.aliases) || x.aliases.some((a) => typeof a !== 'string' || !a.trim()))) fail(where, 'aliases must be a list of names');
+    if (venueIds.has(x.id)) fail(where, `id "${x.id}" is used twice`);
+    venueIds.add(x.id);
+  }
+} catch (e) {
+  fail(venueFile, `can't be read as JSON (${e.message})`);
+}
+
 const today = new Date().toISOString().slice(0, 10);
 const files = fs.readdirSync(dir).filter((f) => !f.startsWith('.'));
 const overdue = [];
@@ -117,6 +144,10 @@ for (const f of files.sort()) {
   if (orgNames.size && !orgNames.has(s.organisation)) fail(rel, `organisation "${s.organisation}" isn't in data/organisations.json (add it there, or use the name exactly as it is there)`);
   orgUsed.add(s.organisation);
   for (const p of checkParts(s.projects)) fail(rel, p);
+  for (const v of venueIdsOf(s)) {
+    venueUsed.add(v);
+    if (!venueIds.has(v)) fail(rel, `venue "${v}" isn't in data/venues.json`);
+  }
   if (s.whoFor.length > LIMITS.whoFor) overLimit.push(`${s.id}: who it's for ${s.whoFor.length} characters (limit ${LIMITS.whoFor})`);
   for (const p of s.projects) if (p.overview.length > LIMITS.projectOverview) overLimit.push(`${s.id}: "${p.name}" overview ${p.overview.length} characters (limit ${LIMITS.projectOverview})`);
   if (s.coachNotes && s.coachNotes.length > LIMITS.coachNotes) overLimit.push(`${s.id}: anything coaches should know ${s.coachNotes.length} characters (limit ${LIMITS.coachNotes})`);
@@ -131,6 +162,8 @@ if (!files.length) fail('data/services/', 'no scheme files found');
 
 const unused = [...orgNames.keys()].filter((n) => !orgUsed.has(n));
 if (unused.length) console.log(`Note: ${unused.length} organisations have no services: ${unused.join(', ')}`);
+const unusedVenues = [...venueIds].filter((v) => !venueUsed.has(v));
+if (unusedVenues.length) console.log(`Note: ${unusedVenues.length} venues are not used by any service: ${unusedVenues.join(', ')}`);
 if (overLimit.length) console.log(`Note: ${overLimit.length} texts are longer than the forms allow (kept as they are; shorten them when next checked):\n  ${overLimit.join('\n  ')}`);
 if (overdue.length) console.log(`Note: ${overdue.length} open entries on the live list are overdue for a check: ${overdue.join(', ')}`);
 if (errors.length) {

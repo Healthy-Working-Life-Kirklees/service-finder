@@ -109,7 +109,7 @@ function list(v, allowed, label, { min = 0, max = allowed.length } = {}) {
 // dates, addresses) are still accepted from a page loaded before November 2026, and labelled on the review page.
 export const SERVICE_FIELDS = ['name', 'website', 'area', 'role', 'organisation', 'organisationOverview', 'addTo', 'whoFor', 'open', 'projectName', 'projectOverview', 'where', 'when', 'duration', 'places',
   'runsFrom', 'runsTo', 'referralsFrom', 'referralsUntil', 'age', 'eligibility', 'gate', 'exclusions', 'healthNeed', 'conditions', 'audience', 'categories', 'noMap', 'level', 'phone', 'email', 'social',
-  'referral', 'selfReferral', 'cost', 'languages', 'workExperience', 'coachNotes', 'logoOk', 'contactName',
+  'referral', 'selfReferral', 'cost', 'languages', 'workExperience', 'coachNotes', 'logoOk', 'contactName', 'projects', 'groups',
   'description', 'activities', 'running', 'dates', 'addresses'];
 const SERVICE_TEXT = {
   organisation: 150, organisationOverview: 300, whoFor: 300, projectName: 150, projectOverview: 400, where: 500, when: 150, duration: 150, places: 60,
@@ -127,6 +127,62 @@ const LABELS = {
   languages: 'The languages', workExperience: 'Work experience', coachNotes: 'What coaches should know', contactName: 'The contact name',
   description: 'The description', activities: 'What happens', dates: 'The dates', addresses: 'The addresses',
 };
+
+// The projects in a suggestion: [{ name, overview, online, appointment, duration, places, dates, sessions: [{ where,
+// day, start, end }] }]. Only short text, choices and dates: the team turns them into a listing in Admin.
+const DAY_IDS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+const GROUP_IDS = ['everyone', 'children', 'young-people', 'young-adults', 'adults', 'adults-50', 'older-people', 'families', 'parents', 'mothers', 'fathers', 'women', 'men', 'carers', 'disabled', 'health-condition', 'mental-health', 'refugees', 'ethnic-minority', 'lgbtq', 'students', 'veterans'];
+function suggestedProjects(v) {
+  if (!Array.isArray(v) || v.length > 10) return { error: 'You can tell us about up to 10 projects.' };
+  const out = [];
+  for (const p of v) {
+    if (!p || typeof p !== 'object' || Array.isArray(p)) return { error: 'The project details could not be read.' };
+    const bad = Object.keys(p).find((k) => !['name', 'overview', 'online', 'appointment', 'duration', 'places', 'sessions', ...SERVICE_DATES].includes(k));
+    if (bad) return { error: 'The project details could not be read.' };
+    const one = {};
+    for (const [k, max, label] of [['name', 150, 'The project name'], ['overview', 400, 'What happens in the project'], ['duration', 150, 'How long it lasts'], ['places', 60, 'The number of places']]) {
+      const t = optText(p[k], max, label);
+      if (t.error) return t;
+      if (t.value) one[k] = t.value;
+    }
+    for (const k of ['online', 'appointment']) {
+      if (p[k] === undefined || p[k] === false) continue;
+      if (p[k] !== true) return { error: 'The project details could not be read.' };
+      one[k] = true;
+    }
+    for (const k of SERVICE_DATES) {
+      if (p[k] === undefined || p[k] === null || p[k] === '') continue;
+      if (typeof p[k] !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(p[k]) || Number.isNaN(Date.parse(p[k]))) return { error: 'Please give the dates as day, month and year.' };
+      one[k] = p[k];
+    }
+    if ((one.runsFrom && one.runsTo && one.runsFrom > one.runsTo) || (one.referralsFrom && one.referralsUntil && one.referralsFrom > one.referralsUntil)) return { error: 'One of the end dates is before its start date.' };
+    if (p.sessions !== undefined && p.sessions !== null) {
+      if (!Array.isArray(p.sessions) || p.sessions.length > 20) return { error: 'You can give up to 20 venues or days for each project.' };
+      const ss = [];
+      for (const x of p.sessions) {
+        if (!x || typeof x !== 'object' || Array.isArray(x) || Object.keys(x).some((k) => !['where', 'day', 'start', 'end'].includes(k))) return { error: 'The venue details could not be read.' };
+        const se = {};
+        const w = optText(x.where, 300, 'The venue and address');
+        if (w.error) return w;
+        if (w.value) se.where = w.value;
+        if (x.day !== undefined && x.day !== '' && x.day !== null) {
+          if (!DAY_IDS.includes(x.day)) return { error: 'Please choose a day from the list.' };
+          se.day = x.day;
+        }
+        for (const k of ['start', 'end']) {
+          if (x[k] === undefined || x[k] === '' || x[k] === null) continue;
+          if (typeof x[k] !== 'string' || !/^([01]\d|2[0-3]):[0-5]\d$/.test(x[k])) return { error: 'Please give the times like 10:30.' };
+          se[k] = x[k];
+        }
+        if (se.start && se.end && se.start >= se.end) return { error: 'One of the finishing times is before its start time.' };
+        if (Object.keys(se).length) ss.push(se);
+      }
+      if (ss.length) one.sessions = ss;
+    }
+    if (Object.keys(one).length) out.push(one);
+  }
+  return { value: out };
+}
 
 function serviceDetails(ms, ctx) {
   const out = {};
@@ -148,6 +204,16 @@ function serviceDetails(ms, ctx) {
   }
   if ((out.runsFrom && out.runsTo && out.runsFrom > out.runsTo) || (out.referralsFrom && out.referralsUntil && out.referralsFrom > out.referralsUntil)) return { error: 'One of the end dates is before its start date.' };
   // "A new project of a service we already list": one of the services in the data.
+  // Projects (from November 2026): any number, each with its places, days and times.
+  if (ms.projects !== undefined && ms.projects !== null) {
+    const r = suggestedProjects(ms.projects);
+    if (r.error) return r;
+    if (r.value.length) out.projects = r.value;
+  }
+  if (ms.groups !== undefined && ms.groups !== null) {
+    if (!Array.isArray(ms.groups) || ms.groups.length > 30 || ms.groups.some((g) => typeof g !== 'string' || !GROUP_IDS.includes(g))) return { error: 'Please choose from the list.' };
+    if (ms.groups.length) out.groups = [...new Set(ms.groups)];
+  }
   if (ms.addTo !== undefined && ms.addTo !== null && ms.addTo !== '') {
     if (typeof ms.addTo !== 'string' || !(ctx.ids && ctx.ids.has(ms.addTo))) return { error: 'Please choose a service from the list.' };
     out.addTo = ms.addTo;
@@ -409,7 +475,9 @@ function csv(items) {
   };
   const rows = items.map((x) => {
     const ms = x.missedService || {};
-    const details = Object.entries(ms).filter(([k]) => !['name', 'website', 'area'].includes(k)).map(([k, v]) => k + ': ' + (Array.isArray(v) ? v.join(', ') : v)).join(' | ');
+    // Projects are a list of objects: written out in words, one project after another.
+    const words = (v) => (Array.isArray(v) ? v.map((x) => (x && typeof x === 'object' ? Object.entries(x).map(([a, b]) => a + ' ' + words(b)).join(', ') : x)).join('; ') : v && typeof v === 'object' ? JSON.stringify(v) : v);
+    const details = Object.entries(ms).filter(([k]) => !['name', 'website', 'area'].includes(k)).map(([k, v]) => k + ': ' + words(v)).join(' | ');
     const ct = x.contact || {};
     const row = { ...x, missedServiceName: ms.name, missedServiceWebsite: ms.website, missedServiceArea: ms.area, missedServiceDetails: details, contactName: ct.name, contactEmail: ct.email };
     return CSV_COLUMNS.map((c) => cell(row[c])).join(',');

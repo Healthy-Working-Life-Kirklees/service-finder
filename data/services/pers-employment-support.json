@@ -44,8 +44,11 @@
       "id": "employment-support",
       "name": "Employment support",
       "overview": "Local charity helping people get ready for, find and keep work, including confidence, training and starting a business.",
-      "where": [
-        "Taleem Community Centre, Savile Town, Dewsbury WF12 9LT"
+      "sessions": [
+        {
+          "id": "taleem-community-centre",
+          "venue": "taleem-community-centre"
+        }
       ]
     }
   ],

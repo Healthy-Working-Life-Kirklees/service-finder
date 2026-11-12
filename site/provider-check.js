@@ -56,7 +56,7 @@
   const id = (k) => 'pc-' + k;
 
   function build() {
-    lf = LISTING_FORM.build({ values: data.service, original: data.service, mode: 'partner', choices: data.choices, organisations: data.organisations, prefix: 'pc', headingLevel: 2, onChange: refresh });
+    lf = LISTING_FORM.build({ values: data.service, original: data.service, mode: 'partner', choices: data.choices, organisations: data.organisations, venues: data.venues, prefix: 'pc', headingLevel: 2, onChange: refresh });
     form = el('form', { class: 'pc-form', novalidate: true }, lf.node);
     const status = el('p', { class: 'pc-count', role: 'status', 'aria-live': 'polite' });
     const msg = el('p', { class: 'pc-msg', role: 'alert', hidden: true });
@@ -115,7 +115,7 @@
     const intro = $('#pc-intro');
     const back = el('button', { type: 'button', class: 'btn secondary', text: 'Go back to the details', onclick: () => { panel.remove(); form.hidden = false; intro.hidden = false; form.querySelector('input, textarea, select').focus(); } });
     // Does anything have an end date, or a date referrals close? Then say we'll be in touch 30 days before.
-    const dated = list(listing.projects).some((p) => p.runsTo || p.referralsUntil || list(p.cohorts).some((c) => c.runsTo || c.referralsUntil));
+    const dated = list(listing.projects).some((p) => p.runsTo || p.referralsUntil || list(p.sessions).some((c) => c.runsTo || c.referralsUntil));
     const panel = el('div', { class: 'pc-thanks', tabindex: '-1' },
       el('h2', { text: 'Thank you' }),
       el('p', { text: allCorrect
@@ -139,15 +139,25 @@
     const last = data.lastReply;
     const intro = el('div', { id: 'pc-intro' },
       el('p', {}, 'Hello ', el('strong', { text: data.contact }), '. This is everything the ', el('strong', { text: 'Healthy Working Life Support Finder' }), ' holds about ', el('strong', { text: s.name }), '.'),
-      el('p', { text: 'Work and health coaches in Kirklees use the Support Finder to find the right support for the people they work with. Its AI uses these details to decide who to suggest your service to, so please check them carefully, especially who it\'s for, your projects and their dates, and how people get in.' }),
+      el('p', { text: 'Work and health coaches in Kirklees use the Support Finder to find the right support for the people they work with. Its AI uses these details to decide who to suggest your service to, so please check them carefully, especially who it\'s for, where and when you run, and how people get in.' }),
       el('ul', {},
         el('li', { text: 'If everything is right, press "Everything is correct" at the end.' }),
         el('li', { text: 'If something is wrong or missing, change it in the boxes below and press "Send my changes". Please add as much as you can: the more coaches know, the better they can match people to your service.' }),
-        el('li', { text: 'If your service runs more than one project, or the same project more than once (for example for different age groups), add each one under "Projects".' }),
+        el('li', { text: 'Under "What happens, where and when", tell us where and when each project runs: add a session for each venue and day, with the times. This builds a timetable of what runs across Kirklees. If the same project runs for different groups (for example two age groups), add a session for each.' }),
         el('li', { text: 'Your changes go to the Healthy Working Life team, who check them before they appear on the Support Finder.' })),
       el('p', { class: 'notice', role: 'note', text: 'This link is just for you and works until ' + date(data.expires) + '. Please don\'t share it.' }),
       last ? el('p', { class: 'pc-last', text: 'You last replied on ' + date(last.t) + (last.allCorrect ? ', saying everything was correct.' : ', with changes.') + ' You can send again if something else needs changing.' }) : null);
-    $('#pc-app').replaceChildren(intro, build());
+    // "Do you run anything else?": another project of this service (added to the form above), or another service,
+    // which opens Suggest a service on the Support Finder with the organisation filled in.
+    const others = data.otherServices || [];
+    const more = el('section', { class: 'lf-section pc-more' },
+      el('h2', { text: 'Do you run anything else?' }),
+      el('p', { text: `This link is for ${s.name}. If ${s.organisation} runs something else that could help people in Kirklees stay in, return to or find work, tell us about it. It goes to the Healthy Working Life team to check.` }),
+      el('div', { class: 'pc-buttons' },
+        el('button', { type: 'button', class: 'btn secondary', text: 'Add another project to ' + s.name, onclick: () => lf.addProject() }),
+        el('a', { class: 'btn secondary', href: './?suggest=service&org=' + encodeURIComponent(s.organisation), target: '_blank', rel: 'noopener', text: 'Add another service we run (opens in a new tab)' })),
+      others.length ? el('p', { text: `We also list these services from ${s.organisation}: ${others.map((x) => x.name).join('; ')}. To check those too, ask the Healthy Working Life team for their links.` }) : null);
+    $('#pc-app').replaceChildren(intro, build(), more);
     refresh();
     $('#pc-loading').hidden = true;
     $('#pc-app').hidden = false;

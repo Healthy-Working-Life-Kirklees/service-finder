@@ -12,23 +12,25 @@ There are 215 at the moment (16 October 2026):
 
 ## How a listing is organised (November 2026)
 
-    organisation  >  service  >  project  >  cohort (optional)
+    organisation  >  service  >  project  >  session (optional)     and venues, shared by everyone
 
 - An **organisation** has one record in `data/organisations.json`, shared by all its services: its name, a short overview and website. It never says whether something is a Healthy Working Life scheme: that is `hwlFunded` on each service, because an organisation can run other work too.
 - A **service** (one file in `data/services/`) is what a coach refers someone to. Who it is for, how to get in and the contact details are given **once, here**.
 - A service has one or more **projects**: what actually happens, where, when and for how long, with optional dates. A project only records what is *different* from the service (an extra criterion, a different age or audience). Most services have one project.
-- A project can have **cohorts** (or sessions): the same project run again at a different time or place, or for a different group, such as Raise Your Game's cohort for ages 18 to 24 and its cohort for 50 and over. A cohort also only records what is different.
+- A project says **how it runs** (`runs`: at set times and places, by appointment or around the person, online or by phone; any mix) and has **sessions**: the project at a **venue** on given days and times (Tuesdays 1pm to 3pm at Jo Cox House), or for a group of its own (Raise Your Game's session for ages 18 to 24 and its session for 50 and over, which were "cohorts" until November 2026). A session also only records what is different.
+- A **venue** has one record in `data/venues.json`, shared by every session there: name, address and postcode, plus the ward and map position looked up from the postcode (`scripts/lookup-venues.mjs`, postcodes.io, run when the team's changes are applied). That is what makes the timetable, the map and the counts by ward on the "Across Kirklees" page.
+- **Who it's for** (`groups`) is a fixed list to tick (women, young people 12 to 18, families, "everyone (no restriction)" and so on: `GROUPS` in `site/listing-logic.js`), so services can be counted and filtered. The written eligibility stays for people to read; each line can be ticked **Essential**, which is what `gate` holds.
 
 Nothing was dropped when the data was moved into this shape: `scripts/convert-structure.mjs` (a record of the one-off conversion) checks that every piece of text in each old listing is still there.
 
 ### Dates and what is shown
 
-Projects and cohorts have four optional dates (`runsFrom`, `runsTo`, `referralsFrom`, `referralsUntil`, all `YYYY-MM-DD`). Blank means ongoing. A cohort without its own date uses its project's. The rules are in `site/listing-logic.js`, used by the page, the forms, the Worker, the directory and the checks:
+Projects and sessions have four optional dates (`runsFrom`, `runsTo`, `referralsFrom`, `referralsUntil`, all `YYYY-MM-DD`). Blank means ongoing. A session without its own date uses its project's. The rules are in `site/listing-logic.js`, used by the page, the forms, the Worker, the directory and the checks:
 
 - After `runsTo` or `referralsUntil`: closed. Not suggested, not on the cards or in the directory.
 - `referralsFrom` within the next 31 days: suggested if it fits, marked "Referrals open from" the date.
 - `referralsFrom` further ahead: not suggested; the AI only mentions it if someone asks for it by name.
-- The AI says which projects or cohorts fit the person, and the card shows only those (a 20-year-old sees Raise Your Game's first cohort; with no age given, both).
+- The AI says which projects or sessions fit the person. Sessions for a group of their own (an age, extra criteria or an essential criterion) that don't fit are left off the card: a 20-year-old sees Raise Your Game's first cohort; with no age given, both. Sessions that are only a time and place are all shown, the ones the AI picked (nearest, or at a time the person can make) first.
 - Every morning the Worker emails the team about anything ending, or closing to referrals, in the next 30 days, with a fresh review link and an email to forward to the organisation (`worker/src/reminders.js`). The directory is rebuilt every morning too.
 
 ### Character limits on the forms
@@ -40,6 +42,7 @@ Organisation overview 300, "Who your service is for" 300, project overview 400, 
 | File | What it is |
 |---|---|
 | `data/services/<id>.json` | One scheme. The file name must be the scheme's `id`. |
+| `data/venues.json` | One record per place: `id`, `name`, `address`, `postcode`, and from the postcode `ward`, `wardCode`, `lat` and `lng` (filled in by `scripts/lookup-venues.mjs`, never typed), plus optional `aliases` and team `notes`. Renaming, correcting and combining venues is done under Venues on the All services page; nothing is combined automatically. |
 | `data/organisations.json` | One record per organisation: `id`, `name`, and optional `overview` (up to 300 characters), `website`, `aliases` (older names, so services and suggestions using them still match) and team `notes`. A service's `organisation` must be one of these names. Renaming and combining organisations is done on the All services page in Admin; nothing is combined automatically. |
 | `data/meta.json` | `source`, `converted` and `notes` for the data as a whole. |
 | `data/schema.json` | The rules every scheme file must follow (a JSON Schema). The checks use it, and so can any tool or agent that edits the data. |
@@ -82,7 +85,7 @@ Every scheme has every field below, except where it says "optional". An empty li
 | `organisation` | text | Who runs it, as it appears under the name. Must be a `name` in `data/organisations.json`. The organisation's overview is added to the generated files as `organisationOverview`. |
 | `logo` | text | Optional. The file name of the organisation's logo in `site/img/logos/`, for example `proper-job.webp`. Shown at the top left of the card. Several schemes can share one logo. Without it the card shows a coloured block instead. Keep logos small (about 320 pixels wide is plenty). `shared-goods.webp` is already in the folder, ready for when Shared Goods Charity's scheme is added. |
 | `mapLinks` | true / false | Optional. Cards show a **Get directions** and **Show on map** button (Google Maps) next to every location that has a full postcode. Set this to `false` for a service whose address shouldn't be pointed to, for example a confidential venue: the address text still shows, without the buttons. Leave it out normally. |
-| `open` | true / false | Whether the service is taking new referrals. The Worker only ever recommends services where this is `true` and at least one project or cohort is open (see "Dates and what is shown"). (The old `status` text was moved in November 2026: for Healthy Working Life schemes into the team `notes`, word for word, and for the others into `provenance.status`.) |
+| `open` | true / false | Whether the service is taking new referrals. The Worker only ever recommends services where this is `true` and at least one project or session is open (see "Dates and what is shown"). (The old `status` text was moved in November 2026: for Healthy Working Life schemes into the team `notes`, word for word, and for the others into `provenance.status`.) |
 | `hwlFunded` | true / false | `true` for the Healthy Working Life programme's own schemes. When an HWL scheme and another service fit about as well, the AI lists the HWL scheme first. |
 | `level` | text | `local` (based in Kirklees), `regional` (West Yorkshire or the wider region) or `national` (UK or England, usually by phone or online). Regional and national services get a badge on the card, and the AI prefers a local service when two fit about as well. |
 | `audience` | list | Who the scheme is for: `individual`, `employer`, `organisation` or `student`. A scheme can have more than one. One that is only for a particular group (students, say) doesn't list `individual`. The AI only recommends a non-individual scheme when the person clearly is that kind of person. |
@@ -129,8 +132,10 @@ Every scheme has every field below, except where it says "optional". An empty li
 
 | Field | Type | What it is |
 |---|---|---|
-| `projects` | list | At least one. Each project has an `id` (lower-case with hyphens, unique in the service; the AI names it when only some projects fit), a `name` and an `overview` (what happens, up to 400 characters on the forms). Optional: `where` (list), `when`, `duration`, `places`, `age`, `audience` (list), `eligibility` and `gate` (lists, only what is extra to the service), the four dates, and `cohorts`. |
-| `projects[].cohorts` | list | Optional. The same project run again for a different time, place or group. Each has an `id` and `name`, and optionally `where`, `when`, `age`, `eligibility`, `gate`, `places` and the four dates: only what differs from the project. |
+| `projects` | list | At least one. Each project has an `id` (lower-case with hyphens, unique in the service; the AI names it when only some projects fit), a `name` and an `overview` (what happens, up to 400 characters on the forms). Optional: `runs` (any of `set`, `appointment`, `online`), `area` (the area a project by appointment covers, in words), `where` (places without a postcode, in words, such as "Online"), `when` (days and times in words, when they don't fit sessions), `duration`, `places`, `age`, `audience` (list), `eligibility` and `gate` (lists, only what is extra to the service), the four dates, and `sessions`. |
+| `projects[].sessions` | list | Optional. Each has an `id`, and optionally a `name`, a `venue` (an id in `data/venues.json`), `days` (`mon` to `sun`), `start` and `end` (24-hour, such as `13:30`), `frequency` (`weekly`, `fortnightly`, `monthly`, `once`, `varies`), a `note` (anything else about when or where, in words), `where`, `when`, `age`, `eligibility`, `gate`, `places` and the four dates: only what differs from the project. Sessions made from the addresses in the listings in November 2026 carry the original wording after the postcode (such as "Fri 10.30–2.30") as their `note`, for the service to turn into days and times. |
+| `venues` | list | Optional. Venue ids (in `data/venues.json`) used by every project. |
+| `groups` | list | Optional. Who it's for, from the fixed list (`everyone`, `children`, `young-people`, `young-adults`, `adults`, `adults-50`, `older-people`, `families`, `parents`, `mothers`, `fathers`, `women`, `men`, `carers`, `disabled`, `health-condition`, `mental-health`, `refugees`, `ethnic-minority`, `lgbtq`, `students`, `veterans`). Empty means not ticked yet. |
 | `workExperience` | text | Whether the scheme offers volunteering or work experience, as free text (for example `No`, `Yes - volunteering and placements`). |
 | `cost` | text | Optional. What it costs, for example `Free`, `Free if eligible; otherwise fees`, `£5 per 28 days`. Shown on the card. The AI mentions it when a service isn't free for everyone. |
 | `languages` | text | Optional. Interpreting, BSL, Welsh or other formats offered. Shown on the card. |

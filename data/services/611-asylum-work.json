@@ -43,8 +43,12 @@
       "id": "practical-help-for-refugees",
       "name": "Practical help for refugees",
       "overview": "Practical help for asylum seekers and refugees with forms, letters and calls; signposting and a Friday drop-in with food.",
-      "where": [
-        "Oasis Centre, Huddersfield HD1 5BW (Fri 10.30–2.30)"
+      "sessions": [
+        {
+          "id": "oasis-centre",
+          "venue": "oasis-centre",
+          "note": "Fri 10.30–2.30"
+        }
       ]
     }
   ],

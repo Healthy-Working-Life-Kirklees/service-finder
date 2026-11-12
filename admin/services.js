@@ -32,6 +32,8 @@
   let baseServices = []; // the services in the data; services = these plus new ones waiting to be added
   let choices = {}; // the allowed values for the edit form, from services-all.json
   let organisations = []; // every organisation record (data/organisations.json), from services-all.json
+  let venues = []; // every venue record (data/venues.json), from services-all.json
+  let venueChanges = null; // { <venue id>: { changes, before, note, by, t } } waiting to be applied, once signed in
   let orgChanges = null; // { <organisation id>: { changes, before, note, by, t } } waiting to be applied, once signed in
   const editing = new Set(); // services whose edit form is open
   let plinks = null; // provider review links (providerlink.js in the Worker), once signed in
@@ -103,7 +105,22 @@
     if (!e) return 'none';
     // Only "checked and still right" (no changes): applied once the data's last-checked date has caught up.
     if (!Object.keys(e.changes).length) return e.checked && String(x.s.lastUpdated || '') < String(e.t).slice(0, 10) ? 'pending' : 'applied';
-    return Object.keys(e.changes).every((k) => norm(x.s[k]) === norm(e.changes[k])) ? 'applied' : 'pending';
+    const want = settleVenues(e.changes);
+    return Object.keys(e.changes).every((k) => norm(x.s[k]) === norm(want[k])) ? 'applied' : 'pending';
+  }
+  // A venue written out in a change ({ name, address, postcode }) reads as the venue now in the data with the same
+  // address, once applied (the same matching as scripts/apply-decisions.mjs).
+  const squash = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  function venueIdOf(v) {
+    if (!v || typeof v !== 'object') return v;
+    const f = venues.find((x) => x.postcode === v.postcode && (squash(x.address) === squash(v.address) || x.name.toLowerCase() === String(v.name).toLowerCase()));
+    return f ? f.id : v;
+  }
+  function settleVenues(c) {
+    const out = { ...c };
+    if (Array.isArray(out.venues)) out.venues = [...new Set(out.venues.map(venueIdOf))];
+    if (Array.isArray(out.projects)) out.projects = out.projects.map((p) => (p.sessions ? { ...p, sessions: p.sessions.map((x) => (x.venue ? { ...x, venue: venueIdOf(x.venue) } : x)) } : p));
+    return out;
   }
 
   // ---------- derived facts about each service ----------
@@ -135,7 +152,11 @@
     if (notFree(s)) g.add('not-free');
     if (LL.endingSoon(s).length) g.add('ending');
     if (LL.closedParts(s).length) g.add('ended');
-    if (LL.parts(s).some((x) => x.state === 'later' || x.cohorts.some((c) => c.state === 'later'))) g.add('opening');
+    if (LL.parts(s).some((x) => x.state === 'later' || x.sessions.some((c) => c.state === 'later'))) g.add('opening');
+    // The timetable: projects with no days or times yet, and services that haven't said who they're for.
+    if (list(s.projects).some((p) => !list(p.sessions).some((x) => list(x.days).length) && !list(p.runs).every((r) => r !== 'set'))) g.add('no-times');
+    if (!list(s.groups).length) g.add('no-groups');
+    if (list(s.projects).some((p) => list(p.sessions).some((x) => x.note && !list(x.days).length))) g.add('times-in-words');
     if (tooLong(s).length) g.add('too-long');
     if (!s.organisationOverview) g.add('no-org-overview');
     return g;
@@ -159,7 +180,8 @@
       ...list(s.referralRoutes), ...list(s.healthFocus).map((h) => HEALTH[h] || h), ...list(s.audience), LEVEL[s.level],
       s.hwlFunded ? 'healthy working life hwl' : '', s.selfReferral && s.selfReferral.note,
       ...list(s.projects).flatMap((a) => [a.name, a.overview, a.duration, a.when, a.places, a.age, ...list(a.where), ...list(a.eligibility), ...list(a.gate),
-        ...list(a.cohorts).flatMap((c) => [c.name, c.when, c.places, c.age, ...list(c.where), ...list(c.eligibility), ...list(c.gate)])]),
+        ...list(a.sessions).flatMap((c) => [c.name, c.when, c.note, c.places, c.age, ...list(c.days).map((d) => LL.DAY_NAMES[d]), ...list(c.where), ...list(c.eligibility), ...list(c.gate), ...venueWords(c.venue)])]),
+      ...list(s.venues).flatMap(venueWords), ...list(s.groups).map((g) => LL.GROUPS[g] || g),
       p.source, p.status, p.foundVia, p.evidence, s.listing && s.listing.reason,
     ].filter(Boolean).join(' \n ').toLowerCase();
   }
@@ -242,21 +264,45 @@
     dl.append(el('dt', { text: label }), dd);
   }
 
-  const partName = (x) => x.project.name + (x.cohort ? ' (' + x.cohort.name + ')' : '');
-  // Projects and cohorts with what is set for each, and whether they show today.
+  const partName = (x) => x.project.name + (x.session ? ' (' + (x.session.name || LL.timeWords(x.session) || 'a session') + ')' : '');
+  // A venue's name, address and ward, for search and the timetable.
+  const venueWords = (v) => {
+    const x = typeof v === 'string' ? venueById(v) : v;
+    return x ? [x.name, x.address, x.postcode, x.ward].filter(Boolean) : [];
+  };
+  const venueById = (id) => venues.find((v) => v.id === id);
+  const venueText = (v) => {
+    const x = typeof v === 'string' ? venueById(v) : v;
+    if (!x) return typeof v === 'string' ? v + ' (not in the venues list)' : '';
+    return LL.venueLine(x) + (x.ward ? ' (' + x.ward + ' ward)' : x.id ? ' (ward not looked up yet)' : ' (new venue)');
+  };
+  // Projects and sessions with what is set for each, and whether they show today.
   const STATE_WORDS = { open: 'Showing', soon: 'Showing: referrals open soon', later: 'Not shown yet: referrals open later', closed: 'Closed: not shown' };
   function projectList(s) {
     return LL.parts(s).map((x) => {
       const p = x.project;
       const bits = (o, dates, st) => [
+        list(o.runs).length ? 'Runs: ' + o.runs.map((r) => LL.RUNS[r] || r).join(', ') : '', o.area ? 'Area: ' + o.area : '',
         o.where && o.where.length ? 'Where: ' + o.where.join('; ') : '', o.when ? 'When: ' + o.when : '', o.duration ? 'How long: ' + o.duration : '', o.places ? o.places : '',
-        o.age ? 'Age ' + o.age : '', list(o.eligibility).length ? 'Extra criteria: ' + o.eligibility.join('; ') : '', list(o.gate).length ? 'Turned away without: ' + o.gate.join('; ') : '',
+        o.age ? 'Age ' + o.age : '', list(o.eligibility).length ? 'Extra criteria: ' + o.eligibility.join('; ') : '', list(o.gate).length ? 'Essential: ' + o.gate.join('; ') : '',
         list(o.audience).length ? 'Works with: ' + o.audience.join(', ') : '', ...LL.dateWords(dates), STATE_WORDS[st],
       ].filter(Boolean).join('. ');
+      const sess = [...x.sessions].sort((a2, b2) => LL.byDay(a2.session, b2.session));
       return el('div', { class: 'proj' },
         el('strong', { text: p.name }), el('code', { class: 'pid', text: p.id }), ': ' + (p.overview || ''),
         el('p', { class: 'hint', text: bits(p, x.dates, x.state) }),
-        x.cohorts.length ? el('ul', {}, x.cohorts.map((c) => el('li', {}, el('strong', { text: c.cohort.name }), el('code', { class: 'pid', text: c.cohort.id }), ' ' + bits(c.cohort, c.dates, c.state)))) : null);
+        sess.length ? el('table', { class: 'timetable' },
+          el('thead', {}, el('tr', {}, ['Session', 'Day and time', 'Venue', 'For', 'Dates'].map((h) => el('th', { scope: 'col', text: h })))),
+          el('tbody', {}, sess.map((c) => {
+            const se = c.session;
+            const when = LL.timeWords(se);
+            return el('tr', {},
+              el('td', {}, se.name || '', ' ', el('code', { class: 'pid', text: se.id })),
+              el('td', {}, when || el('span', { class: 'gap', text: se.note ? 'In words: ' + se.note : 'Not given' })),
+              el('td', { text: [se.venue ? venueText(se.venue) : '', ...list(se.where)].filter(Boolean).join('; ') || '' }),
+              el('td', { text: [se.age ? 'Age ' + se.age : '', ...list(se.eligibility)].filter(Boolean).join('; ') }),
+              el('td', { text: [...LL.dateWords(c.dates), STATE_WORDS[c.state]].join('. ') }));
+          }))) : null);
     });
   }
 
@@ -416,8 +462,8 @@
   function projectWords(ps) {
     return list(ps).map((p) => {
       const d = LL.dateWords(LL.datesOf(p, null));
-      const cs = list(p.cohorts).map((c) => c.name + (LL.dateWords(LL.datesOf(p, c)).length ? ' (' + LL.dateWords(LL.datesOf(p, c)).join(', ') + ')' : ''));
-      return (p.name || '') + (p.overview || p.summary ? ': ' + (p.overview || p.summary) : '') + (p.where && p.where.length ? ' Where: ' + p.where.join('; ') + '.' : '') + (p.when ? ' When: ' + p.when + '.' : '') + (p.places ? ' ' + p.places + '.' : '') + (p.age ? ' Age ' + p.age + '.' : '') + (list(p.eligibility).length ? ' Extra criteria: ' + p.eligibility.join('; ') + '.' : '') + (list(p.gate).length ? ' Turned away without: ' + p.gate.join('; ') + '.' : '') + (d.length ? ' ' + d.join(', ') + '.' : '') + (cs.length ? ' Cohorts: ' + cs.join('; ') + '.' : '');
+      const cs = list(p.sessions).map((c) => [c.name, LL.timeWords(c) || c.note, c.venue ? venueText(c.venue) : '', c.age ? 'age ' + c.age : '', ...LL.dateWords(LL.datesOf(p, c))].filter(Boolean).join(', '));
+      return (p.name || '') + (p.overview || p.summary ? ': ' + (p.overview || p.summary) : '') + (p.where && p.where.length ? ' Where: ' + p.where.join('; ') + '.' : '') + (p.when ? ' When: ' + p.when + '.' : '') + (p.places ? ' ' + p.places + '.' : '') + (p.age ? ' Age ' + p.age + '.' : '') + (list(p.eligibility).length ? ' Extra criteria: ' + p.eligibility.join('; ') + '.' : '') + (list(p.gate).length ? ' Turned away without: ' + p.gate.join('; ') + '.' : '') + (d.length ? ' ' + d.join(', ') + '.' : '') + (cs.length ? ' Sessions: ' + cs.join('; ') + '.' : '');
     }).join(' | ');
   }
 
@@ -595,7 +641,7 @@ Thank you,
     const pending = fromProvider ? { ...teamPending, ...fromProvider.changes } : teamPending;
     const id = (k) => 'ed-' + s.id + '-' + k;
     const lf = LISTING_FORM.build({
-      values: { ...s, ...pending }, original: s, mode: 'team', choices, organisations: orgNames(), prefix: 'ed-' + s.id, headingLevel: mode === 'add' ? 3 : 5,
+      values: { ...s, ...pending }, original: s, mode: 'team', choices, organisations: orgNames(), venues, prefix: 'ed-' + s.id, headingLevel: mode === 'add' ? 3 : 5,
       onChange: () => lf && lf.mark(mode === 'edit' ? lf.changes() : {}),
     });
     if (mode === 'edit') lf.mark(lf.changes());
@@ -735,7 +781,7 @@ Thank you,
     return {
       id: 'new-service', name: '', organisation: '', open: true, hwlFunded: false, level: 'local', audience: ['individual'],
       categories: [], whoFor: '', age: null, webpage: null, email: null, phone: null, social: [], locations: [], areas: [], eligibility: [], exclusions: [],
-      gate: [], healthFocus: [], referralRoutes: [], selfReferral: { allowed: 'tbc', note: '' }, projects: [{ id: '', name: '', overview: '' }],
+      gate: [], healthFocus: [], groups: [], referralRoutes: [], selfReferral: { allowed: 'tbc', note: '' }, projects: [{ id: '', name: '', overview: '' }],
       workExperience: 'No', reviewCycle: 'Quarterly',
     };
   }
@@ -748,14 +794,61 @@ Thank you,
   // The project a suggestion describes. Suggestions sent before November 2026 used "activities", "addresses",
   // "dates" and "running"; their words are kept (dates written as text go in "How long it lasts" for the team to
   // turn into real dates).
-  function projectFromSuggestion(d) {
+  // A place written in a suggestion: with a postcode, a venue (one we know with that address, or a new one written
+  // out for the team to check); without, it stays as words.
+  const PC_RE = /\b([A-Z]{1,2}\d[A-Z\d]?)\s*(\d[A-Z]{2})\b/i;
+  function placeOf(text) {
+    const m = String(text || '').match(PC_RE);
+    if (!m) return null;
+    const postcode = (m[1] + ' ' + m[2]).toUpperCase();
+    const address = text.slice(0, m.index + m[0].length).trim().replace(/[,\s]+$/, '');
+    const name = (address.split(',')[0] || address).replace(PC_RE, '').trim() || address;
+    return venueIdOf({ name, address, postcode });
+  }
+  // The projects a suggestion describes. From November 2026 a suggestion has "projects", each with its venues, days
+  // and times. Older suggestions used one project ("projectName", "where", "when"), and before that "activities",
+  // "addresses", "dates" and "running"; their words are kept (dates written as text go in "How long it lasts" for the
+  // team to turn into real dates).
+  function projectsFromSuggestion(d) {
+    if (Array.isArray(d.projects) && d.projects.length) {
+      return d.projects.map((x) => {
+        const p = { id: '', name: x.name || d.name || '', overview: x.overview || d.whoFor || '' };
+        const runs = [];
+        const where = [];
+        const sessions = [];
+        for (const se of list(x.sessions)) {
+          const v = placeOf(se.where);
+          const one = { id: '' };
+          if (v) one.venue = v;
+          else if (se.where) where.push(se.where);
+          if (se.day) one.days = [se.day];
+          if (se.start) one.start = se.start;
+          if (se.end) one.end = se.end;
+          if (Object.keys(one).length > 1) sessions.push(one);
+        }
+        if (sessions.length) { runs.push('set'); p.sessions = sessions; }
+        if (x.appointment) runs.push('appointment');
+        if (x.online) { runs.push('online'); where.push('Online or by phone'); }
+        if (runs.length) p.runs = runs;
+        if (where.length) p.where = where;
+        for (const k of ['duration', 'places', ...LL.DATE_KEYS]) if (x[k]) p[k] = x[k];
+        return p;
+      });
+    }
     const p = { id: '', name: d.projectName || d.name || '', overview: d.projectOverview || d.activities || d.description || '' };
-    const where = lines(d.where || d.addresses);
+    const where = [];
+    const sessions = [];
+    for (const l of lines(d.where || d.addresses)) {
+      const v = placeOf(l);
+      if (v) sessions.push({ id: '', venue: v });
+      else where.push(l);
+    }
     if (where.length) p.where = where;
+    if (sessions.length) p.sessions = sessions;
     for (const k of ['when', 'duration', 'places']) if (d[k]) p[k] = d[k];
     if (!d.duration && d.dates) p.duration = d.dates;
     for (const k of LL.DATE_KEYS) if (/^\d{4}-\d{2}-\d{2}$/.test(d[k] || '')) p[k] = d[k];
-    return p;
+    return [p];
   }
   function fromSuggestion(d) {
     const s = blankService();
@@ -777,6 +870,7 @@ Thank you,
     s.eligibility = lines(d.eligibility);
     if (d.healthNeed === 'specific') s.eligibility.push('Has a health condition: ' + (d.conditions || 'to be checked with the service'));
     s.gate = lines(d.gate);
+    s.groups = (d.groups || []).filter((g) => ok('groups', g));
     s.exclusions = lines(d.exclusions);
     s.healthFocus = d.healthNeed === 'any' ? ['any'] : [];
     s.referralRoutes = lines(d.referral);
@@ -791,7 +885,7 @@ Thank you,
       s.notes = 'From the suggestion: ' + STATUS_FROM[d.running] + (d.dates ? ', ' + d.dates : '');
     }
     if (d.noMap) s.mapLinks = false;
-    s.projects = [projectFromSuggestion(d)];
+    s.projects = projectsFromSuggestion(d);
     return s;
   }
   function suggestionNote(d) {
@@ -814,7 +908,7 @@ Thank you,
     const target = d.addTo && services.find((y) => y.s.id === d.addTo && !y.isNew);
     if (target && edits) {
       const pending = (editState(target) === 'pending' && edits[target.s.id].changes) || {};
-      prefill[target.s.id] = { changes: { projects: [...list(pending.projects || target.s.projects), projectFromSuggestion(d)] }, note, from: 'suggestion' };
+      prefill[target.s.id] = { changes: { projects: [...list(pending.projects || target.s.projects), ...projectsFromSuggestion(d)] }, note, from: 'suggestion' };
       editing.add(target.s.id);
       for (const f of FIELDS) if (f !== 'sort') input[f].value = '';
       input.q.value = target.s.id;
@@ -902,7 +996,8 @@ Thank you,
     if (!team || !applyOn) return;
     const n = waiting();
     const o = Object.keys(orgChanges || {}).filter((id) => orgPending(id)).length;
-    const parts = [n ? plural(n, 'service has', 'services have') + ' changes' : '', o ? plural(o, 'organisation change', 'organisation changes') : ''].filter(Boolean);
+    const vc = Object.keys(venueChanges || {}).filter((id) => venuePending(id)).length;
+    const parts = [n ? plural(n, 'service has', 'services have') + ' changes' : '', o ? plural(o, 'organisation change', 'organisation changes') : '', vc ? plural(vc, 'venue change', 'venue changes') : ''].filter(Boolean);
     $('#apply-pending').textContent = parts.length ? parts.join(' and ') + ' waiting to be applied.' : 'Nothing waiting to be applied.';
   }
 
@@ -987,6 +1082,7 @@ Thank you,
     $('#export-decisions').hidden = !team;
     $('#add-service').hidden = !team;
     $('#open-orgs').hidden = !team;
+    $('#open-venues').hidden = !team;
     showApply();
     $('#signed-in-text').textContent = team ? 'Signed in' + (by ? ' as ' + by : '') + '. ' + plural(Object.keys(team).length, 'decision', 'decisions') + ', ' + plural(Object.keys(edits || {}).length, 'edited service', 'edited services') + ' and ' + plural(services.filter((y) => y.isNew).length, 'new service', 'new services') + ' so far.' : '';
   }
@@ -996,12 +1092,13 @@ Thank you,
     const msg = $('#signin-msg');
     msg.hidden = true;
     try {
-      const [d, e, nw, pl, og] = await Promise.all([api('GET', '/log/decisions'), api('GET', '/log/edits'), api('GET', '/log/new'), api('GET', '/log/provider-links').catch(() => ({ links: [] })), api('GET', '/log/orgs').catch(() => ({ orgs: {} }))]);
+      const [d, e, nw, pl, og, vg] = await Promise.all([api('GET', '/log/decisions'), api('GET', '/log/edits'), api('GET', '/log/new'), api('GET', '/log/provider-links').catch(() => ({ links: [] })), api('GET', '/log/orgs').catch(() => ({ orgs: {} })), api('GET', '/log/venues').catch(() => ({ venues: {} }))]);
       team = d.decisions || {};
       edits = e.edits || {};
       added = nw.added || {};
       plinks = list(pl.links);
       orgChanges = og.orgs || {};
+      venueChanges = vg.venues || {};
       rebuild();
     } catch (e) {
       team = null;
@@ -1042,6 +1139,9 @@ Thank you,
     $('#orgs-panel').replaceChildren();
     $('#orgs-panel').hidden = true;
     orgChanges = null;
+    venueChanges = null;
+    $('#venues-panel').replaceChildren();
+    $('#venues-panel').hidden = true;
     pass = '';
     store.del(PASS_KEY);
     AUTH.refresh();
@@ -1275,6 +1375,118 @@ Thank you,
       el('div', { class: 'row-end' }, save, msg));
   }
 
+  // ---------- venues ----------
+  // One record per place (data/venues.json), shared by every service that meets there. The ward and map position
+  // come from the postcode (looked up when changes are applied), so they can't be typed in. The team can rename a
+  // venue, correct its address or postcode, add notes, or combine two records for the same place. Nothing is
+  // combined automatically. Changes wait here until applied, like service edits.
+  function venuePending(id) {
+    const c = (venueChanges || {})[id];
+    if (!c || !c.changes) return null;
+    const v = venueById(id);
+    if (c.changes.mergeInto) return v ? c : null;
+    if (!v) return null;
+    return Object.entries(c.changes).every(([k, val]) => (v[k] || null) === (val || null)) ? null : c;
+  }
+  const venueUsers = (id) => services.filter((y) => !y.isNew && LL.venueIds(y.s).includes(id));
+
+  function openVenues() {
+    const panel = $('#venues-panel');
+    panel.hidden = false;
+    drawVenues();
+    panel.scrollIntoView({ block: 'start' });
+    panel.querySelector('input').focus();
+  }
+
+  function drawVenues(keepQuery) {
+    const panel = $('#venues-panel');
+    const q = el('input', { id: 'venue-q', type: 'search', autocomplete: 'off', value: keepQuery || '' });
+    const listBox = el('div', { class: 'org-list' });
+    const draw = () => {
+      const words = q.value.toLowerCase().split(/\s+/).filter(Boolean);
+      const hits = venues.filter((v) => words.every((w) => [v.name, v.address, v.postcode, v.ward, ...list(v.aliases)].join(' ').toLowerCase().includes(w)));
+      listBox.replaceChildren(el('p', { class: 'count', text: plural(hits.length, 'venue', 'venues') }), ...hits.slice(0, 40).map(venueEntry));
+    };
+    q.addEventListener('input', draw);
+    const byPc = new Map();
+    for (const v of venues) byPc.set(v.postcode, [...(byPc.get(v.postcode) || []), v]);
+    const shared = [...byPc.values()].filter((xs) => xs.length > 1);
+    const noWard = venues.filter((v) => !v.ward);
+    const waiting = Object.keys(venueChanges || {}).map((vid) => [vid, venuePending(vid)]).filter(([, c]) => c);
+    panel.replaceChildren(
+      el('h2', { class: 'mt0', text: 'Venues' }),
+      el('p', { class: 'hint', text: 'Each place has one record, shared by every session there. The ward and map position come from the postcode: they are looked up when changes are applied. If one place is listed twice (for example with two ways of writing the address), combine one into the other: its sessions move across and its name is kept. Nothing is combined automatically.' }),
+      waiting.length ? el('div', { class: 'waiting' }, el('p', { class: 'mt0' }, el('strong', { text: 'Venue changes waiting to be applied' })),
+        el('ul', {}, waiting.map(([vid, c]) => {
+          const v = venueById(vid);
+          const to = c.changes.mergeInto && venueById(c.changes.mergeInto);
+          return el('li', {}, (v ? v.name : vid) + ': ' + [c.changes.mergeInto ? 'combine into ' + (to ? to.name : c.changes.mergeInto) : '', ...['name', 'address', 'postcode', 'notes'].filter((k) => k in c.changes).map((k) => k + ' ' + (c.changes[k] || '(none)'))].filter(Boolean).join(', ') + ' (' + c.by + ', ' + when(c.t) + ': ' + c.note + ') ',
+            el('button', { type: 'button', class: 'btn secondary small', text: 'Discard', onclick: async () => {
+              if (!confirm('Discard this venue change?')) return;
+              try { await api('DELETE', '/log/venues/' + vid, { by: $('#by').value.trim() || 'someone' }); delete venueChanges[vid]; drawVenues(q.value); showApply(); } catch (err) { if (err.status === 401) return signOut('Your session has ended. Please enter the passcode again.'); alert(err.message); }
+            } }));
+        }))) : null,
+      shared.length ? el('details', {}, el('summary', { text: plural(shared.length, 'postcode shared by more than one venue', 'postcodes shared by more than one venue') }),
+        el('p', { class: 'hint', text: 'Some are the same place written differently; others are different buildings with one postcode. Combine only the same place.' }),
+        el('ul', {}, shared.map((xs) => el('li', {}, xs[0].postcode + ': ' + xs.map((v) => v.name).join('  |  ') + ' ', el('button', { type: 'button', class: 'btn secondary small', text: 'Show them', onclick: () => { q.value = xs[0].postcode; draw(); } }))))) : null,
+      noWard.length ? el('p', { class: 'hint', text: plural(noWard.length, 'venue has', 'venues have') + ' no ward yet: it is looked up from the postcode the next time changes are applied (or run "Look up venue wards" in GitHub).' }) : null,
+      el('div', { class: 'field' }, el('label', { for: 'venue-q', text: 'Find a venue (name, address, postcode or ward)' }), q),
+      listBox,
+      el('p', {}, el('button', { type: 'button', class: 'btn secondary small', text: 'Close venues', onclick: () => { panel.replaceChildren(); panel.hidden = true; $('#open-venues').focus(); } })));
+    draw();
+  }
+
+  function venueEntry(v) {
+    const c = venuePending(v.id);
+    const val = (k) => (c && k in c.changes ? c.changes[k] : v[k]);
+    const users = venueUsers(v.id);
+    const id = (k) => 'ven-' + v.id + '-' + k;
+    const name = el('input', { id: id('name'), type: 'text', value: val('name') || '', maxlength: '150' });
+    const addr = el('input', { id: id('addr'), type: 'text', value: val('address') || '', maxlength: '300' });
+    const pc = el('input', { id: id('pc'), type: 'text', value: val('postcode') || '', maxlength: '10', size: '10' });
+    const notes = el('textarea', { id: id('notes'), rows: '2', value: val('notes') || '' });
+    const merge = el('select', { id: id('merge') }, el('option', { value: '', text: 'No, keep it separate' }),
+      venues.filter((x) => x.id !== v.id).map((x) => el('option', { value: x.id, text: x.name + ' (' + x.postcode + ')' })));
+    merge.value = val('mergeInto') || '';
+    const why = el('textarea', { id: id('why'), rows: '2', maxlength: '1000' });
+    const msg = el('p', { class: 'msg', role: 'status', hidden: true });
+    const say = (t, k) => { msg.className = 'msg ' + k; msg.textContent = t; msg.hidden = false; };
+    const save = el('button', { type: 'button', class: 'btn primary small', text: 'Save venue changes', onclick: async () => {
+      const by = $('#by').value.trim();
+      const changes = {};
+      if (name.value.trim() !== v.name) changes.name = name.value.trim();
+      if (addr.value.trim() !== v.address) changes.address = addr.value.trim();
+      if (pc.value.trim().toUpperCase() !== v.postcode) changes.postcode = pc.value.trim();
+      if (notes.value.trim() !== (v.notes || '')) changes.notes = notes.value.trim() || null;
+      if (merge.value) changes.mergeInto = merge.value;
+      if (!Object.keys(changes).length) return say('Nothing has changed.', 'err');
+      if (!by) { $('#by').focus(); return say('Please put your name or initials at the top of the page first.', 'err'); }
+      if (why.value.trim().length < 3) { why.focus(); return say('Please say briefly what changed and why.', 'err'); }
+      if (changes.mergeInto && !confirm('Combine ' + v.name + ' into ' + merge.selectedOptions[0].text + '? Its sessions move across when the changes are applied.')) return;
+      save.disabled = true;
+      try {
+        const d = await api('PUT', '/log/venues/' + v.id, { changes, before: { name: v.name, address: v.address, postcode: v.postcode, notes: v.notes || null }, note: why.value.trim(), by });
+        venueChanges[v.id] = d.item;
+        showApply();
+        drawVenues($('#venue-q').value);
+      } catch (err) {
+        save.disabled = false;
+        if (err.status === 401) return signOut('Your session has ended. Please enter the passcode again.');
+        say(err.message, 'err');
+      }
+    } });
+    return el('details', { class: 'entry org venue' },
+      el('summary', {}, el('strong', { text: v.name }), ' ' + v.postcode + (v.ward ? ', ' + v.ward + ' ward' : ', ward not looked up yet') + ' (' + plural(users.length, 'service', 'services') + ')' + (c ? ', changes waiting' : '')),
+      el('p', { class: 'hint', text: LL.venueLine(v) + '. Used by: ' + (users.map((y) => y.s.name).join('; ') || 'nothing yet') + (list(v.aliases).length ? '. Also known as: ' + v.aliases.join('; ') : '') }),
+      el('div', { class: 'field' }, el('label', { for: id('name'), text: 'Name' }), name),
+      el('div', { class: 'field' }, el('label', { for: id('addr'), text: 'Address' }), addr),
+      el('div', { class: 'field' }, el('label', { for: id('pc'), text: 'Postcode' }), el('p', { class: 'hint', text: 'Changing it means the ward is looked up again.' }), pc),
+      el('div', { class: 'field' }, el('label', { for: id('notes'), text: 'Team notes' }), el('p', { class: 'hint', text: 'For example access, parking or "confidential address: don\'t show on a map".' }), notes),
+      el('div', { class: 'field' }, el('label', { for: id('merge'), text: 'Combine into another venue?' }), el('p', { class: 'hint', text: 'Only if this is the same place listed twice.' }), merge),
+      el('div', { class: 'field' }, el('label', { for: id('why'), text: 'What changed and why' }), why),
+      el('div', { class: 'row-end' }, save, msg));
+  }
+
   // ---------- start ----------
   // services-all.json (every service) is published with the Admin pages; fall back to the live list if it's missing.
   const getJson = (u) => fetch(u).then((r) => {
@@ -1286,6 +1498,7 @@ Thank you,
     .then((d) => {
       choices = d.choices || {};
       organisations = list(d.organisations);
+      venues = list(d.venues);
       baseServices = list(d.services).map((s) => ({ s, listing: listing(s), incomplete: JSON.stringify(s).includes(PLACEHOLDER), review: review(s), confidence: confidence(s), gaps: gaps(s), text: haystack(s) }));
       rebuild();
       const all = services.map((x) => x.s);
@@ -1328,6 +1541,7 @@ Thank you,
   $('#export-decisions').addEventListener('click', exportDecisions);
   $('#add-service').addEventListener('click', () => openAdd());
   $('#open-orgs').addEventListener('click', openOrgs);
+  $('#open-venues').addEventListener('click', openVenues);
   $('#by').value = store.get(BY_KEY);
   $('#by').addEventListener('change', () => { store.set(BY_KEY, $('#by').value.trim()); AUTH.refresh(); showSignedIn(); });
   $('#unlock').addEventListener('click', () => { if ($('#pass').value) signIn($('#pass').value); });

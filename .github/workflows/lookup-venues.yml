@@ -1,0 +1,44 @@
+# Fills in each venue's ward and map position from its postcode (scripts/lookup-venues.mjs, postcodes.io) and opens a
+# pull request with the result. "Apply team changes" does the same for new venues; run this one on its own after
+# venues are added some other way, or to retry postcodes that weren't found.
+name: Look up venue wards
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  lookup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Look up wards
+        run: node scripts/lookup-venues.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Check the data
+        run: |
+          npm ci
+          npm run check-data
+      - name: Open a pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$(git status --porcelain -- data/venues.json)" ]; then
+            echo "Nothing new: every venue already has its ward." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          branch="venue-wards/$(date -u +%Y-%m-%d)-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add data/venues.json
+          git commit -q -m "Look up venue wards and map positions from their postcodes"
+          git push -q origin "$branch"
+          gh pr create --base main --head "$branch" --title "Venue wards and map positions ($(date -u +%Y-%m-%d))" --body "Filled in from each venue's postcode by the Look up venue wards workflow (postcodes.io). Check the wards look right, then merge."

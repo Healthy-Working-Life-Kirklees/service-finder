@@ -42,8 +42,11 @@
       "id": "free-adult-courses",
       "name": "Free adult courses",
       "overview": "Free confidence, wellbeing, maths and craft courses, training to volunteer in schools, and an Early Years bootcamp leading to an interview.",
-      "where": [
-        "The Glass Box, Huddersfield HD1 1RD"
+      "sessions": [
+        {
+          "id": "the-glass-box",
+          "venue": "the-glass-box"
+        }
       ]
     }
   ],

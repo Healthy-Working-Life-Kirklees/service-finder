@@ -301,7 +301,7 @@ check('guard: ips-cgl kept when mentioned in Polish', ids(r.body) === 'ips-cgl,w
 r = await call('claude-sonnet-5-5', { lang: 'ur', messages: [U('میں منشیات چھوڑنے کی کوشش کر رہا ہوں')] });
 check('guard: ips-cgl kept when mentioned in Urdu', ids(r.body) === 'ips-cgl,wellness-to-work', ids(r.body));
 
-// ----- Projects, cohorts and dates (site/listing-logic.js, shared with the page and the directory) -----
+// ----- Projects, sessions, venues and dates (site/listing-logic.js, shared with the page and the directory) -----
 await import(pathToFileURL(path.join(root, 'site/listing-logic.js')).href);
 const LS = globalThis.LISTING;
 {
@@ -311,44 +311,52 @@ const LS = globalThis.LISTING;
     { id: 'b', name: 'B', overview: 'x', referralsUntil: '2026-11-01' },
     { id: 'c', name: 'C', overview: 'x', referralsFrom: '2026-11-20' },
     { id: 'd', name: 'D', overview: 'x', referralsFrom: '2027-02-01' },
-    { id: 'e', name: 'E', overview: 'x', runsTo: '2026-12-01', cohorts: [{ id: 'e1', name: 'E1' }, { id: 'e2', name: 'E2', runsTo: '2026-10-01' }] },
+    { id: 'e', name: 'E', overview: 'x', runsTo: '2026-12-01', sessions: [{ id: 'e1', name: 'E1', age: '18 to 24' }, { id: 'e2', name: 'E2', runsTo: '2026-10-01' }, { id: 'e3', name: 'E3', age: '50+' }] },
+    { id: 'f', name: 'F', overview: 'x', sessions: [{ id: 'f1', venue: 'v1', days: ['tue'], start: '13:00', end: '15:00' }, { id: 'f2', venue: 'v2', days: ['wed'], start: '13:00', end: '15:30' }] },
   ] };
   const st = Object.fromEntries(LS.parts(s1, T).map((x) => [x.project.id, x.state]));
   check('dates: blank is open, past close is closed, soon and later', st.a === 'open' && st.b === 'closed' && st.c === 'soon' && st.d === 'later' && st.e === 'open', JSON.stringify(st));
-  check('dates: visible today is open and opening soon only', LS.visible(s1, T).map((x) => x.project.id).join() === 'a,c,e');
-  check('dates: a cohort uses its project\'s date, or its own', LS.visible(s1, T).find((x) => x.project.id === 'e').cohorts.map((c) => c.cohort.id).join() === 'e1');
+  check('dates: visible today is open and opening soon only', LS.visible(s1, T).map((x) => x.project.id).join() === 'a,c,e,f');
+  check('dates: a session uses its project\'s date, or its own', LS.visible(s1, T).find((x) => x.project.id === 'e').sessions.map((c) => c.session.id).join() === 'e1,e3');
   check('dates: the service shows while anything is open', LS.isShown(s1, T) && !LS.isShown({ ...s1, open: false }, T) && !LS.isShown({ open: true, projects: [s1.projects[1]] }, T));
   check('dates: closed on the day after the date, not on it', LS.state({ runsTo: T }, T) === 'open' && LS.state({ runsTo: T }, '2026-11-10') === 'closed');
-  check('dates: picking a cohort shows just that cohort', JSON.stringify(LS.pick(s1, ['e1'], T).map((x) => [x.project.id, x.cohorts.map((c) => c.cohort.id)])) === '[["e",["e1"]]]');
-  check('dates: picking nothing (or nothing real) shows everything visible', LS.pick(s1, [], T).length === 3 && LS.pick(s1, ['zzz'], T).length === 3);
-  check('dates: picking a project shows all its open cohorts', LS.pick(s1, ['e'], T)[0].cohorts.length === 1);
-  const ends = LS.endingSoon(s1, T).map((x) => x.project.id + (x.cohort ? '/' + x.cohort.id : '') + ':' + x.kind + ':' + x.daysLeft);
-  check('dates: ending in the next 30 days', ends.join() === 'e/e1:ends:22', ends.join());
-  check('dates: closed parts listed for Admin', LS.closedParts(s1, T).map((x) => x.project.id + (x.cohort ? '/' + x.cohort.id : '')).join() === 'b,e/e2');
+  check('sessions: picking a session for a group shows just that group (a 20-year-old sees no 50+ group)', JSON.stringify(LS.pick(s1, ['e1'], T).map((x) => [x.project.id, x.sessions.map((c) => c.session.id)])) === '[["e",["e1"]]]');
+  check('sessions: picking a time and place puts it first and keeps the others', JSON.stringify(LS.pick(s1, ['f2'], T).map((x) => x.sessions.map((c) => c.session.id + (c.named ? '*' : '')))) === '[["f2*","f1"]]');
+  check('dates: picking nothing (or nothing real) shows everything visible', LS.pick(s1, [], T).length === 4 && LS.pick(s1, ['zzz'], T).length === 4);
+  check('dates: picking a project shows all its open sessions', LS.pick(s1, ['e'], T)[0].sessions.length === 2);
+  const ends = LS.endingSoon(s1, T).map((x) => x.project.id + (x.session ? '/' + x.session.id : '') + ':' + x.kind + ':' + x.daysLeft);
+  check('dates: ending in the next 30 days (a project once, not again for each session)', ends.join() === 'e:ends:22', ends.join());
+  check('dates: closed parts listed for Admin', LS.closedParts(s1, T).map((x) => x.project.id + (x.session ? '/' + x.session.id : '')).join() === 'b,e/e2');
   check('dates: plain words', LS.dateWords({ referralsFrom: '2026-11-20', referralsUntil: '2027-03-01' }, T).join('; ') === 'Referrals open from 20 November 2026; Taking referrals until 1 March 2027');
   check('dates: checks catch duplicates and wrong order', LS.checkParts([{ id: 'a', name: 'A', runsFrom: '2027-01-02', runsTo: '2027-01-01' }, { id: 'a', name: 'B' }]).length === 2);
+  check('sessions: days and times in words', LS.timeWords({ days: ['tue', 'thu'], start: '13:00', end: '15:30', frequency: 'fortnightly' }) === 'Tuesdays and Thursdays, 1pm to 3.30pm, every other week' && LS.timeWords({ days: ['mon', 'tue', 'wed', 'thu', 'fri'], start: '09:30', end: '15:00' }) === 'Monday to Friday, 9.30am to 3pm' && LS.timeWords({}) === '');
+  check('sessions: finishing before starting is caught', /finishes before it starts/.test(LS.checkParts([{ id: 'p', name: 'P', sessions: [{ id: 's', start: '15:00', end: '13:00' }] }]).join()));
+  check('venues: one line with the postcode once', LS.venueLine({ name: 'Jo Cox House', address: 'Jo Cox House, Market Square, Batley', postcode: 'WF17 5DR' }) === 'Jo Cox House, Market Square, Batley, WF17 5DR' && LS.venueLine({ name: 'Hall', address: 'Hall, Road, HD1 1AA', postcode: 'HD1 1AA' }) === 'Hall, Road, HD1 1AA');
+  check('groups: the agreed list, with "everyone"', LS.GROUPS.everyone === 'Everyone (no restriction)' && ['children', 'young-people', 'adults', 'older-people', 'families', 'parents', 'mothers', 'fathers', 'lgbtq', 'students'].every((g) => LS.GROUPS[g]));
 }
 check('data: every live service has at least one project', svc.every((x) => Array.isArray(x.projects) && x.projects.length));
-check('data: no status or activities left', svc.every((x) => !('status' in x) && !('activities' in x)));
-check('data: Raise Your Game has its two age cohorts', JSON.stringify(svc.find((x) => x.id === 'raise-your-game').projects[0].cohorts.map((c) => c.age)) === '["18 to 24","50+"]');
+check('data: no status, activities or cohorts left', svc.every((x) => !('status' in x) && !('activities' in x) && x.projects.every((p) => !('cohorts' in p))));
+check('data: Raise Your Game is one project with two age-group sessions at one venue', (() => { const p = svc.find((x) => x.id === 'raise-your-game').projects; return p.length === 1 && JSON.stringify(p[0].sessions.map((c) => [c.age, c.venue])) === '[["18 to 24","leeds-road-sports-complex"],["50+","leeds-road-sports-complex"]]'; })());
 check('data: the P2P projects stop taking referrals on 1 March 2027', ['p2p-fusion-housing', 'p2p-proper-job'].every((id) => svc.find((x) => x.id === id).projects[0].referralsUntil === '2027-03-01'));
 check('data: organisations carry no Healthy Working Life marker', JSON.parse(fs.readFileSync(path.join(root, 'data/organisations.json'), 'utf8')).organisations.every((o) => !('hwlFunded' in o) && !/healthy working life/i.test(o.overview || '')));
+check('data: every venue a live service uses is in services.json', (() => { const ids = new Set(JSON.parse(fs.readFileSync(path.join(root, 'data/services.json'), 'utf8')).venues.map((v) => v.id)); return svc.every((x) => LS.venueIds(x).every((v) => ids.has(v))); })());
 {
-  // What the AI is sent today: no team notes, closed projects left out, a status on each project.
+  // What the AI is sent today: no team notes, closed projects left out, a status on each project, venues in words.
   reply = tool(reply0());
   await call('claude-sonnet-5-5');
   const dataText = sent.system[1].text;
   const sentData = JSON.parse(dataText.slice(dataText.indexOf('\n') + 1));
   const ryg = sentData.find((x) => x.id === 'raise-your-game');
-  check('ai data: projects and cohorts sent with a status', ryg.projects[0].status === 'open' && ryg.projects[0].cohorts.length === 2 && ryg.projects[0].cohorts.every((c) => c.status === 'open'), JSON.stringify(ryg.projects).slice(0, 300));
-  check('ai data: no team notes, map buttons or listing decision', sentData.every((x) => !('notes' in x) && !('mapLinks' in x) && !('listing' in x)));
+  check('ai data: projects and sessions sent with a status', ryg.projects[0].status === 'open' && ryg.projects[0].sessions.length === 2 && ryg.projects[0].sessions.every((c) => c.status === 'open'), JSON.stringify(ryg.projects).slice(0, 300));
+  check('ai data: a session\'s venue is sent in words, not as an id', /Leeds Road Sports Complex.*HD2 1YY/.test(ryg.projects[0].sessions[0].venue), ryg.projects[0].sessions[0].venue);
+  check('ai data: no team notes, map buttons, listing decision or organisation overview', sentData.every((x) => !('notes' in x) && !('mapLinks' in x) && !('listing' in x) && !('organisationOverview' in x)));
   check('ai data: the date is in the data heading', dataText.startsWith('SERVICE DATA (JSON) for ' + new Date().toISOString().slice(0, 10)));
-  check('ai data: the reply tool asks which projects or cohorts fit', Boolean(sent.tools[0].input_schema.properties.matches.items.properties.parts));
-  check('prompt: explains projects, cohorts and parts', /"parts"/.test(sent.system[0].text) && /cohorts/.test(sent.system[0].text) && /referrals open later/.test(sent.system[0].text));
+  check('ai data: the reply tool asks which projects or sessions fit', Boolean(sent.tools[0].input_schema.properties.matches.items.properties.parts));
+  check('prompt: explains projects, sessions and parts', /"parts"/.test(sent.system[0].text) && /"sessions"/.test(sent.system[0].text) && /referrals open later/.test(sent.system[0].text));
 }
 reply = tool(reply0({ matches: [{ ...m('raise-your-game'), parts: ['cohort-1', 'nonsense', 'cohort-1'] }] }));
 r = await call('claude-sonnet-5-5', { messages: [{ role: 'user', content: 'I am 20, not working, with a health condition, in Huddersfield' }] });
-check('parts: only real, open project or cohort ids are passed on, once each', JSON.stringify(r.body.recommendations[0].parts) === '["cohort-1"]', JSON.stringify(r.body.recommendations));
+check('parts: only real, open project or session ids are passed on, once each', JSON.stringify(r.body.recommendations[0].parts) === '["cohort-1"]', JSON.stringify(r.body.recommendations));
 check('parts: the reply says which day it was worked out for', r.body.date === new Date().toISOString().slice(0, 10));
 reply = tool(reply0({ matches: [m('raise-your-game')] }));
 r = await call('claude-sonnet-5-5');
@@ -466,15 +474,21 @@ check('edits: bad email refused', /email/i.test(await editErr({ email: 'nope' })
 check('edits: empty name refused', /can't be empty/.test(await editErr({ name: '  ' })));
 check('edits: categories need at least one', /at least one/.test(await editErr({ categories: [] })));
 check('edits: each project needs an overview', /overview/.test(await editErr({ projects: [{ id: 'x', name: 'x', overview: '' }] })));
-// Projects, cohorts and dates.
+// Projects, sessions, venues and dates.
 const proj = (o = {}) => ({ id: 'job-club', name: 'Job club', overview: 'CV help.', ...o });
-check('edits: a project with cohorts and dates is accepted', !(await editErr({ projects: [proj({ referralsUntil: '2027-03-01', cohorts: [{ id: 'cohort-1', name: 'Cohort 1', age: '18 to 24', eligibility: ['Aged 18 to 24'] }] })] })));
+check('edits: a project with sessions for groups and dates is accepted', !(await editErr({ projects: [proj({ referralsUntil: '2027-03-01', sessions: [{ id: 'cohort-1', name: 'Cohort 1', age: '18 to 24', eligibility: ['Aged 18 to 24'] }] })] })));
+check('edits: a session at a venue with days, times and how often is accepted, including a new venue written out', !(await editErr({ projects: [proj({ runs: ['set', 'appointment'], area: 'All of Kirklees', sessions: [{ id: 'tue', venue: 'leeds-road-sports-complex', days: ['tue'], start: '13:00', end: '15:00', frequency: 'weekly' }, { id: 'wed', venue: { name: 'New Hall', address: '1 New Road, Batley', postcode: 'wf17 5dr' }, days: ['wed'], start: '10:00', end: '12:00', note: 'Bring a packed lunch' }] })] })));
+check('edits: a new venue needs a full postcode', /postcode/.test(await editErr({ projects: [proj({ sessions: [{ id: 's', venue: { name: 'Hall', address: 'Road', postcode: 'WF17' } }] })] })));
+check('edits: times must be like 13:30, and finish after they start', /like 13:30/.test(await editErr({ projects: [proj({ sessions: [{ id: 's', start: '1pm' }] })] })) && /finishes before it starts/.test(await editErr({ projects: [proj({ sessions: [{ id: 's', start: '15:00', end: '13:00' }] })] })));
+check('edits: days, how often and how it runs must be from the lists', /days/.test(await editErr({ projects: [proj({ sessions: [{ id: 's', days: ['tuesday'] }] })] })) && /How often/.test(await editErr({ projects: [proj({ sessions: [{ id: 's', frequency: 'daily' }] })] })) && /runs/.test(await editErr({ projects: [proj({ runs: ['sometimes'] })] })));
+check('edits: who it\'s for groups must be from the list', !(await editErr({ groups: ['women', 'everyone'] })) && /isn't allowed/.test(await editErr({ groups: ['aliens'] })));
+check('edits: venues used by every project can be ids or new ones', !(await editErr({ venues: ['leeds-road-sports-complex', { name: 'Hall', address: '1 Road, Dewsbury', postcode: 'WF12 8DJ' }] })));
 check('edits: a date must be real', /real date/.test(await editErr({ projects: [proj({ runsTo: '2027-02-31x' })] })));
 check('edits: a project can\'t end before it starts', /ends before it starts/.test(await editErr({ projects: [proj({ runsFrom: '2027-03-01', runsTo: '2027-01-01' })] })));
-check('edits: a cohort uses its project\'s dates when checking the order', /stops taking referrals before it starts/.test(await editErr({ projects: [proj({ referralsFrom: '2027-03-01', cohorts: [{ id: 'c1', name: 'C1', referralsUntil: '2027-01-01' }] })] })));
-check('edits: project and cohort ids are unique in a service', /used twice/.test(await editErr({ projects: [proj(), proj({ name: 'Other' })] })));
+check('edits: a session uses its project\'s dates when checking the order', /stops taking referrals before it starts/.test(await editErr({ projects: [proj({ referralsFrom: '2027-03-01', sessions: [{ id: 'c1', name: 'C1', referralsUntil: '2027-01-01' }] })] })));
+check('edits: project and session ids are unique in a service', /used twice/.test(await editErr({ projects: [proj(), proj({ name: 'Other' })] })));
 check('edits: a project can\'t carry other details', /can't be set/.test(await editErr({ projects: [proj({ status: 'Live' })] })));
-check('edits: a cohort can\'t carry other details', /can't be set/.test(await editErr({ projects: [proj({ cohorts: [{ id: 'c1', name: 'C1', overview: 'x' }] })] })));
+check('edits: a session can\'t carry other details', /can't be set/.test(await editErr({ projects: [proj({ sessions: [{ id: 'c1', name: 'C1', overview: 'x' }] })] })));
 check('edits: a new project overview over 400 characters is refused', /too long/.test(await editErr({ projects: [proj({ overview: 'x'.repeat(401) })] })));
 {
   // Text already in the data over the limit can be sent back unchanged (wellness-to-work's overview is 420).
@@ -1301,6 +1315,77 @@ check('orgs: the apply script (no Origin) can read them', r.status === 200 && r.
   check('apply orgs: running again changes nothing more', /0 organisations changed/.test(execFileSync(process.execPath, [path.join(root, 'scripts/apply-decisions.mjs'), '--input', inp, '--dir', d], { encoding: 'utf8' })));
   check('apply orgs: the real organisations file is untouched by a test run', fs.readFileSync(path.join(root, 'data/organisations.json'), 'utf8') === realOrgs);
   void acasNow;
+  fs.rmSync(d, { recursive: true, force: true });
+}
+
+// ----- Venues: rename, address, postcode, combine; new venues from edits; wards from postcodes -----
+store = mkStore();
+r = await logCall('PUT', '/log/venues/empire-house-2', { changes: { mergeInto: 'empire-house' }, note: 'Same building', by: 'PL' });
+check('venues: a combine is saved', r.status === 200 && r.body.item.changes.mergeInto === 'empire-house');
+r = await logCall('PUT', '/log/venues/empire-house', { changes: { postcode: 'wf128dj' }, note: 'Tidy', by: 'PL' });
+check('venues: a postcode is tidied to capitals with one space', r.status === 200 && r.body.item.changes.postcode === 'WF12 8DJ');
+r = await logCall('PUT', '/log/venues/empire-house', { changes: { postcode: 'WF12' }, note: 'Bad', by: 'PL' });
+check('venues: a part postcode is refused', r.status === 400 && /postcode/.test(r.body.error));
+r = await logCall('PUT', '/log/venues/empire-house', { changes: { mergeInto: 'empire-house' }, note: 'Self', by: 'PL' });
+check('venues: can\'t be combined into itself', r.status === 400);
+r = await logCall('PUT', '/log/venues/empire-house', { changes: { ward: 'Made up' }, note: 'No', by: 'PL' });
+check('venues: the ward can\'t be typed in (it comes from the postcode)', r.status === 400 && /can't be changed/.test(r.body.error));
+r = await logCall('GET', '/log/venues', null, { origin: null });
+check('venues: the apply script (no Origin) can read them', r.status === 200 && r.body.venues['empire-house-2']);
+{
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), 'venue-'));
+  const mk = (id, sessions, extra = {}) => {
+    const sv = JSON.parse(fs.readFileSync(path.join(root, 'data/services/acas-helpline.json'), 'utf8'));
+    Object.assign(sv, { id, name: id, organisation: 'Org', locations: [], ...extra });
+    sv.projects = [{ id: 'p', name: 'P', overview: 'O', sessions }];
+    fs.writeFileSync(path.join(d, id + '.json'), JSON.stringify(sv, null, 2) + '\n');
+  };
+  mk('svc-a', [{ id: 's1', venue: 'hall-a' }]);
+  mk('svc-b', [{ id: 's1', venue: 'hall-b', days: ['tue'] }], { venues: ['hall-b'] });
+  mk('svc-c', [{ id: 's1', venue: 'hall-a' }]);
+  fs.writeFileSync(path.join(d, 'organisations.json'), JSON.stringify({ organisations: [{ id: 'org', name: 'Org' }] }));
+  fs.writeFileSync(path.join(d, 'venues.json'), JSON.stringify({ venues: [
+    { id: 'hall-a', name: 'Hall A', address: 'Hall A, 1 Road, Batley', postcode: 'WF17 5DR', ward: 'Batley East', lat: 53.7, lng: -1.6 },
+    { id: 'hall-b', name: 'Hall B', address: 'Hall B, 1 Road, Batley', postcode: 'WF17 5DR' },
+    { id: 'hall-c', name: 'Hall C', address: 'Hall C, Dewsbury', postcode: 'WF12 8DJ', ward: 'Old', lat: 1, lng: 1 },
+  ] }));
+  const inp = path.join(d, 'decisions.json');
+  fs.writeFileSync(inp, JSON.stringify({
+    venues: {
+      'hall-b': { changes: { mergeInto: 'hall-a' }, note: 'Same hall', by: 'PL', t: '2026-11-12T09:00:00Z' },
+      'hall-c': { changes: { postcode: 'WF12 8DS', name: 'Hall C (new)' }, before: {}, note: 'Moved', by: 'PL', t: '2026-11-12T09:00:00Z' },
+    },
+    edits: {
+      'svc-c': { changes: { projects: [{ id: 'p', name: 'P', overview: 'O', sessions: [{ id: 's1', venue: 'hall-a' }, { id: 's2', venue: { name: 'New Centre', address: 'New Centre, 2 Street, Dewsbury', postcode: 'WF13 3AR' }, days: ['wed'], start: '10:00', end: '12:00' }] }] }, before: {}, note: 'From the provider', by: 'PL', t: '2026-11-12T09:00:00Z' },
+    },
+  }));
+  const out = execFileSync(process.execPath, [path.join(root, 'scripts/apply-decisions.mjs'), '--input', inp, '--dir', d], { encoding: 'utf8' });
+  const v2 = JSON.parse(fs.readFileSync(path.join(d, 'venues.json'), 'utf8')).venues;
+  const svcIn = (id) => JSON.parse(fs.readFileSync(path.join(d, id + '.json'), 'utf8'));
+  const a = v2.find((v) => v.id === 'hall-a');
+  check('apply venues: combining moves every session (and "every project" venue) and keeps the old name', !v2.find((v) => v.id === 'hall-b') && svcIn('svc-b').projects[0].sessions[0].venue === 'hall-a' && svcIn('svc-b').venues.join() === 'hall-a' && a.aliases.includes('Hall B'), out);
+  const c = v2.find((v) => v.id === 'hall-c');
+  check('apply venues: a new postcode clears the ward and map position, to be looked up again', c.postcode === 'WF12 8DS' && !('ward' in c) && !('lat' in c) && c.aliases.includes('Hall C'), JSON.stringify(c));
+  const nv = v2.find((v) => v.name === 'New Centre');
+  check('apply venues: a venue written out in an edit becomes a venue record, and the session points at it', nv && nv.postcode === 'WF13 3AR' && svcIn('svc-c').projects[0].sessions[1].venue === nv.id && /New venues .*New Centre \(WF13 3AR\)/.test(out), out);
+  check('apply venues: summary says what happened', /Venues changed \(2\)/.test(out) && /combined into Hall A/.test(out), out);
+  const again = execFileSync(process.execPath, [path.join(root, 'scripts/apply-decisions.mjs'), '--input', inp, '--dir', d], { encoding: 'utf8' });
+  check('apply venues: running again changes nothing more (the written-out venue is matched, not added twice)', /0 venues changed/.test(again) && /0 services with edited details, 1 already up to date/.test(again) && JSON.parse(fs.readFileSync(path.join(d, 'venues.json'), 'utf8')).venues.filter((v) => v.name === 'New Centre').length === 1, again);
+  // Wards and map positions from postcodes (postcodes.io), with a pretend lookup.
+  const { lookupVenues } = await import(pathToFileURL(path.join(root, 'scripts/lookup-venues.mjs')).href);
+  let asked = null;
+  const fakeFetch = async (url, init) => {
+    asked = JSON.parse(init.body).postcodes;
+    return { ok: true, json: async () => ({ result: asked.map((q) => ({ query: q, result: q === 'WF12 8DS' ? { admin_ward: 'Dewsbury East', codes: { admin_ward: 'E05001370' }, latitude: 53.6912345, longitude: -1.6234567 } : null })) }) };
+  };
+  const list = JSON.parse(fs.readFileSync(path.join(d, 'venues.json'), 'utf8')).venues;
+  const lr = await lookupVenues(list, fakeFetch);
+  const c2 = list.find((v) => v.id === 'hall-c');
+  check('wards: only venues without a ward are looked up, and only their postcodes are sent', !asked.includes('WF17 5DR') && asked.includes('WF12 8DS') && asked.includes('WF13 3AR'), JSON.stringify(asked));
+  check('wards: the ward, its code and the map position are filled in', c2.ward === 'Dewsbury East' && c2.wardCode === 'E05001370' && c2.lat === 53.69123 && c2.lng === -1.62346, JSON.stringify(c2));
+  check('wards: a postcode that can\'t be found is listed, not guessed', lr.notFound.some((x) => x.includes('WF13 3AR')) && !list.find((v) => v.name === 'New Centre').ward);
+  const down = await lookupVenues([{ id: 'x', name: 'X', address: 'X', postcode: 'HD1 1AA' }], async () => { throw new Error('offline'); });
+  check('wards: a lookup that fails changes nothing and doesn\'t stop the run', down.updated === 0 && down.notFound.length === 1);
   fs.rmSync(d, { recursive: true, force: true });
 }
 

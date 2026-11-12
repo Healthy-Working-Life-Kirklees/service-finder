@@ -201,6 +201,33 @@ export class LogStore {
       return Response.json({ id: body.id, deleted: true });
     }
 
+    // ----- venue changes (the same shape as organisation changes) -----
+    if (url.pathname === '/venues/list') {
+      const m = await s.list({ prefix: 'venue:' });
+      const venues = {};
+      for (const [k, v] of m) venues[k.slice(6)] = v;
+      return Response.json({ venues });
+    }
+
+    if (url.pathname === '/venues/set') {
+      const key = 'venue:' + body.id;
+      const prev = await s.get(key);
+      if (!prev && ((await s.get('venueCount')) || 0) >= 500) return Response.json({ error: 'Too many venue changes waiting.' }, { status: 400 });
+      const history = prev ? [...(prev.history || []), { changes: prev.changes, note: prev.note, by: prev.by, t: prev.t }].slice(-10) : [];
+      const item = { changes: body.changes, before: body.before, note: body.note, by: body.by, t: now, history };
+      await s.put(key, item);
+      if (!prev) await s.put('venueCount', ((await s.get('venueCount')) || 0) + 1);
+      return Response.json({ id: body.id, item });
+    }
+
+    if (url.pathname === '/venues/delete') {
+      const key = 'venue:' + body.id;
+      if (!(await s.get(key))) return Response.json({ error: 'Not found.' }, { status: 404 });
+      await s.delete(key);
+      await s.put('venueCount', Math.max(0, ((await s.get('venueCount')) || 1) - 1));
+      return Response.json({ id: body.id, deleted: true });
+    }
+
     // ----- morning reminders (see reminders.js) -----
     if (url.pathname === '/remind/check') {
       const keys = (Array.isArray(body.keys) ? body.keys : []).slice(0, 500);
@@ -294,6 +321,37 @@ export function checkOrgChanges(input) {
       out.website = t || null;
     } else if (k === 'mergeInto') {
       if (typeof v !== 'string' || !ID_RE.test(v)) return { error: 'Choose the organisation to combine it into.' };
+      out.mergeInto = v;
+    } else return { error: `"${k}" can't be changed here.` };
+  }
+  if (!Object.keys(out).length) return { error: 'Nothing has changed.' };
+  return { changes: out };
+}
+
+// A venue change: { name?, address?, postcode?, notes?, mergeInto? }. mergeInto is another venue's id: every session
+// there moves to that venue, and this one's name is kept as an alias there. A new postcode means the ward is looked
+// up again when the change is applied.
+export function checkVenueChanges(input) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return { error: 'Nothing to change.' };
+  const out = {};
+  for (const [k, v] of Object.entries(input)) {
+    if (k === 'name') {
+      const t = clean(v, 200);
+      if (t.length < 2 || t.length > 150) return { error: 'The venue name must be 2 to 150 characters.' };
+      out.name = t;
+    } else if (k === 'address') {
+      const t = clean(v, 400);
+      if (t.length < 5 || t.length > 300) return { error: 'The address must be 5 to 300 characters.' };
+      out.address = t;
+    } else if (k === 'postcode') {
+      const t = clean(v, 20).toUpperCase().replace(/\s+/g, '');
+      if (!/^[A-Z]{1,2}\d[A-Z\d]?\d[A-Z]{2}$/.test(t)) return { error: 'Give the full postcode, such as WF17 5DR.' };
+      out.postcode = t.slice(0, -3) + ' ' + t.slice(-3);
+    } else if (k === 'notes') {
+      const t = v === null ? '' : clean(v, 1000);
+      out.notes = t || null;
+    } else if (k === 'mergeInto') {
+      if (typeof v !== 'string' || !ID_RE.test(v)) return { error: 'Choose the venue to combine it into.' };
       out.mergeInto = v;
     } else return { error: `"${k}" can't be changed here.` };
   }
@@ -449,6 +507,30 @@ export async function handleLog(request, env, url, cors, checker) {
     const before = {};
     if (body.before && typeof body.before === 'object') for (const k of Object.keys(r.changes)) if (k in body.before) before[k] = body.before[k];
     const res = await call('/orgs/set', { id: o[1], changes: r.changes, before, note, by });
+    return json(res, res.error ? 400 : 200, cors);
+  }
+
+  // ----- venues: rename, address, postcode, notes, or combine into another -----
+  if (request.method === 'GET' && path === '/log/venues') {
+    return json(await call('/venues/list'), 200, cors);
+  }
+  const vm = path.match(/^\/log\/venues\/([a-z0-9-]{1,50})$/);
+  if (vm && (request.method === 'PUT' || request.method === 'DELETE')) {
+    if (!ID_RE.test(vm[1])) return json({ error: 'Unknown venue.' }, 400, cors);
+    const by = clean(body.by, 40);
+    if (!by) return json({ error: 'Please give your name or initials.' }, 400, cors);
+    if (request.method === 'DELETE') {
+      const res = await call('/venues/delete', { id: vm[1] });
+      return json(res, res.error ? 404 : 200, cors);
+    }
+    const r = checkVenueChanges(body.changes);
+    if (r.error) return json({ error: r.error }, 400, cors);
+    if (r.changes.mergeInto === vm[1]) return json({ error: "A venue can't be combined into itself." }, 400, cors);
+    const note = clean(body.note, 1000);
+    if (note.length < 3) return json({ error: 'Please say briefly what changed and why.' }, 400, cors);
+    const before = {};
+    if (body.before && typeof body.before === 'object') for (const k of Object.keys(r.changes)) if (k in body.before) before[k] = body.before[k];
+    const res = await call('/venues/set', { id: vm[1], changes: r.changes, before, note, by });
     return json(res, res.error ? 400 : 200, cors);
   }
 

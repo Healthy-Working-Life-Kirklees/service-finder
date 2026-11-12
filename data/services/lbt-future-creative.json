@@ -53,8 +53,11 @@
       "name": "Future Creative: Inclusive Volunteering",
       "overview": "Formal and informal training and meaningful involvement in arts and cultural activities, to develop new skills and build confidence.",
       "duration": "Ongoing programme",
-      "where": [
-        "Lawrence Batley Theatre, Queen Street, Huddersfield, HD1 2SP"
+      "sessions": [
+        {
+          "id": "lawrence-batley-theatre",
+          "venue": "lawrence-batley-theatre"
+        }
       ]
     }
   ],

@@ -44,8 +44,11 @@
       "id": "out-of-hours-safe-space",
       "name": "Out-of-hours safe space",
       "overview": "Evening support if you're struggling to cope, in a calm space or by phone.",
-      "where": [
-        "25 Trinity Street, Batley WF17 7JZ"
+      "sessions": [
+        {
+          "id": "25-trinity-street",
+          "venue": "25-trinity-street"
+        }
       ]
     }
   ],

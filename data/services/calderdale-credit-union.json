@@ -43,8 +43,11 @@
       "id": "savings-and-affordable-loans",
       "name": "Savings and affordable loans",
       "overview": "Not-for-profit savings and fair loans for people who live or work in Calderdale or Kirklees.",
-      "where": [
-        "Halifax HX1 1HJ"
+      "sessions": [
+        {
+          "id": "halifax",
+          "venue": "halifax"
+        }
       ]
     }
   ],

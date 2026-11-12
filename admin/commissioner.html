@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <!-- The map's background comes from OpenStreetMap's tile servers (images only); everything else is this site. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>Across Kirklees | Kirklees HWL Support Finder</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="admin.css">
+  <script src="team-auth.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to the content</a>
+
+  <nav class="teambar" aria-label="Admin">
+    <div class="wrap wide">
+      <strong>Admin</strong>
+      <a href="./">Admin home</a>
+      <a href="../">Support Finder</a>
+      <a href="help.html">Help</a>
+      <a href="services.html">All services</a>
+      <a href="commissioner.html" aria-current="page">Across Kirklees</a>
+      <a href="log.html">Issues and actions log</a>
+      <a href="feedback.html">Feedback and usage</a>
+    </div>
+  </nav>
+
+  <header class="site-header">
+    <div class="wrap wide">
+      <h1>Across Kirklees<br><span>What's available, where and when: for planning and commissioning</span></h1>
+    </div>
+  </header>
+
+  <main id="main" class="wrap wide">
+    <p class="admin-banner"><strong>For the team and commissioners.</strong> Every service on the Support Finder's live list, with its venues, days and times, counted by ward. It comes from the same listings as the finder, so nothing is entered twice. <strong>Gaps are only as good as the data:</strong> many services haven't given their days, times or groups yet, and "nothing here" can mean "not told us yet". The "Data still to collect" view shows how much is missing.</p>
+
+    <div class="cm-layout">
+      <form class="cm-filters" id="filters" aria-labelledby="filters-title">
+        <h2 id="filters-title">Filters</h2>
+        <div class="field"><label for="f-ward">Ward</label><select id="f-ward"><option value="">All of Kirklees</option></select></div>
+        <div class="field"><label for="f-group">Who it's for</label><select id="f-group"><option value="">Any group</option></select>
+          <p class="hint">Services that have ticked that group. Many haven't ticked any yet.</p></div>
+        <div class="field"><label for="f-cat">Kind of support</label><select id="f-cat"><option value="">Any</option></select></div>
+        <div class="field"><label for="f-day">Day</label><select id="f-day"><option value="">Any day</option></select></div>
+        <div class="field"><label for="f-time">Time of day</label><select id="f-time"><option value="">Any time</option><option value="morning">Morning (starts before 12)</option><option value="afternoon">Afternoon (starts 12 to 5pm)</option><option value="evening">Evening (starts 5pm or later)</option><option value="weekend">Weekend</option></select></div>
+        <fieldset class="field"><legend>How it runs</legend>
+          <label><input type="checkbox" name="runs" value="set" checked> At set times and places</label>
+          <label><input type="checkbox" name="runs" value="appointment" checked> By appointment or around the person</label>
+          <label><input type="checkbox" name="runs" value="online" checked> Online or by phone</label>
+          <label><input type="checkbox" name="runs" value="unknown" checked> Not said yet</label>
+        </fieldset>
+        <fieldset class="field"><legend>Include</legend>
+          <label><input type="checkbox" id="f-hwl"> Healthy Working Life funded only</label>
+          <label><input type="checkbox" id="f-review"> Services waiting for review (not on the live list)</label>
+        </fieldset>
+        <p><button type="button" class="btn secondary small" id="f-reset">Clear filters</button></p>
+      </form>
+
+      <div class="cm-main">
+        <div class="cm-stats" id="stats" aria-live="polite"></div>
+        <div class="cm-tabs" role="tablist" aria-label="Views">
+          <button type="button" role="tab" id="tab-map" aria-controls="view-map" aria-selected="true">Map</button>
+          <button type="button" role="tab" id="tab-week" aria-controls="view-week" aria-selected="false" tabindex="-1">Timetable</button>
+          <button type="button" role="tab" id="tab-wards" aria-controls="view-wards" aria-selected="false" tabindex="-1">By ward</button>
+          <button type="button" role="tab" id="tab-list" aria-controls="view-list" aria-selected="false" tabindex="-1">List</button>
+          <button type="button" role="tab" id="tab-gaps" aria-controls="view-gaps" aria-selected="false" tabindex="-1">Data still to collect</button>
+        </div>
+        <section id="view-map" role="tabpanel" aria-labelledby="tab-map">
+          <div id="map" class="cm-map" role="region" aria-label="Map of venues. The same venues are listed under By ward and List."></div>
+          <p class="hint" id="map-note"></p>
+        </section>
+        <section id="view-week" role="tabpanel" aria-labelledby="tab-week" hidden></section>
+        <section id="view-wards" role="tabpanel" aria-labelledby="tab-wards" hidden></section>
+        <section id="view-list" role="tabpanel" aria-labelledby="tab-list" hidden></section>
+        <section id="view-gaps" role="tabpanel" aria-labelledby="tab-gaps" hidden></section>
+        <p><button type="button" class="btn secondary small" id="download">Download the timetable as a spreadsheet (CSV)</button></p>
+      </div>
+    </div>
+  </main>
+
+  <script src="../listing-logic.js"></script>
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="commissioner.js" defer></script>
+</body>
+</html>

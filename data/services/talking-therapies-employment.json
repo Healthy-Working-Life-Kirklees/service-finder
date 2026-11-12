@@ -56,10 +56,10 @@
       "id": "integrated-employment-advice-alongside-therapy",
       "name": "Integrated employment advice alongside therapy",
       "overview": "Employment advisors work jointly with therapists. One-to-one, client-led support on goals, CVs, gaps in employment, disclosure, applications and interviews, training needs, and an agreed action plan. Free and confidential. In person, by phone, video or the SilverCloud platform.",
-      "duration": "Up to ten appointments",
       "where": [
         "Across Kirklees, via Kirklees Talking Therapies venues, libraries and remote appointments"
-      ]
+      ],
+      "duration": "Up to ten appointments"
     }
   ],
   "workExperience": "No",

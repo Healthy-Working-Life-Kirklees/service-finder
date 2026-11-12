@@ -53,13 +53,11 @@
       "name": "Raise Your Game Programme",
       "overview": "Group sessions mixing classroom learning and physical activity, aiming to engage, educate and inspire participants to move towards being economically active.",
       "duration": "10 weekly two-hour group sessions per cohort",
-      "where": [
-        "Leeds Road Sports Complex, Leeds Road, Huddersfield, HD2 1YY"
-      ],
-      "cohorts": [
+      "sessions": [
         {
           "id": "cohort-1",
           "name": "Cohort 1: ages 18 to 24",
+          "venue": "leeds-road-sports-complex",
           "age": "18 to 24",
           "eligibility": [
             "Aged 18 to 24"
@@ -68,6 +66,7 @@
         {
           "id": "cohort-2",
           "name": "Cohort 2: ages 50 and over",
+          "venue": "leeds-road-sports-complex",
           "age": "50+",
           "eligibility": [
             "Aged 50+"

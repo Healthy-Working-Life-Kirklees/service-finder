@@ -1,5 +1,6 @@
 // Writes the development team's changes from the All services page into the scheme files, so they can go into a pull
-// request: first changes to organisations (data/organisations.json: rename, overview, website, combine), then new
+// request: first changes to organisations (data/organisations.json: rename, overview, website, combine) and venues
+// (data/venues.json: rename, address, postcode, combine), then new
 // services the team has added (each becomes data/services/<id>.json), then edits to a service's details, then the
 // listing decisions (include, review or exclude). A new service starts as "review" and only goes on the live list
 // if the team has also decided to include it.
@@ -51,11 +52,13 @@ const input = opt('--input');
 // The organisations file: data/organisations.json, or with --dir, an organisations.json next to the scheme files
 // (if there is one), so a test on a copy never touches the real one.
 const orgPath = opt('--orgs') ? path.resolve(opt('--orgs')) : opt('--dir') ? path.join(dir, 'organisations.json') : path.join(root, 'data', 'organisations.json');
+// The venues file, chosen the same way.
+const venuePath = opt('--venues') ? path.resolve(opt('--venues')) : opt('--dir') ? path.join(dir, 'venues.json') : path.join(root, 'data', 'venues.json');
 
 async function load() {
   if (input) {
     const d = JSON.parse(fs.readFileSync(input, 'utf8'));
-    return { decisions: d.decisions || {}, edits: d.edits || {}, added: d.added || {}, orgEdits: d.orgs || {} };
+    return { decisions: d.decisions || {}, edits: d.edits || {}, added: d.added || {}, orgEdits: d.orgs || {}, venueEdits: d.venues || {} };
   }
   const url = String(process.env.WORKER_URL || '').replace(/\/$/, '');
   const pass = process.env.TEAM_PASSCODE || '';
@@ -74,6 +77,7 @@ async function load() {
   return {
     decisions: (await get('/log/decisions')).decisions || {}, edits: (await get('/log/edits')).edits || {}, added: (await get('/log/new')).added || {},
     orgEdits: (await get('/log/orgs').catch(() => ({ orgs: {} }))).orgs || {},
+    venueEdits: (await get('/log/venues').catch(() => ({ venues: {} }))).venues || {},
   };
 }
 
@@ -92,7 +96,7 @@ function open(id) {
   return files.get(id);
 }
 
-const { decisions, edits, added, orgEdits } = await load();
+const { decisions, edits, added, orgEdits, venueEdits } = await load();
 const unknown = new Set();
 
 // ---------- 0. organisations ----------
@@ -118,7 +122,7 @@ function ensureOrg(name) {
   return o;
 }
 // Every scheme file, read once (organisation changes can touch many services).
-for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.json') && x !== 'organisations.json' && x !== 'decisions.json')) open(f.slice(0, -5));
+for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.json') && !['organisations.json', 'venues.json', 'decisions.json'].includes(x))) open(f.slice(0, -5));
 const servicesOf = (name) => [...files.values()].filter((f) => f && f.s && f.s.organisation === name);
 
 const orgChanged = [];
@@ -172,6 +176,87 @@ for (const [id, e] of Object.entries(orgEdits).sort(([a], [b]) => a.localeCompar
   orgsDirty = true;
   orgChanged.push({ id, name: o.name, by: e.by, note: e.note, what: notes.join('; ') });
 }
+// ---------- 0b. venues ----------
+// One record per place (data/venues.json). The team can rename a venue, correct its address or postcode (which
+// clears its ward, so it is looked up again), or combine it into another: every session moves across and the old
+// name is kept as an alias. A session's venue in a change is either a venue id or a new venue written out
+// ({ name, address, postcode }): a new one is matched to a venue with the same address, or added.
+const venueFile = fs.existsSync(venuePath) ? JSON.parse(fs.readFileSync(venuePath, 'utf8')) : null;
+const venues = venueFile ? venueFile.venues : [];
+let venuesDirty = false;
+const venueById = (id) => venues.find((v) => v.id === id);
+const sameAddress = (a, b) => String(a).toLowerCase().replace(/[^a-z0-9]/g, '') === String(b).toLowerCase().replace(/[^a-z0-9]/g, '');
+const venuesMade = [];
+// The id for a venue in a change: an id as it is, a written-out one matched or (when make is true) added.
+function venueId(v, make) {
+  if (typeof v === 'string' || !v || typeof v !== 'object') return v;
+  const found = venues.find((x) => x.postcode === v.postcode && (sameAddress(x.address, v.address) || x.name.toLowerCase() === v.name.toLowerCase()));
+  if (found) return found.id;
+  if (!make || !venueFile) return v;
+  let id = slug(v.name) || 'venue';
+  for (let n = 2; venueById(id); n++) id = slug(v.name).slice(0, 46) + '-' + n;
+  venues.push({ id, name: v.name, address: v.address, postcode: v.postcode });
+  venues.sort((a, b) => a.name.localeCompare(b.name, 'en-GB'));
+  venuesDirty = true;
+  venuesMade.push(`${v.name} (${v.postcode})`);
+  return id;
+}
+// A copy of a service (or change) with every written-out venue turned into an id.
+function settleVenues(x, make) {
+  const out = structuredClone(x);
+  if (Array.isArray(out.venues)) out.venues = [...new Set(out.venues.map((v) => venueId(v, make)))];
+  if (Array.isArray(out.projects)) for (const p of out.projects) for (const se of p.sessions || []) if (se.venue) se.venue = venueId(se.venue, make);
+  return out;
+}
+const sessionsAt = (id) => [...files.values()].filter((f) => f && f.s);
+const venueChanged = [];
+const venueProblems = [];
+let venuesSame = 0;
+for (const [id, e] of Object.entries(venueEdits).sort(([a], [b]) => a.localeCompare(b))) {
+  if (!venueFile || !e || !e.changes) continue;
+  const v = venueById(id);
+  const c = e.changes;
+  if (!v) {
+    if (c.mergeInto && venueById(c.mergeInto)) venuesSame += 1;
+    else venueProblems.push({ id, by: e.by, why: "there's no venue with this id (combined already?)" });
+    continue;
+  }
+  const clash = Object.keys(c).filter((k) => e.before && k in e.before && !same(v[k], e.before[k]) && !same(v[k], c[k]));
+  if (clash.length) {
+    venueProblems.push({ id, name: v.name, by: e.by, why: 'it has changed in the data since (' + clash.join(', ') + ')' });
+    continue;
+  }
+  const notes = [];
+  if (c.mergeInto) {
+    const into = venueById(c.mergeInto);
+    if (!into) { venueProblems.push({ id, name: v.name, by: e.by, why: `the venue to combine it into (${c.mergeInto}) isn't there` }); continue; }
+    let moved = 0;
+    for (const f of sessionsAt(id)) {
+      let touched = false;
+      if (Array.isArray(f.s.venues) && f.s.venues.includes(id)) { f.s.venues = [...new Set(f.s.venues.map((x) => (x === id ? into.id : x)))]; touched = true; }
+      for (const p of f.s.projects || []) for (const se of p.sessions || []) if (se.venue === id) { se.venue = into.id; touched = true; moved += 1; }
+      if (touched) f.dirty = true;
+    }
+    into.aliases = [...new Set([...(into.aliases || []), v.name, ...(v.aliases || [])])].filter((a) => a !== into.name);
+    if (v.notes) into.notes = (into.notes ? into.notes + '\n\n' : '') + `Notes from ${v.name}: ${v.notes}`;
+    if (!sameAddress(v.address, into.address)) into.notes = (into.notes ? into.notes + '\n\n' : '') + `Also written as: ${v.address}`;
+    venues.splice(venues.indexOf(v), 1);
+    notes.push(`combined into ${into.name}; ${moved} session${moved === 1 ? '' : 's'} moved; "${v.name}" kept as another name`);
+  } else {
+    for (const k of ['name', 'address', 'postcode', 'notes']) {
+      if (!(k in c) || same(v[k], c[k])) continue;
+      if (k === 'name') v.aliases = [...new Set([...(v.aliases || []), v.name])].filter((a) => a !== c.name);
+      if (c[k] === null) delete v[k];
+      else v[k] = c[k];
+      if (k === 'postcode') for (const x of ['ward', 'wardCode', 'lat', 'lng']) delete v[x];
+      notes.push(`${k} ${c[k] === null ? 'removed' : 'set'}`);
+    }
+  }
+  if (!notes.length) { venuesSame += 1; continue; }
+  venuesDirty = true;
+  venueChanged.push({ id, name: v.name, by: e.by, note: e.note, what: notes.join('; ') });
+}
+
 // A service's view, with its organisation's overview, as the forms showed it.
 const view = (s) => {
   const o = orgByName(s.organisation);
@@ -222,7 +307,7 @@ for (const [id, a] of Object.entries(added).sort(([x], [y]) => x.localeCompare(y
   }
   const date = String(a.created || a.t || '').slice(0, 10) || new Date().toISOString().slice(0, 10);
   const lastDate = String(a.t || '').slice(0, 10) || date;
-  const s = { id, hwlFunded: false, ...a.service };
+  const s = settleVenues({ id, hwlFunded: false, ...a.service }, false);
   const hasOv = 'organisationOverview' in s;
   const ov = s.organisationOverview;
   delete s.organisationOverview;
@@ -235,6 +320,7 @@ for (const [id, a] of Object.entries(added).sort(([x], [y]) => x.localeCompare(y
   // Keep the field order the same as the other files.
   const order = [...Object.keys(schema.properties)];
   const ordered = Object.fromEntries(order.filter((k) => k in s).map((k) => [k, s[k]]));
+  Object.assign(ordered, settleVenues(ordered, true));
   if (!validate(ordered)) {
     newProblems.push({ id, name: s.name, by: a.by, why: "it wouldn't pass the data check: " + validate.errors.map((x) => `${x.instancePath || '(top)'} ${x.message}`).slice(0, 3).join('; ') });
     continue;
@@ -258,23 +344,26 @@ for (const [id, e] of Object.entries(edits).sort(([a], [b]) => a.localeCompare(b
     continue;
   }
   const cur = view(f.s);
+  // Written-out venues matched to ones already there, so an edit applied before reads as the same.
+  const want = settleVenues(e.changes, false);
   const keys = Object.keys(e.changes);
   const date0 = String(e.t || '').slice(0, 10);
   // No changes, only "checked and still right" (for example a provider said it's all correct): applied by moving
   // the last-checked date on, unless the data has been checked since.
-  if (!keys.length ? !e.checked || String(cur.lastUpdated || '') >= date0 : keys.every((k) => same(cur[k], e.changes[k]))) {
+  if (!keys.length ? !e.checked || String(cur.lastUpdated || '') >= date0 : keys.every((k) => same(cur[k], want[k]))) {
     editsSame += 1;
     continue;
   }
   // Someone changed the same field in the data since this edit was made: don't overwrite their change.
-  const clash = keys.filter((k) => e.before && k in e.before && !same(cur[k], e.before[k]) && !same(cur[k], e.changes[k]));
+  const clash = keys.filter((k) => e.before && k in e.before && !same(cur[k], e.before[k]) && !same(cur[k], want[k]));
   if (clash.length) {
     conflicts.push({ id, name: cur.name, by: e.by, fields: clash });
     continue;
   }
   const next = structuredClone(cur);
+  const made = settleVenues(e.changes, true);
   for (const k of keys) {
-    const v = e.changes[k];
+    const v = made[k];
     if (v === null && !REQUIRED.has(k)) delete next[k];
     else next[k] = v;
   }
@@ -334,6 +423,7 @@ for (const [id, d] of Object.entries(decisions).sort(([a], [b]) => a.localeCompa
 if (!dryRun) {
   for (const f of files.values()) if (f && f.dirty) fs.writeFileSync(f.file, JSON.stringify(f.s, null, 2) + '\n');
   if (orgFile && orgsDirty) fs.writeFileSync(orgPath, JSON.stringify(orgFile, null, 2) + '\n');
+  if (venueFile && venuesDirty) fs.writeFileSync(venuePath, JSON.stringify(venueFile, null, 2) + '\n');
 }
 
 // ---------- summary ----------
@@ -351,6 +441,18 @@ if (orgProblems.length) {
   out.push('');
 }
 if (orgsMade.length) out.push(`New organisations: ${orgsMade.join(', ')}.`, '');
+if (venueChanged.length || venueProblems.length || venuesSame) out.push(`${n(venueChanged.length, 'venue', 'venues')} changed, ${venuesSame} already up to date.`, '');
+if (venueChanged.length) {
+  out.push(`## Venues changed (${venueChanged.length})`, '');
+  for (const c of venueChanged) out.push(`- **${c.name}** (\`${c.id}\`): ${c.what}. ${c.by}: ${c.note}`);
+  out.push('');
+}
+if (venueProblems.length) {
+  out.push(`## Venue changes not applied (${venueProblems.length})`, '');
+  for (const c of venueProblems) out.push(`- **${c.name || c.id}**, changed by ${c.by}: ${c.why}.`);
+  out.push('');
+}
+if (venuesMade.length) out.push(`New venues (their wards are looked up from the postcode next): ${venuesMade.join(', ')}.`, '');
 out.push(`${n(created.length, 'new service', 'new services')} added, ${addedSame} already added. ${n(edited.length, 'service', 'services')} with edited details, ${editsSame} already up to date. ${n(changed.length, 'listing decision', 'listing decisions')} applied, ${decisionsSame} already up to date.`, '');
 if (created.length) {
   out.push(`## New services (${created.length})`, '');

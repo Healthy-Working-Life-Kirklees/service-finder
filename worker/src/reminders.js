@@ -1,11 +1,11 @@
 // Morning reminders to the team (run by the cron in wrangler.toml, from index.js "scheduled").
 //
-// Finds projects and cohorts that end, or stop taking referrals, in the next 30 days (site/listing-logic.js), and
+// Finds projects and sessions that end, or stop taking referrals, in the next 30 days (site/listing-logic.js), and
 // emails the team ONE message listing them. For each service it makes a fresh provider review link (as on the All
 // services page) and writes a ready-to-send email for the team to forward to the organisation. Nothing is sent to
 // the organisation from here: the team forwards it themselves, which keeps the relationship personal.
 //
-// Each project or cohort date is only reminded about once (remembered in the team store, LogStore), so a day the
+// Each project or session date is only reminded about once (remembered in the team store, LogStore), so a day the
 // email isn't sent is caught up the next morning.
 //
 // Needs the same email settings as the feedback emails (FEEDBACK_EMAIL binding, FEEDBACK_EMAIL_FROM,
@@ -23,7 +23,7 @@ function newToken() {
 
 // The message the team forwards to the organisation.
 export function draftEmail(s, items, link, longDate) {
-  const lines = items.map((x) => `- ${x.project.name}${x.cohort ? ' (' + x.cohort.name + ')' : ''}: ${x.kind === 'ends' ? 'due to end on' : 'due to stop taking referrals on'} ${longDate(x.date)}`);
+  const lines = items.map((x) => `- ${x.project.name}${x.session ? ' (' + (x.session.name || globalThis.LISTING.timeWords(x.session) || 'a session') + ')' : ''}: ${x.kind === 'ends' ? 'due to end on' : 'due to stop taking referrals on'} ${longDate(x.date)}`);
   return [
     'Hello,',
     '',
@@ -55,7 +55,7 @@ export async function sendReminders(env, services, today) {
 
     const items = services.filter((s) => s.open === true).flatMap((s) => L.endingSoon(s, today));
     if (!items.length) return { sent: false, reason: 'nothing due' };
-    const key = (x) => [x.service.id, x.project.id, x.cohort ? x.cohort.id : '', x.kind, x.date].join('|');
+    const key = (x) => [x.service.id, x.project.id, x.session ? x.session.id : '', x.kind, x.date].join('|');
     const { unseen } = await call('/remind/check', { keys: items.map(key) });
     const due = items.filter((x) => (unseen || []).includes(key(x)));
     if (!due.length) return { sent: false, reason: 'already reminded' };
@@ -78,7 +78,7 @@ export async function sendReminders(env, services, today) {
       const link = { url: site + 'provider-check.html#' + made.link.token, expires, site };
       parts.push(
         `${s.name} (${s.organisation})`,
-        ...list.map((x) => `  ${x.project.name}${x.cohort ? ', ' + x.cohort.name : ''}: ${x.kind === 'ends' ? 'ends' : 'stops taking referrals'} ${L.longDate(x.date)} (in ${x.daysLeft} day${x.daysLeft === 1 ? '' : 's'})`),
+        ...list.map((x) => `  ${x.project.name}${x.session ? ', ' + (x.session.name || L.timeWords(x.session) || 'a session') : ''}: ${x.kind === 'ends' ? 'ends' : 'stops taking referrals'} ${L.longDate(x.date)} (in ${x.daysLeft} day${x.daysLeft === 1 ? '' : 's'})`),
         `  Review link made for ${contact}, works for ${LINK_DAYS} days.`,
         '',
         '  ----- Email to forward -----',
@@ -95,7 +95,7 @@ export async function sendReminders(env, services, today) {
       from: { email: env.FEEDBACK_EMAIL_FROM, name: 'HWL Support Finder' },
       subject: `[Support Finder] ${n} service${n === 1 ? ' has' : 's have'} projects ending or closing to referrals soon`,
       text: [
-        'These projects or cohorts end, or stop taking referrals, in the next 30 days. They stop showing in the Support Finder after that date.',
+        'These projects or sessions end, or stop taking referrals, in the next 30 days. They stop showing in the Support Finder after that date.',
         '',
         'For each one, check with the organisation: forward the email below (adding their email address), or get in touch your own way. The link lets them update their listing; their reply comes back to All services for the team to check.',
         '',

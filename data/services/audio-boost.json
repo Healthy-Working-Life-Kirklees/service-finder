@@ -55,12 +55,17 @@
       "id": "audio-boost",
       "name": "Audio Boost",
       "overview": "Hands-on workshops, talks and one-to-one support covering music technology roles such as producing tracks, DJing, engineering live events and making podcasts and radio shows, plus practical advice on finding work, in a friendly, supportive environment.",
-      "duration": "Six one-day workshops with online support throughout, starting week commencing 4 January 2027",
       "where": [
-        "Various locations in Huddersfield (to be confirmed), with online support",
-        "3M Buckley Innovation Centre, Firth Street, Huddersfield, HD1 3BD"
+        "Various locations in Huddersfield (to be confirmed), with online support"
       ],
-      "runsFrom": "2027-01-04"
+      "duration": "Six one-day workshops with online support throughout, starting week commencing 4 January 2027",
+      "runsFrom": "2027-01-04",
+      "sessions": [
+        {
+          "id": "3m-buckley-innovation-centre",
+          "venue": "3m-buckley-innovation-centre"
+        }
+      ]
     }
   ],
   "workExperience": "No",

@@ -42,9 +42,15 @@
       "id": "community-courses",
       "name": "Community courses",
       "overview": "Community rooms in two Batley schools running English, hair and beauty, sleep and wellbeing courses.",
-      "where": [
-        "Manorfield WF17 7DQ",
-        "Field Lane WF17 5AH"
+      "sessions": [
+        {
+          "id": "manorfield",
+          "venue": "manorfield"
+        },
+        {
+          "id": "field-lane",
+          "venue": "field-lane"
+        }
       ]
     }
   ],

@@ -47,9 +47,15 @@
       "id": "housing-and-homelessness-advice",
       "name": "Housing and homelessness advice",
       "overview": "Free advice if you're homeless or might lose your home. Staff make a housing plan with you; in-person at Huddersfield and Dewsbury libraries.",
-      "where": [
-        "Huddersfield Library HD1 2YZ",
-        "Dewsbury Library WF12 8EQ"
+      "sessions": [
+        {
+          "id": "huddersfield-library",
+          "venue": "huddersfield-library"
+        },
+        {
+          "id": "dewsbury-library",
+          "venue": "dewsbury-library"
+        }
       ]
     }
   ],

@@ -40,8 +40,12 @@
       "id": "computer-help-drop-in",
       "name": "Computer help drop-in",
       "overview": "Free weekly drop-in with laptops and help to fill forms, apply for jobs or learn computer skills.",
-      "where": [
-        "Jubilee Centre, Paddock HD1 4SH (Mon 10.30–12)"
+      "sessions": [
+        {
+          "id": "jubilee-centre",
+          "venue": "jubilee-centre-2",
+          "note": "Mon 10.30–12"
+        }
       ]
     }
   ],

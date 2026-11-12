@@ -42,8 +42,12 @@
       "id": "chronic-pain-peer-group",
       "name": "Chronic pain peer group",
       "overview": "Monthly peer group for people with long-term pain.",
-      "where": [
-        "Salvation Army Hall, Oakes HD3 4DD (last Fri 12–2)"
+      "sessions": [
+        {
+          "id": "salvation-army-hall",
+          "venue": "salvation-army-hall",
+          "note": "last Fri 12–2"
+        }
       ]
     }
   ],

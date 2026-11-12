@@ -44,9 +44,17 @@
       "id": "peer-support-groups",
       "name": "Peer support groups",
       "overview": "Free weekly groups for adults feeling stressed, low or anxious to talk with people who understand. No booking.",
-      "where": [
-        "Batley: Central Methodist Church WF17 5DS (Wed 11–12.30)",
-        "Dalton: St Paul's Methodist HD5 8DE (Thu 7.30–9pm)"
+      "sessions": [
+        {
+          "id": "central-methodist-church",
+          "venue": "central-methodist-church",
+          "note": "Wed 11–12.30"
+        },
+        {
+          "id": "st-paul-s-methodist",
+          "venue": "st-paul-s-methodist",
+          "note": "Thu 7.30–9pm"
+        }
       ]
     }
   ],

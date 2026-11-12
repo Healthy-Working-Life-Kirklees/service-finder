@@ -20,7 +20,7 @@ import { makeChecker } from './serviceedit.js';
 import { handleFeedback, feedbackOn, pilotOn, isTeamTest } from './feedback.js';
 import { handleUsage, usageOn, addUsage, chatKeys, addTokens, emptyTokens } from './usage.js';
 import { sendReminders } from './reminders.js';
-// Projects, cohorts and their dates: the same rules as the page and the directory (site/listing-logic.js).
+// Projects, sessions, venues and their dates: the same rules as the page and the directory (site/listing-logic.js).
 import '../../site/listing-logic.js';
 
 const LISTING = globalThis.LISTING;
@@ -70,14 +70,23 @@ const EDIT_CHECKER = {
   liveIds: new Set(SERVICES.map((s) => s.id)),
   byId: new Map(SERVICES.map((s) => [s.id, s])),
   organisations: (data.organisations || []).map((o) => o.name),
+  // Venues already listed, for the type-ahead on the provider review page.
+  venues: (data.venues || []).map((v) => ({ id: v.id, name: v.name, address: v.address, postcode: v.postcode })),
 };
 // What Claude is sent about each scheme. Contact details are left out (the page draws them from the data, so the
 // AI never writes them), as are fields only people or the Worker use: requiresMention is applied below by the
 // Worker itself; provenance, logo, map buttons, review dates and the team's own notes are for maintaining the data.
-// This keeps each request smaller.
-const NOT_FOR_AI = new Set(['webpage', 'email', 'phone', 'social', 'logo', 'mapLinks', 'requiresMention', 'provenance', 'lastUpdated', 'reviewCycle', 'notes', 'listing']);
+// The organisation overview rarely changes who a service suits, so it is left out too. This keeps each request
+// smaller.
+const NOT_FOR_AI = new Set(['webpage', 'email', 'phone', 'social', 'logo', 'mapLinks', 'requiresMention', 'provenance', 'lastUpdated', 'reviewCycle', 'notes', 'listing', 'organisationOverview', 'venues', 'groups']);
+const VENUES = new Map((data.venues || []).map((v) => [v.id, v]));
+// A venue in words for the AI: "Jo Cox House, Market Square, Batley, WF17 5DR (Batley East ward)".
+const venueWords = (id) => {
+  const v = VENUES.get(id);
+  return v ? LISTING.venueLine(v) + (v.ward ? ` (${v.ward} ward)` : '') : null;
+};
 
-// What the AI is told about each service on a given day. Projects and cohorts that have closed are left out. Ones
+// What the AI is told about each service on a given day. Projects and sessions that have closed are left out. Ones
 // opening to referrals later say so, and whether they may be suggested yet. "open" is true only when the service
 // is taking referrals and has something open or opening soon today: only those can be shown as cards.
 const STATE_WORDS = {
@@ -85,14 +94,30 @@ const STATE_WORDS = {
   soon: 'referrals open soon (see referralsFrom): you can suggest it if it fits; say when referrals open',
   later: "referrals open later (see referralsFrom): don't suggest it; only mention it if the person asks about it by name",
 };
+// A session for the AI: its venue and days and times in words, instead of ids and codes.
+function sessionView(x) {
+  const { venue, days, start, end, frequency, ...rest } = x.session;
+  const out = { ...rest };
+  const when = LISTING.timeWords(x.session);
+  if (when) out.when = when;
+  if (venue && venueWords(venue)) out.venue = venueWords(venue);
+  out.status = STATE_WORDS[x.state];
+  return out;
+}
 function aiView(s, today) {
   const v = Object.fromEntries(Object.entries(s).filter(([k]) => !NOT_FOR_AI.has(k)));
   v.open = LISTING.isShown(s, today);
+  if ((s.groups || []).length) v.forGroups = s.groups.map((g) => LISTING.GROUPS[g] || g);
+  const shared = (s.venues || []).map(venueWords).filter(Boolean);
+  if (shared.length) v.locations = [...(s.locations || []), ...shared];
   v.projects = LISTING.parts(s, today)
     .filter((x) => x.state !== 'closed')
     .map((x) => {
-      const p = { ...x.project, status: STATE_WORDS[x.state] };
-      if (x.cohorts.length) p.cohorts = x.cohorts.filter((c) => c.state !== 'closed').map((c) => ({ ...c.cohort, status: STATE_WORDS[c.state] }));
+      const { sessions, runs, ...rest } = x.project;
+      const p = { ...rest, status: STATE_WORDS[x.state] };
+      if ((runs || []).length) p.runs = runs.map((r) => LISTING.RUNS[r] || r);
+      const open = x.sessions.filter((y) => y.state !== 'closed').sort((a, b) => LISTING.byDay(a.session, b.session));
+      if (open.length) p.sessions = open.map(sessionView);
       return p;
     });
   return v;
@@ -239,7 +264,7 @@ function respondTool(questionsLeft) {
           fit: { type: 'string', enum: ['strong', 'possible'] },
           reason: { type: 'string', description: 'Plain English, under 30 words, neutral wording.' },
           check_first: { type: 'string', description: 'What to check before relying on this match. Empty for a strong match with nothing to check.' },
-          parts: { type: 'array', items: { type: 'string' }, description: 'When only some of the service\'s projects or cohorts fit the person (for example by age), the ids of those that fit. Empty when they all fit or you can\'t tell.' },
+          parts: { type: 'array', items: { type: 'string' }, description: 'When only some of the service\'s projects or sessions fit the person (for example by age, or the session nearest to them or at a time they can make), the ids of those that fit. Empty when they all fit or you can\'t tell.' },
         },
         required: ['service_id', 'fit', 'reason', 'check_first'],
       },
@@ -297,7 +322,7 @@ export default {
     // Team issues log (Admin pages): off unless the TEAM_PASSCODE secret is set.
     // Reading the team's listing decisions is also allowed with no Origin at all (not from a browser), so
     // scripts/apply-decisions.mjs can fetch them with the passcode, like the feedback digest does.
-    const scriptRead = !origin && request.method === 'GET' && ['/log/decisions', '/log/edits', '/log/new', '/log/orgs'].includes(url.pathname);
+    const scriptRead = !origin && request.method === 'GET' && ['/log/decisions', '/log/edits', '/log/new', '/log/orgs', '/log/venues'].includes(url.pathname);
     if (url.pathname.startsWith('/log/')) return originOk || scriptRead ? handleLog(request, env, url, cors, EDIT_CHECKER) : json({ error: 'Not allowed.' }, 403, cors);
     // Provider review links: a scheme's named contact checks its details. Off unless TEAM_PASSCODE is set.
     if (url.pathname.startsWith('/provider/')) return handleProvider(request, env, url, cors, originOk, EDIT_CHECKER, schema);
@@ -466,7 +491,7 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
             .filter((x) => x && ID_SET.has(x.service_id) && OPEN_SET.has(x.service_id) && (!MENTION.has(x.service_id) || MENTION.get(x.service_id).test(userText)) && !seen.has(x.service_id) && seen.add(x.service_id))
             .slice(0, 5)
             .map((x) => {
-              // Which projects or cohorts fit: only ones that exist and are open (or opening soon) today.
+              // Which projects or sessions fit: only ones that exist and are open (or opening soon) today.
               const ok = LISTING.visibleIds(BY_ID.get(x.service_id), today);
               const parts = list(x.parts).filter((id, i, a) => typeof id === 'string' && ok.has(id) && a.indexOf(id) === i).slice(0, 20);
               return { id: x.service_id, why: clean(x.reason, 600), fit: x.fit === 'strong' ? 'strong' : 'possible', check_first: clean(x.check_first, 400), parts };
@@ -483,7 +508,7 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
         status,
         message: input.message.slice(0, 3000),
         recommendations,
-        // The date the reply was worked out for, so the page shows the same projects and cohorts.
+        // The date the reply was worked out for, so the page shows the same projects and sessions.
         date: today,
         safety_concern: urgent,
         urgent_types: urgent ? urgentTypes : [],
@@ -498,7 +523,7 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
     );
   },
 
-  // Each morning (the cron in wrangler.toml): emails the team about projects and cohorts that end or close to
+  // Each morning (the cron in wrangler.toml): emails the team about projects and sessions that end or close to
   // referrals in the next 30 days, with a ready-written message and a fresh review link to forward (reminders.js).
   async scheduled(event, env, ctx) {
     ctx.waitUntil(sendReminders(env, SERVICES, new Date().toISOString().slice(0, 10)));

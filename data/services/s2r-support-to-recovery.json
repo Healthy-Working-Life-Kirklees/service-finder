@@ -45,8 +45,11 @@
       "id": "wellbeing-workshops",
       "name": "Wellbeing workshops",
       "overview": "Creative, wellbeing and outdoor workshops like gardening, sewing and walking. No diagnosis needed.",
-      "where": [
-        "5–7 Brook Street, Huddersfield HD1 1EB"
+      "sessions": [
+        {
+          "id": "5-7-brook-street",
+          "venue": "5-7-brook-street"
+        }
       ]
     }
   ],

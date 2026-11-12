@@ -46,8 +46,14 @@
       "name": "Free job training",
       "overview": "Free courses training for jobs like fibre engineer or door supervisor, plus English and maths.",
       "where": [
-        "Huddersfield (Media Centre HD1 1RL)",
         "Leeds, Bradford"
+      ],
+      "sessions": [
+        {
+          "id": "media-centre",
+          "venue": "media-centre",
+          "note": ")"
+        }
       ]
     }
   ],

@@ -55,8 +55,11 @@
       "name": "Healthy Futures Programme",
       "overview": "Peer support, physical and creative activities, volunteering and one-to-one support. Participants connect with others, develop new skills and get access to employment, training and wider support services, in a safe, welcoming space.",
       "duration": "Weekly programme",
-      "where": [
-        "Jo Cox House, 90 Commercial Street, Batley, WF17 5DS"
+      "sessions": [
+        {
+          "id": "jo-cox-house",
+          "venue": "jo-cox-house-2"
+        }
       ]
     }
   ],

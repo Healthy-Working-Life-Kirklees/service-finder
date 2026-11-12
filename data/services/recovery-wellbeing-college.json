@@ -50,9 +50,14 @@
       "name": "Recovery learning courses",
       "overview": "Free learning courses (not therapy) on confidence, sleep, managing low mood and more, online and around Kirklees.",
       "where": [
-        "Ravensleigh, Dewsbury WF13 4LL",
         "Huddersfield, Dewsbury, Mirfield venues",
         "online"
+      ],
+      "sessions": [
+        {
+          "id": "ravensleigh",
+          "venue": "ravensleigh"
+        }
       ]
     }
   ],

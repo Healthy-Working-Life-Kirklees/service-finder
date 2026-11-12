@@ -55,8 +55,11 @@
       "name": "Pathway to Employment: Wellbeing, Skills & Work Experience Programme",
       "overview": "Introduction to Early Years, paediatric first aid, mental health courses, hands-on experience working with children and families, and face-to-face professional development courses. Childcare and transport support is provided.",
       "duration": "Two to three half-days a week for 15 weeks",
-      "where": [
-        "Saviletown Children's Centre, Pentland I&N School, Pentland Road, Dewsbury, WF12 9JR"
+      "sessions": [
+        {
+          "id": "saviletown-children-s-centre",
+          "venue": "saviletown-children-s-centre"
+        }
       ]
     }
   ],

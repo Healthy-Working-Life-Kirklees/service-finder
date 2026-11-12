@@ -77,9 +77,15 @@
       "name": "Individual Placement and Support",
       "overview": "A 'place then train' approach matching people in recovery with paid work they want to do. An Employment Specialist builds a vocational profile, engages employers, supports CVs and interviews and agrees reasonable adjustments, then supports the person and their employer once in work.",
       "duration": "Job coaching/placement up to 9 months; follow-along support for the first 4 months in work",
-      "where": [
-        "20 Manchester Road, Huddersfield HD1 3HJ",
-        "3 Wellington Street, Dewsbury WF13 1LY"
+      "sessions": [
+        {
+          "id": "20-manchester-road",
+          "venue": "20-manchester-road"
+        },
+        {
+          "id": "3-wellington-street",
+          "venue": "3-wellington-street"
+        }
       ]
     }
   ],

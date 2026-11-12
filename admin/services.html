@@ -21,6 +21,7 @@
       <a href="../">Support Finder</a>
       <a href="help.html">Help</a>
       <a href="services.html" aria-current="page">All services</a>
+      <a href="commissioner.html">Across Kirklees</a>
       <a href="log.html">Issues and actions log</a>
       <a href="feedback.html">Feedback and usage</a>
     </div>
@@ -161,6 +162,9 @@
             <option value="opening">A project opens to referrals later</option>
             <option value="too-long">Text over the new character limits</option>
             <option value="no-org-overview">No organisation overview</option>
+            <option value="no-times">A project with no days or times yet</option>
+            <option value="times-in-words">Days and times written in words, to turn into sessions</option>
+            <option value="no-groups">"Who it's for" groups not ticked yet</option>
           </select></div>
         <div><label for="f-sort">Sort by</label>
           <select id="f-sort">
@@ -175,10 +179,12 @@
 
     <section id="add-panel" class="add-panel" hidden></section>
     <section id="orgs-panel" class="add-panel" hidden></section>
+    <section id="venues-panel" class="add-panel" hidden></section>
 
     <div class="toolbar">
       <button id="add-service" class="btn primary small" type="button" hidden>Add a service</button>
       <button id="open-orgs" class="btn secondary small" type="button" hidden>Organisations</button>
+      <button id="open-venues" class="btn secondary small" type="button" hidden>Venues</button>
       <button id="clear" class="btn secondary small" type="button">Clear search and filters</button>
       <button id="expand" class="btn secondary small" type="button">Show all details</button>
       <button id="export" class="btn secondary small" type="button">Download these as CSV</button>

@@ -4,19 +4,26 @@
 // Both show the same questions with the same wording, in the same order, so a partner and the team are always
 // looking at the same thing. Team-only questions are shown only in "team" mode.
 //
-// The order follows how an organisation thinks about its work: the organisation, the service, its projects (each
-// with their own where, when and dates, and cohorts if the same project runs more than once), who it's for, how
-// people get in, and practical details. "Who it's for" is asked once, for the service; a project or cohort only
+// The order follows how an organisation thinks about its work: the organisation, the service, how to get in touch
+// and refer, who it's for, then what happens, where and when: each project, how it runs, and its sessions (a time
+// and place, or a group such as a cohort). "Who it's for" is asked once, for the service; a project or session only
 // records what is different, so nothing is asked twice.
 //
-// Needs site/listing-logic.js (character limits and date checks). English only, like the other team pages.
+// Eligibility is one list: each line can be ticked "Essential" (we'd turn people away without it), which is what the
+// data keeps as "gate". So there is no separate "turn away" question.
 //
-//   const f = LISTING_FORM.build({ values, original, mode, choices, organisations, prefix, headingLevel, isNew, onChange });
+// Venues come from one shared list (data/venues.json): people pick one as they type, or write out a new one (name,
+// address, postcode), which becomes a venue when the change is applied.
+//
+// Needs site/listing-logic.js (character limits, groups, days and date checks). English only, like the team pages.
+//
+//   const f = LISTING_FORM.build({ values, original, mode, choices, organisations, venues, prefix, headingLevel, onChange });
 //   f.node       the form's sections, to put inside your own <form>
 //   f.read()     every answer, in the same shape as the data
 //   f.changes()  only the answers that differ from "original"
 //   f.check()    null, or { message, el } for the first problem (the caller shows it and focuses el)
 //   f.mark(ch)   marks the questions in ch as "Changed"
+//   f.addProject()  adds an empty project and focuses it
 (() => {
   'use strict';
 
@@ -49,6 +56,7 @@
   const linesOf = (t) => String(t || '').split('\n').map((l) => l.trim()).filter(Boolean);
   const slug = (t) => String(t || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 50).replace(/-+$/, '');
   const tbc = (v) => JSON.stringify(v == null ? '' : v).includes(PLACEHOLDER);
+  const POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i;
 
   const HEALTH = {
     any: 'Any health condition or disability',
@@ -64,10 +72,10 @@
   const LEVEL = { local: 'Local (Kirklees)', regional: 'Regional (West Yorkshire or wider)', national: 'National' };
   const DATE_LABEL = { runsFrom: 'Runs from', runsTo: 'Runs until', referralsFrom: 'Taking referrals from', referralsUntil: 'Taking referrals until' };
   const DATES_HINT = "Leave blank if it's ongoing. If you give an end date or a date referrals close, it stops showing in the Support Finder automatically after that date. We'll check with you 30 days before.";
-  const POSTCODE_HINT = 'One place per line. Include the full postcode: the map link only shows when there is one.';
+  const ESSENTIAL_HINT = 'Tick "Essential" only if you would have to turn someone away without it: the Support Finder won\'t suggest you to people who clearly don\'t meet it.';
 
   // The questions, in order. [key, label, kind, hint, options]
-  // kinds: text, area (with a character limit), lines (one per line), checks, yesno, self, projects, bool, select, org
+  // kinds: text, area (with a character limit), lines, checks, yesno, self, projects, bool, select, org, elig, venues
   function sections(mode) {
     const team = mode === 'team';
     const out = [
@@ -79,31 +87,32 @@
         ['name', 'Name of the service', 'text', '', { required: true }],
         ['whoFor', 'Who your service is for', 'area', 'One or two sentences, in plain words. Coaches see this on the service card.', { required: true, limit: L.LIMITS.whoFor }],
         ['open', 'Are you taking new referrals at the moment?', 'yesno', 'If not, the Support Finder won\'t suggest your service until you are.', {}],
+      ]],
+      ['Contact details and how people get in', [
         ['webpage', 'Website', 'text', 'The best page for people to find out more, starting https://', { type: 'url' }],
-        ['phone', 'Phone number', 'text', '', { type: 'tel' }],
         ['email', 'Email address', 'text', '', { type: 'email' }],
+        ['phone', 'Phone number', 'text', '', { type: 'tel' }],
         ['social', 'Social media', 'lines', 'Links, one per line.', {}],
-      ]],
-      ['Projects', [
-        ['projects', 'Projects', 'projects', 'A project is something different that happens, or a different group it is for. If the same project runs more than once, at different times, places or for different age groups, add each run as a cohort or session under it. Most services have one project.', {}],
-        ['locations', 'Places used by every project', 'lines', 'Only if all your projects use the same places. ' + POSTCODE_HINT, {}],
-      ]],
-      ["Who it's for", [
-        ['age', 'Age', 'text', 'For example 18+ or 16 to 25. Leave empty if there is no age limit. If a project or cohort has a different age, give it there.', {}],
-        ['eligibility', 'Who can use your service', 'lines', 'What someone needs to be or have, one point per line. For example "Lives in Kirklees" or "Has a health condition or disability". If a project has extra criteria, add them to that project.', {}],
-        ['gate', 'Is there anything you would turn someone away for not having?', 'lines', 'Only things that rule people out, one per line, for example "Lives in Kirklees" or "Is a Kirklees College student". The Support Finder won\'t suggest your service to people who clearly don\'t have these. Leave empty if you\'d consider anyone who fits the description above.', {}],
-        ['exclusions', "Is there anyone you can't support?", 'lines', 'For example "People in full-time work". The Support Finder won\'t suggest your service to them. Leave empty if none.', {}],
-        ['healthFocus', 'Do people need a health condition or disability to use your service?', 'checks', 'Leave all unticked if not. Tick "Any health condition or disability" if any will do, or only the specific ones your service is for.', { choices: 'healthFocus', labels: HEALTH }],
-        ['audience', 'Who do you work with?', 'checks', 'Tick all that apply.', { choices: 'audience', labels: AUDIENCE, min: 1 }],
-      ]],
-      ['How people get in', [
-        ['referralRoutes', 'How people are referred or apply', 'lines', 'One way per line, for example "Referral from a work coach" or "Apply online: https://…". At least one.', { min: 1 }],
+        ['referralRoutes', 'How people are referred or apply', 'lines', 'One way per line: who to contact and how. For example "Referral from a work coach" or "Apply online: https://…". At least one.', { min: 1 }],
         ['selfReferral', 'Can people refer themselves?', 'self', '', {}],
-      ]],
-      ['Practical details', [
         ['cost', 'Cost', 'text', 'Leave empty if it is free.', {}],
         ['languages', 'Languages and formats', 'text', 'For example "Interpreters available" or "Easy read leaflets". Leave empty if English only.', {}],
         ['workExperience', 'Does it include volunteering or work experience?', 'text', 'For example "No" or "Yes, a six-week placement".', { required: true }],
+      ]],
+      ["Who it's for", [
+        ['groups', 'Who it\'s for: tick the groups it is specifically for', 'checks', 'These let us count what is available, for example "services for young people in Batley". Tick "Everyone (no restriction)" if anyone who meets your criteria can use it.', { choices: 'groups', labels: L.GROUPS }],
+        ['age', 'Age', 'text', 'For example 18+ or 16 to 25. Leave empty if there is no age limit. If a project or session has a different age, give it there.', {}],
+        ['eligibility', 'Who can use your service', 'elig', 'What someone needs to be or have, one point per line. For example "Lives in Kirklees" (essential) or "Has a health condition". ' + ESSENTIAL_HINT, {}],
+        ['exclusions', "Is there anyone you can't support?", 'lines', 'One per line, for example "People with work-search commitments as part of a benefits claim" or "Men (the service is for women)". The Support Finder won\'t suggest your service to them. Leave empty if none.', {}],
+        ['healthFocus', 'Do people need a health condition or disability to use your service?', 'checks', 'Leave all unticked if not. Tick "Any health condition or disability" if any will do, or only the specific ones your service is for.', { choices: 'healthFocus', labels: HEALTH }],
+        ['audience', 'Who do you work with?', 'checks', 'Tick all that apply.', { choices: 'audience', labels: AUDIENCE, min: 1 }],
+      ]],
+      ['What happens, where and when', [
+        ['projects', 'Projects', 'projects', 'Most services have one project. Add another if you run something different, or the same thing for a different group.', {}],
+        ['venues', 'Venues used by every project', 'venues', 'Only if all your projects use the same places. Places for one project go with that project.', {}],
+        ['locations', 'Other places, in words', 'lines', 'Places without a postcode, one per line, for example "Online" or "Community venues across Kirklees".', {}],
+      ]],
+      ['Anything else', [
         ['coachNotes', 'Anything coaches should know', 'area', 'Shown on the service card. For example waiting times, or what to bring.', { limit: L.LIMITS.coachNotes }],
       ]],
     ];
@@ -129,14 +138,23 @@
     const values = opts.values || {};
     const original = opts.original || values;
     const choices = opts.choices || {};
+    const venues = list(opts.venues);
+    const venueById = new Map(venues.map((v) => [v.id, v]));
     const P = opts.prefix || 'lf';
-    const H = 'h' + (opts.headingLevel || 2);
+    const HL = opts.headingLevel || 2;
+    const H = 'h' + HL;
+    const SUBH = 'h' + Math.min(6, HL + 1);
     const id = (k) => P + '-' + k;
     let seq = 0;
     const uid = (k) => P + '-' + k + '-' + ++seq;
     const boxes = {}; // key -> the element holding that question (for "Changed" and focusing)
     const readers = {}; // key -> () => value
+    const extra = {}; // key -> () => value, for answers read alongside another question (gate, with eligibility)
     const root = el('div', { class: 'lf' });
+    const changed = () => opts.onChange && opts.onChange();
+    const venueListId = id('venue-list');
+    const venueLabel = (v) => `${v.name} (${L.venueLine(v)})`;
+    root.append(el('datalist', { id: venueListId }, venues.map((v) => el('option', { value: venueLabel(v) }))));
 
     // A character count under a text box, for the boxes with a limit.
     function counter(input, limit) {
@@ -152,6 +170,7 @@
     }
     const described = (...ids) => ids.filter(Boolean).join(' ') || null;
     const changedTag = () => el('p', { class: 'changed-tag', text: 'Changed', hidden: true });
+    const small = (t) => el('button', { type: 'button', class: 'btn secondary small', ...t });
 
     function textQuestion(k, label, hint, o, val) {
       const hintId = hint ? id(k) + '-hint' : null;
@@ -178,10 +197,10 @@
       return { box, read: () => linesOf(input.value) };
     }
 
-    function checksQuestion(k, label, hint, o, val, keyForChoices) {
+    function checksQuestion(k, label, hint, o, val) {
       const have = new Set(list(val));
       const hintId = hint ? id(k) + '-hint' : null;
-      const opts2 = list(choices[keyForChoices || o.choices]);
+      const opts2 = list(choices[o.choices]);
       const box = el('fieldset', { class: 'lf-field lf-checks' + (tbc(val) ? ' tbc' : ''), 'data-key': k, id: id(k), 'aria-describedby': hintId },
         el('legend', { text: label }),
         hint ? el('p', { class: 'hint', id: hintId, text: hint }) : null,
@@ -192,6 +211,36 @@
         const ticked = [...box.querySelectorAll('.choices input:checked')].map((i) => i.value);
         const had = list(val).filter((v) => ticked.includes(v));
         return [...had, ...ticked.filter((v) => !had.includes(v))];
+      };
+      return { box, read };
+    }
+
+    // Eligibility lines, each with an "Essential" tick. Reads back as { eligibility, gate }. A line that was only in
+    // "gate" before (essential, not written as eligibility) stays that way unless it is changed or unticked.
+    function eligList(lab, hint, elig, gate, compact) {
+      const holder = el('div', { class: 'lf-elig-rows' });
+      const hintId = hint ? uid('eh') : null;
+      function row(text, essential, gateOnly) {
+        const t = el('input', { type: 'text', id: uid('el'), 'aria-label': lab + ': one point' });
+        t.value = text || '';
+        const tick = el('input', { type: 'checkbox', id: uid('ess'), checked: essential });
+        const r = el('div', { class: 'lf-elig' }, t, el('label', { class: 'lf-ess', for: tick.id }, tick, ' Essential'),
+          small({ text: 'Remove', 'aria-label': 'Remove this point', onclick: () => { r.remove(); changed(); } }));
+        r._read = () => ({ text: t.value.trim(), essential: tick.checked, gateOnly: gateOnly && tick.checked && t.value.trim() === text });
+        r._input = t;
+        holder.append(r);
+        return r;
+      }
+      const g = new Set(list(gate));
+      for (const e of list(elig)) row(e, g.has(e), false);
+      for (const x of list(gate)) if (!list(elig).includes(x)) row(x, true, true);
+      if (!holder.children.length && !compact) row('', false, false);
+      const box = el('div', { class: 'lf-field lf-elig-box' },
+        el('p', { class: 'lf-lab', text: lab }), hint ? el('p', { class: 'hint', id: hintId, text: hint }) : null, holder,
+        small({ text: compact ? 'Add a point' : 'Add another point', onclick: () => { row('', false, false)._input.focus(); changed(); } }));
+      const read = () => {
+        const rows = [...holder.children].map((r) => r._read()).filter((x) => x.text);
+        return { eligibility: rows.filter((x) => !x.gateOnly).map((x) => x.text), gate: rows.filter((x) => x.essential).map((x) => x.text) };
       };
       return { box, read };
     }
@@ -208,19 +257,72 @@
       return { box, read: () => Object.fromEntries(L.DATE_KEYS.filter((k) => ins[k].value).map((k) => [k, ins[k].value])) };
     }
 
-    // ----- projects and their cohorts -----
+    // ----- a venue: pick one we know as you type, or write out a new one -----
+    function venuePicker(lab, value) {
+      const pick = el('input', { type: 'text', id: uid('venue'), list: venueListId, autocomplete: 'off' });
+      const known = typeof value === 'string' ? venueById.get(value) : null;
+      if (known) pick.value = venueLabel(known);
+      else if (value && typeof value === 'object') pick.value = value.name || '';
+      else if (typeof value === 'string') pick.value = value;
+      const nName = el('input', { type: 'text', id: uid('vn') });
+      const nAddr = el('input', { type: 'text', id: uid('va') });
+      const nPc = el('input', { type: 'text', id: uid('vp'), autocomplete: 'off', size: '10' });
+      if (value && typeof value === 'object') { nName.value = value.name || ''; nAddr.value = value.address || ''; nPc.value = value.postcode || ''; }
+      const hintId = uid('vh');
+      const status = el('p', { class: 'hint lf-match', id: hintId });
+      const fresh = el('div', { class: 'lf-newvenue', hidden: true },
+        el('p', { class: 'hint', text: "A venue we don't list yet. Please give its name, address and full postcode, so it can go on the map and the timetable." }),
+        el('div', { class: 'lf-grid' },
+          el('div', { class: 'lf-field' }, el('label', { for: nName.id, text: 'Venue name' }), nName),
+          el('div', { class: 'lf-field' }, el('label', { for: nAddr.id, text: 'Address' }), nAddr),
+          el('div', { class: 'lf-field' }, el('label', { for: nPc.id, text: 'Postcode' }), nPc)));
+      const match = () => venues.find((v) => venueLabel(v) === pick.value.trim());
+      const upd = () => {
+        const v = pick.value.trim();
+        const m = match();
+        fresh.hidden = !v || Boolean(m);
+        if (!fresh.hidden && !nName.value) nName.value = v;
+        status.textContent = !v ? '' : m ? (m.ward ? `Venue we know, in ${m.ward} ward.` : 'Venue we know.') : '';
+      };
+      pick.addEventListener('input', upd);
+      pick.addEventListener('change', upd);
+      pick.setAttribute('aria-describedby', hintId);
+      upd();
+      const node = el('div', { class: 'lf-field lf-venue' }, el('label', { for: pick.id, text: lab }), pick, status, fresh);
+      return {
+        node,
+        input: pick,
+        read() {
+          const v = pick.value.trim();
+          if (!v) return null;
+          const m = match();
+          if (m) return m.id;
+          return { name: nName.value.trim(), address: nAddr.value.trim(), postcode: nPc.value.trim().toUpperCase() };
+        },
+        problem() {
+          const r = this.read();
+          if (!r || typeof r === 'string') return null;
+          if (!r.name) return { message: 'Please give the new venue a name.', el: nName };
+          if (!r.address) return { message: `Please give the address of ${r.name}.`, el: nAddr };
+          if (!POSTCODE_RE.test(r.postcode)) return { message: `Please give the full postcode of ${r.name}, such as WF17 5DR.`, el: nPc };
+          return null;
+        },
+      };
+    }
+
+    // ----- projects and their sessions -----
+    const allPickers = [];
     function projectsQuestion(label, hint, val) {
       const wrap = el('div', { class: 'lf-projects' });
       const box = el('div', { class: 'lf-field lf-projects-box', 'data-key': 'projects' },
         el('p', { class: 'hint', text: hint }), wrap,
-        el('button', { type: 'button', class: 'btn secondary small', text: 'Add another project', onclick: () => { addProject(); renumber(); wrap.lastChild.querySelector('input').focus(); opts.onChange && opts.onChange(); } }),
+        small({ text: 'Add another project', onclick: () => addNew() }),
         changedTag());
-      const rows = [];
 
       function smallText(lab, v, hintText, type) {
         const i = el('input', { type: type || 'text', id: uid('p') });
         i.value = v || '';
-        return { node: el('div', { class: 'lf-field' }, el('label', { for: i.id, text: lab }), hintText ? el('p', { class: 'hint', text: hintText }) : null, i), get: () => i.value.trim() };
+        return { node: el('div', { class: 'lf-field' }, el('label', { for: i.id, text: lab }), hintText ? el('p', { class: 'hint', text: hintText }) : null, i), get: () => i.value.trim(), input: i };
       }
       function smallLines(lab, v, hintText) {
         const i = el('textarea', { id: uid('p'), rows: String(Math.max(2, list(v).length + 1)) });
@@ -228,28 +330,61 @@
         return { node: el('div', { class: 'lf-field' }, el('label', { for: i.id, text: lab }), hintText ? el('p', { class: 'hint', text: hintText }) : null, i), get: () => linesOf(i.value) };
       }
 
-      function addCohort(holder, c = {}) {
+      // A session: a time and place, or a group of its own (such as a cohort), or both.
+      function addSession(holder, s = {}) {
+        const picker = venuePicker('Venue', s.venue);
+        allPickers.push(picker);
+        const dayBoxes = L.DAYS.map((d) => el('label', {}, el('input', { type: 'checkbox', value: d, checked: list(s.days).includes(d) }), ' ' + L.DAY_NAMES[d].slice(0, 3)));
+        const start = el('input', { type: 'time', id: uid('st'), step: '300' });
+        start.value = s.start || '';
+        const end = el('input', { type: 'time', id: uid('en'), step: '300' });
+        end.value = s.end || '';
+        const freq = el('select', { id: uid('fr') }, el('option', { value: '', text: 'Choose' }), Object.entries(L.FREQUENCY).map(([k, w]) => el('option', { value: k, text: w[0].toUpperCase() + w.slice(1) })));
+        freq.value = s.frequency || '';
         const f = {
-          name: smallText('Name of the cohort or session (mandatory)', c.name, 'For example "Cohort 1: ages 18 to 24" or "Tuesdays in Batley".'),
-          where: smallLines('Where', c.where, 'Only if different from the project. ' + POSTCODE_HINT),
-          when: smallText('Days and times', c.when, 'Only if different from the project.'),
-          places: smallText('Number of places', c.places, 'For example "10 places". Leave empty if not limited.'),
-          age: smallText('Age', c.age, 'Only if different from the project, for example 50+.'),
-          eligibility: smallLines('Extra criteria for this cohort or session', c.eligibility, 'Only what is different, one per line. Leave empty if none.'),
-          gate: smallLines('Anything else you would turn someone away for not having', c.gate, 'Only for this cohort or session. Leave empty if none.'),
+          name: smallText('Name, if it has one', s.name, 'For example "elevate connect (drop-in)" or "Cohort 1: ages 18 to 24".'),
+          note: smallText('Anything else about when or where, in words', s.note, 'For example "first Tuesday of the month" or "term time only".'),
+          places: smallText('Number of places', s.places, 'Leave empty if not limited.'),
+          age: smallText('Age, if this session is for a different age group', s.age, 'For example 50+.'),
+          where: smallLines('Other places, in words', s.where, 'Only for places without a postcode, such as "Online".'),
         };
-        const dates = datesGroup('c', c, 'Dates for this cohort or session (if different)');
-        const fs = el('fieldset', { class: 'lf-cohort', 'data-id': c.id || '' }, el('legend', { text: 'Cohort or session' }),
-          f.name.node, el('div', { class: 'lf-grid' }, f.when.node, f.places.node, f.age.node), f.where.node, dates.box, f.eligibility.node, f.gate.node,
-          el('button', { type: 'button', class: 'btn secondary small', text: 'Remove this cohort or session', onclick: () => { fs.remove(); opts.onChange && opts.onChange(); } }));
+        const elig = eligList('Extra criteria for this session', 'Only what is different from the project, for example "Aged 18 to 24". ' + ESSENTIAL_HINT, s.eligibility, s.gate, true);
+        const dates = datesGroup('s', s, 'Dates for this session, if different from the project');
+        const more = el('details', { class: 'lf-more' }, el('summary', { text: 'Age group, extra criteria, places or dates for this session' }),
+          el('div', { class: 'lf-grid' }, f.age.node, f.places.node), elig.box, dates.box, f.where.node);
+        if (s.age || list(s.eligibility).length || list(s.gate).length || s.places || L.DATE_KEYS.some((k) => s[k]) || list(s.where).length) more.open = true;
+        const fs = el('fieldset', { class: 'lf-session', 'data-id': s.id || '' }, el('legend', { text: 'Session' }),
+          f.name.node, picker.node,
+          el('fieldset', { class: 'lf-days' }, el('legend', { text: 'Days' }), el('div', { class: 'choices' }, dayBoxes)),
+          el('div', { class: 'lf-grid' },
+            el('div', { class: 'lf-field' }, el('label', { for: start.id, text: 'From' }), start),
+            el('div', { class: 'lf-field' }, el('label', { for: end.id, text: 'Until' }), end),
+            el('div', { class: 'lf-field' }, el('label', { for: freq.id, text: 'How often' }), freq)),
+          f.note.node, more,
+          small({ text: 'Remove this session', onclick: () => { fs.remove(); allPickers.splice(allPickers.indexOf(picker), 1); changed(); } }));
         fs._read = () => {
-          const out = { id: fs.dataset.id, name: f.name.get() };
-          for (const k of ['where', 'eligibility', 'gate']) { const v = f[k].get(); if (v.length) out[k] = v; }
-          for (const k of ['when', 'places', 'age']) { const v = f[k].get(); if (v) out[k] = v; }
+          const out = { id: fs.dataset.id };
+          const name = f.name.get();
+          if (name) out.name = name;
+          const v = picker.read();
+          if (v) out.venue = v;
+          const where = f.where.get();
+          if (where.length) out.where = where;
+          const days = dayBoxes.map((b) => b.querySelector('input')).filter((i) => i.checked).map((i) => i.value);
+          if (days.length) out.days = days;
+          if (start.value) out.start = start.value;
+          if (end.value) out.end = end.value;
+          if (freq.value) out.frequency = freq.value;
+          for (const k of ['note', 'age', 'places']) { const x = f[k].get(); if (x) out[k] = x; }
+          // "when" in words from before November 2026 is kept until the session has days and times.
+          if (s.when && !days.length) out.when = s.when;
+          const e = elig.read();
+          if (e.eligibility.length) out.eligibility = e.eligibility;
+          if (e.gate.length) out.gate = e.gate;
           Object.assign(out, dates.read());
           return out;
         };
-        fs._name = f.name.node.querySelector('input');
+        fs._first = f.name.input;
         holder.append(fs);
         return fs;
       }
@@ -257,73 +392,103 @@
       function addProject(p = {}) {
         const f = {
           name: smallText('Project name (mandatory)', p.name, ''),
-          when: smallText('Days and times', p.when, 'For example "Tuesdays 10am to 12pm".'),
+          when: smallText('Days and times, in words', p.when, 'Only if it doesn\'t fit the sessions below, for example "Flexible, arranged with you".'),
           duration: smallText('How long it lasts', p.duration, 'For example "12 weeks" or "Ongoing".'),
           places: smallText('Number of places', p.places, 'For example "20 places". Leave empty if not limited.'),
           age: smallText('Age, if different from the service', p.age, ''),
-          where: smallLines('Where it runs', p.where, POSTCODE_HINT),
-          eligibility: smallLines('Extra criteria for this project', p.eligibility, 'Only criteria that are different from the service, one per line. Leave empty if none.'),
-          gate: smallLines('Anything else you would turn someone away for not having', p.gate, 'Only for this project. Leave empty if none.'),
+          area: smallText('The area it covers', p.area, 'For example "All of Kirklees", or the towns.'),
+          where: smallLines('Other places, in words', p.where, 'Places without a postcode, for example "Online" or "Community venues across Kirklees".'),
         };
         const ovId = uid('ov');
         const ov = el('textarea', { id: ovId, rows: '3', 'aria-describedby': ovId + '-count' });
         ov.value = p.overview || '';
-        const ovBox = el('div', { class: 'lf-field' }, el('label', { for: ovId, text: 'Project overview (mandatory)' }),
+        const ovBox = el('div', { class: 'lf-field' }, el('label', { for: ovId, text: 'What happens (mandatory)' }),
           el('p', { class: 'hint', text: 'What happens in this project, in a few sentences.' }), ov, counter(ov, L.LIMITS.projectOverview));
+        // How it runs. Ticking "set times and places" shows the sessions; "by appointment" asks for the area.
+        const runs = new Set(list(p.runs));
+        if (!runs.size && list(p.sessions).some((x) => x.venue || list(x.days).length)) runs.add('set');
+        const runBoxes = Object.entries(L.RUNS).map(([k, w]) => el('label', {}, el('input', { type: 'checkbox', value: k, checked: runs.has(k) }), ' ' + w));
+        const runSet = el('fieldset', { class: 'lf-field lf-checks lf-runs' }, el('legend', { text: 'How does it run?' }), el('p', { class: 'hint', text: 'Tick all that apply.' }), el('div', { class: 'choices' }, runBoxes));
         const aud = new Set(list(p.audience));
         const audBox = el('fieldset', { class: 'lf-field lf-checks' }, el('legend', { text: 'Who this project works with, if different from the service' }),
           el('p', { class: 'hint', text: 'Leave all unticked if it is the same as the service.' }),
           el('div', { class: 'choices' }, list(choices.audience).map((v) => el('label', {}, el('input', { type: 'checkbox', value: v, checked: aud.has(v) }), AUDIENCE[v] || v))));
+        const elig = eligList('Extra criteria for this project', 'Only criteria that are different from the service. ' + ESSENTIAL_HINT, p.eligibility, p.gate, true);
         const dates = datesGroup('p', p, 'Dates');
-        const cohorts = el('div', { class: 'lf-cohorts' });
+        const sessions = el('div', { class: 'lf-sessions' });
+        const sessionsBox = el('div', { class: 'lf-sessions-box' },
+          el(SUBH, { class: 'lf-sub', text: 'Times and places' }),
+          el('p', { class: 'hint', text: 'Add a session for each venue and day it runs. If the same project runs for different groups, such as two cohorts for different age groups, add a session for each group and give it its age under "Age group, extra criteria…".' }),
+          sessions, small({ text: 'Add a session', onclick: () => { addSession(sessions)._first.focus(); changed(); } }));
+        const areaBox = f.area.node;
         const fs = el('fieldset', { class: 'lf-proj' + (tbc(p) ? ' tbc' : ''), 'data-id': p.id || '' },
           el('legend', { class: 'lf-proj-legend' }),
-          f.name.node, ovBox,
-          f.duration.node,
-          el('div', { class: 'lf-grid' }, f.when.node, f.places.node, f.age.node),
-          f.where.node, dates.box, f.eligibility.node, f.gate.node, audBox,
-          el('h' + Math.min(6, (opts.headingLevel || 2) + 1), { class: 'lf-sub', text: 'Cohorts or sessions' }),
-          el('p', { class: 'hint', text: 'Only if this project runs more than once at different times, places or for different groups, such as two cohorts for different age groups. Each one only needs what is different.' }),
-          cohorts,
+          f.name.node, ovBox, runSet, sessionsBox, areaBox, f.where.node, f.when.node,
+          f.duration.node, el('div', { class: 'lf-grid' }, f.places.node, f.age.node),
+          elig.box, audBox, dates.box,
           el('div', { class: 'lf-row' },
-            el('button', { type: 'button', class: 'btn secondary small', text: 'Add a cohort or session', onclick: () => { addCohort(cohorts)._name.focus(); opts.onChange && opts.onChange(); } }),
-            el('button', { type: 'button', class: 'btn secondary small', text: 'Remove this project', onclick: () => {
+            small({ text: 'Remove this project', onclick: () => {
               if (wrap.children.length < 2) return alert('A service needs at least one project. Change this one instead.');
-              fs.remove(); rows.splice(rows.indexOf(fs), 1); renumber(); opts.onChange && opts.onChange();
+              fs.remove(); renumber(); changed();
             } })));
-        for (const c of list(p.cohorts)) addCohort(cohorts, c);
+        const showRuns = () => {
+          const ticked = new Set(runBoxes.map((b) => b.querySelector('input')).filter((i) => i.checked).map((i) => i.value));
+          sessionsBox.hidden = !ticked.has('set') && !sessions.children.length;
+          areaBox.hidden = !ticked.has('appointment') && !f.area.get();
+        };
+        runSet.addEventListener('change', () => {
+          showRuns();
+          const setOn = runBoxes[0].querySelector('input').checked;
+          if (setOn && !sessions.children.length) addSession(sessions);
+        });
+        for (const s of list(p.sessions)) addSession(sessions, s);
+        showRuns();
         fs._read = () => {
           const out = { id: fs.dataset.id, name: f.name.get(), overview: ov.value.trim() };
-          for (const k of ['where', 'eligibility', 'gate']) { const v = f[k].get(); if (v.length) out[k] = v; }
-          for (const k of ['when', 'duration', 'places', 'age']) { const v = f[k].get(); if (v) out[k] = v; }
+          const r = runBoxes.map((b) => b.querySelector('input')).filter((i) => i.checked).map((i) => i.value);
+          if (r.length) out.runs = r;
+          for (const k of ['area', 'when', 'duration', 'places', 'age']) { const v = f[k].get(); if (v) out[k] = v; }
+          const where = f.where.get();
+          if (where.length) out.where = where;
           const a = [...audBox.querySelectorAll('input:checked')].map((i) => i.value);
           if (a.length) out.audience = a;
+          const e = elig.read();
+          if (e.eligibility.length) out.eligibility = e.eligibility;
+          if (e.gate.length) out.gate = e.gate;
           Object.assign(out, dates.read());
-          const cs = [...cohorts.children].map((c) => c._read());
-          if (cs.length) out.cohorts = cs;
+          const ss = [...sessions.children].map((c) => c._read()).filter((x) => Object.keys(x).length > 1);
+          if (ss.length) out.sessions = ss;
           return out;
         };
-        fs._name = f.name.node.querySelector('input');
+        fs._name = f.name.input;
         fs._ov = ov;
+        fs._sessions = sessions;
         fs._name.addEventListener('input', renumber);
         wrap.append(fs);
-        rows.push(fs);
         return fs;
       }
       function renumber() {
         [...wrap.children].forEach((fs, i) => { fs.querySelector('.lf-proj-legend').textContent = 'Project ' + (i + 1) + (fs._name.value.trim() ? ': ' + fs._name.value.trim() : ''); });
       }
+      function addNew() {
+        const fs = addProject();
+        renumber();
+        fs._name.focus();
+        changed();
+        return fs;
+      }
       for (const p of list(val)) addProject(p);
       if (!wrap.children.length) addProject();
       renumber();
 
-      // New projects and cohorts get an id made from their name, unique in the service. Existing ones keep theirs.
+      // New projects and sessions get an id made from their name (or venue and day), unique in the service. Existing
+      // ones keep theirs.
       const read = () => {
         const ps = [...wrap.children].map((fs) => fs._read());
         const used = new Set();
-        for (const p of ps) { if (p.id) used.add(p.id); for (const c of list(p.cohorts)) if (c.id) used.add(c.id); }
+        for (const p of ps) { if (p.id) used.add(p.id); for (const c of list(p.sessions)) if (c.id) used.add(c.id); }
         const fresh = (name, fallback) => {
-          let base = slug(name) || fallback;
+          const base = slug(name) || fallback;
           let x = base;
           for (let n = 2; used.has(x); n++) x = base.slice(0, 46) + '-' + n;
           used.add(x);
@@ -331,11 +496,33 @@
         };
         for (const p of ps) {
           if (!p.id) p.id = fresh(p.name, 'project');
-          for (const c of list(p.cohorts)) if (!c.id) c.id = fresh(c.name, 'cohort');
+          for (const c of list(p.sessions)) {
+            if (c.id) continue;
+            const v = typeof c.venue === 'string' ? venueById.get(c.venue) : c.venue;
+            c.id = fresh(c.name || [v && v.name, ...list(c.days)].filter(Boolean).join(' '), 'session');
+          }
         }
         return ps;
       };
-      return { box, read, rows: () => [...wrap.children] };
+      return { box, read, rows: () => [...wrap.children], addNew };
+    }
+
+    // ----- venues used by every project -----
+    function venuesQuestion(k, label, hint, val) {
+      const holder = el('div', { class: 'lf-venue-rows' });
+      const pickers = [];
+      const add = (v) => {
+        const p = venuePicker('Venue', v);
+        pickers.push(p);
+        allPickers.push(p);
+        const r = el('div', { class: 'lf-venue-row' }, p.node, small({ text: 'Remove', 'aria-label': 'Remove this venue', onclick: () => { r.remove(); pickers.splice(pickers.indexOf(p), 1); allPickers.splice(allPickers.indexOf(p), 1); changed(); } }));
+        holder.append(r);
+        return p;
+      };
+      for (const v of list(val)) add(v);
+      const box = el('div', { class: 'lf-field', 'data-key': k }, el('p', { class: 'lf-lab', text: label }), el('p', { class: 'hint', text: hint }), holder,
+        small({ text: 'Add a venue', onclick: () => { add(null).input.focus(); changed(); } }), changedTag());
+      return { box, read: () => pickers.map((p) => p.read()).filter(Boolean) };
     }
 
     // ----- the organisation, with type-ahead from the organisations already listed -----
@@ -368,7 +555,15 @@
         else if (kind === 'org') q = orgQuestion(k, label, hint, v);
         else if (kind === 'lines') q = linesQuestion(k, label, hint, v);
         else if (kind === 'checks') q = checksQuestion(k, label, hint, o, v);
-        else if (kind === 'yesno') {
+        else if (kind === 'venues') q = venuesQuestion(k, label, hint, v);
+        else if (kind === 'elig') {
+          const e = eligList(label, hint, values.eligibility, values.gate, false);
+          e.box.dataset.key = 'eligibility';
+          e.box.append(changedTag());
+          q = { box: e.box, read: () => e.read().eligibility };
+          extra.gate = () => e.read().gate;
+          boxes.gate = e.box;
+        } else if (kind === 'yesno') {
           const sel = el('select', { id: id(k), 'aria-describedby': hint ? id(k) + '-hint' : null }, el('option', { value: 'yes', text: 'Yes' }), el('option', { value: 'no', text: 'No, not at the moment' }));
           sel.value = v === false ? 'no' : 'yes';
           q = { box: el('div', { class: 'lf-field', 'data-key': k }, el('label', { for: id(k), text: label }), hint ? el('p', { class: 'hint', id: id(k) + '-hint', text: hint }) : null, sel, changedTag()), read: () => sel.value === 'yes' };
@@ -391,7 +586,7 @@
             box: el('fieldset', { class: 'lf-field lf-checks' + (tbc(sr) ? ' tbc' : ''), 'data-key': 'selfReferral' }, el('legend', { text: label }),
               el('div', { class: 'lf-field' }, el('label', { for: sel.id, text: 'Can they?' }), sel),
               el('div', { class: 'lf-field' }, el('label', { for: note.id, text: 'A few words about it (mandatory)' }), el('p', { class: 'hint', id: id('sr-note') + '-hint', text: 'For example "Fill in the form on our website" or "Through a work coach only".' }), note),
-              el('div', { class: 'lf-field' }, el('label', { for: url.id, text: 'Self-referral form link (if there is one)' }), url),
+              el('div', { class: 'lf-field' }, el('label', { for: url.id, text: 'Referral or application form link (if there is one)' }), url),
               changedTag()),
             read: () => { const o2 = { allowed: sel.value, note: note.value.trim() }; if (url.value.trim()) o2.url = url.value.trim(); return o2; },
           };
@@ -411,8 +606,10 @@
     function read() {
       const out = {};
       for (const [k, r] of Object.entries(readers)) out[k] = r();
+      for (const [k, r] of Object.entries(extra)) out[k] = r();
       for (const k of NULLABLE) if (k in out && !out[k]) out[k] = null;
       if ('requiresMention' in out && !out.requiresMention.length) out.requiresMention = null;
+      if ('venues' in out && !out.venues.length) out.venues = null;
       return out;
     }
     function changes() {
@@ -426,7 +623,7 @@
     }
     function mark(ch) {
       for (const [k, box] of Object.entries(boxes)) {
-        const on = k in ch;
+        const on = k in ch || (k === 'eligibility' && 'gate' in ch);
         box.classList.toggle('changed', on);
         const tag = box.querySelector(':scope > .changed-tag');
         if (tag) tag.hidden = !on;
@@ -449,20 +646,23 @@
         if (now[k] && now[k].length > limit && now[k] !== original[k]) return need(k, `${what} is too long: please keep it to ${limit} characters.`);
       }
       if (now.organisationOverview && now.organisationOverview !== original.organisationOverview && /healthy\s+working\s+life|\bhwl\b/i.test(now.organisationOverview)) return need('organisationOverview', "The organisation overview describes the whole organisation, so please don't mention Healthy Working Life there. It is shown on each service that is part of it.");
+      if (!now.referralRoutes.length) return need('referralRoutes', 'Please give at least one way people are referred or apply.');
+      if (!now.selfReferral.note) return { message: 'Please say a few words about whether people can refer themselves.', el: boxes.selfReferral.querySelector('input[type=text]') };
+      if (!now.audience.length) return need('audience', 'Please tick at least one box under "Who do you work with?".');
       const rows = projects.rows();
       const was = new Map(list(original.projects).map((p) => [p.id, p]));
       for (const [i, p] of now.projects.entries()) {
         if (!p.name) return { message: `Please give project ${i + 1} a name.`, el: rows[i]._name };
-        if (!p.overview) return { message: `Please give "${p.name}" a short overview.`, el: rows[i]._ov };
+        if (!p.overview) return { message: `Please say what happens in "${p.name}".`, el: rows[i]._ov };
         const old = was.get(p.id);
-        if (p.overview.length > L.LIMITS.projectOverview && !(old && old.overview === p.overview)) return { message: `The overview for "${p.name}" is too long: please keep it to ${L.LIMITS.projectOverview} characters.`, el: rows[i]._ov };
-        for (const c of list(p.cohorts)) if (!c.name) return { message: `Please give each cohort or session in "${p.name}" a name.`, el: rows[i].querySelector('.lf-cohort input') };
+        if (p.overview.length > L.LIMITS.projectOverview && !(old && old.overview === p.overview)) return { message: `"What happens" for "${p.name}" is too long: please keep it to ${L.LIMITS.projectOverview} characters.`, el: rows[i]._ov };
+      }
+      for (const pk of allPickers) {
+        const pr = pk.problem();
+        if (pr) return pr;
       }
       const order = L.checkParts(now.projects);
-      if (order.length) return { message: order[0].replace(/^Project id .*used twice.*$/, 'Two projects or cohorts have the same name. Please make them different.') + '.', el: boxes.projects };
-      if (!now.audience.length) return need('audience', 'Please tick at least one box under "Who do you work with?".');
-      if (!now.referralRoutes.length) return need('referralRoutes', 'Please give at least one way people are referred or apply.');
-      if (!now.selfReferral.note) return { message: 'Please say a few words about whether people can refer themselves.', el: boxes.selfReferral.querySelector('input[type=text]') };
+      if (order.length) return { message: order[0].replace(/^(Project|Session) id .*used twice.*$/, 'Two projects or sessions have the same name. Please make them different.') + '.', el: boxes.projects };
       if (mode === 'team') {
         if (!now.areas.length) return need('areas', 'Please tick at least one box under "Where it runs".');
         if (!now.categories.length) return need('categories', 'Please tick at least one category.');
@@ -470,7 +670,7 @@
       return null;
     }
 
-    return { node: root, read, changes, check, mark, boxes };
+    return { node: root, read, changes, check, mark, boxes, addProject: () => projects.addNew() };
   }
 
   globalThis.LISTING_FORM = { build, sections, HEALTH, AUDIENCE, SELF, DATE_LABEL };

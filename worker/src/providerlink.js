@@ -98,10 +98,14 @@ export async function handleProvider(request, env, url, cors, originOk, checker,
       expires: link.expires,
       service: shown,
       choices: {
-        audience: enumOf(P.audience), healthFocus: enumOf(P.healthFocus), selfReferral: enumOf(P.selfReferral.properties.allowed),
+        audience: enumOf(P.audience), healthFocus: enumOf(P.healthFocus), selfReferral: enumOf(P.selfReferral.properties.allowed), groups: enumOf(P.groups),
       },
       // Every organisation's name, so the form can suggest them as the person types.
       organisations: checker.organisations || [],
+      // Every venue already listed (name, address and postcode only), so they can pick one instead of retyping it.
+      venues: checker.venues || [],
+      // The organisation's other services on the live list, for "Do you run anything else?".
+      otherServices: [...(checker.byId ? checker.byId.values() : [])].filter((x) => x.organisation === service.organisation && x.id !== service.id).map((x) => ({ id: x.id, name: x.name })),
       lastReply: last ? { t: last.t, allCorrect: last.allCorrect } : null,
     }, 200, cors);
   }
