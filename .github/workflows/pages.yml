@@ -72,6 +72,12 @@ jobs:
           done
           # Tell the pages where the Worker is.
           printf 'window.FINDER_CONFIG = %s;' "$(jq -cn --arg api "$WORKER_URL" '{apiBase: $api}')" > _site/config.js
+          # Stamp every local script and stylesheet link with this deploy's version (?v=<commit>), so browsers and
+          # Cloudflare fetch the new files after a deploy instead of serving old cached copies. The text on the main
+          # page comes from i18n.js, so an old cached copy would put old wording back.
+          V="${GITHUB_SHA::8}"
+          find _site -name '*.html' -print0 | xargs -0 perl -pi -e 's{((?:src|href)="(?!https?:|//|data:)[^"?#]+\.(?:js|css))"}{$1?v='"$V"'"}g'
+          grep -c "?v=$V" _site/index.html
 
       # The PDF of the printable directory, for the "Download PDF" link on directory.html, made with the runner's
       # Google Chrome. If it fails, the site still deploys and the link stays hidden. See print/README.md.

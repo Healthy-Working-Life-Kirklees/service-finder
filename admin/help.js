@@ -22,7 +22,7 @@
   };
   const age = (iso) => (Date.now() - Date.parse(iso)) / 86400000;
 
-  fetch('../services.json')
+  fetch('../services.json', { cache: 'no-cache' })
     .then((r) => r.json())
     .then((d) => {
       const list = d.services || [];

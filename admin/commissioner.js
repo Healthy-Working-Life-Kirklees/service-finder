@@ -278,7 +278,7 @@
   }
 
   // ---------- start ----------
-  fetch('services-all.json')
+  fetch('services-all.json', { cache: 'no-cache' })
     .then((r) => r.json())
     .then((d) => {
       DATA = d;

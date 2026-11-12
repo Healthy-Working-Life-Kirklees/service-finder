@@ -920,7 +920,7 @@
     update();
   })();
 
-  fetch('services.json')
+  fetch('services.json', { cache: 'no-cache' })
     .then((r) => r.json())
     .then((d) => { services = new Map(d.services.map((s) => [s.id, s])); organisations = d.organisations || []; venues = new Map((d.venues || []).map((v) => [v.id, v])); })
     .catch(() => bubble('error', t('loadFailed')));
