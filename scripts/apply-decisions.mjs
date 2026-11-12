@@ -18,6 +18,8 @@
 //   WORKER_URL=https://hwl-service-finder.<subdomain>.workers.dev TEAM_PASSCODE='...' npm run apply-decisions
 //   npm run apply-decisions -- --input team-changes.json   (the file saved from the All services page)
 //   add --dry-run to see what would change without changing anything
+//   add --report <file> to also write what was set aside (not applied, and why) as JSON. The workflow sends it to
+//   the Worker, so the All services page can say which changes couldn't be applied instead of counting them as waiting.
 //
 // It prints a Markdown summary of what changed, ready to paste into the pull request.
 //
@@ -49,6 +51,7 @@ const opt = (name) => {
 const dryRun = args.includes('--dry-run');
 const dir = path.resolve(opt('--dir') || path.join(root, 'data', 'services'));
 const input = opt('--input');
+const reportPath = opt('--report');
 // The organisations file: data/organisations.json, or with --dir, an organisations.json next to the scheme files
 // (if there is one), so a test on a copy never touches the real one.
 const orgPath = opt('--orgs') ? path.resolve(opt('--orgs')) : opt('--dir') ? path.join(dir, 'organisations.json') : path.join(root, 'data', 'organisations.json');
@@ -499,3 +502,19 @@ if (blocked.length) {
 }
 if (unknown.size) out.push(`Changes for services that aren't in the data (renamed or removed?): ${[...unknown].join(', ')}`, '');
 console.log(out.join('\n'));
+
+// ---------- what was set aside, for the All services page ----------
+// kind: service (a service's edit or listing decision), new (a new service), org (an organisation), venue.
+if (reportPath) {
+  const plain = (t) => String(t || '').replace(/`/g, '');
+  const setAside = [
+    ...blocked.map((b) => ({ kind: 'service', id: b.id, name: b.name, by: b.by, why: `chosen to go on the live list, but its details still say "${PLACEHOLDER}"` })),
+    ...conflicts.map((c) => ({ kind: 'service', id: c.id, name: c.name, by: c.by, why: 'someone changed the same details in the data since this edit was made (' + c.fields.join(', ') + '). Look at both, then edit it again' })),
+    ...invalid.map((c) => ({ kind: 'service', id: c.id, name: c.name, by: c.by, why: "the edit wouldn't pass the data check (" + c.errors.join('; ') + ')' })),
+    ...newProblems.map((c) => ({ kind: 'new', id: c.id, name: c.name || c.id, by: c.by, why: plain(c.why) })),
+    ...orgProblems.map((c) => ({ kind: 'org', id: c.id, name: c.name || c.id, by: c.by, why: plain(c.why) })),
+    ...venueProblems.map((c) => ({ kind: 'venue', id: c.id, name: c.name || c.id, by: c.by, why: plain(c.why) })),
+    ...[...unknown].map((id) => ({ kind: 'service', id, name: id, why: "this service isn't in the data any more (renamed or removed?)" })),
+  ];
+  fs.writeFileSync(reportPath, JSON.stringify({ setAside }) + '\n');
+}
