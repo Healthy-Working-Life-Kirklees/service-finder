@@ -104,6 +104,15 @@ export class LogStore {
       return Response.json({ imported: n });
     }
 
+    // What the latest Apply team changes run set aside (applynow.js shows it on the All services page).
+    if (url.pathname === '/apply/report/put') {
+      await s.put('apply-report', { ...body, t: now });
+      return Response.json({ ok: true });
+    }
+    if (url.pathname === '/apply/report/get') {
+      return Response.json({ report: (await s.get('apply-report')) || null });
+    }
+
     if (url.pathname === '/decisions/list') {
       const m = await s.list({ prefix: 'dec:' });
       const decisions = {};
@@ -389,7 +398,20 @@ export async function handleLog(request, env, url, cors, checker) {
   const path = url.pathname;
 
   // "Apply changes now" (applynow.js): starts the Apply team changes workflow, and reports how it's going.
-  if (path === '/log/apply' || path === '/log/apply/status') return handleApply(request, env, path, body, cors);
+  // The workflow sends what it set aside (not applied, and why) here; the status includes it.
+  if (request.method === 'POST' && path === '/log/apply/report') {
+    const run = Number(body.run);
+    if (!Number.isSafeInteger(run) || run < 1 || !Array.isArray(body.setAside)) return json({ error: 'That report could not be read.' }, 400, cors);
+    const setAside = body.setAside.slice(0, 200).map((x) => ({
+      kind: pick(x && x.kind, ['service', 'new', 'org', 'venue'], 'service'),
+      id: clean(x && x.id, 80), name: clean(x && x.name, 200), by: clean(x && x.by, 80), why: clean(x && x.why, 400),
+    })).filter((x) => x.id);
+    return json(await call('/apply/report/put', { run, setAside }), 200, cors);
+  }
+  if (path === '/log/apply' || path === '/log/apply/status') {
+    const report = request.method === 'GET' ? async () => (await call('/apply/report/get')).report : null;
+    return handleApply(request, env, path, body, cors, report);
+  }
 
   if (request.method === 'GET' && path === '/log/items') {
     return json(await call('/list'), 200, cors);

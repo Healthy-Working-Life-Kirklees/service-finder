@@ -24,6 +24,7 @@ let feedbackFlag = true; // what /health says about feedback
 let fbSent = []; // feedback the page sent
 let usageSent = []; // anonymous usage events the page sent
 const decisions = {}; // listing decisions recorded on the All services page
+let applyStatus = null; // what GET /log/apply/status returns (null: "Apply changes now" is off)
 const edits = {}; // edits to details recorded on the All services page
 const added = {}; // new services added on the All services page
 const orgs = {}; // organisation changes made on the All services page
@@ -121,6 +122,7 @@ async function worker(route) {
       items.forEach((x) => mk(x, x.status));
       return json({ imported: items.length });
     }
+    if (url.pathname === '/log/apply/status') return applyStatus ? json(applyStatus) : json({ error: 'Off.', off: true }, 404);
     if (url.pathname === '/log/decisions') return json({ decisions });
     if (url.pathname === '/log/edits') return json({ edits });
     if (url.pathname === '/log/new') return json({ added });
@@ -865,6 +867,26 @@ async function worker(route) {
   await page.waitForSelector('#venues-panel .waiting', { state: 'detached' });
   check('venues: a waiting venue change can be discarded', !Object.keys(venueEdits).length);
   await page.click('#venues-panel button:has-text("Close venues")');
+
+  // ---------- "Apply changes now": what the last run couldn't apply ----------
+  // kbop is chosen for the live list (above) but its details still say "To be completed", so the run sets it aside.
+  const ranAt = new Date(Date.now() - 60000).toISOString();
+  const lastRun = { id: 9, status: 'completed', conclusion: 'success', created: ranAt, updated: ranAt, title: 'Apply team changes and put them live (from the All services page, TB)', url: 'https://github.com/run' };
+  const waitingNow = async () => Number(((await page.textContent('#apply-pending')).match(/^(\d+) services? ha/) || [0, 0])[1]);
+  applyStatus = { on: true, apply: lastRun, site: null, worker: null, report: { run: 9, setAside: [] } };
+  await page.reload();
+  await page.waitForSelector('#apply-now:not([hidden])');
+  await page.waitForFunction(() => document.querySelector('#apply-pending').textContent.length > 0);
+  const waitBefore = await waitingNow();
+  applyStatus = { ...applyStatus, report: { run: 9, setAside: [{ kind: 'service', id: 'kbop', name: 'KBOP', by: 'TB', why: 'chosen to go on the live list, but its details still say "To be completed"' }] } };
+  await page.reload();
+  await page.waitForSelector('#apply-aside:not([hidden])');
+  const asideText = await page.textContent('#apply-aside');
+  check('apply: what the last run couldn\'t apply is listed, with why', asideText.includes('1 change couldn\u2019t be applied') && asideText.includes('KBOP') && asideText.includes('To be completed'), asideText);
+  check('apply: those aren\'t counted as waiting', (await waitingNow()) === waitBefore - 1 && (await page.textContent('#apply-pending')).includes('couldn\u2019t be applied'), waitBefore + " / " + (await page.textContent('#apply-pending')));
+  await page.click('#apply-aside a:has-text("KBOP")');
+  check('apply: the link opens that service', await page.locator('#svc-kbop details').evaluate((d) => d.open).catch(() => false));
+  applyStatus = null;
 
   // ---------- Across Kirklees (commissioner view) ----------
   await page.goto(ON + '/admin/commissioner.html');

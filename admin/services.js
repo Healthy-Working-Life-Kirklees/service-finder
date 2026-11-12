@@ -987,22 +987,63 @@ Thank you,
   let applyOn = false;
   let applyTimer = null;
   let applyAsked = 0; // when this page asked for a run, so an older run isn't mistaken for it
+  // What the latest run set aside: changes it couldn't apply, and why ({ kind, id, name, by, why }, from the
+  // workflow's report). They aren't counted as waiting, because applying again won't put them live until they're fixed.
+  let aside = [];
+  let asideAt = '';
+  const asideIds = (kinds) => new Set(aside.filter((a) => kinds.includes(a.kind)).map((a) => a.id));
   const hhmm = (iso) => {
     const d = new Date(iso);
     const time = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     return d.toDateString() === new Date().toDateString() ? time : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ', ' + time;
   };
-  const waiting = () => services.filter((x) => x.isNew || teamState(x) === 'pending' || editState(x) === 'pending').length;
+  const waiting = () => {
+    const skip = asideIds(['service', 'new']);
+    return services.filter((x) => !skip.has(x.s.id) && (x.isNew || teamState(x) === 'pending' || editState(x) === 'pending')).length;
+  };
 
   function showApply() {
     $('#apply-now').hidden = !(team && applyOn);
     $('#apply-hint').hidden = Boolean(team && applyOn);
     if (!team || !applyOn) return;
     const n = waiting();
-    const o = Object.keys(orgChanges || {}).filter((id) => orgPending(id)).length;
-    const vc = Object.keys(venueChanges || {}).filter((id) => venuePending(id)).length;
+    const skipOrg = asideIds(['org']);
+    const skipVenue = asideIds(['venue']);
+    const o = Object.keys(orgChanges || {}).filter((id) => !skipOrg.has(id) && orgPending(id)).length;
+    const vc = Object.keys(venueChanges || {}).filter((id) => !skipVenue.has(id) && venuePending(id)).length;
     const parts = [n ? plural(n, 'service has', 'services have') + ' changes' : '', o ? plural(o, 'organisation change', 'organisation changes') : '', vc ? plural(vc, 'venue change', 'venue changes') : ''].filter(Boolean);
-    $('#apply-pending').textContent = parts.length ? parts.join(' and ') + ' waiting to be applied.' : 'Nothing waiting to be applied.';
+    $('#apply-pending').textContent = (parts.length ? parts.join(' and ') + ' waiting to be applied.' : 'Nothing waiting to be applied.') +
+      (aside.length ? ' ' + plural(aside.length, 'change', 'changes') + ' couldn\u2019t be applied (below).' : '');
+    showAside();
+  }
+
+  // The changes the latest run couldn't apply, each with why, and a link to the service where it can be fixed.
+  const ASIDE_WHAT = { org: 'Organisation', venue: 'Venue', new: 'New service' };
+  function showAside() {
+    const box = $('#apply-aside');
+    if (!aside.length) { box.hidden = true; box.replaceChildren(); return; }
+    const where = (a) => {
+      if (a.kind === 'org' || a.kind === 'venue') return el('button', { type: 'button', class: 'linklike', text: a.name, onclick: a.kind === 'org' ? openOrgs : openVenues });
+      if (!services.some((y) => y.s.id === a.id)) return el('strong', { text: a.name });
+      return el('a', { href: '#svc-' + a.id, text: a.name, onclick: (ev) => { ev.preventDefault(); goToService(a.id); } });
+    };
+    box.replaceChildren(
+      el('p', { class: 'mt0' }, el('strong', { text: plural(aside.length, 'change', 'changes') + ' couldn\u2019t be applied' }), asideAt ? ' (at the last apply, ' + hhmm(asideAt) + '). Fix these, then apply again:' : '. Fix these, then apply again:'),
+      el('ul', {}, aside.map((a) => el('li', {}, ASIDE_WHAT[a.kind] ? ASIDE_WHAT[a.kind] + ': ' : '', where(a), ': ' + a.why + (a.by ? ' (' + a.by + ').' : '.')))));
+    box.hidden = false;
+  }
+  // Shows one service in the list (clearing the filters so it's there) and opens its details.
+  function goToService(id) {
+    for (const f of FIELDS) input[f].value = f === 'sort' ? 'name' : '';
+    input.q.value = id;
+    update();
+    const box = document.getElementById('svc-' + id);
+    if (!box) return;
+    const d = box.querySelector('details');
+    if (d) d.open = true;
+    box.scrollIntoView({ block: 'start' });
+    const sum = box.querySelector('summary');
+    if (sum) sum.focus();
   }
 
   function applyMessage(text, kind, link) {
@@ -1037,9 +1078,7 @@ Thank you,
     if (busy(st.site) || busy(st.worker) || !st.site || !st.worker) { applyMessage('Checks passed and the changes are merged. Updating the live finder now…'); return true; }
     if (failed(st.site) || failed(st.worker)) { applyMessage('The changes are merged, but updating the live finder failed. Please tell Phil.', 'err', (failed(st.site) ? st.site : st.worker).url); return false; }
     const done = hhmm(st.site.updated > st.worker.updated ? st.site.updated : st.worker.updated);
-    const m = $('#apply-status');
-    applyMessage('Live: the finder, the AI and the printable directory have the team\u2019s changes (' + done + '). ', 'ok');
-    if (applyAsked) m.append(el('button', { type: 'button', class: 'btn secondary small', text: 'Reload this page', onclick: () => location.reload() }));
+    applyMessage('Live: the finder, the AI and the printable directory have the team\u2019s changes (' + done + ').', 'ok');
     return false;
   }
 
@@ -1055,9 +1094,34 @@ Thank you,
       return;
     }
     applyOn = true;
+    const done = st.apply && st.apply.status === 'completed';
+    aside = done && st.report ? list(st.report.setAside) : [];
+    asideAt = done && st.report ? st.apply.updated : '';
     showApply();
-    if (showRun(st)) applyTimer = setTimeout(checkApply, 8000);
-    else { applyAsked = 0; $('#apply-btn').disabled = false; }
+    if (showRun(st)) { applyTimer = setTimeout(checkApply, 8000); return; }
+    // A run this page started has finished: load the data and the team's changes again, so the counts are current.
+    if (applyAsked) await refreshData();
+    applyAsked = 0;
+    $('#apply-btn').disabled = false;
+  }
+
+  // Loads the data again (skipping any cached copy) and the team's saved changes, and redraws the page.
+  async function refreshData() {
+    try {
+      await loadServices(true);
+      const [d, e, nw, og, vg] = await Promise.all([api('GET', '/log/decisions'), api('GET', '/log/edits'), api('GET', '/log/new'), api('GET', '/log/orgs').catch(() => ({ orgs: orgChanges })), api('GET', '/log/venues').catch(() => ({ venues: venueChanges }))]);
+      team = d.decisions || {};
+      edits = e.edits || {};
+      added = nw.added || {};
+      orgChanges = og.orgs || {};
+      venueChanges = vg.venues || {};
+      rebuild();
+      summary();
+      update();
+      showSignedIn();
+    } catch {
+      // Leave the page as it was. A reload shows the current figures.
+    }
   }
 
   async function applyNow() {
@@ -1130,7 +1194,9 @@ Thank you,
   function signOut(message) {
     clearTimeout(applyTimer);
     applyAsked = 0;
+    aside = [];
     $('#apply-status').hidden = true;
+    showAside();
     team = null;
     edits = null;
     added = null;
@@ -1493,17 +1559,21 @@ Thank you,
 
   // ---------- start ----------
   // services-all.json (every service) is published with the Admin pages; fall back to the live list if it's missing.
-  const getJson = (u) => fetch(u).then((r) => {
+  const getJson = (u) => fetch(u, { cache: 'no-cache' }).then((r) => {
     if (!r.ok) throw new Error(r.status);
     return r.json();
   });
-  getJson('services-all.json')
-    .catch(() => getJson('../services.json'))
-    .then((d) => {
-      choices = d.choices || {};
-      organisations = list(d.organisations);
-      venues = list(d.venues);
-      baseServices = list(d.services).map((s) => ({ s, listing: listing(s), incomplete: JSON.stringify(s).includes(PLACEHOLDER), review: review(s), confidence: confidence(s), gaps: gaps(s), text: haystack(s) }));
+  // fresh: add a query string so a copy cached before the latest deploy isn't used (after "Apply changes now").
+  async function loadServices(fresh) {
+    const q = fresh ? '?t=' + Date.now() : '';
+    const d = await getJson('services-all.json' + q).catch(() => getJson('../services.json' + q));
+    choices = d.choices || {};
+    organisations = list(d.organisations);
+    venues = list(d.venues);
+    baseServices = list(d.services).map((s) => ({ s, listing: listing(s), incomplete: JSON.stringify(s).includes(PLACEHOLDER), review: review(s), confidence: confidence(s), gaps: gaps(s), text: haystack(s) }));
+  }
+  loadServices(false)
+    .then(() => {
       rebuild();
       const all = services.map((x) => x.s);
       fill(input.area, all.flatMap((s) => list(s.areas)));

@@ -322,7 +322,9 @@ export default {
     // Team issues log (Admin pages): off unless the TEAM_PASSCODE secret is set.
     // Reading the team's listing decisions is also allowed with no Origin at all (not from a browser), so
     // scripts/apply-decisions.mjs can fetch them with the passcode, like the feedback digest does.
-    const scriptRead = !origin && request.method === 'GET' && ['/log/decisions', '/log/edits', '/log/new', '/log/orgs', '/log/venues'].includes(url.pathname);
+    // The Apply team changes workflow also sends back what it couldn't apply (POST /log/apply/report), the same way.
+    // Browsers always send Origin with a POST, so this can't be used from another site.
+    const scriptRead = !origin && ((request.method === 'GET' && ['/log/decisions', '/log/edits', '/log/new', '/log/orgs', '/log/venues'].includes(url.pathname)) || (request.method === 'POST' && url.pathname === '/log/apply/report'));
     if (url.pathname.startsWith('/log/')) return originOk || scriptRead ? handleLog(request, env, url, cors, EDIT_CHECKER) : json({ error: 'Not allowed.' }, 403, cors);
     // Provider review links: a scheme's named contact checks its details. Off unless TEAM_PASSCODE is set.
     if (url.pathname.startsWith('/provider/')) return handleProvider(request, env, url, cors, originOk, EDIT_CHECKER, schema);

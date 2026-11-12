@@ -1467,6 +1467,23 @@ check('venues: the apply script (no Origin) can read them', r.status === 200 && 
   check('apply status: latest run and the deploys it started', r.status === 200 && r.body.apply.conclusion === 'success' && r.body.site.status === 'in_progress' && r.body.worker === null, JSON.stringify(r.body));
   r = await logCall('GET', '/log/apply/status', null, { e: logEnv(GH), pass: 'nope' });
   check('apply status: needs the passcode', r.status === 401);
+
+  // What the run set aside, sent back by the workflow (no Origin, with the passcode).
+  const withId = (x, id) => ({ ...x, id });
+  runs['apply-team-changes.yml'] = [withId(run('completed', 'success', '2026-11-02T10:00:00Z'), 555)];
+  const report = { run: 555, setAside: [{ kind: 'service', id: 'kbop', name: 'KBOP', by: 'PL', why: 'still to be completed' }, { kind: 'odd<b>', id: 'x', why: 'y' }, { id: '' }] };
+  r = await logCall('POST', '/log/apply/report', report, { e: logEnv(GH), origin: null, pass: 'nope' });
+  check('apply report: needs the passcode', r.status === 401);
+  r = await logCall('POST', '/log/apply/report', { run: 'x', setAside: [] }, { e: logEnv(GH), origin: null });
+  check('apply report: a bad report is refused', r.status === 400);
+  r = await logCall('POST', '/log/apply/report', report, { e: logEnv(GH), origin: null });
+  check('apply report: the workflow can send it with no Origin', r.status === 200 && r.body.ok, JSON.stringify(r.body));
+  r = await logCall('GET', '/log/apply/status', null, { e: logEnv(GH) });
+  const rep = r.body.report;
+  check('apply status: includes what that run set aside, cleaned', rep && rep.run === 555 && rep.setAside.length === 2 && rep.setAside[0].id === 'kbop' && rep.setAside[1].kind === 'service', JSON.stringify(r.body));
+  runs['apply-team-changes.yml'] = [withId(run('in_progress', null, '2026-11-02T11:00:00Z'), 556)];
+  r = await logCall('GET', '/log/apply/status', null, { e: logEnv(GH) });
+  check('apply status: an older run\'s report is left out', r.status === 200 && r.body.report === null, JSON.stringify(r.body));
   globalThis.fetch = realFetch;
 }
 

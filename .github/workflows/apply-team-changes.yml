@@ -72,7 +72,13 @@ jobs:
         run: |
           npm ci
           if [ "$PREVIEW" = "true" ]; then extra=--dry-run; else extra=; fi
-          npm run -s apply-decisions -- $extra > "$RUNNER_TEMP/summary.md"
+          npm run -s apply-decisions -- $extra --report "$RUNNER_TEMP/set-aside.json" > "$RUNNER_TEMP/summary.md"
+          # Tell the All services page what couldn't be applied (and why), so it doesn't keep counting it as waiting.
+          if [ "$PREVIEW" != "true" ]; then
+            jq -c --argjson run "$GITHUB_RUN_ID" '. + {run: $run}' "$RUNNER_TEMP/set-aside.json" \
+              | curl -fsS -X POST "$WORKER_URL/log/apply/report" -H "X-Team-Passcode: $TEAM_PASSCODE" -H 'Content-Type: application/json' --data-binary @- > /dev/null \
+              || echo "::warning::Couldn't send the list of changes that weren't applied to the Worker. The All services page won't show it for this run."
+          fi
           # Wards and map positions for any new venues, from their postcodes (postcodes.io).
           if [ "$PREVIEW" != "true" ]; then node scripts/lookup-venues.mjs | tee -a "$RUNNER_TEMP/summary.md"; fi
           cat "$RUNNER_TEMP/summary.md" >> "$GITHUB_STEP_SUMMARY"

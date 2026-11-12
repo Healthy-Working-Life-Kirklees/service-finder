@@ -3,7 +3,8 @@
 // POST /log/apply         starts the Apply team changes workflow on GitHub with auto_merge on: it writes the team's
 //                         decisions, edits and new services into data/services/, runs the data check and the Worker
 //                         tests, merges the pull request if they pass, and starts both deploys.
-// GET  /log/apply/status  how the latest run is going, and the deploys it started.
+// GET  /log/apply/status  how the latest run is going, the deploys it started, and what it set aside (report: the
+//                         changes it couldn't apply and why, sent by the workflow to POST /log/apply/report).
 //
 // Both sit behind the team passcode (handleLog checks it before calling these). Off unless the Worker secret
 // GH_ACTIONS_TOKEN is set: a fine-grained GitHub token for this repository only, with Actions: read and write and
@@ -41,7 +42,7 @@ async function latestRun(env, file, since) {
   if (!res.ok) throw Object.assign(new Error('GitHub said ' + res.status), { status: res.status });
   const runs = ((await res.json()).workflow_runs || []).filter((r) => !since || r.created_at >= since);
   const r = runs[0];
-  return r ? { status: r.status, conclusion: r.conclusion, url: r.html_url, created: r.created_at, updated: r.updated_at, title: r.display_title } : null;
+  return r ? { id: r.id, status: r.status, conclusion: r.conclusion, url: r.html_url, created: r.created_at, updated: r.updated_at, title: r.display_title } : null;
 }
 
 const running = (run) => run && run.status !== 'completed';
@@ -49,7 +50,7 @@ const running = (run) => run && run.status !== 'completed';
 // Names go into the run's title on GitHub, so keep them to plain characters.
 const safeName = (v) => (typeof v === 'string' ? v.replace(/[^\p{L}\p{N} .'-]/gu, '').trim().slice(0, 40) : '');
 
-export async function handleApply(request, env, path, body, cors) {
+export async function handleApply(request, env, path, body, cors, getReport) {
   if (!applyOn(env)) return json({ error: 'Applying from this page is not switched on yet. Ask Phil.', off: true }, 404, cors);
 
   try {
@@ -59,7 +60,9 @@ export async function handleApply(request, env, path, body, cors) {
       let worker = null;
       // The deploys this run started: the first ones created after it began.
       if (apply) [site, worker] = await Promise.all([latestRun(env, DEPLOYS.site, apply.created), latestRun(env, DEPLOYS.worker, apply.created)]);
-      return json({ on: true, apply, site, worker }, 200, cors);
+      // What that run set aside, once the workflow has sent it (an older run's report is left out).
+      const report = getReport ? await getReport().catch(() => null) : null;
+      return json({ on: true, apply, site, worker, report: report && apply && report.run === apply.id ? report : null }, 200, cors);
     }
 
     if (request.method === 'POST' && path === '/log/apply') {

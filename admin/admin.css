@@ -207,6 +207,11 @@ td.num-cell { text-align: right; white-space: nowrap; width: 1%; }
 .apply-now { margin-top: .75rem; padding-top: .75rem; border-top: 1px solid var(--border); }
 .apply-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; margin: .5rem 0; }
 .apply-now .msg .btn { margin-left: .25rem; }
+.apply-aside { background: var(--warn-bg); border-left: 6px solid var(--warn); padding: .6rem 1rem; margin: .5rem 0 0; }
+.apply-aside ul { margin: .25rem 0 0; padding-left: 1.25rem; }
+.apply-aside li { margin: .2rem 0; }
+.apply-aside .linklike { font: inherit; font-weight: 700; color: var(--text); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
+.apply-aside a { font-weight: 700; }
 
 /* ---------- one sign-in for all Admin pages (team-auth.js) ---------- */
 .teambar .team-auth { margin-left: auto; }
