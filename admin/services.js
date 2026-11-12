@@ -523,13 +523,15 @@
 
 Hello ${l.contact},
 
-We're piloting the Healthy Working Life Support Finder with a very limited number of schemes at the moment, and yours is one of them. It's a tool that helps work and health coaches in Kirklees find the right support for the people they work with, and it includes ${x.s.name}.
+We're piloting the Healthy Working Life Support Finder with a very limited number of schemes at the moment. It's a tool that helps work and health coaches in Kirklees find the right support for the people they work with, and it includes ${x.s.name}.
 
 Please could you check the details we hold about your service, and correct anything that's wrong or missing? It takes about 5 minutes. Use this link (it's just for you, so please don't share it):
 
 ${linkUrl(l)}
 
 The link works until ${fmt(l.expires.slice(0, 10))}. We check any changes before they appear on the Support Finder.
+
+Unless we've asked you to take part in the pilot, please don't use the Support Finder itself, or share it with anyone, until it's out of the pilot phase. It's crucial that we learn from the pilot sites first. We'll let you know when it's ready for everyone.
 
 Thank you,
 `;
