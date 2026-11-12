@@ -25,6 +25,7 @@ let fbSent = []; // feedback the page sent
 let usageSent = []; // anonymous usage events the page sent
 const decisions = {}; // listing decisions recorded on the All services page
 let applyStatus = null; // what GET /log/apply/status returns (null: "Apply changes now" is off)
+let providerLinks = []; // provider review links (GET /log/provider-links)
 const edits = {}; // edits to details recorded on the All services page
 const added = {}; // new services added on the All services page
 const orgs = {}; // organisation changes made on the All services page
@@ -123,6 +124,7 @@ async function worker(route) {
       return json({ imported: items.length });
     }
     if (url.pathname === '/log/apply/status') return applyStatus ? json(applyStatus) : json({ error: 'Off.', off: true }, 404);
+    if (url.pathname === '/log/provider-links' && req.method() === 'GET') return json({ links: providerLinks });
     if (url.pathname === '/log/decisions') return json({ decisions });
     if (url.pathname === '/log/edits') return json({ edits });
     if (url.pathname === '/log/new') return json({ added });
@@ -887,6 +889,31 @@ async function worker(route) {
   await page.click('#apply-aside a:has-text("KBOP")');
   check('apply: the link opens that service', await page.locator('#svc-kbop details').evaluate((d) => d.open).catch(() => false));
   applyStatus = null;
+  // ---------- "Checked with the provider" filter ----------
+  const soon = new Date(Date.now() + 20 * 864e5).toISOString();
+  const ago = (d) => new Date(Date.now() - d * 864e5).toISOString();
+  providerLinks = [
+    { id: 'my-way-forward', token: 'a'.repeat(32), contact: 'Sam', by: 'TB', created: ago(3), expires: soon, replies: [] },
+    { id: 'acas-helpline', token: 'b'.repeat(32), contact: 'Jo', by: 'TB', created: ago(3), expires: soon, replies: [{ name: 'Jo', t: ago(1), allCorrect: true, note: '', changes: {} }] },
+  ];
+  await page.reload();
+  await page.waitForFunction(() => !document.querySelector('#signed-in').hidden);
+  await page.click('#clear');
+  const shown = async (v) => { await page.selectOption('#f-provider', v); return page.locator('.svc').evaluateAll((a) => a.map((e) => e.id.slice(4))); };
+  let ids = await shown('sent');
+  check('provider filter: sent shows the services with a review link', ids.length === 2 && ids.includes('my-way-forward') && ids.includes('acas-helpline'), ids.join());
+  ids = await shown('no-reply');
+  check('provider filter: sent, no reply yet', ids.length === 1 && ids[0] === 'my-way-forward', ids.join());
+  ids = await shown('replied');
+  check('provider filter: replied', ids.length === 1 && ids[0] === 'acas-helpline', ids.join());
+  ids = await shown('reply-waiting');
+  check('provider filter: a reply the team hasn\'t dealt with yet', ids.length === 1 && ids[0] === 'acas-helpline', ids.join());
+  ids = await shown('not-sent');
+  const liveNot = await shown('live-not-sent');
+  check('provider filter: not sent leaves those two out, and live-not-sent is part of it', !ids.includes('my-way-forward') && !ids.includes('acas-helpline') && liveNot.length > 0 && liveNot.length < ids.length && liveNot.every((i) => ids.includes(i)), ids.length + ' / ' + liveNot.length);
+  check('provider filter: kept in the address', new URL(page.url()).searchParams.get('provider') === 'live-not-sent');
+  await page.selectOption('#f-provider', '');
+  providerLinks = [];
 
   // ---------- Across Kirklees (commissioner view) ----------
   await page.goto(ON + '/admin/commissioner.html');
