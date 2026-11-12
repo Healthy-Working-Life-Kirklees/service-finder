@@ -531,6 +531,8 @@ ${linkUrl(l)}
 
 The link works until ${fmt(l.expires.slice(0, 10))}. We check any changes before they appear on the Support Finder.
 
+Please don't use the Support Finder itself, or share it with anyone, until it's out of the pilot phase. It's crucial that we learn from the pilot sites first. We'll let you know when it's ready for everyone.
+
 Thank you,
 `;
 
