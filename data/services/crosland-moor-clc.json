@@ -43,8 +43,11 @@
       "id": "community-learning-courses",
       "name": "Community learning courses",
       "overview": "Local centre with courses in computer skills, ESOL and skills for work.",
-      "where": [
-        "15 Park Road West, Huddersfield HD4 5RX"
+      "sessions": [
+        {
+          "id": "15-park-road-west",
+          "venue": "15-park-road-west"
+        }
       ]
     }
   ],

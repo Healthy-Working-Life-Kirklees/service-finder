@@ -70,8 +70,11 @@
       "id": "dual-diagnosis-support",
       "name": "Dual diagnosis support",
       "overview": "Up to 18 months' support for people with both mental health problems and drug or alcohol use.",
-      "where": [
-        "Batley Business Park WF17 6ER"
+      "sessions": [
+        {
+          "id": "batley-business-park",
+          "venue": "batley-business-park"
+        }
       ]
     }
   ],

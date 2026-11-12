@@ -16,6 +16,7 @@
   // Everything lives in memory only. Nothing is written to storage.
   let services = new Map();
   let organisations = []; // [{ id, name, aliases? }] from services.json, for the suggest form's organisation box
+  let venues = new Map(); // id -> { name, address, postcode, ward, lat, lng }, for sessions on the cards
   let history = [];
   let busy = false;
   // Tap-to-answer follow-up questions on the latest reply: { box, questions, picked: Map(index -> answer) }.
@@ -137,12 +138,17 @@
     return svg;
   };
 
-  // The places for a card: the service's own, then those of the projects and cohorts being shown.
+  // The places for a card: the service's own, then those of the projects and sessions being shown. A venue is
+  // written out with its address and postcode, so it gets map and directions links.
+  const venueLineOf = (id) => (venues.has(id) ? LISTING.venueLine(venues.get(id)) : null);
   function placeLines(s, picked) {
-    const out = [...(s.locations || [])];
+    const out = [...(s.venues || []).map(venueLineOf).filter(Boolean), ...(s.locations || [])];
     for (const x of picked || []) {
       out.push(...(x.project.where || []));
-      for (const c of x.cohorts) out.push(...(c.cohort.where || []));
+      for (const c of x.sessions) {
+        if (c.session.venue && venueLineOf(c.session.venue)) out.push(venueLineOf(c.session.venue));
+        out.push(...(c.session.where || []));
+      }
     }
     return [...new Set(out)];
   }
@@ -195,8 +201,8 @@
     ];
   }
 
-  // ---------- projects and cohorts on a card ----------
-  // A service's projects (and a project's cohorts) each have their own dates. The Worker says which ones fit the
+  // ---------- projects and sessions on a card ----------
+  // A service's projects (and a project's sessions) each have their own dates. The Worker says which ones fit the
   // person (rec.parts) and the date it used; only those that are open, or open to referrals soon, are shown
   // (listing-logic.js). Dates are written in the page's language.
   const LISTING = window.LISTING;
@@ -213,12 +219,44 @@
   function ageOf(s, picked) {
     const ages = new Set();
     for (const x of picked) {
-      if (x.cohorts.length) for (const c of x.cohorts) ages.add(c.cohort.age || x.project.age || s.age || '');
+      const forGroups = x.sessions.filter((c) => LISTING.forGroup(c.session));
+      if (forGroups.length) for (const c of forGroups) ages.add(c.session.age || x.project.age || s.age || '');
       else ages.add(x.project.age || s.age || '');
     }
     return ages.size === 1 && [...ages][0] ? [...ages][0] : s.age;
   }
-  // The lines about one project or cohort: when, how long, places, age, extra criteria and dates.
+  // A session's days and times in the page's language: "Tuesday, 1:00 pm to 3:00 pm, every other week".
+  function clockOf(hhmm) {
+    const [h, m] = hhmm.split(':').map(Number);
+    try { return new Date(2000, 0, 1, h, m).toLocaleTimeString(window.I18N.locale || 'en-GB', { hour: 'numeric', minute: '2-digit' }); } catch { return hhmm; }
+  }
+  function sessionTime(se) {
+    const w = [];
+    if ((se.days || []).length) w.push(se.days.map((d) => t('fbDay_' + d)).join(', '));
+    if (se.start && se.end) w.push(t('timeRange', { from: clockOf(se.start), to: clockOf(se.end) }));
+    else if (se.start) w.push(clockOf(se.start));
+    if (se.frequency && se.frequency !== 'weekly') w.push(t('freq_' + se.frequency));
+    return w.join(', ');
+  }
+  // The timetable for a project: one line per session, the ones the AI picked for the person first.
+  function sessionsList(x, on, s) {
+    const rows = x.sessions.filter((c) => !LISTING.forGroup(c.session) || c.named || x.sessions.every((y) => LISTING.forGroup(y.session)));
+    const named = rows.filter((c) => c.named);
+    const rest = rows.filter((c) => !c.named).sort((a, b) => LISTING.byDay(a.session, b.session));
+    return el('ul', { class: 'sessions' }, [...named, ...rest].map((c) => {
+      const se = c.session;
+      const v = se.venue && venues.get(se.venue);
+      const time = sessionTime(se);
+      return el('li', { class: c.named && rest.length ? 'named' : null },
+        se.name ? el('span', { ...EN, class: 'session-name', text: se.name }) : null,
+        time ? el('span', { class: 'session-time', text: time }) : null,
+        v ? el('span', { ...EN, class: 'session-venue', text: v.name + (v.ward ? ', ' + v.ward : '') }) : null,
+        se.note || se.when ? el('span', { ...EN, class: 'session-note', text: se.note || se.when }) : null,
+        c.named && rest.length ? el('span', { class: 'badge soon', text: t('suggestedSession') }) : null,
+        partFacts({ ...se, when: null, age: se.age || x.project.age }, c.dates, on, s));
+    }));
+  }
+  // The lines about one project or session: when, how long, places, age, extra criteria and dates.
   function partFacts(o, dates, on, s) {
     const li = [];
     if (o.when) li.push(el('li', {}, t('whenLabel'), el('span', { ...EN, text: o.when })));
@@ -236,10 +274,9 @@
       el('ul', { class: 'projects' }, picked.map((x) => el('li', {},
         el('strong', { ...EN, text: x.project.name }),
         x.project.overview ? el('p', { ...EN, text: x.project.overview }) : null,
-        partFacts(x.project, x.cohorts.length ? {} : x.dates, on, s),
-        x.cohorts.length ? el('ul', { class: 'cohorts' }, x.cohorts.map((c) => el('li', {},
-          el('span', { ...EN, class: 'cohort-name', text: c.cohort.name }),
-          partFacts({ ...c.cohort, age: c.cohort.age || x.project.age }, c.dates, on, s)))) : null))),
+        partFacts(x.project, x.sessions.length ? {} : x.dates, on, s),
+        x.project.area ? el('p', {}, t('areaCovered'), el('span', { ...EN, text: x.project.area })) : null,
+        x.sessions.length ? sessionsList(x, on, s) : null))),
     ];
   }
 
@@ -249,8 +286,8 @@
     const on = (opts && opts.date) || (LISTING ? LISTING.today() : new Date().toISOString().slice(0, 10));
     const picked = LISTING ? LISTING.pick(s, rec.parts, on) : [];
     // "Referrals open from ..." with the badges when everything shown opens to referrals soon.
-    const soon = picked.length && picked.every((x) => x.state === 'soon' && (!x.cohorts.length || x.cohorts.every((c) => c.state === 'soon')))
-      ? picked.map((x) => (x.cohorts.length ? x.cohorts.map((c) => c.dates.referralsFrom) : [x.dates.referralsFrom])).flat().filter(Boolean).sort()[0] : null;
+    const soon = picked.length && picked.every((x) => x.state === 'soon' && (!x.sessions.length || x.sessions.every((c) => c.state === 'soon')))
+      ? picked.map((x) => (x.sessions.length ? x.sessions.map((c) => c.dates.referralsFrom) : [x.dates.referralsFrom])).flat().filter(Boolean).sort()[0] : null;
     const age = ageOf(s, picked);
 
     const badges = el('div', { class: 'badges' },
@@ -353,7 +390,7 @@
   function spokenText(s, picked) {
     const parts = [s.name + '. ' + s.organisation + '.'];
     if (s.whoFor) parts.push(s.whoFor);
-    for (const x of picked || []) parts.push(x.project.name + (x.cohorts.length ? ': ' + x.cohorts.map((c) => c.cohort.name).join(', ') : '') + '.');
+    for (const x of picked || []) parts.push(x.project.name + (x.sessions.length ? ': ' + x.sessions.map((c) => [c.session.name, LISTING.timeWords(c.session), c.session.venue && venues.has(c.session.venue) ? venues.get(c.session.venue).name : ''].filter(Boolean).join(', ')).join('; ') : '') + '.');
     if (s.phone) parts.push('Phone: ' + s.phone + '.');
     if (s.email) parts.push('Email: ' + s.email + '.');
     if (s.referralRoutes && s.referralRoutes.length) parts.push('How to get in: ' + s.referralRoutes.join('. ') + '.');
@@ -363,7 +400,7 @@
   function copyText(s, picked, on) {
     const lines = [s.name + ' - ' + s.organisation, s.whoFor];
     for (const x of picked || []) {
-      if (x.cohorts.length) for (const c of x.cohorts) lines.push(x.project.name + ', ' + c.cohort.name + [c.cohort.when, ...dateWords(c.dates, on)].filter(Boolean).map((w) => '. ' + w).join(''));
+      if (x.sessions.length) for (const c of x.sessions) lines.push(x.project.name + [c.session.name, LISTING.timeWords(c.session) || c.session.note || c.session.when, venueLineOf(c.session.venue), ...dateWords(c.dates, on)].filter(Boolean).map((w) => ', ' + w).join(''));
       else lines.push(x.project.name + [x.project.when, ...dateWords(x.dates, on)].filter(Boolean).map((w) => '. ' + w).join(''));
     }
     if (s.phone) lines.push(t('phone') + s.phone);
@@ -885,7 +922,7 @@
 
   fetch('services.json')
     .then((r) => r.json())
-    .then((d) => { services = new Map(d.services.map((s) => [s.id, s])); organisations = d.organisations || []; })
+    .then((d) => { services = new Map(d.services.map((s) => [s.id, s])); organisations = d.organisations || []; venues = new Map((d.venues || []).map((v) => [v.id, v])); })
     .catch(() => bubble('error', t('loadFailed')));
 
   // On the preview site (see the preview workflow), a label so testers know this isn't the live version.

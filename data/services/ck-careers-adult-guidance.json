@@ -42,8 +42,11 @@
       "id": "careers-advice",
       "name": "Careers advice",
       "overview": "Free, impartial careers advice for adults on jobs, training and next steps.",
-      "where": [
-        "Brian Jackson House, Huddersfield HD1 5JP"
+      "sessions": [
+        {
+          "id": "brian-jackson-house",
+          "venue": "brian-jackson-house"
+        }
       ]
     }
   ],

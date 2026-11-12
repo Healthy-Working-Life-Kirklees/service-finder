@@ -54,8 +54,11 @@
       "name": "Sound Steps 2",
       "overview": "Weekly sessions in songwriting, beat-making, recording, music production and DJing, led by experienced professional music leaders, supporting wellbeing, teamwork and personal development.",
       "duration": "23 weeks",
-      "where": [
-        "LG31 The Media Centre, 7 Northumberland Street, Huddersfield, HD1 1RL"
+      "sessions": [
+        {
+          "id": "lg31-the-media-centre",
+          "venue": "lg31-the-media-centre"
+        }
       ]
     }
   ],

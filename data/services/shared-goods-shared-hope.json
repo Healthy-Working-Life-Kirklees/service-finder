@@ -56,12 +56,15 @@
       "name": "Shared Hope",
       "overview": "A face-to-face pre-employment programme for refugees facing several barriers to settling in, wellbeing and work, including trauma, poor mental health, social isolation and limited English. Each person gets tailored support.",
       "duration": "Six months, about 40 hours of tailored support each. Runs 1 October 2026 to 31 March 2027, 10 places",
-      "where": [
-        "Packhorse Shopping Centre, King Street, Huddersfield, HD1 2RT"
-      ],
+      "places": "10 places",
       "runsFrom": "2026-10-01",
       "runsTo": "2027-03-31",
-      "places": "10 places"
+      "sessions": [
+        {
+          "id": "packhorse-shopping-centre",
+          "venue": "packhorse-shopping-centre"
+        }
+      ]
     }
   ],
   "workExperience": "Not stated",

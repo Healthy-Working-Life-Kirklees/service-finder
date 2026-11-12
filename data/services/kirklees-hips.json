@@ -44,8 +44,11 @@
       "id": "housing-support-worker",
       "name": "Housing support worker",
       "overview": "A worker helps with housing, health and work goals; some accommodation.",
-      "where": [
-        "Bradley Business Park, Huddersfield HD2 1GN"
+      "sessions": [
+        {
+          "id": "bradley-business-park",
+          "venue": "bradley-business-park"
+        }
       ]
     }
   ],

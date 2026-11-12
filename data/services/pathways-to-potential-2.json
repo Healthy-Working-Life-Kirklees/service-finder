@@ -54,8 +54,11 @@
       "name": "Pathways to Potential 2",
       "overview": "Gives economically inactive people the skills, tools and experience to prepare for volunteering and paid work.",
       "duration": "Weekly provision",
-      "where": [
-        "Batley Sporting Foundation Community Gym, Heritage Road, Batley, WF17 7NZ"
+      "sessions": [
+        {
+          "id": "batley-sporting-foundation-community-gym",
+          "venue": "batley-sporting-foundation-community-gym"
+        }
       ]
     }
   ],

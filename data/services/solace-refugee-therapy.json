@@ -45,8 +45,13 @@
       "name": "Trauma therapy for refugees",
       "overview": "Talking therapy for refugees and asylum seekers who've lived through war, torture or other trauma, with a Kirklees team.",
       "where": [
-        "Kirklees, Calderdale and Wakefield",
-        "HQ Leeds LS7 1PZ"
+        "Kirklees, Calderdale and Wakefield"
+      ],
+      "sessions": [
+        {
+          "id": "hq-leeds",
+          "venue": "hq-leeds"
+        }
       ]
     }
   ],

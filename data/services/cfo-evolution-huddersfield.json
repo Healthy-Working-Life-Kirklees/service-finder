@@ -73,8 +73,11 @@
       "id": "resettlement-and-work-support",
       "name": "Resettlement and work support",
       "overview": "Help for people on probation or leaving prison: getting ready for work, wellbeing and resettling. Hub in Huddersfield.",
-      "where": [
-        "Norwich Union House, Market Street, Huddersfield HD1 2LR"
+      "sessions": [
+        {
+          "id": "norwich-union-house",
+          "venue": "norwich-union-house"
+        }
       ]
     }
   ],

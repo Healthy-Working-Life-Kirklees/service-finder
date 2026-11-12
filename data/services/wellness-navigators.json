@@ -59,9 +59,15 @@
       "name": "Wellness Navigators: Pathways to a Healthy Working Life",
       "overview": "Weekly wellbeing and employability workshops, fortnightly one-to-one keyworker support, peer support, bilingual guidance and practical 'Taste of Work' activities. Links people on to Employment Kirklees, REAL Employment, Kirklees Adult Learning, supported volunteering and suitable jobs.",
       "duration": "Six months, with weekly provision over two to three days",
-      "where": [
-        "Ravensthorpe Community Centre, 24 Garden Street, Ravensthorpe, Dewsbury, WF13 3AR",
-        "Taleem Centre, 36 Orchard Street, Savile Town, Dewsbury, WF12 9LT"
+      "sessions": [
+        {
+          "id": "ravensthorpe-community-centre",
+          "venue": "ravensthorpe-community-centre"
+        },
+        {
+          "id": "taleem-centre",
+          "venue": "taleem-centre"
+        }
       ]
     }
   ],

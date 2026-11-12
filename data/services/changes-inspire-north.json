@@ -74,8 +74,11 @@
       "id": "complex-needs-support-groups",
       "name": "Complex needs support groups",
       "overview": "Support and weekly groups for adults with complex needs and past trauma who've offended or are at risk of offending.",
-      "where": [
-        "25 Trinity Street, Batley WF17 7JZ"
+      "sessions": [
+        {
+          "id": "25-trinity-street",
+          "venue": "25-trinity-street"
+        }
       ]
     }
   ],

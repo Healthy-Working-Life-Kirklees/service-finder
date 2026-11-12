@@ -42,8 +42,11 @@
       "id": "benefits-and-housing-help",
       "name": "Benefits and housing help",
       "overview": "Help with benefit claims and forms, finding or keeping a home and emergency food, for people with complex needs.",
-      "where": [
-        "3-13 Lord Street, Huddersfield HD1 1QA"
+      "sessions": [
+        {
+          "id": "3-13-lord-street",
+          "venue": "3-13-lord-street"
+        }
       ]
     }
   ],

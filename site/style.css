@@ -125,15 +125,18 @@ fieldset.mode input { width: 1.4rem; height: 1.4rem; margin-top: .15rem; accent-
 .badge.live { background: #d9efe2; border-color: #b6dcc6; color: #00562a; }
 .badge.notopen { background: var(--warn-bg); border-color: #ecd49a; color: var(--warn); }
 .badge.soon { background: #dbe9f7; border-color: #b7cfe8; color: #0b3d6b; }
-/* Projects and cohorts on a card */
+/* Projects and sessions on a card */
 .card ul.projects { list-style: none; padding: 0; }
 .card ul.projects > li { border-inline-start: 3px solid var(--accent); padding-inline-start: .7rem; margin: 0 0 .8rem; }
 .card ul.projects p { margin: .2rem 0; }
 .card ul.part-facts { margin: .2rem 0; padding-inline-start: 1.1rem; }
 .card ul.part-facts li.dates { font-weight: 600; }
-.card ul.cohorts { list-style: none; padding: 0; margin: .3rem 0 0; }
-.card ul.cohorts > li { margin: 0 0 .4rem; }
-.card .cohort-name { font-weight: 600; }
+.card ul.sessions { list-style: none; padding: 0; margin: .4rem 0 0; }
+.card ul.sessions > li { display: flex; flex-wrap: wrap; gap: .1rem .6rem; align-items: baseline; padding: .4rem .6rem; border-radius: 8px; background: var(--light); margin: 0 0 .35rem; }
+.card ul.sessions > li.named { background: #fff4d6; }
+.card ul.sessions .session-name, .card ul.sessions .session-time { font-weight: 600; }
+.card ul.sessions .part-facts { flex-basis: 100%; }
+html.high-contrast .card ul.sessions > li { background: #fff; border: 1px solid #000; }
 .badge.self { background: #dff0ef; border-color: #bfe0dd; color: var(--dark-blue); }
 .badge.fit-strong { background: var(--dark-blue); border-color: var(--dark-blue); color: #fff; }
 .badge.fit-possible { background: #fff; color: var(--text); border: 1px solid var(--grey); }
@@ -514,6 +517,18 @@ html.high-contrast .fb-prompt { background: #fff; border-color: #000; }
   .contrast-btn .contrast-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
 /* "Suggest a service": section headings for someone from the service, and hints under labels. */
+/* Suggest a service: projects, their venues and times, and eligibility lines with an "Essential" tick. */
+.fb-project { border: 2px solid var(--accent); background: var(--mint); border-radius: 10px; padding: .6rem .9rem .8rem; margin: 0 0 .8rem; min-width: 0; }
+.fb-project > legend { font-weight: 700; color: var(--dark-blue); padding: 0 .3rem; }
+.fb-where { margin: .4rem 0 .6rem; }
+.fb-where-head { font-weight: 700; margin: 0 0 .3rem; }
+.fb-venue { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: .5rem .7rem; margin: .4rem 0; }
+.fb-times { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
+.fb-elig { display: flex; flex-wrap: wrap; gap: .4rem .75rem; align-items: center; margin: 0 0 .4rem; }
+.fb-elig > input[type=text] { flex: 1 1 14rem; }
+.fb-ess { display: flex; align-items: center; gap: .35rem; font-weight: 700; }
+.fb-label { font-weight: 700; margin: 0 0 .2rem; }
+@media (max-width: 520px) { .fb-times { grid-template-columns: 1fr 1fr; } }
 .fb-sub .fb-section { font-size: 1.05rem; margin: 1.1rem 0 .4rem; padding-top: .6rem; border-top: 1px solid var(--border); color: var(--dark-blue); }
 .fb-hint { margin: -.1rem 0 .35rem; font-size: .9rem; color: var(--grey); }
 .fb-field[hidden] { display: none; }

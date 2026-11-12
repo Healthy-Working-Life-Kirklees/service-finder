@@ -51,8 +51,13 @@
       "name": "Mental health recovery groups",
       "overview": "Groups and courses to recover mental health and build confidence and skills; personal plan for up to two years.",
       "where": [
-        "Lion Chambers, Huddersfield HD1 1ES",
         "North Kirklees venues"
+      ],
+      "sessions": [
+        {
+          "id": "lion-chambers",
+          "venue": "lion-chambers"
+        }
       ]
     }
   ],

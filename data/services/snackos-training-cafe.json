@@ -43,8 +43,11 @@
       "id": "catering-work-training",
       "name": "Catering work training",
       "overview": "Catering project where people learn work skills serving the public, helping into paid or voluntary work.",
-      "where": [
-        "Heckmondwike WF16 0NW"
+      "sessions": [
+        {
+          "id": "heckmondwike",
+          "venue": "heckmondwike"
+        }
       ]
     }
   ],

@@ -47,8 +47,12 @@
       "id": "volunteering-support",
       "name": "Volunteering support",
       "overview": "Official volunteer centre for Kirklees. Search roles, or get one-to-one help to choose, apply for and start a role.",
-      "where": [
-        "Brian Jackson House, Huddersfield HD1 5JP (by appointment)"
+      "sessions": [
+        {
+          "id": "brian-jackson-house",
+          "venue": "brian-jackson-house",
+          "note": "by appointment"
+        }
       ]
     }
   ],

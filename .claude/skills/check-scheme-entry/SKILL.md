@@ -30,12 +30,12 @@ Never take contact details, eligibility or opening times from aggregators, forum
 Work through the entry and note for each: **confirmed**, **changed** (old → new, with source URL), **sources disagree** (HWL schemes), or **couldn't confirm**.
 
 Priority order:
-- **Still running?** → `open` and each project's (and cohort's) dates: `runsFrom`, `runsTo`, `referralsFrom`, `referralsUntil`. If it has closed, propose an end date (it then stops showing by itself) or `open: false` if it isn't taking referrals at all. Note the source in the team `notes`. Don't delete the file.
+- **Still running?** → `open` and each project's (and session's) dates: `runsFrom`, `runsTo`, `referralsFrom`, `referralsUntil`. If it has closed, propose an end date (it then stops showing by itself) or `open: false` if it isn't taking referrals at all. Note the source in the team `notes`. Don't delete the file.
 - **Contact**: `webpage` (does it load, is it the right page?), `email`, `phone`, `selfReferral.url`. Copy exactly from the provider; never tidy or guess.
 - **Who it's for**: `whoFor`, `age`, `eligibility`, `exclusions`, `gate`, `healthFocus`, `audience`.
 - **Where**: each project's `where` (and `locations` for places every project uses), `areas` (allowed values only: Batley, Colne Valley, Dewsbury, Holme Valley, Huddersfield, Kirkburton, Mirfield, Spen Valley, Kirklees-wide, Online).
 - **How to get in**: `referralRoutes`, `selfReferral.allowed` (`yes`/`partly`/`no`/`tbc`) and `note`.
-- **What it does**: `projects` (name, overview up to 400 characters, `when`, `duration`, `places`, and cohorts if it runs more than once for different groups; a project or cohort only records what differs from the service), `cost`, `workExperience`, `languages`, `coachNotes`.
+- **What it does**: `projects` (name, overview up to 400 characters, how it runs, `duration`, `places`, and sessions: each venue with its days and times, or a group of its own such as an age cohort; a project or session only records what differs from the service). Venues go in `data/venues.json` with a full postcode; never type a ward. Tick `groups` only from what the provider says, `cost`, `workExperience`, `languages`, `coachNotes`.
 - **The organisation**: its overview and website live in `data/organisations.json`, shared by all its services. Never mention Healthy Working Life there.
 - Any remaining `"To be completed"` placeholders.
 - `categories`: only from the schema list, most important first.

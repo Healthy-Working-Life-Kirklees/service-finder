@@ -1,0 +1,448 @@
+{
+  "venues": [
+    {
+      "id": "15-lord-street",
+      "name": "15 Lord Street",
+      "address": "15 Lord Street, Huddersfield HD1 1QB",
+      "postcode": "HD1 1QB"
+    },
+    {
+      "id": "15-park-road-west",
+      "name": "15 Park Road West",
+      "address": "15 Park Road West, Huddersfield HD4 5RX",
+      "postcode": "HD4 5RX"
+    },
+    {
+      "id": "20-manchester-road",
+      "name": "20 Manchester Road",
+      "address": "20 Manchester Road, Huddersfield HD1 3HJ",
+      "postcode": "HD1 3HJ"
+    },
+    {
+      "id": "25-trinity-street",
+      "name": "25 Trinity Street",
+      "address": "25 Trinity Street, Batley WF17 7JZ",
+      "postcode": "WF17 7JZ"
+    },
+    {
+      "id": "3-wellington-street",
+      "name": "3 Wellington Street",
+      "address": "3 Wellington Street, Dewsbury WF13 1LY",
+      "postcode": "WF13 1LY"
+    },
+    {
+      "id": "3-13-lord-street",
+      "name": "3-13 Lord Street",
+      "address": "3-13 Lord Street, Huddersfield HD1 1QA",
+      "postcode": "HD1 1QA"
+    },
+    {
+      "id": "3m-buckley-innovation-centre",
+      "name": "3M Buckley Innovation Centre",
+      "address": "3M Buckley Innovation Centre, Firth Street, Huddersfield, HD1 3BD",
+      "postcode": "HD1 3BD"
+    },
+    {
+      "id": "46-47-byram-arcade",
+      "name": "46/47 Byram Arcade",
+      "address": "46/47 Byram Arcade, Westgate, Huddersfield, HD1 1ND",
+      "postcode": "HD1 1ND"
+    },
+    {
+      "id": "5-7-brook-street",
+      "name": "5–7 Brook Street",
+      "address": "5–7 Brook Street, Huddersfield HD1 1EB",
+      "postcode": "HD1 1EB"
+    },
+    {
+      "id": "al-hikmah-centre",
+      "name": "Al Hikmah Centre",
+      "address": "Al Hikmah Centre, 28 Track Road, Batley, WF17 7AA",
+      "postcode": "WF17 7AA"
+    },
+    {
+      "id": "bates-mill",
+      "name": "Bates Mill",
+      "address": "Bates Mill, Huddersfield HD1 3DX",
+      "postcode": "HD1 3DX"
+    },
+    {
+      "id": "batley-business-park",
+      "name": "Batley Business Park",
+      "address": "Batley Business Park WF17 6ER",
+      "postcode": "WF17 6ER"
+    },
+    {
+      "id": "batley-health-centre",
+      "name": "Batley Health Centre",
+      "address": "Batley Health Centre, 130 Upper Commercial St, Batley WF17 5ED",
+      "postcode": "WF17 5ED"
+    },
+    {
+      "id": "batley-sporting-foundation-community-gym",
+      "name": "Batley Sporting Foundation Community Gym",
+      "address": "Batley Sporting Foundation Community Gym, Heritage Road, Batley, WF17 7NZ",
+      "postcode": "WF17 7NZ"
+    },
+    {
+      "id": "beckside-court",
+      "name": "Beckside Court",
+      "address": "Beckside Court, 286 Bradford Road, Batley, WF17 5PW",
+      "postcode": "WF17 5PW"
+    },
+    {
+      "id": "bradley-business-park",
+      "name": "Bradley Business Park",
+      "address": "Bradley Business Park, Huddersfield HD2 1GN",
+      "postcode": "HD2 1GN"
+    },
+    {
+      "id": "brian-jackson-house",
+      "name": "Brian Jackson House",
+      "address": "Brian Jackson House, Huddersfield HD1 5JP",
+      "postcode": "HD1 5JP"
+    },
+    {
+      "id": "cedar-court-hotel",
+      "name": "Cedar Court Hotel",
+      "address": "Cedar Court Hotel, Ainley Top HD3 3RH",
+      "postcode": "HD3 3RH"
+    },
+    {
+      "id": "central-methodist-church",
+      "name": "Central Methodist Church",
+      "address": "Batley: Central Methodist Church WF17 5DS",
+      "postcode": "WF17 5DS"
+    },
+    {
+      "id": "civic-centre-3",
+      "name": "Civic Centre 3",
+      "address": "Civic Centre 3, High Street, Huddersfield, HD1 2TG",
+      "postcode": "HD1 2TG"
+    },
+    {
+      "id": "civic-centre-3-2",
+      "name": "Civic Centre 3",
+      "address": "Civic Centre 3, High Street, Huddersfield HD1 2TG",
+      "postcode": "HD1 2TG"
+    },
+    {
+      "id": "crosland-moor-clc",
+      "name": "Crosland Moor CLC",
+      "address": "Crosland Moor CLC HD4 5RX",
+      "postcode": "HD4 5RX"
+    },
+    {
+      "id": "denby-dale-first-school",
+      "name": "Denby Dale First School",
+      "address": "Denby Dale First School HD8 8SG",
+      "postcode": "HD8 8SG"
+    },
+    {
+      "id": "dewsbury-business-centre",
+      "name": "Dewsbury Business Centre",
+      "address": "Dewsbury Business Centre WF13 1HF",
+      "postcode": "WF13 1HF"
+    },
+    {
+      "id": "dewsbury-health-centre",
+      "name": "Dewsbury Health Centre",
+      "address": "Dewsbury Health Centre, Wellington Road, Dewsbury WF13 1HN",
+      "postcode": "WF13 1HN"
+    },
+    {
+      "id": "dewsbury-library",
+      "name": "Dewsbury Library",
+      "address": "Dewsbury Library WF12 8EQ",
+      "postcode": "WF12 8EQ"
+    },
+    {
+      "id": "dewsbury-town-hall",
+      "name": "Dewsbury Town Hall",
+      "address": "Dewsbury Town Hall, Wakefield Old Road, Dewsbury, WF12 8DG",
+      "postcode": "WF12 8DG"
+    },
+    {
+      "id": "empire-house",
+      "name": "Empire House",
+      "address": "Empire House, Dewsbury WF12 8DJ",
+      "postcode": "WF12 8DJ"
+    },
+    {
+      "id": "empire-house-2",
+      "name": "Empire House",
+      "address": "4th Floor, Empire House, Wakefield Old Road, Dewsbury WF12 8DJ",
+      "postcode": "WF12 8DJ"
+    },
+    {
+      "id": "empire-house-3",
+      "name": "Empire House",
+      "address": "Dewsbury: Empire House, WF12 8DJ",
+      "postcode": "WF12 8DJ"
+    },
+    {
+      "id": "field-lane",
+      "name": "Field Lane",
+      "address": "Field Lane WF17 5AH",
+      "postcode": "WF17 5AH"
+    },
+    {
+      "id": "folly-hall-mills",
+      "name": "Folly Hall Mills",
+      "address": "Folly Hall Mills, St Thomas Road, Huddersfield, HD1 3LT",
+      "postcode": "HD1 3LT"
+    },
+    {
+      "id": "fusion-housing",
+      "name": "Fusion Housing",
+      "address": "Huddersfield: Fusion Housing, Pearl House, HD1 1BA",
+      "postcode": "HD1 1BA"
+    },
+    {
+      "id": "fusion-housing-dewsbury-hub",
+      "name": "Fusion Housing Dewsbury Hub",
+      "address": "Fusion Housing Dewsbury Hub, Empire House, Wakefield Old Road, Dewsbury WF12 8DJ",
+      "postcode": "WF12 8DJ"
+    },
+    {
+      "id": "gledholt-methodist-church",
+      "name": "Gledholt Methodist Church",
+      "address": "Gledholt Methodist Church, 30 Edgerton Grove Road, Marsh, Huddersfield, HD1 5QX",
+      "postcode": "HD1 5QX"
+    },
+    {
+      "id": "halifax",
+      "name": "Halifax",
+      "address": "Halifax HX1 1HJ",
+      "postcode": "HX1 1HJ"
+    },
+    {
+      "id": "heckmondwike",
+      "name": "Heckmondwike",
+      "address": "Heckmondwike WF16 0NW",
+      "postcode": "WF16 0NW"
+    },
+    {
+      "id": "hq-leeds",
+      "name": "HQ Leeds",
+      "address": "HQ Leeds LS7 1PZ",
+      "postcode": "LS7 1PZ"
+    },
+    {
+      "id": "huddersfield-library",
+      "name": "Huddersfield Library",
+      "address": "Huddersfield Library HD1 2YZ",
+      "postcode": "HD1 2YZ"
+    },
+    {
+      "id": "huddersfield-library-2",
+      "name": "Huddersfield Library",
+      "address": "Huddersfield Library HD1 2QF",
+      "postcode": "HD1 2QF"
+    },
+    {
+      "id": "jo-cox-house",
+      "name": "Jo Cox House",
+      "address": "Jo Cox House, Batley WF17 5DR",
+      "postcode": "WF17 5DR"
+    },
+    {
+      "id": "jo-cox-house-2",
+      "name": "Jo Cox House",
+      "address": "Jo Cox House, 90 Commercial Street, Batley, WF17 5DS",
+      "postcode": "WF17 5DS"
+    },
+    {
+      "id": "jubilee-centre",
+      "name": "Jubilee Centre",
+      "address": "Jubilee Centre, Paddock, Huddersfield HD1 4SH",
+      "postcode": "HD1 4SH"
+    },
+    {
+      "id": "jubilee-centre-2",
+      "name": "Jubilee Centre",
+      "address": "Jubilee Centre, Paddock HD1 4SH",
+      "postcode": "HD1 4SH"
+    },
+    {
+      "id": "lawrence-batley-theatre",
+      "name": "Lawrence Batley Theatre",
+      "address": "Lawrence Batley Theatre, Queen Street, Huddersfield, HD1 2SP",
+      "postcode": "HD1 2SP"
+    },
+    {
+      "id": "leeds",
+      "name": "Leeds",
+      "address": "Leeds LS9 7DZ",
+      "postcode": "LS9 7DZ"
+    },
+    {
+      "id": "leeds-2",
+      "name": "Leeds",
+      "address": "Leeds LS1 2DE",
+      "postcode": "LS1 2DE"
+    },
+    {
+      "id": "leeds-road-sports-complex",
+      "name": "Leeds Road Sports Complex",
+      "address": "Leeds Road Sports Complex, Leeds Road, Huddersfield, HD2 1YY",
+      "postcode": "HD2 1YY"
+    },
+    {
+      "id": "lg31-the-media-centre",
+      "name": "LG31 The Media Centre",
+      "address": "LG31 The Media Centre, 7 Northumberland Street, Huddersfield, HD1 1RL",
+      "postcode": "HD1 1RL"
+    },
+    {
+      "id": "lion-chambers",
+      "name": "Lion Chambers",
+      "address": "Lion Chambers, Huddersfield HD1 1ES",
+      "postcode": "HD1 1ES"
+    },
+    {
+      "id": "manorfield",
+      "name": "Manorfield",
+      "address": "Manorfield WF17 7DQ",
+      "postcode": "WF17 7DQ"
+    },
+    {
+      "id": "media-centre",
+      "name": "Media Centre",
+      "address": "Huddersfield (Media Centre HD1 1RL",
+      "postcode": "HD1 1RL"
+    },
+    {
+      "id": "norwich-union-house",
+      "name": "Norwich Union House",
+      "address": "Norwich Union House, Market Street, Huddersfield HD1 2LR",
+      "postcode": "HD1 2LR"
+    },
+    {
+      "id": "oasis-centre",
+      "name": "Oasis Centre",
+      "address": "Oasis Centre, Huddersfield HD1 5BW",
+      "postcode": "HD1 5BW"
+    },
+    {
+      "id": "packhorse-shopping-centre",
+      "name": "Packhorse Shopping Centre",
+      "address": "Packhorse Shopping Centre, King Street, Huddersfield, HD1 2RT",
+      "postcode": "HD1 2RT"
+    },
+    {
+      "id": "pearl-house",
+      "name": "Pearl House",
+      "address": "Pearl House, Huddersfield HD1 1BA",
+      "postcode": "HD1 1BA"
+    },
+    {
+      "id": "pioneer-higher-skills-centre",
+      "name": "Pioneer Higher Skills Centre",
+      "address": "Pioneer Higher Skills Centre, Dewsbury WF13 1BD",
+      "postcode": "WF13 1BD"
+    },
+    {
+      "id": "po-box-1720",
+      "name": "PO Box 1720",
+      "address": "Postal: PO Box 1720, Huddersfield HD1 9EL",
+      "postcode": "HD1 9EL"
+    },
+    {
+      "id": "princess-royal-health-centre",
+      "name": "Princess Royal Health Centre",
+      "address": "Princess Royal Health Centre, Greenhead Rd, Huddersfield HD1 4EW",
+      "postcode": "HD1 4EW"
+    },
+    {
+      "id": "proper-job-theatre-company-ltd",
+      "name": "Proper Job Theatre Company Ltd",
+      "address": "Proper Job Theatre Company Ltd, 46/47 Byram Arcade, Westgate, Huddersfield HD1 1ND",
+      "postcode": "HD1 1ND"
+    },
+    {
+      "id": "ravensleigh",
+      "name": "Ravensleigh",
+      "address": "Ravensleigh, Dewsbury WF13 4LL",
+      "postcode": "WF13 4LL"
+    },
+    {
+      "id": "ravensthorpe-community-centre",
+      "name": "Ravensthorpe Community Centre",
+      "address": "Ravensthorpe Community Centre, 24 Garden Street, Ravensthorpe, Dewsbury, WF13 3AR",
+      "postcode": "WF13 3AR"
+    },
+    {
+      "id": "salvation-army-hall",
+      "name": "Salvation Army Hall",
+      "address": "Salvation Army Hall, Oakes HD3 4DD",
+      "postcode": "HD3 4DD"
+    },
+    {
+      "id": "saviletown-children-s-centre",
+      "name": "Saviletown Children's Centre",
+      "address": "Saviletown Children's Centre, Pentland I&N School, Pentland Road, Dewsbury, WF12 9JR",
+      "postcode": "WF12 9JR"
+    },
+    {
+      "id": "shelley-village-hall",
+      "name": "Shelley Village Hall",
+      "address": "Shelley Village Hall HD8 8HE",
+      "postcode": "HD8 8HE"
+    },
+    {
+      "id": "springfield-sixth-form-centre",
+      "name": "Springfield Sixth Form Centre",
+      "address": "Springfield Sixth Form Centre WF13 2NP",
+      "postcode": "WF13 2NP"
+    },
+    {
+      "id": "st-paul-s-methodist",
+      "name": "St Paul's Methodist",
+      "address": "Dalton: St Paul's Methodist HD5 8DE",
+      "postcode": "HD5 8DE"
+    },
+    {
+      "id": "taleem-centre",
+      "name": "Taleem Centre",
+      "address": "Taleem Centre, 36 Orchard Street, Savile Town, Dewsbury, WF12 9LT",
+      "postcode": "WF12 9LT"
+    },
+    {
+      "id": "taleem-community-centre",
+      "name": "Taleem Community Centre",
+      "address": "Taleem Community Centre, Savile Town, Dewsbury WF12 9LT",
+      "postcode": "WF12 9LT"
+    },
+    {
+      "id": "the-branch",
+      "name": "The Branch",
+      "address": "The Branch, Jubilee Centre, Huddersfield, HD1 4SH",
+      "postcode": "HD1 4SH"
+    },
+    {
+      "id": "the-chestnut-centre",
+      "name": "The Chestnut Centre",
+      "address": "The Chestnut Centre, 2A Chestnut Street, Huddersfield, HD2 1HJ",
+      "postcode": "HD2 1HJ"
+    },
+    {
+      "id": "the-glass-box",
+      "name": "The Glass Box",
+      "address": "The Glass Box, Huddersfield HD1 1RD",
+      "postcode": "HD1 1RD"
+    },
+    {
+      "id": "wakefield-road-allotments",
+      "name": "Wakefield Road Allotments",
+      "address": "Wakefield Road Allotments, Dalton HD5 9XN",
+      "postcode": "HD5 9XN"
+    },
+    {
+      "id": "wentworth-castle",
+      "name": "Wentworth Castle",
+      "address": "Wentworth Castle, Barnsley S75 3ET",
+      "postcode": "S75 3ET"
+    }
+  ]
+}

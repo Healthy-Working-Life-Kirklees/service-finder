@@ -51,9 +51,14 @@
       "name": "Creative arts sessions",
       "overview": "Free music, singing, art and writing sessions to help adults look after their mental health; sessions for adults with learning disabilities, autism or dementia.",
       "where": [
-        "Bates Mill, Huddersfield HD1 3DX",
         "Dewsbury/Dalton",
         "online"
+      ],
+      "sessions": [
+        {
+          "id": "bates-mill",
+          "venue": "bates-mill"
+        }
       ]
     }
   ],

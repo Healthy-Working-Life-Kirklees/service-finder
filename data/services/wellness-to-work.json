@@ -62,10 +62,19 @@
       "name": "Wellness to Work",
       "overview": "A personalised holistic assessment of barriers (health, confidence, skills, general wellbeing), clinical triage where needed, and a dedicated Employment Navigator and health professional who build an action plan. Includes MSK fast-track physiotherapy and occupational therapy vocational rehabilitation. Connects people to partners such as Get Set Goal, Kirklees Active Leisure, Kirklees College and Third Sector Leaders.",
       "duration": "3-6 months, with coordination for up to 3 months afterwards, plus in-work support for people who get a job",
-      "where": [
-        "Princess Royal Health Centre, Greenhead Rd, Huddersfield HD1 4EW",
-        "Batley Health Centre, 130 Upper Commercial St, Batley WF17 5ED",
-        "Dewsbury Health Centre, Wellington Road, Dewsbury WF13 1HN"
+      "sessions": [
+        {
+          "id": "princess-royal-health-centre",
+          "venue": "princess-royal-health-centre"
+        },
+        {
+          "id": "batley-health-centre",
+          "venue": "batley-health-centre"
+        },
+        {
+          "id": "dewsbury-health-centre",
+          "venue": "dewsbury-health-centre"
+        }
       ]
     }
   ],

@@ -45,8 +45,11 @@
       "id": "english-level-checks-and-classes",
       "name": "English level checks and classes",
       "overview": "Checks your level of English and finds the right class, course, volunteering or activity. Also runs free community English classes.",
-      "where": [
-        "Civic Centre 3, High Street, Huddersfield HD1 2TG"
+      "sessions": [
+        {
+          "id": "civic-centre-3",
+          "venue": "civic-centre-3-2"
+        }
       ]
     }
   ],

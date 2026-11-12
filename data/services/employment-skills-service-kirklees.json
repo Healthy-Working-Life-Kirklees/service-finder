@@ -44,8 +44,11 @@
       "id": "employment-support",
       "name": "Employment support",
       "overview": "Advisers help you get past what's stopping you working, then find and apply for jobs: CVs, interview practice and a plan. Also helps people in work who want to move up or change jobs.",
-      "where": [
-        "Postal: PO Box 1720, Huddersfield HD1 9EL"
+      "sessions": [
+        {
+          "id": "po-box-1720",
+          "venue": "po-box-1720"
+        }
       ]
     }
   ],

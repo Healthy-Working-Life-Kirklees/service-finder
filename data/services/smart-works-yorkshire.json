@@ -44,8 +44,13 @@
       "name": "Interview clothes and coaching",
       "overview": "Free interview clothes and coaching for women who are out of work; you keep the outfit.",
       "where": [
-        "Leeds LS9 7DZ",
         "online appointments"
+      ],
+      "sessions": [
+        {
+          "id": "leeds",
+          "venue": "leeds"
+        }
       ]
     }
   ],

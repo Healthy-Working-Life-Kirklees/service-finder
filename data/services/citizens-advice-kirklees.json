@@ -55,9 +55,17 @@
       "id": "advice-on-money-housing-and-work",
       "name": "Advice on money, housing and work",
       "overview": "Free advice on benefits, debt, housing, work problems, discrimination and immigration. Request a call back online or go to a drop-in.",
-      "where": [
-        "Dewsbury: Empire House, WF12 8DJ (Mon & Tue 9.30–3)",
-        "Huddersfield: Fusion Housing, Pearl House, HD1 1BA (Fri 10–1)"
+      "sessions": [
+        {
+          "id": "empire-house",
+          "venue": "empire-house-3",
+          "note": "Mon & Tue 9.30–3"
+        },
+        {
+          "id": "fusion-housing",
+          "venue": "fusion-housing",
+          "note": "Fri 10–1"
+        }
       ]
     }
   ],

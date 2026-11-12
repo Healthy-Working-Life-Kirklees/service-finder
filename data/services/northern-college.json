@@ -44,8 +44,13 @@
       "name": "Short and residential courses",
       "overview": "Short courses, often with a free overnight stay, to help adults return to learning, build confidence and gain qualifications.",
       "where": [
-        "Wentworth Castle, Barnsley S75 3ET",
         "online"
+      ],
+      "sessions": [
+        {
+          "id": "wentworth-castle",
+          "venue": "wentworth-castle"
+        }
       ]
     }
   ],

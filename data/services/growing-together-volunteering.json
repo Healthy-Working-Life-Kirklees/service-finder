@@ -54,8 +54,11 @@
       "name": "Growing Together - Volunteering Pathways",
       "overview": "One-to-one mentoring, employability and CV support, safeguarding and early years training, wellbeing activities, and supported volunteering placements in Stay & Play sessions and other community settings, leading to next steps in training, education or work.",
       "duration": "Ongoing support",
-      "where": [
-        "The Chestnut Centre, 2A Chestnut Street, Huddersfield, HD2 1HJ"
+      "sessions": [
+        {
+          "id": "the-chestnut-centre",
+          "venue": "the-chestnut-centre"
+        }
       ]
     }
   ],

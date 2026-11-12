@@ -70,9 +70,15 @@
       "id": "drug-and-alcohol-support",
       "name": "Drug and alcohol support",
       "overview": "Free, confidential help with drugs or alcohol: advice, treatment, detox, mental health support and recovery groups.",
-      "where": [
-        "20 Manchester Road, Huddersfield HD1 3HJ",
-        "3 Wellington Street, Dewsbury WF13 1LY"
+      "sessions": [
+        {
+          "id": "20-manchester-road",
+          "venue": "20-manchester-road"
+        },
+        {
+          "id": "3-wellington-street",
+          "venue": "3-wellington-street"
+        }
       ]
     }
   ],

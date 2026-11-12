@@ -45,8 +45,11 @@
       "id": "emergency-food-and-advice",
       "name": "Emergency food and advice",
       "overview": "Emergency food and household packs, plus caseworkers who advocate, give small grants and refer on.",
-      "where": [
-        "15 Lord Street, Huddersfield HD1 1QB"
+      "sessions": [
+        {
+          "id": "15-lord-street",
+          "venue": "15-lord-street"
+        }
       ]
     }
   ],

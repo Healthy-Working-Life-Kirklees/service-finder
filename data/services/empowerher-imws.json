@@ -55,8 +55,11 @@
       "name": "EmpowerHer: Steps to Wellbeing and Work Project",
       "overview": "Beginner ESOL (English) classes, digital skills classes, wellbeing activities, confidence building and one-to-one mentoring.",
       "duration": "One day a week",
-      "where": [
-        "Al Hikmah Centre, 28 Track Road, Batley, WF17 7AA"
+      "sessions": [
+        {
+          "id": "al-hikmah-centre",
+          "venue": "al-hikmah-centre"
+        }
       ]
     }
   ],

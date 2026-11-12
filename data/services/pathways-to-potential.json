@@ -55,8 +55,12 @@
       "name": "Pathways to Potential Programme",
       "overview": "Group workshops and one-to-one guidance covering wellbeing and mindfulness, digital confidence and basic IT skills (including AI), CVs, job searching and interviews, and volunteering and community connections.",
       "duration": "10 sessions over eight weeks (three cohorts, 30 places in total)",
-      "where": [
-        "The Branch, Jubilee Centre, Huddersfield, HD1 4SH - a welcoming, accessible community space"
+      "sessions": [
+        {
+          "id": "the-branch",
+          "venue": "the-branch",
+          "note": "a welcoming, accessible community space"
+        }
       ]
     }
   ],

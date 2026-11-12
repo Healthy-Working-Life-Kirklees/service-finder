@@ -43,13 +43,16 @@ const L = globalThis.LISTING;
 const ORGS = (() => {
   try { return JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'organisations.json'), 'utf8')).organisations; } catch { return []; }
 })();
+const VENUES = (() => {
+  try { return new Map(JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'venues.json'), 'utf8')).venues.map((v) => [v.id, v])); } catch { return new Map(); }
+})();
 const orgOverview = (name) => (ORGS.find((o) => o.name === name || (o.aliases || []).includes(name)) || {}).overview || '';
 const dir = path.join(ROOT, 'data', 'services');
 const services = fs.readdirSync(dir)
   .filter((f) => f.endsWith('.json'))
   .map((f) => JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')))
   .filter((s) => s.listing && s.listing.decision === 'include')
-  // Only services with a project or cohort open (or opening to referrals soon) on the day it is built. The
+  // Only services with a project or session open (or opening to referrals soon) on the day it is built. The
   // directory is rebuilt each morning, so closed projects drop out on their own (site/listing-logic.js).
   .filter((s) => globalThis.LISTING.visible(s, TODAY).length > 0)
   .sort((a, b) => a.name.localeCompare(b.name, 'en-GB', { sensitivity: 'base' }));
@@ -207,17 +210,25 @@ async function servicePage(s, n) {
     s.age ? `<span class="badge">Age: ${esc(s.age)}</span>` : '',
   ].join('');
 
-  // The projects (and cohorts) open or opening soon on the day the directory is built, with their own details.
+  // The projects (and sessions) open or opening soon on the day the directory is built, with their own details.
   const facts = (o, dates) => [o.when, o.duration, o.places, o.age && o.age !== s.age ? 'Age ' + o.age : '', (o.eligibility || []).length ? 'Also: ' + o.eligibility.join('; ') : '', ...L.dateWords(dates, TODAY)].filter(Boolean);
   const shown = L.visible(s, TODAY);
   const acts = shown.map((x) => {
     const p = x.project;
     const showName = p.name && p.name.trim().toLowerCase() !== s.name.trim().toLowerCase();
-    const own = facts(p, x.cohorts.length ? {} : x.dates);
-    const cohorts = x.cohorts.map((c) => `<li><strong>${esc(c.cohort.name)}.</strong> ${esc(facts({ ...c.cohort, age: c.cohort.age || p.age }, c.dates).join('. '))}</li>`).join('');
-    return `<li>${showName ? `<strong>${esc(p.name)}.</strong> ` : ''}${esc(p.overview || '')}${own.length ? ` <span class="dur">(${esc(own.join('. '))})</span>` : ''}${cohorts ? `<ul class="cohorts">${cohorts}</ul>` : ''}</li>`;
+    const own = facts(p, x.sessions.length ? {} : x.dates);
+    // The timetable: one line per session, by day, with its venue.
+    const sessions = [...x.sessions].sort((a, b) => L.byDay(a.session, b.session)).map((c) => {
+      const se = c.session;
+      const v = se.venue && VENUES.get(se.venue);
+      const head = [se.name, L.timeWords(se)].filter(Boolean).join(', ');
+      const rest = [v ? v.name : '', se.note || se.when, ...facts({ ...se, when: null, age: se.age && se.age !== p.age ? se.age : null }, c.dates)].filter(Boolean).join('. ');
+      return `<li>${head ? `<strong>${esc(head)}.</strong> ` : ''}${esc(rest)}</li>`;
+    }).join('');
+    return `<li>${showName ? `<strong>${esc(p.name)}.</strong> ` : ''}${esc(p.overview || '')}${own.length ? ` <span class="dur">(${esc(own.join('. '))})</span>` : ''}${p.area ? ` <span class="dur">Area: ${esc(p.area)}.</span>` : ''}${sessions ? `<ul class="cohorts">${sessions}</ul>` : ''}</li>`;
   }).join('');
-  const where = [...new Set([...(s.locations || []), ...shown.flatMap((x) => [...(x.project.where || []), ...x.cohorts.flatMap((c) => c.cohort.where || [])])])];
+  const vline = (id) => (VENUES.has(id) ? L.venueLine(VENUES.get(id)) : null);
+  const where = [...new Set([...(s.venues || []).map(vline).filter(Boolean), ...(s.locations || []), ...shown.flatMap((x) => [...(x.project.where || []), ...x.sessions.flatMap((c) => [vline(c.session.venue), ...(c.session.where || [])].filter(Boolean))])])];
 
   const contact = [
     s.phone ? `<div class="ct"><dt>Phone</dt><dd>${esc(s.phone)}</dd></div>` : '',

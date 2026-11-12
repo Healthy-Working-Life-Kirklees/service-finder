@@ -73,6 +73,8 @@ jobs:
           npm ci
           if [ "$PREVIEW" = "true" ]; then extra=--dry-run; else extra=; fi
           npm run -s apply-decisions -- $extra > "$RUNNER_TEMP/summary.md"
+          # Wards and map positions for any new venues, from their postcodes (postcodes.io).
+          if [ "$PREVIEW" != "true" ]; then node scripts/lookup-venues.mjs | tee -a "$RUNNER_TEMP/summary.md"; fi
           cat "$RUNNER_TEMP/summary.md" >> "$GITHUB_STEP_SUMMARY"
 
       # The same checks a pull request gets. If the changes would break the data, stop here and open nothing.
@@ -92,8 +94,9 @@ jobs:
           REQUESTED_BY: ${{ inputs.requested_by }}
         run: |
           # git status, not git diff, so brand-new service files count too.
-          # data/organisations.json too: combining or renaming an organisation can change only that file.
-          if [ -z "$(git status --porcelain -- data/services data/organisations.json)" ]; then
+          # data/organisations.json and data/venues.json too: combining or renaming an organisation or a venue can
+          # change only that file.
+          if [ -z "$(git status --porcelain -- data/services data/organisations.json data/venues.json)" ]; then
             echo "Nothing to apply: the data already matches the team's decisions and edits." | tee -a "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
@@ -104,7 +107,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$branch"
-          git add data/services data/organisations.json
+          git add data/services data/organisations.json data/venues.json
           if [ -n "$REQUESTED_BY" ]; then who="Requested by $REQUESTED_BY on the All services page."; else who="Run by $ACTOR from the Apply team changes workflow."; fi
           git commit -q -m "Apply the development team's decisions and edits ($(date -u +%Y-%m-%d))" -m "$who"
           git push -q origin "$branch"

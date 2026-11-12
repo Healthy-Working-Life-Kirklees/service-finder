@@ -44,9 +44,17 @@
       "name": "English classes (ESOL)",
       "overview": "Part-time English classes for adults from complete beginners upwards; full-time courses for 16–18s.",
       "where": [
-        "Pioneer Higher Skills Centre, Dewsbury WF13 1BD",
-        "Springfield Sixth Form Centre WF13 2NP",
         "Huddersfield"
+      ],
+      "sessions": [
+        {
+          "id": "pioneer-higher-skills-centre",
+          "venue": "pioneer-higher-skills-centre"
+        },
+        {
+          "id": "springfield-sixth-form-centre",
+          "venue": "springfield-sixth-form-centre"
+        }
       ]
     }
   ],

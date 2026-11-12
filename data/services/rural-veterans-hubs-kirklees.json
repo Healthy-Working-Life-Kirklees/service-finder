@@ -45,9 +45,17 @@
       "id": "veterans-drop-in-hubs",
       "name": "Veterans drop-in hubs",
       "overview": "Monthly drop-in hubs run by veterans for veterans, with lunch, talks and help reaching British Legion, SSAFA and housing support.",
-      "where": [
-        "Shelley Village Hall HD8 8HE (1st Tue)",
-        "Denby Dale First School HD8 8SG (2nd Thu)"
+      "sessions": [
+        {
+          "id": "shelley-village-hall",
+          "venue": "shelley-village-hall",
+          "note": "1st Tue"
+        },
+        {
+          "id": "denby-dale-first-school",
+          "venue": "denby-dale-first-school",
+          "note": "2nd Thu"
+        }
       ]
     }
   ],

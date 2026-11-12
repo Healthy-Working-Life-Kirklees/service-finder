@@ -67,8 +67,11 @@
       "id": "young-people-s-drug-and-alcohol-support",
       "name": "Young people's drug and alcohol support",
       "overview": "Free, private help for young people who use drugs or alcohol, plus advice for parents and workers.",
-      "where": [
-        "Brian Jackson House, Huddersfield HD1 5JP"
+      "sessions": [
+        {
+          "id": "brian-jackson-house",
+          "venue": "brian-jackson-house"
+        }
       ]
     }
   ],

@@ -42,11 +42,23 @@
       "id": "digital-skills-courses-and-cafes",
       "name": "Digital skills courses and cafés",
       "overview": "Free computer courses and drop-in digital cafés for beginners upwards, to get online, use services and apply for jobs.",
-      "where": [
-        "Crosland Moor CLC HD4 5RX",
-        "Huddersfield Library HD1 2QF",
-        "Dewsbury Library WF12 8EQ",
-        "Jo Cox House, Batley WF17 5DR"
+      "sessions": [
+        {
+          "id": "crosland-moor-clc",
+          "venue": "crosland-moor-clc"
+        },
+        {
+          "id": "huddersfield-library",
+          "venue": "huddersfield-library-2"
+        },
+        {
+          "id": "dewsbury-library",
+          "venue": "dewsbury-library"
+        },
+        {
+          "id": "jo-cox-house",
+          "venue": "jo-cox-house"
+        }
       ]
     }
   ],

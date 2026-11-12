@@ -79,9 +79,15 @@
       "name": "Work retention support using the principles of IPS",
       "overview": "Employment specialists work with community mental health services to explore interests, skills and goals, build an employment plan and address barriers. Rapid, intensive support from referral, support for both the person and their employer, help with disclosure and reasonable adjustments, and information about workplace rights.",
       "duration": "Time-unlimited follow-along support for as long as the person wishes",
-      "where": [
-        "Folly Hall Mills, St Thomas Road, Huddersfield, HD1 3LT",
-        "Beckside Court, 286 Bradford Road, Batley, WF17 5PW"
+      "sessions": [
+        {
+          "id": "folly-hall-mills",
+          "venue": "folly-hall-mills"
+        },
+        {
+          "id": "beckside-court",
+          "venue": "beckside-court"
+        }
       ]
     }
   ],

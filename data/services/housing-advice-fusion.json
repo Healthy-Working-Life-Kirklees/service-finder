@@ -43,8 +43,13 @@
       "name": "Housing advice",
       "overview": "Free advice on any housing problem, from first questions to court.",
       "where": [
-        "Pearl House, Huddersfield HD1 1BA",
         "Empire House, Dewsbury"
+      ],
+      "sessions": [
+        {
+          "id": "pearl-house",
+          "venue": "pearl-house"
+        }
       ]
     }
   ],

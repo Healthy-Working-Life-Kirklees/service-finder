@@ -1,0 +1,1 @@
+Leaflet 1.9.4 (https://leafletjs.com), BSD 2-Clause licence (LICENSE). Used by the commissioner view (admin/commissioner.html) for its map. Kept here, not loaded from a CDN, because the Admin pages only run scripts from this site.

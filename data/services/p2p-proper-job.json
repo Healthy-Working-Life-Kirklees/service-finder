@@ -53,14 +53,19 @@
       "id": "pathways-to-possibilities",
       "name": "Pathways to Possibilities",
       "overview": "Three strands: health and wellbeing (confidence, resilience, social connections); engaging and building confidence for learning; and preparation for employment. Connects people to volunteering, learning and employment opportunities. 50 places available.",
-      "duration": "Programme starts 1 September 2026; referrals close 1 March 2027. No fixed duration - flexible and person-centred",
       "where": [
-        "Proper Job Theatre Company Ltd, 46/47 Byram Arcade, Westgate, Huddersfield HD1 1ND",
         "Community settings across Kirklees",
         "Remote support (a mix of face-to-face and remote)"
       ],
+      "duration": "Programme starts 1 September 2026; referrals close 1 March 2027. No fixed duration - flexible and person-centred",
       "runsFrom": "2026-09-01",
-      "referralsUntil": "2027-03-01"
+      "referralsUntil": "2027-03-01",
+      "sessions": [
+        {
+          "id": "proper-job-theatre-company-ltd",
+          "venue": "proper-job-theatre-company-ltd"
+        }
+      ]
     }
   ],
   "workExperience": "Yes - volunteering and work experience opportunities",

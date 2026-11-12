@@ -7,7 +7,8 @@
 // Each service names its organisation; the organisation's own details (its overview) are kept once, in
 // data/organisations.json, and copied into each service here as "organisationOverview", so the page, the AI and
 // the directory read one service at a time. Both files also list every organisation ("organisations"), for the
-// type-ahead on the forms.
+// type-ahead on the forms, and the venues (data/venues.json) the services use ("venues": the live list's only in
+// services.json, every venue in services-all.json), so sessions can be shown with their address, ward and map.
 //
 // Run it before deploying, testing or running the Worker locally:
 //
@@ -50,14 +51,20 @@ for (const s of services) {
 }
 const orgList = orgs.map((o) => ({ id: o.id, name: o.name, ...(o.aliases ? { aliases: o.aliases } : {}) }));
 
+// Venues: one record per place. The team's notes stay out of the live file.
+const venues = JSON.parse(fs.readFileSync(path.join(root, 'data', 'venues.json'), 'utf8')).venues;
+const venueIdsOf = (s) => [...(s.venues || []), ...(s.projects || []).flatMap((p) => (p.sessions || []).map((x) => x.venue).filter(Boolean))];
+
 const live = services.filter((s) => s.listing && s.listing.decision === 'include');
-fs.writeFileSync(out, JSON.stringify({ ...meta, count: live.length, organisations: orgList, services: live }, null, 2) + '\n');
+const liveVenueIds = new Set(live.flatMap(venueIdsOf));
+const liveVenues = venues.filter((v) => liveVenueIds.has(v.id)).map(({ notes, ...v }) => v);
+fs.writeFileSync(out, JSON.stringify({ ...meta, count: live.length, organisations: orgList, venues: liveVenues, services: live }, null, 2) + '\n');
 // The All services page's edit form offers the same choices the schema allows.
 const schema = JSON.parse(fs.readFileSync(path.join(root, 'data', 'schema.json'), 'utf8'));
 const P = schema.properties;
 const choices = {
   level: P.level.enum, reviewCycle: P.reviewCycle.enum, audience: P.audience.items.enum, categories: P.categories.items.enum,
-  areas: P.areas.items.enum, healthFocus: P.healthFocus.items.enum, selfReferral: P.selfReferral.properties.allowed.enum,
+  areas: P.areas.items.enum, healthFocus: P.healthFocus.items.enum, selfReferral: P.selfReferral.properties.allowed.enum, groups: P.groups.items.enum,
 };
-fs.writeFileSync(outAll, JSON.stringify({ ...meta, count: services.length, choices, organisations: orgs, services }, null, 2) + '\n');
+fs.writeFileSync(outAll, JSON.stringify({ ...meta, count: services.length, choices, organisations: orgs, venues, services }, null, 2) + '\n');
 console.log(`Built data/services.json (${live.length} on the live list) and data/services-all.json (all ${services.length}).`);

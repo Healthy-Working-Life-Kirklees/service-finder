@@ -48,8 +48,12 @@
       "id": "therapeutic-gardening-groups",
       "name": "Therapeutic gardening groups",
       "overview": "Small allotment groups gardening and learning outdoor skills, sharing soup from what they grow; volunteering available.",
-      "where": [
-        "Wakefield Road Allotments, Dalton HD5 9XN (Tue & Thu 10–1)"
+      "sessions": [
+        {
+          "id": "wakefield-road-allotments",
+          "venue": "wakefield-road-allotments",
+          "note": "Tue & Thu 10–1"
+        }
       ]
     }
   ],

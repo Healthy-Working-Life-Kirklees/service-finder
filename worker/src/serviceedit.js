@@ -16,10 +16,16 @@
 //
 // Character limits (LIMITS in site/listing-logic.js) apply to text that has been changed. Text already in the
 // data that is over a limit is kept as it is, and can be sent back unchanged.
+//
+// A venue (on a session, or in "venues", the places used by every project) is either the id of a venue already in
+// data/venues.json, or a new one written out as { name, address, postcode }. A new venue becomes a venue record when
+// the change is applied (or is matched to one already there with the same address).
 
 import '../../site/listing-logic.js';
 
-const { LIMITS, checkParts, DATE_KEYS } = globalThis.LISTING;
+const { LIMITS, checkParts, DATE_KEYS, DAYS, FREQUENCY, RUNS } = globalThis.LISTING;
+const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
+const POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i;
 
 // The Worker passes data/schema.json in (see index.js), so this file has no bundler-only imports.
 export function makeChecker(schema) {
@@ -35,14 +41,14 @@ export function makeChecker(schema) {
   const STRICT = { whoFor: LIMITS.whoFor, coachNotes: LIMITS.coachNotes, organisationOverview: LIMITS.orgOverview };
   const ENUM = { level: enumOf(P.level), reviewCycle: enumOf(P.reviewCycle) };
   const AUDIENCE = enumOf(P.audience);
-  const ENUM_LIST = { audience: [AUDIENCE, 1], categories: [enumOf(P.categories), 1], areas: [enumOf(P.areas), 1], healthFocus: [enumOf(P.healthFocus), 0] };
+  const ENUM_LIST = { audience: [AUDIENCE, 1], categories: [enumOf(P.categories), 1], areas: [enumOf(P.areas), 1], healthFocus: [enumOf(P.healthFocus), 0], groups: [enumOf(P.groups), 0] };
   const TEXT_LIST = { social: 0, locations: 0, eligibility: 0, exclusions: 0, gate: 0, referralRoutes: 1 };
   const BOOL = ['open', 'hwlFunded', 'mapLinks'];
   const SELF = enumOf(P.selfReferral.properties.allowed);
 
   const EDITABLE = [
     ...Object.keys(TEXT), ...Object.keys(NULLABLE_TEXT), ...Object.keys(OPTIONAL_TEXT), ...Object.keys(ENUM), ...Object.keys(ENUM_LIST),
-    ...Object.keys(TEXT_LIST), ...BOOL, 'webpage', 'email', 'selfReferral', 'projects', 'logo', 'requiresMention',
+    ...Object.keys(TEXT_LIST), ...BOOL, 'webpage', 'email', 'selfReferral', 'projects', 'venues', 'logo', 'requiresMention',
   ];
   // Fields a provider can't change: how the team sorts, reviews and maintains the data.
   const TEAM_ONLY = ['level', 'reviewCycle', 'areas', 'categories', 'notes', 'hwlFunded', 'mapLinks', 'logo', 'requiresMention'];
@@ -57,6 +63,7 @@ export function makeChecker(schema) {
     categories: 'Categories', areas: 'Where it runs', healthFocus: 'Health needs', social: 'Social media', locations: 'Places used by every project', eligibility: 'Who your service is for (one per line)',
     exclusions: 'Anyone you can\'t support', gate: 'Anything you\'d turn someone away for not having', referralRoutes: 'How people are referred or apply', open: 'Taking referrals', webpage: 'Website', email: 'Email',
     selfReferral: 'Self-referral', projects: 'Projects', hwlFunded: 'Healthy Working Life funded', mapLinks: 'Map buttons', logo: 'Logo', requiresMention: 'Only shown when mentioned',
+    groups: "Who it's for (groups)", venues: 'Venues used by every project',
   };
 
   const str = (v) => (typeof v === 'string' ? v.trim() : null);
@@ -70,60 +77,103 @@ export function makeChecker(schema) {
     return { value: list };
   }
 
-  // A project or cohort. "was" is the same project or cohort as it is in the data now (by id), if there is one,
-  // so text already over a limit can be kept.
-  const PROJECT_KEYS = ['id', 'name', 'overview', 'where', 'when', 'duration', 'places', 'age', 'audience', 'eligibility', 'gate', ...DATE_KEYS, 'cohorts'];
-  const COHORT_KEYS = ['id', 'name', 'where', 'when', 'places', 'age', 'eligibility', 'gate', ...DATE_KEYS];
+  // A venue: an id already in the data, or a new one { name, address, postcode }.
+  function venue(v, where) {
+    if (typeof v === 'string') {
+      if (!ID_RE.test(v) || v.length > 50) return { error: `The venue for ${where} isn't one we know.` };
+      return { value: v };
+    }
+    if (!v || typeof v !== 'object' || Array.isArray(v)) return { error: `The venue for ${where} is missing.` };
+    const bad = Object.keys(v).find((k) => !['name', 'address', 'postcode'].includes(k));
+    if (bad) return { error: `The venue for ${where} has a detail that can't be set ("${bad}").` };
+    const name = str(v.name);
+    const address = str(v.address);
+    const postcode = str(v.postcode);
+    if (!name || name.length > 150) return { error: `Please give the venue for ${where} a name (up to 150 characters).` };
+    if (!address || address.length > 300) return { error: `Please give the address of ${name} (up to 300 characters).` };
+    if (!postcode || !POSTCODE_RE.test(postcode)) return { error: `Please give the full postcode of ${name}, such as WF17 5DR.` };
+    const pc = postcode.toUpperCase().replace(/\s+/g, '').replace(/^(.+)(\d[A-Z]{2})$/, '$1 $2');
+    return { value: { name, address, postcode: pc } };
+  }
+
+  // A project or session. "was" is the same project as it is in the data now (by id), if there is one, so text
+  // already over a limit can be kept.
+  const PROJECT_KEYS = ['id', 'name', 'overview', 'runs', 'area', 'where', 'when', 'duration', 'places', 'age', 'audience', 'eligibility', 'gate', ...DATE_KEYS, 'sessions'];
+  const SESSION_KEYS = ['id', 'name', 'venue', 'where', 'days', 'start', 'end', 'frequency', 'note', 'when', 'places', 'age', 'eligibility', 'gate', ...DATE_KEYS];
   function part(x, keys, what, was) {
     if (!x || typeof x !== 'object' || Array.isArray(x)) return { error: `A ${what} is missing.` };
     const bad = Object.keys(x).find((k) => !keys.includes(k));
     if (bad) return { error: `A ${what} has a detail that can't be set ("${bad}").` };
+    const isProject = keys.includes('overview');
     const out = {};
     const id = str(x.id);
     if (!id || !ID_RE.test(id) || id.length > 50) return { error: `Each ${what} needs an id of lower-case letters, numbers and hyphens.` };
     out.id = id;
-    const name = str(x.name);
-    if (!name) return { error: `Each ${what} needs a name.` };
+    const name = str(x.name || '');
+    if (!name && isProject) return { error: `Each ${what} needs a name.` };
     if (name.length > 150) return { error: `A ${what} name is too long (at most 150 characters).` };
-    out.name = name;
-    if (keys.includes('overview')) {
+    if (name) out.name = name;
+    const label = name || 'a session';
+    if (isProject) {
       const ov = str(x.overview);
       if (!ov) return { error: `Each project needs an overview ("${name}").` };
       const limit = was && was.overview === ov ? 800 : LIMITS.projectOverview;
       if (ov.length > limit) return { error: `The overview for "${name}" is too long (at most ${LIMITS.projectOverview} characters).` };
       out.overview = ov;
+      if ('runs' in x && x.runs != null) {
+        if (!Array.isArray(x.runs) || x.runs.some((r) => !(r in RUNS))) return { error: `How "${name}" runs has a value that isn't allowed.` };
+        if (x.runs.length) out.runs = [...new Set(x.runs)];
+      }
     }
-    for (const [k, max] of [['when', 300], ['duration', 300], ['places', 200], ['age', 60]]) {
-      if (!(k in x) || x[k] == null || x[k] === '') continue;
+    for (const [k, max] of [['area', 300], ['when', 300], ['duration', 300], ['places', 200], ['age', 60], ['note', 300]]) {
+      if (!keys.includes(k) || !(k in x) || x[k] == null || x[k] === '') continue;
       const t = str(x[k]);
-      if (t === null) return { error: `"${k}" for "${name}" must be text.` };
-      if (t.length > max) return { error: `"${k}" for "${name}" is too long (at most ${max} characters).` };
+      if (t === null) return { error: `"${k}" for "${label}" must be text.` };
+      if (t.length > max) return { error: `"${k}" for "${label}" is too long (at most ${max} characters).` };
       if (t) out[k] = t;
+    }
+    if (keys.includes('venue') && x.venue != null && x.venue !== '') {
+      const r = venue(x.venue, `"${label}"`);
+      if (r.error) return r;
+      out.venue = r.value;
+    }
+    if (keys.includes('days') && x.days != null) {
+      if (!Array.isArray(x.days) || x.days.some((d) => !DAYS.includes(d))) return { error: `The days for "${label}" aren't right.` };
+      if (x.days.length) out.days = DAYS.filter((d) => x.days.includes(d));
+    }
+    for (const k of ['start', 'end']) {
+      if (!keys.includes(k) || x[k] == null || x[k] === '') continue;
+      if (typeof x[k] !== 'string' || !TIME_RE.test(x[k])) return { error: `The ${k === 'start' ? 'start' : 'finish'} time for "${label}" needs to be like 13:30.` };
+      out[k] = x[k];
+    }
+    if (keys.includes('frequency') && x.frequency != null && x.frequency !== '') {
+      if (!(x.frequency in FREQUENCY)) return { error: `How often "${label}" runs isn't one of the choices.` };
+      out.frequency = x.frequency;
     }
     for (const k of ['where', 'eligibility', 'gate']) {
       if (!(k in x) || x[k] == null) continue;
-      const r = lines(x[k], `"${k}" for "${name}"`);
+      const r = lines(x[k], `"${k}" for "${label}"`);
       if (r.error) return r;
       if (r.value.length) out[k] = r.value;
     }
     if ('audience' in x && x.audience != null) {
-      if (!Array.isArray(x.audience) || x.audience.some((a) => !AUDIENCE.includes(a))) return { error: `Who "${name}" works with has a value that isn't allowed.` };
+      if (!Array.isArray(x.audience) || x.audience.some((a) => !AUDIENCE.includes(a))) return { error: `Who "${label}" works with has a value that isn't allowed.` };
       if (x.audience.length) out.audience = [...new Set(x.audience)];
     }
     for (const k of DATE_KEYS) {
       if (!(k in x) || x[k] == null || x[k] === '') continue;
-      if (typeof x[k] !== 'string' || !DATE_RE.test(x[k]) || Number.isNaN(Date.parse(x[k]))) return { error: `A date for "${name}" isn't a real date.` };
+      if (typeof x[k] !== 'string' || !DATE_RE.test(x[k]) || Number.isNaN(Date.parse(x[k]))) return { error: `A date for "${label}" isn't a real date.` };
       out[k] = x[k];
     }
-    if (keys.includes('cohorts') && 'cohorts' in x && x.cohorts != null) {
-      if (!Array.isArray(x.cohorts) || x.cohorts.length > 20) return { error: `"${name}" can have up to 20 cohorts or sessions.` };
+    if (keys.includes('sessions') && 'sessions' in x && x.sessions != null) {
+      if (!Array.isArray(x.sessions) || x.sessions.length > 40) return { error: `"${name}" can have up to 40 sessions.` };
       const cs = [];
-      for (const c of x.cohorts) {
-        const r = part(c, COHORT_KEYS, 'cohort or session', null);
+      for (const c of x.sessions) {
+        const r = part(c, SESSION_KEYS, 'session', null);
         if (r.error) return r;
         cs.push(r.value);
       }
-      if (cs.length) out.cohorts = cs;
+      if (cs.length) out.sessions = cs;
     }
     return { value: out };
   }
@@ -205,6 +255,16 @@ export function makeChecker(schema) {
         const problems = checkParts(list);
         if (problems.length) return { error: problems[0] + '.' };
         out[k] = list;
+      } else if (k === 'venues') {
+        if (v === null) { out[k] = null; continue; }
+        if (!Array.isArray(v) || v.length > 30) return { error: `${label} must be a list of up to 30 venues.` };
+        const list = [];
+        for (const x of v) {
+          const r = venue(x, 'every project');
+          if (r.error) return r;
+          list.push(r.value);
+        }
+        out[k] = list.length ? list : null;
       }
     }
     if (!Object.keys(out).length) return { error: 'Nothing has changed.' };

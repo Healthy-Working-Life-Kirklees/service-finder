@@ -54,8 +54,11 @@
       "name": "Shaping Healthy Working Life",
       "overview": "Practical support to overcome challenges, rebuild daily routines and boost confidence, connecting people with local providers, voluntary groups and activities to prepare for volunteering, work or study.",
       "duration": "Regular sessions, weekly or fortnightly",
-      "where": [
-        "Gledholt Methodist Church, 30 Edgerton Grove Road, Marsh, Huddersfield, HD1 5QX"
+      "sessions": [
+        {
+          "id": "gledholt-methodist-church",
+          "venue": "gledholt-methodist-church"
+        }
       ]
     }
   ],

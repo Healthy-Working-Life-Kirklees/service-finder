@@ -47,8 +47,11 @@
       "id": "social-prescribing",
       "name": "Social prescribing",
       "overview": "Helps adults with long-term conditions find local groups and activities to feel less lonely and more confident.",
-      "where": [
-        "Dewsbury Business Centre WF13 1HF"
+      "sessions": [
+        {
+          "id": "dewsbury-business-centre",
+          "venue": "dewsbury-business-centre"
+        }
       ]
     }
   ],

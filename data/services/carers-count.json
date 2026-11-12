@@ -44,8 +44,11 @@
       "id": "carers-support",
       "name": "Carers support",
       "overview": "Advice, benefits advice, groups, training and advocacy for unpaid carers, including a team for those caring for someone with mental ill health or drug/alcohol problems.",
-      "where": [
-        "4th Floor, Empire House, Wakefield Old Road, Dewsbury WF12 8DJ"
+      "sessions": [
+        {
+          "id": "empire-house",
+          "venue": "empire-house-2"
+        }
       ]
     }
   ],
