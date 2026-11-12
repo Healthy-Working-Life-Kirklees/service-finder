@@ -1384,6 +1384,18 @@ check('venues: the apply script (no Origin) can read them', r.status === 200 && 
   check('wards: only venues without a ward are looked up, and only their postcodes are sent', !asked.includes('WF17 5DR') && asked.includes('WF12 8DS') && asked.includes('WF13 3AR'), JSON.stringify(asked));
   check('wards: the ward, its code and the map position are filled in', c2.ward === 'Dewsbury East' && c2.wardCode === 'E05001370' && c2.lat === 53.69123 && c2.lng === -1.62346, JSON.stringify(c2));
   check('wards: a postcode that can\'t be found is listed, not guessed', lr.notFound.some((x) => x.includes('WF13 3AR')) && !list.find((v) => v.name === 'New Centre').ward);
+  // A retired postcode still in use (HD1 1QB): placed where it was, with the ward of the nearest current postcode.
+  const oldFetch = async (url, init) => {
+    if (init && init.method === 'POST') return { ok: true, json: async () => ({ result: JSON.parse(init.body).postcodes.map((q) => ({ query: q, result: null })) }) };
+    if (url.includes('/terminated_postcodes/HD11QB')) return { ok: true, json: async () => ({ result: { postcode: 'HD1 1QB', latitude: 53.648023, longitude: -1.780353 } }) };
+    if (url.includes('/terminated_postcodes/')) return { ok: false, json: async () => ({}) };
+    if (/\/postcodes\?lon=-1\.780353&lat=53\.648023/.test(url)) return { ok: true, json: async () => ({ result: [{ postcode: 'HD1 1QA', admin_ward: 'Newsome', codes: { admin_ward: 'E05001387' } }] }) };
+    return { ok: false, json: async () => ({}) };
+  };
+  const ol = [{ id: '15-lord-street', name: '15 Lord Street', address: '15 Lord Street, Huddersfield HD1 1QB', postcode: 'HD1 1QB' }, { id: 'nowhere', name: 'N', address: 'N', postcode: 'ZZ9 9ZZ' }];
+  const or = await lookupVenues(ol, oldFetch);
+  check('wards: a retired postcode still in use gets its map position and the nearest ward', ol[0].ward === 'Newsome' && ol[0].wardCode === 'E05001387' && ol[0].lat === 53.64802 && ol[0].lng === -1.78035 && or.retired.length === 1 && !or.notFound.some((x) => x.includes('HD1 1QB')), JSON.stringify({ ol, or }));
+  check('wards: a postcode that isn\'t retired either is still listed as not found', or.notFound.some((x) => x.includes('ZZ9 9ZZ')) && !ol[1].ward);
   const down = await lookupVenues([{ id: 'x', name: 'X', address: 'X', postcode: 'HD1 1AA' }], async () => { throw new Error('offline'); });
   check('wards: a lookup that fails changes nothing and doesn\'t stop the run', down.updated === 0 && down.notFound.length === 1);
   fs.rmSync(d, { recursive: true, force: true });

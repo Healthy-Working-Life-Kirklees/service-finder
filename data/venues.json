@@ -4,7 +4,11 @@
       "id": "15-lord-street",
       "name": "15 Lord Street",
       "address": "15 Lord Street, Huddersfield HD1 1QB",
-      "postcode": "HD1 1QB"
+      "postcode": "HD1 1QB",
+      "ward": "Dalton",
+      "wardCode": "E05016510",
+      "lat": 53.64802,
+      "lng": -1.78035
     },
     {
       "id": "15-park-road-west",
