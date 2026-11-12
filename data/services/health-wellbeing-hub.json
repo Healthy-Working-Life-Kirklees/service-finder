@@ -26,7 +26,13 @@
   ],
   "areas": [
     "Huddersfield",
-    "Dewsbury"
+    "Dewsbury",
+    "Batley",
+    "Colne Valley",
+    "Holme Valley",
+    "Mirfield",
+    "Spen Valley",
+    "Kirklees-wide"
   ],
   "eligibility": [
     "Is a Kirklees College student (including adult learners and apprentices)",
@@ -63,13 +69,21 @@
   ],
   "workExperience": "Yes",
   "notes": "Status before November 2026: Live - open to referrals",
-  "lastUpdated": "2026-08-24",
+  "lastUpdated": "2026-11-12",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
+    "evidence": "Checked by PL on 2026-11-12: Eligible groups and locations"
   },
   "listing": {
     "decision": "include",
-    "reason": "Healthy Working Life scheme, on the live list from the start."
-  }
+    "reason": "Update locations and eligibiity",
+    "by": "PL",
+    "date": "2026-11-12"
+  },
+  "groups": [
+    "young-adults",
+    "adults",
+    "students"
+  ]
 }
