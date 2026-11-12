@@ -519,9 +519,9 @@
       prompt('Copy this:', text);
     }
   }
-  const emailText = (x, l) => `Subject: Please check your details on the Healthy Working Life Support Finder (${x.s.name})
+  const emailText = (x, l) => `Subject: Please check your details on the Kirklees Healthy Working Life Support Finder (${x.s.name})
 
-Hello ${l.contact},
+Hi ${l.contact},
 
 We're piloting the Healthy Working Life Support Finder with a very limited number of schemes at the moment. It's a tool that helps work and health coaches in Kirklees find the right support for the people they work with, and it includes ${x.s.name}.
 
