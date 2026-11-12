@@ -519,11 +519,13 @@
       prompt('Copy this:', text);
     }
   }
-  const emailText = (x, l) => `Hello ${l.contact},
+  const emailText = (x, l) => `Subject: Please check your details on the Healthy Working Life Support Finder (${x.s.name})
 
-We're testing the Healthy Working Life Support Finder, a tool that helps work and health coaches in Kirklees find the right support for the people they work with. It includes ${x.s.name}.
+Hello ${l.contact},
 
-Please could you check the details we hold about your service, and correct anything that's wrong or missing? It takes about 10 minutes. Use this link (it's just for you, so please don't share it):
+We're piloting the Healthy Working Life Support Finder with a very limited number of schemes at the moment, and yours is one of them. It's a tool that helps work and health coaches in Kirklees find the right support for the people they work with, and it includes ${x.s.name}.
+
+Please could you check the details we hold about your service, and correct anything that's wrong or missing? It takes about 5 minutes. Use this link (it's just for you, so please don't share it):
 
 ${linkUrl(l)}
 
