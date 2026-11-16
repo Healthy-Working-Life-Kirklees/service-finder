@@ -573,6 +573,14 @@ const gotLink = r.body.links.find((l) => l.token === tok);
 check('plinks: team sees the replies, with old values', r.status === 200 && gotLink.replies.length === 4 && gotLink.replies[0].allCorrect === true && gotLink.replies[1].changes.phone === '01484 222222' && 'phone' in gotLink.replies[1].before && gotLink.replies[1].name === 'Sam P', JSON.stringify(gotLink).slice(0, 300));
 r = await provCall('GET', tok);
 check('plinks: provider sees their last reply', r.body.lastReply && r.body.lastReply.allCorrect === false);
+r = await logCall('POST', '/log/provider-links/' + tok + '/handled', { t: gotLink.replies[2].t, by: 'PL', note: 'None used.' });
+check('plinks: the team can mark a reply as dealt with', r.status === 200 && r.body.link.replies[2].handled.by === 'PL' && r.body.link.replies[2].handled.note === 'None used.' && !r.body.link.replies[1].handled, JSON.stringify(r.body).slice(0, 200));
+r = await logCall('POST', '/log/provider-links/' + tok + '/handled', { t: '2020-01-01T00:00:00.000Z', by: 'PL' });
+check('plinks: ...only a reply that exists', r.status === 404);
+r = await logCall('POST', '/log/provider-links/' + tok + '/handled', { t: gotLink.replies[2].t });
+check('plinks: ...and with a name', r.status === 400);
+r = await logCall('POST', '/log/provider-links/' + tok + '/handled', { t: gotLink.replies[2].t, by: 'PL' }, { pass: 'nope' });
+check('plinks: ...and the passcode', r.status === 401);
 r = await logCall('POST', '/log/provider-links/' + tok + '/cancel', { by: 'PL' });
 check('plinks: team can cancel a link', r.status === 200 && r.body.link.cancelled.by === 'PL');
 r = await provCall('GET', tok);
@@ -1256,6 +1264,20 @@ const notifyMod = await import(pathToFileURL(path.join(root, 'worker/src/notify.
   const e = notifyMod.buildEmail({ id: 10, kind: 'gap', reasons: ['missing-service'], schemeIds: [], date: '2026-11-16', missedService: { name: 'X', role: 'provider', groups: ['women', 'mental-health'], projects: [{ name: 'Peer group', overview: 'A weekly group', sessions: [{ where: 'Jo Cox House, WF17 5DB', day: 'tue', start: '13:00', end: '15:00' }] }, { online: true, runsFrom: '2026-12-01' }] } }).text;
   check('email: suggested projects are written out in words, not [object Object]', !e.includes('[object Object]') && e.includes('1. Peer group: A weekly group. Where and when: Jo Cox House, WF17 5DB, Tuesdays 1pm to 3pm.') && e.includes('2. Project 2: Online or by phone. Runs from 1 December 2026.'), e);
   check('email: ticked groups are written as their names', e.includes("Who it's for (ticked): Women, ") && !e.includes('mental-health'), e);
+}
+{
+  const ctx = { ids: new Set(['wellness-to-work']), names: new Map(), areas: ['Batley'], categories: ['Carers'] };
+  const g = fb.validateFeedback({ kind: 'gap', reasons: ['missing-service'], missedService: { name: 'Raise Your Game', role: 'provider', organisation: 'HTF', projects: [{ name: 'Programme', sessions: [{ group: 'Cohort 1: ages 18 to 24', age: '18 to 24', where: 'Leeds Road Sports Complex', day: 'mon' }] }] }, lang: 'en', mode: 'staff' }, ctx);
+  check('suggest: a group or cohort is accepted with its name and age', !g.error && JSON.stringify(g).includes('"group":"Cohort 1: ages 18 to 24","age":"18 to 24"'), JSON.stringify(g).slice(0, 300));
+  const g2 = fb.validateFeedback({ kind: 'gap', reasons: ['missing-service'], missedService: { name: 'X', projects: [{ name: 'P', sessions: [{ group: 'g'.repeat(151) }] }] }, lang: 'en', mode: 'staff' }, ctx);
+  check('suggest: a group name that is too long is refused', Boolean(g2.error));
+}
+{
+  // The programme's own rules can't be taken out by a partner's reply on a Healthy Working Life service.
+  const prot = LS.protectedLines({ hwlFunded: true, gate: ['Lives in Kirklees', 'Aged 18 or over'], eligibility: ['Has a health condition or disability', 'Women'] });
+  check('programme rules: picked out of a Healthy Working Life service\'s lines', prot.join('|') === 'Lives in Kirklees|Has a health condition or disability', prot.join('|'));
+  check('programme rules: none on a service that isn\'t Healthy Working Life', LS.protectedLines({ hwlFunded: false, gate: ['Lives in Kirklees'] }).length === 0);
+  check('suggestion words: a group says its name and age', LS.suggestedProjectLines([{ name: 'P', sessions: [{ group: 'Cohort 1', age: '18 to 24', where: 'Leeds Road', day: 'mon' }] }])[0] === 'P: Where and when: Cohort 1, age 18 to 24: Leeds Road, Mondays.');
 }
 check('team test: the email subject says [team test]', notifyMod.buildEmail({ id: 9, kind: 'reply', schemeIds: [], reasons: [], team: true }).subject.includes('[team test]'));
 

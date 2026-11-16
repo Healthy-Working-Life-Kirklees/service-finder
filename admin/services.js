@@ -379,7 +379,7 @@
     const L = s.listing || {};
     return el('article', { class: 'entry svc' + (s.hwlFunded ? ' hwl' : '') + ' listing-' + x.listing, id: 'svc-' + s.id },
       el('h3', {}, el('a', { href: '#svc-' + s.id, class: 'anchor', text: s.name })),
-      el('p', { class: 'org' }, s.organisation, el('span', { class: 'id' }, el('code', { text: s.id }))),
+      el('p', { class: 'org' }, el('a', { href: 'organisation.html?name=' + encodeURIComponent(s.organisation), text: s.organisation }), el('span', { class: 'id' }, el('code', { text: s.id }))),
       pills,
       L.reason ? el('p', { class: 'listing', text: lText + ': ' + L.reason + (L.by ? ' (' + L.by + (L.date ? ', ' + fmt(L.date) : '') + ')' : '') }) : null,
       team ? decidePanel(x) : null,
@@ -503,7 +503,7 @@
     const replies = linksFor(id).flatMap((l) => l.replies.map((r) => ({ ...r, link: l }))).sort((a, b) => b.t.localeCompare(a.t));
     const r = replies[0];
     const e = edits && edits[id];
-    return { reply: r || null, handled: Boolean(r && e && e.t > r.t), count: replies.length };
+    return { reply: r || null, handled: Boolean(r && (r.handled || (e && e.t > r.t))), count: replies.length };
   }
   // Where a service is with the provider: not sent (live or not), sent with no reply, or replied (the newest reply
   // still waiting for the team, or dealt with). "Sent" means a review link was made, whatever its state now.
@@ -838,6 +838,8 @@ Thank you,
         for (const se of list(x.sessions)) {
           const v = placeOf(se.where);
           const one = { id: '' };
+          if (se.group) one.name = se.group;
+          if (se.age) one.age = se.age;
           if (v) one.venue = v;
           else if (se.where) where.push(se.where);
           if (se.day) one.days = [se.day];
@@ -1204,6 +1206,44 @@ Thank you,
     update();
     checkApply();
     openDraft();
+    openEditPrefill();
+    openAddForOrg();
+  }
+
+  // "Change it first" on a partner's reply (reply.html) leaves the changes in this tab: open that service's edit
+  // form with them filled in, once.
+  function openEditPrefill() {
+    const raw = store.get('hwl-edit-prefill');
+    if (!raw) return;
+    store.del('hwl-edit-prefill');
+    let d;
+    try { d = JSON.parse(raw); } catch { return; }
+    const target = d && services.find((y) => y.s.id === d.id && !y.isNew);
+    if (!target) return;
+    prefill[target.s.id] = { changes: d.changes || {}, note: d.note || '' };
+    editing.add(target.s.id);
+    goToService(target.s.id);
+    const f = document.querySelector('#svc-' + CSS.escape(target.s.id) + ' .edit');
+    if (f) f.scrollIntoView({ block: 'start' });
+  }
+  // "Add a service" on an organisation's page (organisation.html) opens services.html?add=<organisation name>.
+  function openAddForOrg() {
+    const orgs = new URLSearchParams(location.search).get('orgs');
+    if (orgs) {
+      history.replaceState(null, '', location.pathname);
+      openOrgs();
+      drawOrgs(orgs.slice(0, 150));
+      const d = document.querySelector('#orgs-panel details');
+      if (d) d.open = true;
+      return;
+    }
+    const org = new URLSearchParams(location.search).get('add');
+    if (!org) return;
+    history.replaceState(null, '', location.pathname);
+    const s = blankService();
+    s.organisation = org.slice(0, 150);
+    openAdd({ s, why: 'Added from the ' + s.organisation + ' organisation page.' });
+    $('#add-panel').scrollIntoView({ block: 'start' });
   }
 
   function signOut(message) {

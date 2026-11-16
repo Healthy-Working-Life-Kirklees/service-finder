@@ -257,7 +257,8 @@
       if (p.appointment) bits.push('By appointment or around the person.');
       const sessions = (Array.isArray(p.sessions) ? p.sessions : []).map((x) => {
         const when = [x.day && DAY_NAMES[x.day] ? DAY_NAMES[x.day] + 's' : '', x.start || x.end ? [clock(x.start), clock(x.end)].filter(Boolean).join(' to ') : ''].filter(Boolean).join(' ');
-        return [x.where, when].filter(Boolean).join(', ');
+        const grp = x.group || x.age ? [x.group, x.age ? 'age ' + x.age : ''].filter(Boolean).join(', ') + ': ' : '';
+        return grp + [x.where, when].filter(Boolean).join(', ');
       }).filter(Boolean);
       if (sessions.length) bits.push('Where and when: ' + sessions.join('; ') + '.');
       if (p.duration) bits.push('How long: ' + p.duration + '.');
@@ -268,11 +269,18 @@
       return (p.name || 'Project ' + (i + 1)) + (bits.length ? ': ' + bits.join(' ') : '');
     });
   }
+  // The Healthy Working Life programme's own rules for who can join (the grant schemes all carry them). On a Healthy
+  // Working Life service, a partner's reply can't take one of these lines out: the team checks with the programme.
+  const PROGRAMME_RULES = [/\blives? in kirklees\b/i, /economically inactive/i, /right to work/i, /health condition or disability/i];
+  function protectedLines(service) {
+    if (!service || !service.hwlFunded) return [];
+    return [...new Set([...(service.gate || []), ...(service.eligibility || [])])].filter((l) => PROGRAMME_RULES.some((r) => r.test(l)));
+  }
   const groupNames = (ids) => (Array.isArray(ids) ? ids.map((g) => GROUPS[g] || g) : []);
 
   globalThis.LISTING = {
     SOON_DAYS, REMIND_DAYS, LIMITS, DATE_KEYS, RUNS, DAYS, DAY_NAMES, FREQUENCY, GROUPS,
     today, addDays, daysBetween, longDate, datesOf, state, forGroup, parts, visible, isShown, visibleIds, pick, endingSoon, closedParts,
-    dateWords, clock, timeWords, venueLine, byDay, venueIds, checkParts, suggestedProjectLines, groupNames,
+    dateWords, clock, timeWords, venueLine, byDay, venueIds, checkParts, suggestedProjectLines, groupNames, protectedLines,
   };
 })();

@@ -293,18 +293,27 @@
       const online = checkbox(pid + '-online', t('fbOnline'));
       const appointment = checkbox(pid + '-appt', t('fbAppointment'));
       const venues = el('div', { class: 'fb-venues' });
-      const addVenue = () => {
+      // A venue with a day and times, or a group of its own (such as an age cohort) with where and when it meets.
+      const addVenue = (group) => {
         const vid = uid('ven');
+        const gName = group ? input(vid + '-gname', t('fbGroupName'), 150) : null;
+        const gAge = group ? input(vid + '-gage', t('fbGroupAge'), 60) : null;
         const where = input(vid + '-where', t('fbVenue'), 300);
         hinted(where, 'fbWhereHint');
         const day = el('div', { class: 'fb-field' }, el('label', { for: vid + '-day', text: t('fbDay') }),
           el('select', { id: vid + '-day' }, el('option', { value: '', text: t('fbChooseOne') }), WEEK.map((d) => el('option', { value: d, text: t('fbDay_' + d) }))));
         const from = el('div', { class: 'fb-field' }, el('label', { for: vid + '-from', text: t('fbFrom') }), el('input', { id: vid + '-from', type: 'time', dir: 'ltr', step: '300' }));
         const to = el('div', { class: 'fb-field' }, el('label', { for: vid + '-to', text: t('fbTo') }), el('input', { id: vid + '-to', type: 'time', dir: 'ltr', step: '300' }));
-        const row = el('div', { class: 'fb-venue' }, where, el('div', { class: 'fb-grid fb-times' }, day, from, to),
-          el('button', { type: 'button', class: 'btn secondary small', text: t('fbRemoveVenue'), onclick: () => row.remove() }));
+        const row = el('div', { class: 'fb-venue' + (group ? ' fb-group' : '') }, gName, gAge, where, el('div', { class: 'fb-grid fb-times' }, day, from, to),
+          el('button', { type: 'button', class: 'btn secondary small', text: t(group ? 'fbRemoveGroup' : 'fbRemoveVenue'), onclick: () => row.remove() }));
         row._read = () => {
           const x = {};
+          if (group) {
+            const g = gName.querySelector('input').value.trim();
+            const a = gAge.querySelector('input').value.trim();
+            if (g) x.group = g;
+            if (a) x.age = a;
+          }
           const w = where.querySelector('input').value.trim();
           if (w) x.where = w;
           const d = day.querySelector('select').value;
@@ -327,11 +336,14 @@
         el('legend', { text: t('fbProjectN', { n }) }),
         name, overview,
         el('div', { class: 'fb-where' }, el('p', { class: 'fb-where-head', text: t('fbWhereLegend') }), online, appointment, venues,
-          el('button', { type: 'button', class: 'btn secondary small', text: t('fbAddVenue'), onclick: () => addVenue().querySelector('input').focus() })),
+          el('div', { class: 'fb-add-row' },
+            el('button', { type: 'button', class: 'btn secondary small', text: t('fbAddVenue'), onclick: () => addVenue().querySelector('input').focus() }),
+            el('button', { type: 'button', class: 'btn secondary small', text: t('fbAddGroup'), onclick: () => addVenue(true).querySelector('input').focus() })),
+          el('p', { class: 'fb-hint', text: t('fbGroupHint') })),
         duration, places, dates,
         n > 1 ? el('button', { type: 'button', class: 'btn secondary small', text: t('fbRemoveProject'), onclick: () => fs.remove() }) : null);
       // "Online or by phone only" means no venue to show: the venues fold away.
-      online.querySelector('input').addEventListener('change', (e) => { venues.hidden = e.target.checked; venues.nextSibling.hidden = e.target.checked; });
+      online.querySelector('input').addEventListener('change', (e) => { venues.hidden = e.target.checked; venues.nextSibling.hidden = e.target.checked; venues.nextSibling.nextSibling.hidden = e.target.checked; });
       fs._read = () => {
         const p = {};
         const nm = name.querySelector('input').value.trim();
