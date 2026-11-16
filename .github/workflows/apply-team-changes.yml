@@ -87,7 +87,7 @@ jobs:
       - name: Check the data
         run: |
           npm run check-data
-          node worker/test/logic.mjs > "$RUNNER_TEMP/tests.txt" || { tail -40 "$RUNNER_TEMP/tests.txt"; exit 1; }
+          node worker/test/logic.mjs > "$RUNNER_TEMP/tests.txt" || { echo "Tests that failed:"; grep '^FAIL' "$RUNNER_TEMP/tests.txt" | tee -a "$GITHUB_STEP_SUMMARY"; tail -1 "$RUNNER_TEMP/tests.txt"; exit 1; }
           tail -1 "$RUNNER_TEMP/tests.txt"
 
       - name: Open a pull request
