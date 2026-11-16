@@ -48,7 +48,7 @@ const fbStore = [
   { ...fbBase, id: 4, kind: 'reply', helpful: false, schemeIds: ['my-way-forward'], reasons: ['none-fit'], text: 'Nothing near me' },
   { ...fbBase, id: 5, kind: 'card', schemeIds: ['my-way-forward'], recordLastUpdated: '2026-08-03', reasons: ['contact-wrong'] },
   { ...fbBase, id: 7, kind: 'reply', helpful: false, schemeIds: ['my-way-forward'], reasons: ['none-fit'], text: 'Team test entry', team: true },
-  { ...fbBase, id: 6, kind: 'gap', reasons: ['missing-service'], missedService: { name: 'A test service', website: '', area: '', role: 'provider', organisation: 'Test Trust', phone: '01924 000000', selfReferral: 'no', audience: ['employer'] } },
+  { ...fbBase, id: 6, kind: 'gap', reasons: ['missing-service'], missedService: { name: 'A test service', website: '', area: '', role: 'provider', organisation: 'Test Trust', phone: '01924 000000', selfReferral: 'no', audience: ['employer'], groups: ['women'], projects: [{ name: 'Peer group', sessions: [{ where: 'Jo Cox House', day: 'tue', start: '13:00', end: '15:00' }] }] } },
 ];
 
 // "Who is this for?" has no default any more. The tests search as someone looking for themselves unless a
@@ -983,7 +983,7 @@ async function worker(route) {
   await page.selectOption('#source', 'real');
   check('review: shows scheme names, not ids', (await page.textContent('#list')).includes('My Way Forward'));
   const sugText = await page.locator('#list .entry:has(#st-6)').textContent();
-  check('review: a suggestion shows who sent it and the details they gave', sugText.includes('Someone from the service') && sugText.includes('4 details') && sugText.includes('Test Trust') && sugText.includes('01924 000000') && sugText.includes('No, needs a referral') && sugText.includes('Employers'), sugText);
+  check('review: a suggestion shows who sent it and the details they gave', sugText.includes('Someone from the service') && sugText.includes('6 details') && sugText.includes('Peer group: Where and when: Jo Cox House, Tuesdays 1pm to 3pm.') && sugText.includes('Women') && !sugText.includes('[object Object]') && sugText.includes('Test Trust') && sugText.includes('01924 000000') && sugText.includes('No, needs a referral') && sugText.includes('Employers'), sugText);
   await page.locator('#list .entry').first().locator('select').selectOption('Actioned');
   await page.waitForTimeout(200);
   check('review: status change is saved', fbStore.find((x) => x.id === 6).status === 'Actioned');

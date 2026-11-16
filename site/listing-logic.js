@@ -246,9 +246,33 @@
     return problems;
   }
 
+  // The projects in a "Suggest a service" suggestion, one line each, for the team's email and the Feedback page.
+  // [{ name, overview, online, appointment, duration, places, dates, sessions: [{ where, day, start, end }] }]
+  function suggestedProjectLines(projects) {
+    if (!Array.isArray(projects)) return [];
+    return projects.filter((p) => p && typeof p === 'object').map((p, i) => {
+      const bits = [];
+      if (p.overview) bits.push(String(p.overview).replace(/\s*$/, '').replace(/([^.!?])$/, '$1.'));
+      if (p.online) bits.push('Online or by phone.');
+      if (p.appointment) bits.push('By appointment or around the person.');
+      const sessions = (Array.isArray(p.sessions) ? p.sessions : []).map((x) => {
+        const when = [x.day && DAY_NAMES[x.day] ? DAY_NAMES[x.day] + 's' : '', x.start || x.end ? [clock(x.start), clock(x.end)].filter(Boolean).join(' to ') : ''].filter(Boolean).join(' ');
+        return [x.where, when].filter(Boolean).join(', ');
+      }).filter(Boolean);
+      if (sessions.length) bits.push('Where and when: ' + sessions.join('; ') + '.');
+      if (p.duration) bits.push('How long: ' + p.duration + '.');
+      if (p.places) bits.push('Places: ' + p.places + '.');
+      const d = (k, label) => (p[k] ? label + ' ' + longDate(p[k]) : '');
+      const dates = [d('runsFrom', 'runs from'), d('runsTo', 'runs until'), d('referralsFrom', 'referrals from'), d('referralsUntil', 'referrals until')].filter(Boolean);
+      if (dates.length) bits.push(dates.join(', ').replace(/^./, (c) => c.toUpperCase()) + '.');
+      return (p.name || 'Project ' + (i + 1)) + (bits.length ? ': ' + bits.join(' ') : '');
+    });
+  }
+  const groupNames = (ids) => (Array.isArray(ids) ? ids.map((g) => GROUPS[g] || g) : []);
+
   globalThis.LISTING = {
     SOON_DAYS, REMIND_DAYS, LIMITS, DATE_KEYS, RUNS, DAYS, DAY_NAMES, FREQUENCY, GROUPS,
     today, addDays, daysBetween, longDate, datesOf, state, forGroup, parts, visible, isShown, visibleIds, pick, endingSoon, closedParts,
-    dateWords, clock, timeWords, venueLine, byDay, venueIds, checkParts,
+    dateWords, clock, timeWords, venueLine, byDay, venueIds, checkParts, suggestedProjectLines, groupNames,
   };
 })();
