@@ -14,6 +14,10 @@
 .pc-count { font-weight: 600; }
 .pc-buttons { display: flex; flex-wrap: wrap; gap: .75rem; margin: .5rem 0 1rem; }
 .pc-buttons .btn[hidden] { display: none; }
+.pc-other { margin: 3rem 0 1rem; padding: 1rem 1.25rem .25rem; border-top: 3px solid var(--border); background: var(--light); border-radius: 0 0 12px 12px; }
+.pc-other > h2 { margin: 0 0 .5rem; font-size: 1.2rem; color: var(--dark-blue); }
+.pc-unsent { background: var(--crisis-bg); color: var(--crisis); border-radius: 6px; padding: .5rem .8rem; font-weight: 600; }
+.pc-unsent[hidden] { display: none; }
 .pc-msg { background: var(--crisis-bg); color: var(--crisis); border-radius: 6px; padding: .5rem .8rem; }
 .pc-msg[hidden] { display: none; }
 @media (max-width: 760px) {

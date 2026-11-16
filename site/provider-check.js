@@ -30,6 +30,7 @@
   let data = null;
   let form = null;
   let lf = null; // the shared listing form (listing-form.js)
+  let unsentNote = null; // under "A different service?": shown while there are changes not sent yet
 
   function problem(text) {
     $('#pc-loading').hidden = true;
@@ -86,6 +87,7 @@
     ui.correct.hidden = n > 0;
     ui.sendBtn.hidden = n === 0;
     ui.undo.hidden = n === 0;
+    if (unsentNote) unsentNote.hidden = n === 0;
   }
 
   async function send(allCorrect) {
@@ -147,15 +149,17 @@
         el('li', { text: 'Your changes go to the Healthy Working Life team, who check them before they appear on the Support Finder.' })),
       el('p', { class: 'notice', role: 'note', text: 'This link is just for you and works until ' + date(data.expires) + '. Please don\'t share it.' }),
       last ? el('p', { class: 'pc-last', text: 'You last replied on ' + date(last.t) + (last.allCorrect ? ', saying everything was correct.' : ', with changes.') + ' You can send again if something else needs changing.' }) : null);
-    // "Do you run anything else?": another project of this service (added to the form above), or another service,
-    // which opens Suggest a service on the Support Finder with the organisation filled in.
+    // "A different service?": kept apart from the send box, after a dividing line, because it opens a separate form
+    // (Suggest a service, with the organisation filled in) and sends nothing about this listing. Partners mistook it
+    // for the way to send their changes. Another project of this service is added in the form itself.
     const others = data.otherServices || [];
-    const more = el('section', { class: 'lf-section pc-more' },
-      el('h2', { text: 'Do you run anything else?' }),
-      el('p', { text: `This link is for ${s.name}. If ${s.organisation} runs something else that could help people in Kirklees stay in, return to or find work, tell us about it. It goes to the Healthy Working Life team to check.` }),
-      el('div', { class: 'pc-buttons' },
-        el('button', { type: 'button', class: 'btn secondary', text: 'Add another project to ' + s.name, onclick: () => lf.addProject() }),
-        el('a', { class: 'btn secondary', href: './?suggest=service&org=' + encodeURIComponent(s.organisation), target: '_blank', rel: 'noopener', text: 'Add another service we run (opens in a new tab)' })),
+    unsentNote = el('p', { class: 'pc-unsent', role: 'status', hidden: true, text: `You've changed some details of ${s.name} but haven't sent them yet. Please press "Send my changes" above first, or they won't reach us.` });
+    const more = el('section', { class: 'pc-other', 'aria-labelledby': 'pc-other-title' },
+      el('h2', { id: 'pc-other-title', text: 'Do you run a different service?' }),
+      el('p', {}, 'Only use this to tell us about ', el('strong', { text: 'a different service' }), ` from ${s.organisation}, not ${s.name}. It opens a separate form in a new tab and doesn't send anything on this page.`),
+      el('p', { text: `To add another project to ${s.name}, use "Add another project" under "What happens, where and when" above, then send it with your other changes.` }),
+      unsentNote,
+      el('p', {}, el('a', { class: 'btn secondary', href: './?suggest=service&org=' + encodeURIComponent(s.organisation), target: '_blank', rel: 'noopener', text: 'Tell us about a different service (opens in a new tab)' })),
       others.length ? el('p', { text: `We also list these services from ${s.organisation}: ${others.map((x) => x.name).join('; ')}. To check those too, ask the Healthy Working Life team for their links.` }) : null);
     $('#pc-app').replaceChildren(intro, build(), more);
     refresh();
