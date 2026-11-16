@@ -145,7 +145,7 @@
       el('ul', {},
         el('li', { text: 'If everything is right, press "Everything is correct" at the end.' }),
         el('li', { text: 'If something is wrong or missing, change it in the boxes below and press "Send my changes". Please add as much as you can: the more coaches know, the better they can match people to your service.' }),
-        el('li', { text: 'Under "What happens, where and when", tell us where and when each project runs: add a session for each venue and day, with the times. This builds a timetable of what runs across Kirklees. If the same project runs for different groups (for example two age groups), add a session for each.' }),
+        el('li', { text: 'Under "What happens, where and when", tell us where and when each project runs: "Add a time and place" for each venue and day, with the times. This builds a timetable of what runs across Kirklees. If a project runs separately for different groups (for example two age cohorts), use "Add a group or cohort" for each.' }),
         el('li', { text: 'Your changes go to the Healthy Working Life team, who check them before they appear on the Support Finder.' })),
       el('p', { class: 'notice', role: 'note', text: 'This link is just for you and works until ' + date(data.expires) + '. Please don\'t share it.' }),
       last ? el('p', { class: 'pc-last', text: 'You last replied on ' + date(last.t) + (last.allCorrect ? ', saying everything was correct.' : ', with changes.') + ' You can send again if something else needs changing.' }) : null);

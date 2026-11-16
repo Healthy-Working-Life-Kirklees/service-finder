@@ -331,7 +331,10 @@
       }
 
       // A session: a time and place, or a group of its own (such as a cohort), or both.
-      function addSession(holder, s = {}) {
+      // kind: 'place' (a time and place) or 'group' (a group or cohort of its own, such as an age group). A saved
+      // session with an age or its own criteria opens as a group.
+      function addSession(holder, s = {}, kind) {
+        const group = kind ? kind === 'group' : Boolean(s.age || list(s.eligibility).length || list(s.gate).length);
         const picker = venuePicker('Venue', s.venue);
         allPickers.push(picker);
         const dayBoxes = L.DAYS.map((d) => el('label', {}, el('input', { type: 'checkbox', value: d, checked: list(s.days).includes(d) }), ' ' + L.DAY_NAMES[d].slice(0, 3)));
@@ -342,26 +345,33 @@
         const freq = el('select', { id: uid('fr') }, el('option', { value: '', text: 'Choose' }), Object.entries(L.FREQUENCY).map(([k, w]) => el('option', { value: k, text: w[0].toUpperCase() + w.slice(1) })));
         freq.value = s.frequency || '';
         const f = {
-          name: smallText('Name, if it has one', s.name, 'For example "elevate connect (drop-in)" or "Cohort 1: ages 18 to 24".'),
+          name: group ? smallText('Name of the group (mandatory)', s.name, 'For example "Cohort 1: ages 18 to 24". This is how coaches and the AI tell the groups apart.') : smallText('Name, if it has one', s.name, 'For example "elevate connect (drop-in)".'),
           note: smallText('Anything else about when or where, in words', s.note, 'For example "first Tuesday of the month" or "term time only".'),
           places: smallText('Number of places', s.places, 'Leave empty if not limited.'),
-          age: smallText('Age, if this session is for a different age group', s.age, 'For example 50+.'),
+          age: group ? smallText('Age for this group', s.age, 'For example 18 to 24, or 50+. Leave empty if the age is the same as the project.') : smallText('Age, if this time and place is for a particular age group', s.age, 'For example 50+.'),
           where: smallLines('Other places, in words', s.where, 'Only for places without a postcode, such as "Online".'),
         };
-        const elig = eligList('Extra criteria for this session', 'Only what is different from the project, for example "Aged 18 to 24". ' + ESSENTIAL_HINT, s.eligibility, s.gate, true);
-        const dates = datesGroup('s', s, 'Dates for this session, if different from the project');
-        const more = el('details', { class: 'lf-more' }, el('summary', { text: 'Age group, extra criteria, places or dates for this session' }),
-          el('div', { class: 'lf-grid' }, f.age.node, f.places.node), elig.box, dates.box, f.where.node);
-        if (s.age || list(s.eligibility).length || list(s.gate).length || s.places || L.DATE_KEYS.some((k) => s[k]) || list(s.where).length) more.open = true;
-        const fs = el('fieldset', { class: 'lf-session', 'data-id': s.id || '' }, el('legend', { text: 'Session' }),
-          f.name.node, picker.node,
+        const elig = eligList(group ? 'Who can join this group' : 'Extra criteria for this time and place', 'Only what is different from the project, for example "Aged 18 to 24". ' + ESSENTIAL_HINT, s.eligibility, s.gate, true);
+        const dates = datesGroup('s', s, group ? 'Dates for this group, if different from the project' : 'Dates, if different from the project');
+        // A group says who it's for first, in plain view. A time and place keeps those questions folded away.
+        const more = el('details', { class: 'lf-more' }, el('summary', { text: group ? 'Places, dates or other places for this group' : 'Is this time and place for a particular group? Age, criteria, places or dates' }),
+          group ? null : el('div', { class: 'lf-grid' }, f.age.node), group ? null : elig.box,
+          el('div', { class: 'lf-grid' }, f.places.node), dates.box, f.where.node);
+        if ((!group && (s.age || list(s.eligibility).length || list(s.gate).length)) || s.places || L.DATE_KEYS.some((k) => s[k]) || list(s.where).length) more.open = true;
+        const legend = el('legend', {});
+        const title = () => { const n = f.name.get(); legend.textContent = (group ? 'Group or cohort' : 'Time and place') + (n ? ': ' + n : ''); };
+        f.name.input.addEventListener('input', title);
+        title();
+        const fs = el('fieldset', { class: 'lf-session' + (group ? ' lf-group' : ''), 'data-id': s.id || '', 'data-kind': group ? 'group' : 'place' }, legend,
+          f.name.node, group ? el('div', { class: 'lf-grid' }, f.age.node) : null, group ? elig.box : null,
+          group ? el('p', { class: 'lf-lab lf-group-where', text: 'Where and when this group meets' }) : null, picker.node,
           el('fieldset', { class: 'lf-days' }, el('legend', { text: 'Days' }), el('div', { class: 'choices' }, dayBoxes)),
           el('div', { class: 'lf-grid' },
             el('div', { class: 'lf-field' }, el('label', { for: start.id, text: 'From' }), start),
             el('div', { class: 'lf-field' }, el('label', { for: end.id, text: 'Until' }), end),
             el('div', { class: 'lf-field' }, el('label', { for: freq.id, text: 'How often' }), freq)),
           f.note.node, more,
-          small({ text: 'Remove this session', onclick: () => { fs.remove(); allPickers.splice(allPickers.indexOf(picker), 1); changed(); } }));
+          small({ text: group ? 'Remove this group' : 'Remove this time and place', onclick: () => { fs.remove(); allPickers.splice(allPickers.indexOf(picker), 1); changed(); } }));
         fs._read = () => {
           const out = { id: fs.dataset.id };
           const name = f.name.get();
@@ -384,7 +394,8 @@
           Object.assign(out, dates.read());
           return out;
         };
-        fs._first = f.name.input;
+        fs._first = group ? f.name.input : picker.input;
+        fs._nameInput = f.name.input;
         holder.append(fs);
         return fs;
       }
@@ -417,9 +428,12 @@
         const dates = datesGroup('p', p, 'Dates');
         const sessions = el('div', { class: 'lf-sessions' });
         const sessionsBox = el('div', { class: 'lf-sessions-box' },
-          el(SUBH, { class: 'lf-sub', text: 'Times and places' }),
-          el('p', { class: 'hint', text: 'Add a session for each venue and day it runs. If the same project runs for different groups, such as two cohorts for different age groups, add a session for each group and give it its age under "Age group, extra criteria…".' }),
-          sessions, small({ text: 'Add a session', onclick: () => { addSession(sessions)._first.focus(); changed(); } }));
+          el(SUBH, { class: 'lf-sub', text: 'Times, places and groups' }),
+          el('p', { class: 'hint', text: 'Add a time and place for each venue and day it runs. If the project runs separately for different groups, such as two cohorts for different age groups, add a group or cohort for each, with who it is for and where and when it meets.' }),
+          sessions,
+          el('div', { class: 'lf-row' },
+            small({ text: 'Add a time and place', onclick: () => { addSession(sessions, {}, 'place')._first.focus(); changed(); } }),
+            small({ text: 'Add a group or cohort', onclick: () => { addSession(sessions, {}, 'group')._first.focus(); changed(); } })));
         const areaBox = f.area.node;
         const fs = el('fieldset', { class: 'lf-proj' + (tbc(p) ? ' tbc' : ''), 'data-id': p.id || '' },
           el('legend', { class: 'lf-proj-legend' }),
@@ -656,6 +670,9 @@
         if (!p.overview) return { message: `Please say what happens in "${p.name}".`, el: rows[i]._ov };
         const old = was.get(p.id);
         if (p.overview.length > L.LIMITS.projectOverview && !(old && old.overview === p.overview)) return { message: `"What happens" for "${p.name}" is too long: please keep it to ${L.LIMITS.projectOverview} characters.`, el: rows[i]._ov };
+      }
+      for (const g of root.querySelectorAll('.lf-group')) {
+        if (g._nameInput && !g._nameInput.value.trim()) return { message: 'Please give each group or cohort a name, such as "Cohort 1: ages 18 to 24".', el: g._nameInput };
       }
       for (const pk of allPickers) {
         const pr = pk.problem();

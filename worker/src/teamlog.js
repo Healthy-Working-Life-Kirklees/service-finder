@@ -279,6 +279,18 @@ export class LogStore {
       return Response.json({ link });
     }
 
+    // The team has dealt with a reply without saving an edit (for example none of its changes were used).
+    if (url.pathname === '/plinks/handled') {
+      const key = 'plink:' + body.token;
+      const link = await s.get(key);
+      if (!link) return Response.json({ error: 'Not found.' }, { status: 404 });
+      const r = link.replies.find((x) => x.t === body.t);
+      if (!r) return Response.json({ error: 'That reply was not found.' }, { status: 404 });
+      r.handled = { by: body.by, t: now, note: body.note };
+      await s.put(key, link);
+      return Response.json({ link });
+    }
+
     if (url.pathname === '/plinks/reply') {
       const key = 'plink:' + body.token;
       const link = await s.get(key);

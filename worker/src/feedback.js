@@ -160,8 +160,14 @@ function suggestedProjects(v) {
       if (!Array.isArray(p.sessions) || p.sessions.length > 20) return { error: 'You can give up to 20 venues or days for each project.' };
       const ss = [];
       for (const x of p.sessions) {
-        if (!x || typeof x !== 'object' || Array.isArray(x) || Object.keys(x).some((k) => !['where', 'day', 'start', 'end'].includes(k))) return { error: 'The venue details could not be read.' };
+        if (!x || typeof x !== 'object' || Array.isArray(x) || Object.keys(x).some((k) => !['where', 'day', 'start', 'end', 'group', 'age'].includes(k))) return { error: 'The venue details could not be read.' };
         const se = {};
+        // A group of its own, such as an age cohort: its name and age.
+        for (const [k, max, label] of [['group', 150, 'The name of the group'], ['age', 60, 'The age for the group']]) {
+          const t = optText(x[k], max, label);
+          if (t.error) return t;
+          if (t.value) se[k] = t.value;
+        }
         const w = optText(x.where, 300, 'The venue and address');
         if (w.error) return w;
         if (w.value) se.where = w.value;

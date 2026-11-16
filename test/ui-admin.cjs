@@ -130,6 +130,15 @@ async function worker(route) {
     }
     if (url.pathname === '/log/apply/status') return applyStatus ? json(applyStatus) : json({ error: 'Off.', off: true }, 404);
     if (url.pathname === '/log/provider-links' && req.method() === 'GET') return json({ links: providerLinks });
+    const hm = url.pathname.match(/^\/log\/provider-links\/([A-Za-z0-9_-]{32})\/handled$/);
+    if (hm && req.method() === 'POST') {
+      const b = JSON.parse(req.postData());
+      const l = providerLinks.find((x) => x.token === hm[1]);
+      const r = l && l.replies.find((x) => x.t === b.t);
+      if (!r) return json({ error: 'Not found.' }, 404);
+      r.handled = { by: b.by, t: new Date().toISOString(), note: b.note };
+      return json({ link: l });
+    }
     if (url.pathname === '/log/decisions') return json({ decisions });
     if (url.pathname === '/log/edits') return json({ edits });
     if (url.pathname === '/log/new') return json({ added });
@@ -472,6 +481,9 @@ async function worker(route) {
   await p1.locator('button:has-text("Add another venue or day")').click();
   await p1.locator('.fb-venue').nth(1).getByLabel('Venue and address', { exact: true }).fill('Batley Library, Market Place, Batley WF17 5DA');
   await p1.locator('.fb-venue').nth(1).getByLabel('Day', { exact: true }).selectOption('thu');
+  await p1.locator('button:has-text("Add a group or cohort")').click();
+  await p1.locator('.fb-group').getByLabel('Name of the group, for example Cohort 1: ages 18 to 24', { exact: true }).fill('Cohort 1');
+  await p1.locator('.fb-group').getByLabel('Age for this group, for example 18 to 24 or 50+', { exact: true }).fill('18 to 24');
   await p1.getByLabel('Runs from').fill('2027-02-01');
   await p1.getByLabel('Runs until').fill('2027-01-01');
   await footForm.locator('button[type=submit]').click();
@@ -503,7 +515,7 @@ async function worker(route) {
   await panel.locator('.fb-thanks').waitFor();
   const sentFull = lastSent();
   const fm = sentFull.missedService || {};
-  check('feedback: a full suggestion from the service is sent as written', sentFull.reasons.join() === 'missing-service' && fm.role === 'provider' && fm.name === 'Batley Job Club' && fm.organisation === 'Batley Community Trust' && fm.open === 'yes' && fm.whoFor === 'Anyone in Batley looking for work.' && fm.projects.length === 2 && fm.projects[0].name === 'Job club' && fm.projects[0].runsFrom === '2027-02-01' && fm.projects[0].runsTo === '2027-07-31' && JSON.stringify(fm.projects[0].sessions) === '[{"where":"Batley Library, Market Place, Batley WF17 5DA","day":"tue","start":"13:00","end":"15:00"},{"where":"Batley Library, Market Place, Batley WF17 5DA","day":"thu"}]' && fm.projects[1].online === true && !fm.projects[1].sessions && fm.eligibility === 'Lives in Kirklees\nLooking for work' && fm.gate === 'Lives in Kirklees' && fm.groups.join() === 'adults' && !('addTo' in fm) && fm.phone === '01924 000000' && fm.email === 'jobs@example.org' && fm.selfReferral === 'yes' && fm.audience.join() === 'individual' && fm.categories.join() === 'Carers' && fm.logoOk === true && fm.contactName === 'Sam' && fm.healthNeed === 'specific' && fm.conditions === 'Back, neck or joint pain' && !('noMap' in fm) && !('website' in fm && fm.website), JSON.stringify(sentFull));
+  check('feedback: a full suggestion from the service is sent as written', sentFull.reasons.join() === 'missing-service' && fm.role === 'provider' && fm.name === 'Batley Job Club' && fm.organisation === 'Batley Community Trust' && fm.open === 'yes' && fm.whoFor === 'Anyone in Batley looking for work.' && fm.projects.length === 2 && fm.projects[0].name === 'Job club' && fm.projects[0].runsFrom === '2027-02-01' && fm.projects[0].runsTo === '2027-07-31' && JSON.stringify(fm.projects[0].sessions) === '[{"where":"Batley Library, Market Place, Batley WF17 5DA","day":"tue","start":"13:00","end":"15:00"},{"where":"Batley Library, Market Place, Batley WF17 5DA","day":"thu"},{"group":"Cohort 1","age":"18 to 24"}]' && fm.projects[1].online === true && !fm.projects[1].sessions && fm.eligibility === 'Lives in Kirklees\nLooking for work' && fm.gate === 'Lives in Kirklees' && fm.groups.join() === 'adults' && !('addTo' in fm) && fm.phone === '01924 000000' && fm.email === 'jobs@example.org' && fm.selfReferral === 'yes' && fm.audience.join() === 'individual' && fm.categories.join() === 'Carers' && fm.logoOk === true && fm.contactName === 'Sam' && fm.healthNeed === 'specific' && fm.conditions === 'Back, neck or joint pain' && !('noMap' in fm) && !('website' in fm && fm.website), JSON.stringify(sentFull));
   await sugBtn.click();
   check('feedback: the button closes the panel too', !(await panel.isVisible()));
   const everything = JSON.stringify(fbSent);
@@ -531,7 +543,7 @@ async function worker(route) {
   await page.fill('#by', 'PL');
   await page.click('#unlock');
   await page.waitForSelector('#app:not([hidden])');
-  check('admin: signed in, the five Admin pages are listed', (await page.locator('.admin-tools a').evaluateAll((a) => a.map((x) => x.getAttribute('href')))).join() === 'help.html,services.html,commissioner.html,log.html,feedback.html');
+  check('admin: signed in, the six Admin pages are listed', (await page.locator('.admin-tools a').evaluateAll((a) => a.map((x) => x.getAttribute('href')))).join() === 'help.html,organisation.html,services.html,commissioner.html,log.html,feedback.html');
   check('admin: team bar says signed in with the name', (await page.textContent('.teambar .team-auth')).includes('Signed in as PL'));
   // ---------- Admin test mode ----------
   const usageBefore = usageSent.length;
@@ -562,7 +574,7 @@ async function worker(route) {
   await page.goto(ON + '/admin/?next=help.html');
   await page.waitForURL(/\/admin\/help\.html$/);
   check('admin: already signed in, a sign-in link goes straight on', page.url().endsWith('/admin/help.html'));
-  check('admin: every page links back to Admin home', (await page.locator('.teambar a', { hasText: 'Admin home' }).getAttribute('href')) === './');
+  check('admin: every page links back to the To do list (Admin home)', (await page.locator('.teambar a', { hasText: 'To do' }).getAttribute('href')) === './');
   check('admin: the word MVP is not on the help page', !(await page.content()).includes('MVP'));
 
   // ---------- help page ----------
@@ -748,6 +760,15 @@ async function worker(route) {
   await page.click('#add-panel button[type=submit]');
   check('add: a new venue needs its full postcode', (await page.textContent('#add-panel .msg')).includes('full postcode'), await page.textContent('#add-panel .msg'));
   await sess.getByLabel('Postcode', { exact: true }).fill('wf17 5da');
+  // A group or cohort: who it's for first, and it needs a name.
+  await page.locator('#add-panel button:text-is("Add a group or cohort")').click();
+  const grp = page.locator('#add-panel .lf-group').first();
+  check('add: "Add a group or cohort" asks for its name and age first', (await grp.locator('legend').first().textContent()) === 'Group or cohort' && await grp.getByLabel('Age for this group', { exact: true }).isVisible());
+  await page.click('#add-panel button[type=submit]');
+  check('add: a group needs a name', (await page.textContent('#add-panel .msg')).includes('give each group or cohort a name'), await page.textContent('#add-panel .msg'));
+  await grp.getByLabel('Name of the group (mandatory)', { exact: true }).fill('Cohort 1: ages 18 to 24');
+  check('add: the group is labelled with its name', (await grp.locator('legend').first().textContent()) === 'Group or cohort: Cohort 1: ages 18 to 24');
+  await grp.locator('button:text-is("Remove this group")').click();
   await page.fill('#ed-new-service-why', 'Suggested by a work coach');
   await page.click('#add-panel button[type=submit]');
   check('add: warns about a possible duplicate first', (await page.textContent('#add-panel .msg')).includes('may already be listed') && (await page.textContent('#add-panel .msg')).includes('Acas helpline'), await page.textContent('#add-panel .msg'));
@@ -1157,6 +1178,67 @@ async function worker(route) {
   await page.locator('.pc-form textarea, .pc-form input[type=text]').first().dispatchEvent('input');
   await page.waitForTimeout(200);
   check('partner page: with unsent changes, the different-service section says to send them first', await page.locator('.pc-unsent').isVisible());
+
+  // ---------- the To do list, checking a partner's reply and a suggestion, organisations ----------
+  await page.goto(ON + '/admin/');
+  await page.evaluate((p) => { sessionStorage.setItem('hwlTeamPass', p); sessionStorage.setItem('hwlLogBy', 'PL'); }, PASS);
+  const replyT = new Date(Date.now() - 3600e3).toISOString();
+  const ab = ALL.find((x) => x.id === 'audio-boost');
+  providerLinks = [{ token: 'r'.repeat(32), id: 'audio-boost', contact: 'Sam', by: 'PL', created: new Date(Date.now() - 86400e3).toISOString(), expires: new Date(Date.now() + 20 * 86400e3).toISOString(), cancelled: null, sent: 1,
+    replies: [{ t: replyT, name: 'Sam', allCorrect: false, note: 'New number', changes: { phone: '01924 000001', gate: ab.gate.filter((g) => g !== 'Lives in Kirklees' && g !== 'Aged 18 or over') }, before: { phone: ab.phone, gate: ab.gate } }] },
+    { token: 'w'.repeat(32), id: 'my-way-forward', contact: 'Jo', by: 'PL', created: new Date(Date.now() - 2 * 86400e3).toISOString(), expires: new Date(Date.now() + 20 * 86400e3).toISOString(), cancelled: null, sent: 0, replies: [] }];
+  fbStore.push({ ...fbBase, id: 8, kind: 'gap', reasons: ['missing-service'], missedService: { name: 'Mental health support sessions', role: 'provider', organisation: 'TCD Mental Health Charity', organisationOverview: 'A charity in Kirklees.', age: '20+', exclusions: "Under 11's", eligibility: 'Mental Health', healthNeed: 'none', groups: ['young-people', 'young-adults', 'adults', 'adults-50', 'older-people', 'parents', 'mothers', 'fathers', 'women', 'men', 'mental-health'], email: 'x@example.org', projects: [{ name: 'Peer groups', sessions: [{ group: 'Young adults', age: '20 to 25', where: 'Jo Cox House', day: 'wed' }] }] } });
+  await page.goto(ON + '/admin/');
+  await page.waitForSelector('#todo .todo-sec');
+  const todoText = await page.textContent('#todo');
+  check('to do: the partner reply is listed to check, with the Healthy Working Life rule flagged', todoText.includes('Audio Boost: 2 changes from Sam') && todoText.includes('remove a Healthy Working Life rule'), todoText.slice(0, 600));
+  check('to do: the suggestion is listed, with things to ask', todoText.includes('Mental health support sessions, from TCD Mental Health Charity') && /\d+ things to ask/.test(todoText));
+  check('to do: a link with no reply is "waiting on a partner", with a reminder to copy', todoText.includes('My Way Forward: no reply yet') && await page.locator('#todo button', { hasText: 'Copy a reminder email' }).count() === 1);
+  await page.click('#todo a:text-is("Check changes")');
+  await page.waitForSelector('.change');
+  check('reply: one card per change, old and new', (await page.locator('.change').count()) >= 2 && (await page.textContent('#page')).includes('01924 000001'));
+  check('reply: the Healthy Working Life rule is kept, the rest can be used', (await page.textContent('.change.blocked')).includes('Kept as it is: "Lives in Kirklees"'));
+  await page.click('.decide-bar button:text-is("Save as checked")');
+  await page.waitForSelector('.msg.ok');
+  const ed = edits['audio-boost'];
+  check('reply: saved as a checked edit, keeping the programme rule and using the rest', ed && ed.checked === true && ed.changes.phone === '01924 000001' && ed.changes.gate.includes('Lives in Kirklees') && !ed.changes.gate.includes('Aged 18 or over') && ed.note.includes('From Sam'), JSON.stringify(ed));
+  await page.goto(ON + '/admin/');
+  await page.waitForSelector('#todo .todo-sec');
+  check('to do: the reply has moved to "ready to go live"', !(await page.textContent('#todo')).includes('2 changes from Sam') && (await page.textContent('.todo-ready')).includes('Audio Boost'));
+  // Using none of a reply's changes marks it as dealt with.
+  providerLinks[0].replies.push({ t: new Date().toISOString(), name: 'Sam', allCorrect: false, note: '', changes: { phone: '01924 999999' }, before: { phone: ab.phone } });
+  await page.goto(ON + '/admin/reply.html?id=audio-boost');
+  await page.waitForSelector('.change');
+  await page.check('.change input[value=skip]');
+  await page.click('.decide-bar button:text-is("Don\'t use any of them")');
+  await page.waitForSelector('.msg.ok');
+  check('reply: using none of them marks the reply as dealt with', Boolean(providerLinks[0].replies[1].handled));
+  // A suggested service.
+  await page.goto(ON + '/admin/suggestion.html?id=8');
+  await page.waitForSelector('.ask-table');
+  const sugg = await page.textContent('#page');
+  check('suggestion: matched to the organisation already listed (TCD)', sugg.includes('looks like') && sugg.includes('Add it under TCD'));
+  check('suggestion: picks out what to ask (age, groups, who can join, health need, other services)', ['Age', 'Who can join', 'Health need', 'Other TCD services'].every((w) => sugg.includes(w)), sugg.slice(0, 800));
+  check('suggestion: projects and groups in words', sugg.includes('Young adults, age 20 to 25: Jo Cox House, Wednesdays'));
+  await page.click('.decide-bar button:text-is("Mark as waiting on them")');
+  await page.waitForSelector('.msg.ok');
+  check('suggestion: "waiting on them" is saved with what was asked', fbStore.find((x) => x.id === 8).status === 'Reviewed' && fbStore.find((x) => x.id === 8).note.includes('Age'));
+  await page.goto(ON + '/admin/suggestion.html?id=8');
+  await page.waitForSelector('.decide-bar');
+  await page.click('.decide-bar button:has-text("Start the listing under TCD")');
+  await page.waitForURL(/services\.html/);
+  await page.waitForSelector('#add-panel:not([hidden]) form, #add-panel:not([hidden]) .edit');
+  check('suggestion: starting the listing renames the organisation (keeping the old name) and opens Add a service under it', orgs.tcd && orgs.tcd.changes.name === 'TCD Mental Health Charity' && (await page.inputValue('#add-panel [data-key=organisation] input')) === 'TCD', JSON.stringify(orgs.tcd));
+  // Organisations.
+  await page.goto(ON + '/admin/organisation.html');
+  await page.fill('#org-find', 'tcd');
+  await page.click('.org-list-page a >> nth=0');
+  await page.waitForSelector('.org-head');
+  const orgText = await page.textContent('#page');
+  check('organisation: shows its services with projects, and the Healthy Working Life marker only on the funded one', orgText.includes('TCD Healthy Futures') && orgText.includes("Luke's Lads") && orgText.includes('Project: Healthy Futures Programme') && (await page.locator('.org-head .pill.blue').count()) === 0);
+  check('organisation: the waiting suggestion is shown under it', orgText.includes('Mental health support sessions'));
+  check('organisation: "Add a service" adds it under this organisation', (await page.getAttribute('.org-head a:text-is("Add a service")', 'href')) === 'services.html?add=TCD');
+  providerLinks = [];
 
   // ---------- old /mvp/ addresses ----------
   // The Pages workflow publishes small redirect pages at /mvp/; this local build doesn't, so only check the config.

@@ -523,6 +523,8 @@ html.high-contrast .fb-prompt { background: #fff; border-color: #000; }
 .fb-where { margin: .4rem 0 .6rem; }
 .fb-where-head { font-weight: 700; margin: 0 0 .3rem; }
 .fb-venue { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: .5rem .7rem; margin: .4rem 0; }
+.fb-venue.fb-group { border-inline-start: 4px solid var(--warn); background: #fffdf7; }
+.fb-add-row { display: flex; flex-wrap: wrap; gap: .5rem; }
 .fb-times { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
 .fb-elig { display: flex; flex-wrap: wrap; gap: .4rem .75rem; align-items: center; margin: 0 0 .4rem; }
 .fb-elig > input[type=text] { flex: 1 1 14rem; }

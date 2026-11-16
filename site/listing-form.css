@@ -26,6 +26,9 @@
 .lf fieldset.lf-proj { border: 2px solid var(--accent); background: var(--mint); padding: .7rem 1rem .5rem; }
 .lf fieldset.lf-proj > legend { font-size: 1.1rem; color: var(--dark-blue); padding: 0 .3rem; }
 .lf fieldset.lf-session { background: #fff; border-inline-start: 4px solid var(--accent); }
+.lf fieldset.lf-group { border-inline-start-color: var(--warn); background: #fffdf7; }
+.lf fieldset.lf-session > legend { font-weight: 700; color: var(--dark-blue); }
+.lf .lf-group-where { margin: .8rem 0 .2rem; font-weight: 700; }
 .lf fieldset.lf-days, .lf fieldset.lf-runs { border: 0; padding: 0; }
 .lf .lf-lab { font-weight: 700; margin: 0 0 .2rem; }
 .lf .lf-elig, .lf .lf-venue-row { display: flex; flex-wrap: wrap; gap: .5rem .75rem; align-items: center; margin: 0 0 .5rem; }

@@ -63,6 +63,18 @@ export async function teamLinks(request, path, body, call, cors, checker) {
     return json(res, res.error ? 404 : 200, cors);
   }
 
+  // Mark one reply as dealt with: { t (the reply's time), by, note }.
+  const h = path.match(/^\/log\/provider-links\/([A-Za-z0-9_-]{32})\/handled$/);
+  if (request.method === 'POST' && h) {
+    const by = clean(body.by, 40);
+    if (!by) return json({ error: 'Please give your name or initials.' }, 400, cors);
+    const t = clean(body.t, 40);
+    if (!/^\d{4}-\d\d-\d\dT[\d:.]+Z$/.test(t)) return json({ error: 'Which reply?' }, 400, cors);
+    const note = clean(body.note, 500);
+    const res = await call('/plinks/handled', { token: h[1], t, by, note });
+    return json(res, res.error ? 404 : 200, cors);
+  }
+
   return json({ error: 'Not found.' }, 404, cors);
 }
 
