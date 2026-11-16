@@ -17,11 +17,20 @@
   ],
   "whoFor": "Women (cis and trans) and gender-diverse people in Kirklees who are not in work or claiming Universal Credit and are living with a health condition, who want skills and confidence for work in the audio sector.",
   "age": "18+",
-  "webpage": "https://yorkshiresoundwomen.com/",
+  "webpage": "https://yorkshiresoundwomen.com/news/audio-boost-free-sound-industry-skills-workshops/",
   "email": "info@yorkshiresoundwomen.com",
   "phone": "07946 531169",
-  "social": [],
-  "locations": [],
+  "social": [
+    "https://www.instagram.com/yorkshire_sound_women_network/",
+    "https://www.facebook.com/yorkshiresoundwomen",
+    "https://bsky.app/profile/yswn.bsky.social",
+    "https://www.threads.com/@yorkshire_sound_women_network",
+    "https://www.linkedin.com/company/yswn/"
+  ],
+  "locations": [
+    "Various locations in Huddersfield (to be confirmed), with online support",
+    "3M Buckley Innovation Centre, Firth Street, Huddersfield, HD1 3BD"
+  ],
   "areas": [
     "Online",
     "Kirklees-wide"
@@ -30,56 +39,100 @@
     "Women (cis and trans) and gender-diverse people",
     "Aged 18 or over",
     "Lives in Kirklees",
-    "Economically inactive (not working and not looking for work)",
+    "Is economically inactive (not working and not looking for work)",
     "Has the right to work in the UK",
     "Has a health condition or disability"
   ],
-  "exclusions": [],
+  "exclusions": [
+    "Men",
+    "People in paid employment or self-employment",
+    "People who don't live in Kirklees",
+    "People aged under 18"
+  ],
   "gate": [
+    "Women (cis and trans) and gender-diverse people",
+    "Aged 18 or over",
     "Lives in Kirklees",
     "Is economically inactive (not working and not looking for work)",
-    "Has the right to work in the UK"
+    "Has the right to work in the UK",
+    "Has a health condition or disability"
   ],
   "healthFocus": [
     "any"
   ],
   "referralRoutes": [
-    "Application details will be shared on the Yorkshire Sound Women Network website and social media later in autumn 2026"
+    "Apply online at: https://yorkshiresoundwomen.com/news/audio-boost-free-sound-industry-skills-workshops/",
+    "Email info@yorkshiresoundwomen.com to request a link to the application and any assistance if needed"
   ],
   "selfReferral": {
-    "allowed": "tbc",
-    "note": "Applications open later in autumn 2026"
+    "allowed": "yes",
+    "note": "Fill in the form linked to in the information page.",
+    "url": "https://yorkshiresoundwomen.com/news/audio-boost-free-sound-industry-skills-workshops/"
   },
   "projects": [
     {
       "id": "audio-boost",
       "name": "Audio Boost",
-      "overview": "Hands-on workshops, talks and one-to-one support covering music technology roles such as producing tracks, DJing, engineering live events and making podcasts and radio shows, plus practical advice on finding work, in a friendly, supportive environment.",
-      "where": [
-        "Various locations in Huddersfield (to be confirmed), with online support"
+      "overview": "Hands-on beginner workshops, talks and one-to-one support covering music technology roles such as producing tracks, DJing, engineering live events and making podcasts and radio shows, plus practical advice on finding work, in a friendly, supportive environment.",
+      "runs": [
+        "set"
       ],
-      "duration": "Six one-day workshops with online support throughout, starting week commencing 4 January 2027",
-      "runsFrom": "2027-01-04",
+      "duration": "Six fortnightly sessions, running from 8 January until 19 March 2027",
+      "places": "10",
+      "runsFrom": "2027-01-08",
+      "runsTo": "2027-03-19",
+      "referralsFrom": "2026-11-16",
+      "referralsUntil": "2026-12-16",
       "sessions": [
         {
           "id": "3m-buckley-innovation-centre",
-          "venue": "3m-buckley-innovation-centre"
+          "name": "Audio Boost",
+          "note": "Six fortnightly sessions, starting Friday 8 January 2027.",
+          "venue": "huddersfield-library-hub",
+          "days": [
+            "fri"
+          ],
+          "start": "13:00",
+          "end": "16:45",
+          "frequency": "fortnightly",
+          "eligibility": [
+            "Pre-booked attendees only"
+          ],
+          "gate": [
+            "Pre-booked attendees only"
+          ],
+          "runsFrom": "2027-01-08",
+          "runsTo": "2027-03-19",
+          "referralsFrom": "2026-11-16",
+          "referralsUntil": "2026-12-16"
         }
       ]
     }
   ],
   "workExperience": "No",
   "notes": "Status before November 2026: Live - applications via the Yorkshire Sound Women Network website and social media; sessions start week commencing 4 January 2027",
-  "lastUpdated": "2026-11-02",
+  "lastUpdated": "2026-11-16",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
-    "evidence": "Checked by PL on 2026-11-02: added address Eligibility set to the Healthy Working Life grant funding criteria by the programme team (2 November 2026): Kirklees resident, economically inactive, right to work in the UK, health condition or disability, 18+ unless the scheme says otherwise."
+    "evidence": "Checked by LO on 2026-11-16: From Abi Bliss (provider) using a review link, 16 Nov 2026."
   },
   "listing": {
     "decision": "include",
     "reason": "checked",
-    "by": "PL",
-    "date": "2026-11-02"
-  }
+    "by": "LO",
+    "date": "2026-11-16"
+  },
+  "groups": [
+    "adults",
+    "women",
+    "carers",
+    "disabled",
+    "health-condition",
+    "mental-health",
+    "refugees",
+    "ethnic-minority",
+    "lgbtq"
+  ],
+  "coachNotes": "Session 6 (Friday 19 March) will take place at Northern Quarter,  28-30 Wood Street, Huddersfield, HD1 1DU. Applicants should say on the sign-up form if they will have any difficulty accessing the venue (some steps) and if so we will work to arrange an alternative session for them."
 }
