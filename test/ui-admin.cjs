@@ -112,6 +112,11 @@ async function worker(route) {
     return json({ status: 'results', message: 'Here is a match.', recommendations: [{ id: 'my-way-forward', why: 'Fits your age and situation.', fit: 'possible', check_first: 'Check they are not claiming Universal Credit with a job-search requirement.' }], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: ['aged 20', 'anxious'], follow_up_questions: [] });
   }
 
+  if (url.pathname.startsWith('/provider/') && req.method() === 'GET') {
+    const all = require(path.join(__dirname, '..', 'data', 'services-all.json'));
+    const svc = all.services.find((x) => x.id === 'my-way-forward');
+    return json({ service: svc, contact: 'Sam', expires: '2027-01-31T00:00:00Z', lastReply: null, choices: all.choices, organisations: all.organisations, venues: all.venues, otherServices: [] });
+  }
   if (url.pathname.startsWith('/log/')) {
     if (req.headers()['x-team-passcode'] !== PASS) return json({ error: 'Wrong passcode.' }, 401);
     if (url.pathname === '/log/check') return json({ ok: true });
@@ -1139,6 +1144,19 @@ async function worker(route) {
   await page.goBack();
   check('safety: quick exit replaces the page, so Back does not return to it', !page.url().endsWith('safety.html'), page.url());
   await page.unroute('https://www.bbc.co.uk/**');
+
+  // ---------- partner check page: "a different service" is kept apart from sending ----------
+  await page.goto(ON + '/provider-check.html#' + 'a'.repeat(32));
+  await page.waitForSelector('#pc-app:not([hidden])');
+  const pcOrder = await page.evaluate(() => { const send = document.querySelector('.pc-send'); const other = document.querySelector('.pc-other'); return Boolean(send && other && (send.compareDocumentPosition(other) & Node.DOCUMENT_POSITION_FOLLOWING) && !send.contains(other)); });
+  check('partner page: "Do you run a different service?" comes after the send box, outside it', pcOrder);
+  check('partner page: only one "Add another project to" route (in the form), none beside the different-service link', (await page.locator('.pc-other button').count()) === 0 && (await page.locator('.pc-other a.btn').textContent()).includes('different service'));
+  check('partner page: says it sends nothing on this page', (await page.locator('.pc-other').textContent()).includes("doesn't send anything on this page"));
+  check('partner page: no unsent-changes warning before anything changes', await page.locator('.pc-unsent').isHidden());
+  await page.locator('.pc-form textarea, .pc-form input[type=text]').first().fill('Changed for the test');
+  await page.locator('.pc-form textarea, .pc-form input[type=text]').first().dispatchEvent('input');
+  await page.waitForTimeout(200);
+  check('partner page: with unsent changes, the different-service section says to send them first', await page.locator('.pc-unsent').isVisible());
 
   // ---------- old /mvp/ addresses ----------
   // The Pages workflow publishes small redirect pages at /mvp/; this local build doesn't, so only check the config.
