@@ -36,7 +36,7 @@
       const dropsRule = ['gate', 'eligibility'].some((k) => k in (r.changes || {}) && prot.some((l) => list(s[k]).includes(l) && !list(r.changes[k]).includes(l)));
       out.push({ t: r.t, tone: 'reply', kind: 'Partner reply · ' + day(r.t),
         title: r.allCorrect ? s.name + ': says everything is correct' : keys.length ? s.name + ': ' + plural(keys.length, 'change', 'changes') + ' from ' + r.name : s.name + ': a comment from ' + r.name,
-        sub: keys.length ? keys.map((k) => F.FIELD_LABEL[k] || k).join(', ') + '.' + (dropsRule ? ' One would remove a Healthy Working Life rule: that part is kept as it is.' : '') : r.note ? 'They wrote a note.' : '',
+        sub: keys.length ? keys.map((k) => F.FIELD_LABEL[k] || k).join(', ') + '.' + (dropsRule ? ' One would remove a grant funding rule: that part is kept as it is.' : '') : r.note ? 'They wrote a note.' : '',
         action: go('reply.html?id=' + encodeURIComponent(s.id), r.allCorrect ? 'Check and record' : 'Check changes', true) });
     }
     // Suggested services not looked at yet.

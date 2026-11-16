@@ -269,11 +269,15 @@
       return (p.name || 'Project ' + (i + 1)) + (bits.length ? ': ' + bits.join(' ') : '');
     });
   }
-  // The Healthy Working Life programme's own rules for who can join (the grant schemes all carry them). On a Healthy
-  // Working Life service, a partner's reply can't take one of these lines out: the team checks with the programme.
+  // The funding rules of the Healthy Working Life grant projects: lives in Kirklees, economically inactive, right to
+  // work, and a health condition or disability. On a grant project, a partner's reply can't take one of these lines
+  // out: the team checks with the programme. A grant project is a Healthy Working Life service whose essential lines
+  // (gate) include the first three; there is no separate marker. Other Healthy Working Life services describe their
+  // own criteria, which a partner may correct, so they aren't covered.
   const PROGRAMME_RULES = [/\blives? in kirklees\b/i, /economically inactive/i, /right to work/i, /health condition or disability/i];
+  const isGrantProject = (service) => Boolean(service && service.hwlFunded && PROGRAMME_RULES.slice(0, 3).every((r) => (service.gate || []).some((l) => r.test(l))));
   function protectedLines(service) {
-    if (!service || !service.hwlFunded) return [];
+    if (!isGrantProject(service)) return [];
     return [...new Set([...(service.gate || []), ...(service.eligibility || [])])].filter((l) => PROGRAMME_RULES.some((r) => r.test(l)));
   }
   const groupNames = (ids) => (Array.isArray(ids) ? ids.map((g) => GROUPS[g] || g) : []);
@@ -281,6 +285,6 @@
   globalThis.LISTING = {
     SOON_DAYS, REMIND_DAYS, LIMITS, DATE_KEYS, RUNS, DAYS, DAY_NAMES, FREQUENCY, GROUPS,
     today, addDays, daysBetween, longDate, datesOf, state, forGroup, parts, visible, isShown, visibleIds, pick, endingSoon, closedParts,
-    dateWords, clock, timeWords, venueLine, byDay, venueIds, checkParts, suggestedProjectLines, groupNames, protectedLines,
+    dateWords, clock, timeWords, venueLine, byDay, venueIds, checkParts, suggestedProjectLines, groupNames, protectedLines, isGrantProject,
   };
 })();

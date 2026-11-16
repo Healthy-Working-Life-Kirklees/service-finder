@@ -1191,7 +1191,7 @@ async function worker(route) {
   await page.goto(ON + '/admin/');
   await page.waitForSelector('#todo .todo-sec');
   const todoText = await page.textContent('#todo');
-  check('to do: the partner reply is listed to check, with the Healthy Working Life rule flagged', todoText.includes('Audio Boost: 2 changes from Sam') && todoText.includes('remove a Healthy Working Life rule'), todoText.slice(0, 600));
+  check('to do: the partner reply is listed to check, with the Healthy Working Life rule flagged', todoText.includes('Audio Boost: 2 changes from Sam') && todoText.includes('remove a grant funding rule'), todoText.slice(0, 600));
   check('to do: the suggestion is listed, with things to ask', todoText.includes('Mental health support sessions, from TCD Mental Health Charity') && /\d+ things to ask/.test(todoText));
   check('to do: a link with no reply is "waiting on a partner", with a reminder to copy', todoText.includes('My Way Forward: no reply yet') && await page.locator('#todo button', { hasText: 'Copy a reminder email' }).count() === 1);
   await page.click('#todo a:text-is("Check changes")');
