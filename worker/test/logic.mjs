@@ -83,11 +83,12 @@ check('sonnet 5.5: no tool_choice sent', sent.tool_choice === undefined, JSON.st
 check('sonnet 5.5: thinking = between_tools', sent.thinking && sent.thinking.type === 'between_tools', JSON.stringify(sent.thinking));
 check('sonnet 5.5: card returned', r.status === 200 && r.body.recommendations.length === 1);
 check('date line present in last system block', /Today's date: \d{4}-\d{2}-\d{2}/.test(sent.system[2].text));
-check('cache_control on the data block', !!sent.system[1].cache_control);
+check('cache_control on the data block, kept for an hour', sent.system[1].cache_control && sent.system[1].cache_control.type === 'ephemeral' && sent.system[1].cache_control.ttl === '1h', JSON.stringify(sent.system[1].cache_control));
 check('data block leaves out contact details and trigger words', !/"(phone|email|webpage|requiresMention|provenance)":/.test(sent.system[1].text) && sent.system[1].text.includes('"hwlFunded"'));
 
 // ----- new reply shape: what the Worker sends to the model -----
 const props = sent.tools[0].input_schema.properties;
+const toolAtStart = JSON.stringify(sent.tools);
 const schemeCount = JSON.parse(fs.readFileSync(path.join(root, 'data/services.json'), 'utf8')).services.length;
 check(`schema: matches carry service_id enum of all ${schemeCount} schemes, max 5`, props.matches.maxItems === 5 && props.matches.items.properties.service_id.enum.length === schemeCount);
 check('schema: fit is strong/possible', props.matches.items.properties.fit.enum.join() === 'strong,possible');
@@ -135,10 +136,10 @@ check('questions: needs_more_info returns the question and no cards', r.body.sta
 
 reply = tool(reply0({ status: 'needs_more_info', follow_up_questions: ['One?', 'Two?'] }));
 r = await call('claude-sonnet-5-5', { messages: [U('hello'), asked(1), U('still unsure')] });
-check('questions: one already asked -> schema allows 1, Worker keeps only 1', sent.tools[0].input_schema.properties.follow_up_questions.maxItems === 1 && /FOLLOW-UP QUESTIONS LEFT: 1/.test(sent.system[2].text) && r.body.follow_up_questions.length === 1, JSON.stringify(r.body.follow_up_questions));
+check('questions: one already asked -> told 1 left, same reply format (so the cached data is re-used), Worker keeps only 1', JSON.stringify(sent.tools) === toolAtStart && /FOLLOW-UP QUESTIONS LEFT: 1/.test(sent.system[2].text) && r.body.follow_up_questions.length === 1, JSON.stringify(r.body.follow_up_questions));
 
 r = await call('claude-sonnet-5-5', { messages: [U('hello'), asked(1), U('still unsure'), asked(1), U('and more')] });
-check('questions: both used -> no question field, results only, told zero left', sent.tools[0].input_schema.properties.follow_up_questions === undefined && sent.tools[0].input_schema.properties.status.enum.join() === 'results' && /FOLLOW-UP QUESTIONS LEFT: 0/.test(sent.system[2].text), JSON.stringify(sent.tools[0].input_schema.properties.status));
+check('questions: both used -> told zero left and to give results, same reply format', JSON.stringify(sent.tools) === toolAtStart && /FOLLOW-UP QUESTIONS LEFT: 0 .*do not ask anything more/.test(sent.system[2].text), JSON.stringify(sent.tools[0].input_schema.properties.status));
 check('questions: model asks anyway after the limit -> treated as results, nothing asked', r.body.status === 'results' && r.body.follow_up_questions.length === 0, JSON.stringify(r.body));
 
 reply = tool(reply0({ status: 'needs_more_info', follow_up_questions: [], matches: [] }));

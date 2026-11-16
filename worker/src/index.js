@@ -241,12 +241,16 @@ function validateMessages(messages) {
   return out;
 }
 
-function respondTool(questionsLeft) {
+// The reply format is the same on every call. It is sent to Anthropic ahead of the service data, so if it
+// changed from call to call (as it used to, with the number of follow-up questions left) the cached copy of
+// the service data could not be re-used and each change was paid for at the full price. How many questions
+// are left is given in the last system block instead, and the Worker enforces it on the reply.
+function respondTool() {
   const properties = {
     status: {
       type: 'string',
-      enum: questionsLeft > 0 ? ['results', 'needs_more_info'] : ['results'],
-      description: 'results = you are giving your answer (matches may be empty). needs_more_info = you are asking a follow-up question and returning no matches.',
+      enum: ['results', 'needs_more_info'],
+      description: 'results = you are giving your answer (matches may be empty). needs_more_info = you are asking a follow-up question and returning no matches. Only allowed while you have follow-up questions left.',
     },
     message: { type: 'string', description: 'Your reply to the person in plain text (no markdown). Short. If you are asking questions, this is a one or two sentence lead-in only: the questions go in follow_up_questions, which the page shows under it with answer buttons.' },
     urgent_support: { type: 'boolean', description: 'True only if the text suggests a medical emergency, suicidal thoughts, self-harm, abuse, domestic violence, or anyone at risk of serious harm.' },
@@ -269,13 +273,10 @@ function respondTool(questionsLeft) {
         required: ['service_id', 'fit', 'reason', 'check_first'],
       },
     },
-  };
-  const required = ['status', 'message', 'urgent_support', 'urgent_types', 'pii_detected', 'understood_needs', 'matches'];
-  if (questionsLeft > 0) {
-    properties.follow_up_questions = {
+    follow_up_questions: {
       type: 'array',
-      maxItems: questionsLeft,
-      description: 'Each question you are asking, with answers the person can tap. Required whenever status is needs_more_info. Empty when you are giving results.',
+      maxItems: MAX_QUESTIONS,
+      description: 'Each question you are asking, with answers the person can tap. Never more than the number of follow-up questions you are told are left. Required whenever status is needs_more_info. Empty when you are giving results or have no questions left.',
       items: {
         type: 'object',
         properties: {
@@ -284,15 +285,16 @@ function respondTool(questionsLeft) {
         },
         required: ['question', 'options'],
       },
-    };
-    required.push('follow_up_questions');
-  }
+    },
+  };
+  const required = ['status', 'message', 'urgent_support', 'urgent_types', 'pii_detected', 'understood_needs', 'matches', 'follow_up_questions'];
   return {
     name: 'respond',
     description: 'Give your reply to the person. Always answer by calling this tool.',
     input_schema: { type: 'object', properties, required },
   };
 }
+const RESPOND_TOOL = respondTool();
 
 // ---------- worker ----------
 export default {
@@ -376,13 +378,15 @@ export default {
         {
           type: 'text',
           text: `SERVICE DATA (JSON) for ${today}. Source: ${data.source}.\n${day.text}`,
-          cache_control: { type: 'ephemeral' },
+          // Kept for an hour rather than five minutes: in a quiet spell the next person's call still re-uses it
+          // (a tenth or less of the price), and each re-use restarts the hour.
+          cache_control: { type: 'ephemeral', ttl: '1h' },
         },
         { type: 'text', text: `${MODE_NOTES[mode]}${lang === 'en' ? '' : '\n' + LANG_NOTES[lang]}
 Today's date: ${today}.
-FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole conversation).` },
+FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole conversation).${questionsLeft > 0 ? '' : ' You have none left: do not ask anything more. Set status to "results", leave follow_up_questions empty and give your best results now.'}` },
       ],
-      tools: [respondTool(questionsLeft)],
+      tools: [RESPOND_TOOL],
       messages,
     };
     // Sonnet/Opus 5.x reject a forced tool call and think up front by default. For those, let the model
