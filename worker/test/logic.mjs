@@ -1252,6 +1252,11 @@ check('team test: test-mode feedback is labelled "team"; a wrong passcode is ord
 const tCsv = (await fbCall('GET', '/feedback/export.csv', null, { pass: FB_PASS })).body;
 check('team test: feedback CSV has a team column', tCsv.split('\r\n')[0].includes('"team"'));
 const notifyMod = await import(pathToFileURL(path.join(root, 'worker/src/notify.js')).href);
+{
+  const e = notifyMod.buildEmail({ id: 10, kind: 'gap', reasons: ['missing-service'], schemeIds: [], date: '2026-11-16', missedService: { name: 'X', role: 'provider', groups: ['women', 'mental-health'], projects: [{ name: 'Peer group', overview: 'A weekly group', sessions: [{ where: 'Jo Cox House, WF17 5DB', day: 'tue', start: '13:00', end: '15:00' }] }, { online: true, runsFrom: '2026-12-01' }] } }).text;
+  check('email: suggested projects are written out in words, not [object Object]', !e.includes('[object Object]') && e.includes('1. Peer group: A weekly group. Where and when: Jo Cox House, WF17 5DB, Tuesdays 1pm to 3pm.') && e.includes('2. Project 2: Online or by phone. Runs from 1 December 2026.'), e);
+  check('email: ticked groups are written as their names', e.includes("Who it's for (ticked): Women, ") && !e.includes('mental-health'), e);
+}
 check('team test: the email subject says [team test]', notifyMod.buildEmail({ id: 9, kind: 'reply', schemeIds: [], reasons: [], team: true }).subject.includes('[team test]'));
 
 // ----- Organisations: rename, overview, combine (teamlog.js /log/orgs, apply-decisions.mjs) -----

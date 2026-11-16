@@ -46,6 +46,9 @@ export const LABELS = {
   'missing-other': 'Something else missing',
 };
 const ROLE_LABELS = { provider: 'Someone from the service', suggester: 'Someone who knows the service' };
+// Projects and groups are written out in words with the same rules as the Feedback page (site/listing-logic.js).
+import '../../site/listing-logic.js';
+
 const SERVICE_LABELS = {
   organisation: 'Organisation', organisationOverview: 'About the organisation', addTo: 'New project of (service id)', whoFor: 'Who it is for', open: 'Taking referrals now',
   projectName: 'Project', projectOverview: 'What happens', where: 'Where', when: 'Days and times', duration: 'How long', places: 'Places',
@@ -54,6 +57,7 @@ const SERVICE_LABELS = {
   audience: 'Works with', categories: 'Kinds of support', noMap: 'No map', level: 'Level', phone: 'Phone',
   email: 'Email', social: 'Social media', referral: 'How people get referred', selfReferral: 'Self-referral', cost: 'Cost',
   languages: 'Languages', workExperience: 'Work experience', coachNotes: 'Coaches should know', logoOk: 'OK to use their logo', contactName: 'Contact name',
+  groups: "Who it's for (ticked)", projects: 'Projects',
   // Older names, from a page loaded before November 2026.
   description: 'Description', activities: 'What happens', running: 'Running', dates: 'Dates', addresses: 'Addresses',
 };
@@ -94,10 +98,14 @@ export function buildEmail(entry, names = new Map(), reviewUrl = '') {
     add('Missed service', [ms.name, ms.website, ms.area].filter(Boolean).join(', '));
     add('Sent in by', ROLE_LABELS[ms.role]);
     // The fuller details from "Suggest a service", in the order the form asks for them.
+    const L = globalThis.LISTING;
     for (const [k, v] of Object.entries(ms)) {
-      if (['name', 'website', 'area', 'role'].includes(k)) continue;
-      add(SERVICE_LABELS[k] || k, v === true ? 'Yes' : Array.isArray(v) ? v.join(', ') : v);
+      if (['name', 'website', 'area', 'role', 'projects'].includes(k)) continue;
+      add(SERVICE_LABELS[k] || k, v === true ? 'Yes' : k === 'groups' ? L.groupNames(v).join(', ') : Array.isArray(v) ? v.join(', ') : v);
     }
+    // Last, one project to a line, as they are the longest part.
+    const projects = L.suggestedProjectLines(ms.projects);
+    if (projects.length) lines.push(SERVICE_LABELS.projects + ':', ...projects.map((p, i) => `  ${i + 1}. ${p}`));
   }
   add('Kinds of support looked for', entry.gapCategories);
   add('Area', entry.gapArea);

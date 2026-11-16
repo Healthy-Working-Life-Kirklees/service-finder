@@ -330,6 +330,7 @@
     ['noMap', 'Online or phone only'], ['level', 'Covers'],
     ['phone', 'Phone'], ['email', 'Email'], ['social', 'Social media'], ['referral', 'How to get referred'],
     ['selfReferral', 'Self-referral'], ['cost', 'Cost'], ['languages', 'Languages'], ['workExperience', 'Work experience or volunteering'], ['coachNotes', 'Anything coaches should know'],
+    ['groups', "Who it's for (ticked)"], ['projects', 'Projects'],
     ['logoOk', 'OK to use their logo'], ['contactName', 'Contact name (work)'],
     // Older names, from suggestions sent before November 2026.
     ['description', 'What it does'], ['activities', 'What happens and where'], ['running', 'Running now?'], ['dates', 'Dates'], ['addresses', 'Addresses or venues'],
@@ -371,7 +372,13 @@
       for (const [k, label] of SUGGESTION_FIELDS) {
         let v = ms[k];
         if (v === undefined || v === '' || (Array.isArray(v) && !v.length)) continue;
-        if (Array.isArray(v)) v = v.map((a) => SUGGESTION_CHOICES[a] || a).join(', ');
+        if (k === 'projects') {
+          const lines = LISTING.suggestedProjectLines(v);
+          if (lines.length) details.append(el('dt', { text: label }), el('dd', {}, el('ol', {}, lines.map((t) => el('li', { class: 'comment', text: t })))));
+          continue;
+        }
+        if (k === 'groups') v = LISTING.groupNames(v).join(', ');
+        else if (Array.isArray(v)) v = v.map((a) => SUGGESTION_CHOICES[a] || a).join(', ');
         else if (v === true) v = 'Yes';
         else if (k === 'addTo') v = nameOf(v);
         else v = SUGGESTION_CHOICES[k + ':' + v] || v;
