@@ -63,6 +63,11 @@
         // The kept lines go back where they were, so nothing moves around.
         if (kept.length) { const keep = new Set([...list(now), ...kept]); now = [...list(s[k]).filter((l) => keep.has(l)), ...list(now).filter((l) => !list(s[k]).includes(l))]; }
       }
+      // On a grant project the health focus stays "any health condition or disability" (a funding rule).
+      if (k === 'healthFocus' && F.LL.isGrantProject(s) && list(s.healthFocus).includes('any') && !list(now).includes('any')) {
+        kept = ['Any health condition or disability'];
+        now = s.healthFocus;
+      }
       const nothingLeft = kept.length && F.norm(now) === F.norm(s[k]);
       const moved = r.before && k in r.before && F.norm(s[k]) !== F.norm(r.before[k]);
       const name = 'ch-' + i;
@@ -73,7 +78,7 @@
         el('h2', { text: F.FIELD_LABEL[k] || k }),
         el('div', { class: 'change-cols' }, el('div', { class: 'was' }, el('b', { text: 'We had' }), shown(before, k)), el('div', { class: 'now' }, el('b', { text: 'They say' }), shown(r.changes[k], k))),
         moved ? el('p', { class: 'msg info', text: 'This has changed since they replied. It now says: ' + shown(s[k], k) }) : null,
-        kept.length ? el('p', { class: 'kept' }, el('strong', { text: 'Kept as it is: ' }), kept.map((l) => '"' + l + '"').join(', ') + '. ' + (kept.length === 1 ? 'This is' : 'These are') + ' a Healthy Working Life programme rule, so a partner’s reply can’t take ' + (kept.length === 1 ? 'it' : 'them') + ' out. If they think it’s wrong, it’s a question for the programme team.' + (nothingLeft ? ' Nothing else changed here.' : '')) : null,
+        kept.length ? el('p', { class: 'kept' }, el('strong', { text: 'Kept as it is: ' }), kept.map((l) => '"' + l + '"').join(', ') + '. ' + (kept.length === 1 ? 'This is' : 'These are') + ' a funding rule for the Healthy Working Life grant projects, so a partner’s reply can’t take ' + (kept.length === 1 ? 'it' : 'them') + ' out. If they think it’s wrong, it’s a question for the programme team.' + (nothingLeft ? ' Nothing else changed here.' : '')) : null,
         choice);
       card._k = k;
       card._value = now;

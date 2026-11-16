@@ -1274,8 +1274,12 @@ const notifyMod = await import(pathToFileURL(path.join(root, 'worker/src/notify.
 }
 {
   // The programme's own rules can't be taken out by a partner's reply on a Healthy Working Life service.
-  const prot = LS.protectedLines({ hwlFunded: true, gate: ['Lives in Kirklees', 'Aged 18 or over'], eligibility: ['Has a health condition or disability', 'Women'] });
-  check('programme rules: picked out of a Healthy Working Life service\'s lines', prot.join('|') === 'Lives in Kirklees|Has a health condition or disability', prot.join('|'));
+  const grant = { hwlFunded: true, gate: ['Lives in Kirklees', 'Is economically inactive (not working and not looking for work)', 'Has the right to work in the UK', 'Aged 18 or over'], eligibility: ['Has a health condition or disability', 'Women'] };
+  const prot = LS.protectedLines(grant);
+  check('grant rules: picked out of a grant project\'s lines', prot.join('|') === 'Lives in Kirklees|Is economically inactive (not working and not looking for work)|Has the right to work in the UK|Has a health condition or disability', prot.join('|'));
+  check('grant rules: none on another Healthy Working Life service (no grant rules ticked essential)', LS.protectedLines({ hwlFunded: true, gate: ['Lives in Kirklees'], eligibility: ['Lives in Kirklees and is aged 18 or over'] }).length === 0);
+  const grants = fs.readdirSync(path.join(root, 'data/services')).map((f) => JSON.parse(fs.readFileSync(path.join(root, 'data/services', f), 'utf8'))).filter(LS.isGrantProject).map((x) => x.id).sort();
+  check('grant rules: exactly the 15 grant projects in the data are covered', grants.join() === [...GRANT_SCHEMES].sort().join(), grants.join());
   check('programme rules: none on a service that isn\'t Healthy Working Life', LS.protectedLines({ hwlFunded: false, gate: ['Lives in Kirklees'] }).length === 0);
   check('suggestion words: a group says its name and age', LS.suggestedProjectLines([{ name: 'P', sessions: [{ group: 'Cohort 1', age: '18 to 24', where: 'Leeds Road', day: 'mon' }] }])[0] === 'P: Where and when: Cohort 1, age 18 to 24: Leeds Road, Mondays.');
 }
