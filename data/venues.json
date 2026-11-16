@@ -401,6 +401,16 @@
       "lng": -1.78208
     },
     {
+      "id": "huddersfield-library-hub",
+      "name": "Huddersfield Library Hub",
+      "address": "Our Cultural Heart, Princess Alexandra Walk, Huddersfield",
+      "postcode": "HD1 2RS",
+      "ward": "Dalton",
+      "wardCode": "E05016510",
+      "lat": 53.64447,
+      "lng": -1.78064
+    },
+    {
       "id": "jo-cox-house",
       "name": "Jo Cox House",
       "address": "Jo Cox House, Batley WF17 5DR",
