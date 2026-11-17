@@ -22,7 +22,7 @@
     const s = F.byId(id);
     if (!s) return page.replaceChildren(el('p', { class: 'msg err', text: 'That service was not found.' }));
     const { reply: r, handled } = F.newestReply(id);
-    if (!r) return page.replaceChildren(el('p', { class: 'msg info', text: s.name + ' has no reply from its partner yet.' }), el('p', {}, el('a', { href: './', text: 'Back to the To do list' })));
+    if (!r) return page.replaceChildren(el('p', { class: 'msg info', text: s.name + ' has no reply from its partner yet.' }), el('p', {}, el('a', { href: 'todo.html', text: 'Back to the To do list' })));
     const e = S.edits[id];
     const pending = e && F.editState(id) === 'pending' ? e.changes : {};
     const keys = Object.keys(r.changes || {});

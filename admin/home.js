@@ -9,7 +9,7 @@
   const $ = (s) => document.querySelector(s);
 
   // Where to go after signing in, if you were sent here from another Admin page. Only the Admin pages are allowed.
-  const NEXT_RE = /^(help|services|log|feedback|commissioner|organisation|reply|suggestion)\.html([?#][^]*)?$/;
+  const NEXT_RE = /^(help|services|log|feedback|commissioner|organisation|reply|suggestion|todo)\.html([?#][^]*)?$/;
   const next = (() => {
     const v = new URLSearchParams(location.search).get('next') || '';
     return NEXT_RE.test(v) ? v : '';
@@ -61,7 +61,7 @@
     AUTH.setPass(pass);
     $('#pass').value = '';
     if (next) location.href = next;
-    else { show(); if (window.TODO) window.TODO.start(); }
+    else show();
   });
 
   $('#lock').addEventListener('click', () => {
