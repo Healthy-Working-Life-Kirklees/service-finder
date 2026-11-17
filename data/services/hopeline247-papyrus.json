@@ -55,7 +55,9 @@
     "status": "Closed or not running (web research, October 2026)"
   },
   "listing": {
-    "decision": "review",
-    "reason": "Research found it closed or not running, and advised not listing it. Added so the development team can confirm."
+    "decision": "exclude",
+    "reason": "Excluded by the development team (service check, 17 Nov 2026): Papyrus went into administration on 7 Sept 2026 and HOPELINE247 has stopped.",
+    "by": "PL",
+    "date": "2026-11-17"
   }
 }

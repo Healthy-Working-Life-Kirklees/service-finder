@@ -45,7 +45,7 @@
     {
       "id": "employer-health-toolkit",
       "name": "Employer health toolkit",
-      "overview": "Free toolkit, podcast, training and Fair Work Charter helping employers take on and keep staff with health conditions or disabilities.",
+      "overview": "Free toolkit, podcast, two-hour online workshops and Fair Work Charter helping employers take on and keep staff with health conditions or disabilities.",
       "where": [
         "Online",
         "training across WY"
@@ -54,13 +54,13 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 70",
     "foundVia": "WYCA (your list)",
-    "checkedUrl": "https://www.westyorks-ca.gov.uk/news/mayor-launches-bold-new-drive-to-close-disability-employment-gap-and-boost-wellbeing-and-productivity-across-west-yorkshire",
-    "evidence": "Launched 9 March 2026.",
+    "checkedUrl": "https://www.westyorks-ca.gov.uk/business-support/healthy-working-life/",
+    "evidence": "Checked against WYCA's page on 2026-11-17: matches, plus online workshops.",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },

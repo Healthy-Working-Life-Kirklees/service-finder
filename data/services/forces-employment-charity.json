@@ -49,13 +49,14 @@
   ],
   "workExperience": "No",
   "cost": "Not stated",
-  "lastUpdated": "2026-10-14",
+  "coachNotes": "Phone lines open Monday to Friday 8am to 8pm, Saturday 8.30am to 2pm.",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 123",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://www.forcesemployment.org.uk/contact-us/",
-    "evidence": "© 2026.",
+    "checkedUrl": "https://www.gov.uk/support-for-veterans/forces-employment-charity",
+    "evidence": "Checked on 2026-11-17 against GOV.UK's veterans page (the charity's contact page blocks automated reading): phone, email and hours.",
     "confidence": "medium",
     "status": "Running (checked by web research, October 2026)"
   },

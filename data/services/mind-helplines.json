@@ -17,7 +17,7 @@
   "age": null,
   "webpage": "https://www.mind.org.uk/information-support/helplines/",
   "email": null,
-  "phone": "Infoline 0300 123 3393; Legal 0300 466 6463; Benefits 0300 222 5782",
+  "phone": "Infoline 0300 123 3393; Legal Line 0300 466 6463",
   "social": [],
   "locations": [],
   "areas": [
@@ -34,8 +34,7 @@
   ],
   "referralRoutes": [
     "Phone the Infoline",
-    "Phone the Legal Line",
-    "Phone the Welfare Benefits Line"
+    "Phone the Legal Line"
   ],
   "selfReferral": {
     "allowed": "yes",
@@ -45,7 +44,7 @@
     {
       "id": "mental-health-information-lines",
       "name": "Mental health information lines",
-      "overview": "Information on mental health and local support, legal information on discrimination, and benefits advice.",
+      "overview": "Information on mental health and local support, and legal information on discrimination. Lines open Monday to Friday, 9am to 6pm.",
       "where": [
         "Phone"
       ]
@@ -54,13 +53,13 @@
   "workExperience": "No",
   "cost": "Local rate",
   "languages": "Language Line interpreting",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 109",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.mind.org.uk/information-support/helplines/",
-    "evidence": "Lists 2026 closures.",
+    "evidence": "Checked against Mind's helplines page on 2026-11-17: Infoline and Legal Line, Mon to Fri 9 to 6. Welfare Benefits Line no longer listed; text service closed.",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },

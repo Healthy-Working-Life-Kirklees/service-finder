@@ -12,7 +12,7 @@
     "Veterans",
     "Mental health"
   ],
-  "whoFor": "Veterans and their families.",
+  "whoFor": "Veterans, serving personnel and their families.",
   "age": null,
   "webpage": "https://combatstress.org.uk/",
   "email": "helpline@combatstress.org.uk",
@@ -24,7 +24,8 @@
   ],
   "eligibility": [
     "Veterans",
-    "Families of veterans"
+    "Serving personnel",
+    "Families of veterans and serving personnel"
   ],
   "exclusions": [],
   "gate": [
@@ -55,13 +56,13 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 96",
     "foundVia": "MECC Link; District Provision Tool",
-    "checkedUrl": "https://combatstress.org.uk/",
-    "evidence": "Page published Sept 2026.",
+    "checkedUrl": "https://combatstress.org.uk/helpline",
+    "evidence": "Checked against Combat Stress's helpline page on 2026-11-17: 24-hour line, text and email match.",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
