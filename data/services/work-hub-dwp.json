@@ -1,0 +1,74 @@
+{
+  "id": "work-hub-dwp",
+  "name": "Work Hub",
+  "organisation": "DWP",
+  "open": true,
+  "hwlFunded": false,
+  "level": "national",
+  "audience": [
+    "individual"
+  ],
+  "categories": [
+    "Finding work",
+    "Skills"
+  ],
+  "whoFor": "Anyone looking for work or wanting a better job. Free and voluntary, and you don't need to be on benefits.",
+  "age": null,
+  "webpage": "https://www.jobs.service.gov.uk/",
+  "email": null,
+  "phone": null,
+  "social": [],
+  "locations": [],
+  "areas": [
+    "Kirklees-wide",
+    "Online"
+  ],
+  "eligibility": [
+    "Anyone looking for work or wanting to get on at work"
+  ],
+  "exclusions": [],
+  "gate": [],
+  "healthFocus": [],
+  "referralRoutes": [
+    "Online"
+  ],
+  "selfReferral": {
+    "allowed": "yes",
+    "note": "Use it online, any time"
+  },
+  "projects": [
+    {
+      "id": "online-job-support",
+      "name": "Online job support",
+      "overview": "A free government website to help you find a job. Build a CV, search for jobs, get help with applications and interviews, and find training. An AI work assistant can suggest jobs and make you a plan.",
+      "runs": [
+        "online"
+      ],
+      "where": [
+        "Online"
+      ]
+    }
+  ],
+  "groups": [
+    "adults"
+  ],
+  "workExperience": "No",
+  "cost": "Free",
+  "coachNotes": "DWP's new digital service (launched June 2026), still described as a pilot or beta. It's an extra option alongside Jobcentre support and doesn't change anyone's Universal Credit work search requirements.",
+  "lastUpdated": "2026-11-17",
+  "reviewCycle": "Quarterly",
+  "provenance": {
+    "source": "Added by the development team (PL), 17 November 2026",
+    "foundVia": "Suggested by PL: https://www.jobs.service.gov.uk/",
+    "checkedUrl": "https://www.gov.uk/algorithmic-transparency-records/dwp-work-hub",
+    "evidence": "GOV.UK algorithmic transparency record for Work Hub, updated 9 Nov 2026; DWP press release 25 Sep 2026 (launched June 2026, free, for anyone looking to get into work or get on at work). The Work Hub home page itself blocks automated reading, so its wording wasn't checked directly.",
+    "confidence": "medium",
+    "status": "Running (pilot / private beta, November 2026)"
+  },
+  "listing": {
+    "decision": "include",
+    "reason": "Added at PL's request.",
+    "by": "PL",
+    "date": "2026-11-17"
+  }
+}
