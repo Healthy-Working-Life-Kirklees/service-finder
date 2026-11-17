@@ -1055,6 +1055,28 @@ Thank you,
     box.hidden = false;
   }
   // Shows one service in the list (clearing the filters so it's there) and opens its details.
+  // A link to one service (services.html#svc-<id>), from the To do list, a reply or an organisation's page.
+  // The hash is read once, at the start, and taken out of the address: otherwise the browser keeps scrolling to it
+  // as the page grows, which lands on the wrong service.
+  const startHash = location.hash;
+  if (/^#svc-/.test(startHash)) history.replaceState(null, '', location.pathname + location.search);
+  function goToHash() {
+    const m = startHash.match(/^#svc-(.+)$/);
+    if (!m) return;
+    let id;
+    try { id = decodeURIComponent(m[1]); } catch { return; }
+    if (!services.some((x) => x.s.id === id)) return;
+    goToService(id);
+    // Parts of the page above the list still settle after this (panels filling in), which would move the service
+    // out of view: keep it at the top for a couple of seconds, unless the person scrolls themselves.
+    const box = document.getElementById('svc-' + id);
+    if (!box || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => box.scrollIntoView({ block: 'start' }));
+    const stop = () => ro.disconnect();
+    ro.observe(document.body);
+    setTimeout(stop, 2500);
+    for (const ev of ['wheel', 'touchstart', 'keydown', 'mousedown']) addEventListener(ev, stop, { once: true, passive: true });
+  }
   function goToService(id) {
     for (const f of FIELDS) input[f].value = f === 'sort' ? 'name' : '';
     input.q.value = id;
@@ -1210,6 +1232,7 @@ Thank you,
     summary();
     update();
     checkApply();
+    goToHash();
     openDraft();
     openEditPrefill();
     openAddForOrg();
@@ -1643,13 +1666,10 @@ Thank you,
       readUrl();
       summary();
       update();
+      // Opening a link to one service (services.html#svc-<id>) shows just that service, open. Signed in, it's done
+      // again once the team's changes have loaded, as they change the list above it.
       if (pass) signIn(pass);
-      // Opening a link to one service (services.html#svc-<id>) scrolls to it and opens its details.
-      const target = location.hash && document.getElementById(location.hash.slice(1));
-      if (target) {
-        target.querySelector('details').open = true;
-        target.scrollIntoView();
-      }
+      else goToHash();
     })
     .catch(() => {
       $('#load-error').hidden = false;
