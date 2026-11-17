@@ -57,13 +57,13 @@
   ],
   "workExperience": "No",
   "cost": "Free (NHS)",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 25",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://www.kirklees-talkingtherapies.nhs.uk/",
-    "evidence": "Site modified May 2026. Separate from the Employment Advice service already listed. MECC Link still lists an old IAPT number (01484 434625/6) — ignore.",
+    "checkedUrl": "https://www.kirklees-talkingtherapies.nhs.uk/contact-us/",
+    "evidence": "Checked against the service's contact page on 2026-11-17: phone and email match. Folly Hall Mills not on the site; asking the service. Previous note: MECC Link lists an old IAPT number (01484 434625/6), ignore.",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },

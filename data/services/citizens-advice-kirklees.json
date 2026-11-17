@@ -18,7 +18,7 @@
   "age": null,
   "webpage": "https://www.kcalc.org.uk",
   "email": null,
-  "phone": "No",
+  "phone": null,
   "social": [
     "https://www.facebook.com/KirkleesCALC"
   ],
@@ -42,7 +42,7 @@
   "gate": [],
   "healthFocus": [],
   "referralRoutes": [
-    "Online call-back request form",
+    "Online call-back request form (the AdviceLine no longer takes calls)",
     "Drop in at Empire House, Dewsbury, Mon and Tue 9.30-3",
     "Drop in at Pearl House, Huddersfield, Fri 10-1"
   ],
@@ -54,7 +54,7 @@
     {
       "id": "advice-on-money-housing-and-work",
       "name": "Advice on money, housing and work",
-      "overview": "Free advice on benefits, debt, housing, work problems, discrimination and immigration. Request a call back online or go to a drop-in.",
+      "overview": "Free advice on benefits, debt, housing, work problems, discrimination, immigration and NHS complaints. Request a call back online or go to a drop-in.",
       "sessions": [
         {
           "id": "empire-house",
@@ -64,20 +64,20 @@
         {
           "id": "fusion-housing",
           "venue": "fusion-housing",
-          "note": "Fri 10–1"
+          "note": "Fri 10–1, up to 8 people seen each session"
         }
       ]
     }
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-11-04",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 20",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://kcalc.org.uk/",
-    "evidence": "Checked by PL on 2026-11-04: checked online access only - no phone",
+    "checkedUrl": "https://www.kcalc.org.uk",
+    "evidence": "Checked against KCALC's site on 2026-11-17: no phone line (AdviceLine closed), call-back form, Dewsbury Mon and Tue 9.30 to 3, Huddersfield drop-in Fri 10 to 1.",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },

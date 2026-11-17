@@ -20,11 +20,11 @@
   "whoFor": "Kirklees adults aged 18 and over with experience of mental ill health - including autism and other neurodivergent conditions, hidden disabilities, a learning disability where mental health support is the primary need, or dementia in a community setting - who want paid work. Also advises employers.",
   "age": "18+",
   "webpage": "https://www.waythrough.org.uk/find-support-near-me/kirklees-employment-service/",
-  "email": "Info.KirkleesES@RichmondFellowship.org.uk",
+  "email": "info.kirkleeses@waythrough.org.uk",
   "phone": "01484 434866",
   "social": [],
   "locations": [
-    "Huddersfield base",
+    "The Media Centre, 7 Northumberland Street, Huddersfield HD1 1RL",
     "Dewsbury base",
     "Community venues across Kirklees",
     "Remote - telephone, Teams and email"
@@ -92,11 +92,15 @@
     }
   ],
   "workExperience": "Yes - including volunteering and placements",
+  "coachNotes": "Open Monday to Friday, 9am to 5pm.",
   "notes": "Status before November 2026: Live - open to referrals",
-  "lastUpdated": "2026-09-03",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
+    "checkedUrl": "https://www.waythrough.org.uk/find-support-near-me/kirklees-employment-service/",
+    "evidence": "Checked against Waythrough's page (modified 5 Oct 2026) on 2026-11-17: new Waythrough email and Media Centre address; phone, eligibility and offer match Pathways v2.1, which still has the old Richmond Fellowship email.",
+    "confidence": "high"
   },
   "listing": {
     "decision": "include",
