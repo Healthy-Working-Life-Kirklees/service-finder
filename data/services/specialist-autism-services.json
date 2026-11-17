@@ -55,7 +55,9 @@
     "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
-    "decision": "review",
-    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+    "decision": "exclude",
+    "reason": "Excluded by the development team (service check, 17 Nov 2026): hubs in Calderdale and Keighley only; Kirklees not covered.",
+    "by": "PL",
+    "date": "2026-11-17"
   }
 }

@@ -53,7 +53,9 @@
     "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
-    "decision": "review",
-    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+    "decision": "exclude",
+    "reason": "Excluded by the development team (service check, 17 Nov 2026): in Kirklees this is Employment Kirklees, already listed.",
+    "by": "PL",
+    "date": "2026-11-17"
   }
 }

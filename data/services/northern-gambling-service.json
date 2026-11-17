@@ -12,7 +12,7 @@
     "Mental health",
     "Debt"
   ],
-  "whoFor": "People in the North of England harmed by gambling.",
+  "whoFor": "People in the North of England harmed by gambling, and family members affected by someone's gambling.",
   "age": null,
   "webpage": "https://www.northerngamblingservice.nhs.uk/",
   "email": "referral.ngs@nhs.net",
@@ -23,7 +23,8 @@
     "Kirklees-wide"
   ],
   "eligibility": [
-    "People in the North of England harmed by gambling"
+    "People in the North of England harmed by gambling",
+    "Family members affected by someone's gambling"
   ],
   "exclusions": [],
   "gate": [],
@@ -66,14 +67,14 @@
   ],
   "workExperience": "No",
   "cost": "Free (NHS)",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 79",
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.northerngamblingservice.nhs.uk/",
-    "evidence": "Page Aug 2025; © 2026.",
-    "confidence": "medium",
+    "evidence": "Checked against the service's site on 2026-11-17: covers the North West, North East, Yorkshire and the Humber; also helps family members.",
+    "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {

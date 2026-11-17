@@ -56,13 +56,13 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 72",
     "foundVia": "District Provision Tool",
     "checkedUrl": "https://yorkshire.smartworks.org.uk/",
-    "evidence": "Events March 2026.",
+    "evidence": "Checked against Smart Works' site on 2026-11-17: matches.",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },

@@ -16,7 +16,7 @@
   "age": null,
   "webpage": "https://nacro.org.uk/",
   "email": "helpline@nacro.org.uk",
-  "phone": null,
+  "phone": "0300 123 1999",
   "social": [],
   "locations": [],
   "areas": [
@@ -58,6 +58,7 @@
     "مجرمانہ ریکارڈ"
   ],
   "referralRoutes": [
+    "Phone",
     "Email"
   ],
   "selfReferral": {
@@ -76,14 +77,15 @@
   ],
   "workExperience": "No",
   "cost": "Not stated",
-  "lastUpdated": "2026-10-14",
+  "coachNotes": "Helpline open Monday, Tuesday, Thursday and Friday 9am to 5pm, Wednesday 9am to 1pm.",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 130",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://nacro.org.uk/?p=26243",
-    "evidence": "Page Aug 2025, © 2026. Phone came back truncated — confirm before publishing.",
-    "confidence": "medium",
+    "checkedUrl": "https://www.nacro.org.uk/about-us/contact-us/",
+    "evidence": "Checked against Nacro's contact page on 2026-11-17: helpline 0300 123 1999 and helpline@nacro.org.uk.",
+    "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
