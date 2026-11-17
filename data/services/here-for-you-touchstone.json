@@ -11,20 +11,20 @@
   "categories": [
     "Mental health"
   ],
-  "whoFor": "Kirklees adults (age conflicts: 18+ vs 16+).",
-  "age": null,
+  "whoFor": "People struggling to cope or having thoughts of suicide or self-harm. No home address or GP referral needed.",
+  "age": "16+",
   "webpage": "https://touchstonesupport.org.uk/hereforyou/",
   "email": null,
   "phone": "07741 900395",
   "social": [],
   "locations": [],
   "areas": [
-    "Batley",
+    "Dewsbury",
     "Kirklees-wide"
   ],
   "eligibility": [
-    "Kirklees adults",
-    "Struggling to cope"
+    "Aged 16 or over",
+    "Struggling to cope or having thoughts of suicide or self-harm"
   ],
   "exclusions": [],
   "gate": [],
@@ -32,36 +32,48 @@
     "mental-health"
   ],
   "referralRoutes": [
-    "Call on the night",
-    "Text on the night"
+    "Call on the day you want support",
+    "Text on the day (they'll call you back)"
   ],
   "selfReferral": {
     "allowed": "yes",
-    "note": "Call or text on the night."
+    "note": "Call or text on the day you want support."
   },
   "projects": [
     {
       "id": "out-of-hours-safe-space",
       "name": "Out-of-hours safe space",
-      "overview": "Evening support if you're struggling to cope, in a calm space or by phone.",
+      "overview": "Evening support if you're struggling to cope: a 45-minute one-to-one, in person or by phone, or time in a safe space with other people and free food. Urgent care packs while stocks last.",
       "sessions": [
         {
-          "id": "25-trinity-street",
-          "venue": "25-trinity-street"
+          "id": "dewsbury-business-centre",
+          "venue": "dewsbury-business-centre",
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri",
+            "sat",
+            "sun"
+          ],
+          "start": "15:30",
+          "end": "21:00",
+          "note": "Every day of the year"
         }
       ]
     }
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 52",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://touchstonesupport.org.uk/hereforyou/",
-    "evidence": "On council page (Sep 2026). Hours and age differ between sources — check.",
-    "confidence": "medium",
+    "evidence": "Checked against Touchstone's page on 2026-11-17: Kirklees team now at Dewsbury Business Centre, 16+, daily 3.30pm to 9pm.",
+    "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {

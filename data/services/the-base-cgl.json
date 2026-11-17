@@ -77,14 +77,14 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 33",
     "foundVia": "Kirklees Community Directory",
-    "checkedUrl": "https://www.changegrowlive.org/the-base-kirklees",
-    "evidence": "© 2026; directory Oct 2026.",
-    "confidence": "high",
+    "checkedUrl": "https://www.changegrowlive.org/the-base-kirklees/info",
+    "evidence": "Checked on 2026-11-17: CGL's pages confirm free, confidential, up to 21, phone 01484 541589; NHS directory confirms Brian Jackson House; council contract runs to 31 Mar 2031. Email not shown publicly on CGL's page.",
+    "confidence": "medium",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {

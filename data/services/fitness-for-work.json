@@ -40,7 +40,7 @@
     "Aged 18 or over",
     "Committed to making a long term lifestyle change",
     "Clinically stable and compliant with their medication",
-    "AND one of: out of work due to ill health and unable to look for work as a result; had sickness from work due to ill health for more than 7 days in the last 6 months; at risk of falling out of work due to ill health"
+    "AND one of: out of work due to ill health and unable to look for work as a result; had sickness from work due to ill health for 7 or more days in the last 6 months; at risk of falling out of work due to ill health"
   ],
   "exclusions": [
     "Resting tachycardia over 100bpm",
@@ -85,11 +85,14 @@
     }
   ],
   "workExperience": "No",
-  "notes": "Status before November 2026: Live - open to referrals",
-  "lastUpdated": "2026-08-21",
+  "notes": "Status before November 2026: Live - open to referrals Eligibility wording follows KAL's page (Nov 2026): '7 or more days' off sick in the last 6 months. Pathways v2.1 says 'more than 7 days'.",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
+    "checkedUrl": "https://kal.org.uk/health-wellbeing/fitness-for-work/",
+    "evidence": "Checked against KAL's page (modified 27 Apr 2026) on 2026-11-17: referral links match. Phone, email and venues come from Pathways v2.1 only; social sessions to confirm with KAL.",
+    "confidence": "medium"
   },
   "listing": {
     "decision": "include",
