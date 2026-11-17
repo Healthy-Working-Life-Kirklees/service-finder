@@ -93,7 +93,10 @@
     const e = S.edits[id];
     const s = byId(id);
     if (!e || !s) return 'none';
-    if (!Object.keys(e.changes).length) return e.checked && String(s.lastUpdated || '') < String(e.t).slice(0, 10) ? 'pending' : 'applied';
+    const d0 = String(e.t).slice(0, 10);
+    // A provider's own check also waits until it is recorded as provenance.providerChecked.
+    if (e.checkedWith === 'provider' && String((s.provenance && s.provenance.providerChecked) || '') < d0) return 'pending';
+    if (!Object.keys(e.changes).length) return e.checked && String(s.lastUpdated || '') < d0 ? 'pending' : 'applied';
     const want = settleVenues(e.changes);
     return Object.keys(e.changes).every((k) => norm(s[k]) === norm(want[k])) ? 'applied' : 'pending';
   }

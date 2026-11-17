@@ -551,6 +551,10 @@
         "checkedUrl": {
           "$ref": "#/$defs/url"
         },
+        "providerChecked": {
+          "$ref": "#/$defs/date",
+          "description": "When the provider last confirmed the details themselves, through a review or verify link. A service confirmed in the last month can be skipped by a web check."
+        },
         "evidence": {
           "$ref": "#/$defs/text"
         },

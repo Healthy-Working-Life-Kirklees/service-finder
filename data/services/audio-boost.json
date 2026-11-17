@@ -115,7 +115,8 @@
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
-    "evidence": "Checked by LO on 2026-11-16: From Abi Bliss (provider) using a review link, 16 Nov 2026."
+    "evidence": "Checked by LO on 2026-11-16: From Abi Bliss (provider) using a review link, 16 Nov 2026.",
+    "providerChecked": "2026-11-16"
   },
   "listing": {
     "decision": "include",

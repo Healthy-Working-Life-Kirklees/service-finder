@@ -43,7 +43,7 @@
       const rec = el('button', { type: 'button', class: 'btn primary', text: 'Record as checked with the partner', onclick: async () => {
         rec.disabled = true;
         try {
-          const d = await F.api('PUT', '/log/edits/' + encodeURIComponent(id), { changes: pending, before: {}, by: F.AUTH.by() || 'someone', checked: true, checkedUrl: '',
+          const d = await F.api('PUT', '/log/edits/' + encodeURIComponent(id), { changes: pending, before: {}, by: F.AUTH.by() || 'someone', checked: true, checkedUrl: '', checkedWith: 'provider',
             note: ('Checked with ' + r.name + ' (partner) using a verify link, ' + day(r.t) + ': everything correct.' + (r.note ? ' They added: ' + r.note : '')).slice(0, 1000) });
           S.edits[id] = d.item;
           say('Recorded. It’s on the To do list under "Ready to go live": the last-checked date moves on when it goes live.', 'ok');
@@ -116,7 +116,7 @@
           return;
         }
         if (p.use.length) {
-          const d = await F.api('PUT', '/log/edits/' + encodeURIComponent(id), { changes, before, by, checked: true, checkedUrl: '', note: noteText });
+          const d = await F.api('PUT', '/log/edits/' + encodeURIComponent(id), { changes, before, by, checked: true, checkedUrl: '', checkedWith: 'provider', note: noteText });
           S.edits[id] = d.item;
           say('Saved. It’s on the To do list under "Ready to go live". Nothing is live yet.', 'ok');
         } else {

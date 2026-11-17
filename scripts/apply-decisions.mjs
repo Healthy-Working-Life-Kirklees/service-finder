@@ -38,6 +38,10 @@ const PLACEHOLDER = 'To be completed';
 const DECISIONS = ['include', 'review', 'exclude'];
 const WORD = { include: 'Include on the live list', review: 'Needs further review', exclude: 'Exclude completely' };
 const ID_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+// A check the provider made themselves, through a review or verify link: marked checkedWith 'provider' by the Admin
+// pages, or (for edits saved before that marker existed) recognised from the note those pages write.
+const PROVIDER_NOTE = /\((provider|partner)\) using a (review|verify) link/;
+const byProvider = (e) => Boolean(e.checked) && (e.checkedWith === 'provider' || PROVIDER_NOTE.test(String(e.note || '')));
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const schema = JSON.parse(fs.readFileSync(path.join(root, 'data', 'schema.json'), 'utf8'));
 const validate = new Ajv2020({ allErrors: true, strict: true }).compile(schema);
@@ -351,9 +355,11 @@ for (const [id, e] of Object.entries(edits).sort(([a], [b]) => a.localeCompare(b
   const want = settleVenues(e.changes, false);
   const keys = Object.keys(e.changes);
   const date0 = String(e.t || '').slice(0, 10);
+  // A provider's own check still to be recorded in provenance.providerChecked.
+  const providerDue = byProvider(e) && String((cur.provenance && cur.provenance.providerChecked) || '') < date0;
   // No changes, only "checked and still right" (for example a provider said it's all correct): applied by moving
-  // the last-checked date on, unless the data has been checked since.
-  if (!keys.length ? !e.checked || String(cur.lastUpdated || '') >= date0 : keys.every((k) => same(cur[k], want[k]))) {
+  // the last-checked date on, unless the data has been checked since (and any provider check is recorded).
+  if (!providerDue && (!keys.length ? !e.checked || String(cur.lastUpdated || '') >= date0 : keys.every((k) => same(cur[k], want[k])))) {
     editsSame += 1;
     continue;
   }
@@ -375,9 +381,10 @@ for (const [id, e] of Object.entries(edits).sort(([a], [b]) => a.localeCompare(b
   delete next.organisationOverview;
   const date = String(e.t || '').slice(0, 10) || new Date().toISOString().slice(0, 10);
   if (e.checked) {
-    next.lastUpdated = date;
+    if (!(String(next.lastUpdated || '') > date)) next.lastUpdated = date;
     next.provenance = { ...next.provenance, evidence: `Checked by ${e.by} on ${date}: ${e.note}` };
     if (e.checkedUrl) next.provenance.checkedUrl = e.checkedUrl;
+    if (byProvider(e)) next.provenance.providerChecked = date;
   }
   if (!validate(next)) {
     invalid.push({ id, name: cur.name, by: e.by, errors: validate.errors.map((x) => `${x.instancePath || '(top)'} ${x.message}`).slice(0, 3) });
@@ -387,7 +394,7 @@ for (const [id, e] of Object.entries(edits).sort(([a], [b]) => a.localeCompare(b
   settleOrg(next, ov, hasOv);
   f.s = next;
   f.dirty = true;
-  edited.push({ id, name: next.name, by: e.by, date, note: e.note, checked: Boolean(e.checked), changes });
+  edited.push({ id, name: next.name, by: e.by, date, note: e.note, checked: Boolean(e.checked), provider: byProvider(e), changes });
 }
 
 // ---------- 3. listing decisions ----------
@@ -471,7 +478,7 @@ if (newProblems.length) {
 if (edited.length) {
   out.push(`## Details changed (${edited.length})`, '');
   for (const x of edited) {
-    out.push(`- **${x.name}** (\`data/services/${x.id}.json\`). ${x.by}, ${x.date}${x.checked ? ', checked as current' : ''}: ${x.note}`);
+    out.push(`- **${x.name}** (\`data/services/${x.id}.json\`). ${x.by}, ${x.date}${x.provider ? ', confirmed by the provider' : x.checked ? ', checked as current' : ''}: ${x.note}`);
     for (const c of x.changes) out.push(`  - ${c}`);
   }
   out.push('');

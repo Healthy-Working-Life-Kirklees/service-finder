@@ -517,6 +517,9 @@ check('edits: discarding twice -> 404', r.status === 404);
 // "checked and still right", with no changes (for example a provider said it's all correct)
 r = await logCall('PUT', '/log/edits/kbop', { changes: {}, before: {}, note: 'Provider said all correct', by: 'PL', checked: true });
 check('edits: no changes allowed when recording a check', r.status === 200 && Object.keys(r.body.item.changes).length === 0 && r.body.item.checked === true, JSON.stringify(r.body));
+check('edits: a team check is not marked as the provider\'s', !('checkedWith' in r.body.item), JSON.stringify(r.body.item));
+r = await logCall('PUT', '/log/edits/kbop', { changes: {}, before: {}, note: 'Checked with Jo (provider) using a review link', by: 'PL', checked: true, checkedWith: 'provider' });
+check('edits: a provider\'s own check is marked as theirs', r.status === 200 && r.body.item.checkedWith === 'provider', JSON.stringify(r.body.item));
 r = await logCall('PUT', '/log/edits/kbop', { changes: {}, before: {}, note: 'Nothing', by: 'PL', checked: false });
 check('edits: no changes refused when not recording a check', r.status === 400);
 await logCall('DELETE', '/log/edits/kbop', { by: 'PL' });
@@ -669,6 +672,19 @@ check('new: discard', r.status === 200 && Object.keys((await logCall('GET', '/lo
   check('apply edits: a field changed in the data since is not overwritten', JSON.parse(fs.readFileSync(path.join(d, 'acas-helpline.json'), 'utf8')).phone === acas.phone && /data has changed since[\s\S]*acas-helpline[\s\S]*phone/.test(out2), out2);
   check('apply edits: an edit that fails the schema is reported, not written', !JSON.parse(fs.readFileSync(path.join(d, 'samaritans-helpline.json'), 'utf8')).areas.includes('Leeds') && /wouldn't pass the data check[\s\S]*samaritans/.test(out2), out2);
   check('apply edits: summary shows old and new values', /phone: \(none\) → 01484 000000/.test(out2), out2);
+  check('apply edits: a team check is not recorded as the provider\'s', !('providerChecked' in kb2.provenance));
+  // a provider's own check (review or verify link) is recorded as provenance.providerChecked
+  fs.writeFileSync(inp, JSON.stringify({ edits: {
+    'acas-helpline': { changes: {}, before: {}, note: 'Checked with Jo (provider) using a review link: everything correct.', by: 'PL', checked: true, checkedWith: 'provider', t: '2026-10-18T09:00:00Z' },
+    kbop: { changes: {}, before: {}, note: 'From Sam (partner) using a verify link, 18 Oct 2026.', by: 'PL', checked: true, t: '2026-10-18T09:00:00Z' },
+  } }));
+  const outP = run();
+  const ac2 = JSON.parse(fs.readFileSync(path.join(d, 'acas-helpline.json'), 'utf8'));
+  const kb3 = JSON.parse(fs.readFileSync(path.join(d, 'kbop.json'), 'utf8'));
+  check('apply provider check: date recorded with the last-checked date', ac2.provenance.providerChecked === '2026-10-18' && ac2.lastUpdated === '2026-10-18', JSON.stringify(ac2.provenance));
+  check('apply provider check: older edits recognised from their note', kb3.provenance.providerChecked === '2026-10-18', JSON.stringify(kb3.provenance));
+  check('apply provider check: summary says so', /confirmed by the provider/.test(outP), outP);
+  check('apply provider check: running again changes nothing', /0 services with edited details, 2 already up to date/.test(run()), run());
   // new services: created as files, waiting for review unless the team also decided
   const newOne = { ...newSvc(), cost: 'Free', notes: null };
   fs.writeFileSync(inp, JSON.stringify({

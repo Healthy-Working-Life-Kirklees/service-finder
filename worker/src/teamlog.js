@@ -144,6 +144,7 @@ export class LogStore {
       if (!prev && ((await s.get('editCount')) || 0) >= MAX_DECISIONS) return Response.json({ error: 'Too many changes stored.' }, { status: 400 });
       const history = prev ? [...(prev.history || []), { changes: prev.changes, note: prev.note, by: prev.by, t: prev.t }].slice(-10) : [];
       const item = { changes: body.changes, before: body.before, note: body.note, by: body.by, checked: body.checked, checkedUrl: body.checkedUrl, t: now, history };
+      if (body.checkedWith === 'provider') item.checkedWith = 'provider';
       await s.put(key, item);
       if (!prev) await s.put('editCount', ((await s.get('editCount')) || 0) + 1);
       return Response.json({ id: body.id, item });
@@ -488,7 +489,10 @@ export async function handleLog(request, env, url, cors, checker) {
     if (JSON.stringify(before).length > 20000) return json({ error: 'That change is too large.' }, 413, cors);
     const checkedUrl = clean(body.checkedUrl, 500);
     if (checkedUrl && !/^https?:\/\/\S+$/.test(checkedUrl)) return json({ error: 'Where you checked must be a web address starting with http:// or https://.' }, 400, cors);
-    const res = await call('/edits/set', { id: e[1], changes: checked.changes, before, note, by, checked: body.checked === true, checkedUrl: checkedUrl || null });
+    // checkedWith: 'provider' marks a check the provider made themselves (a review or verify link), so the data can
+    // record when the provider last confirmed it.
+    const checkedWith = body.checked === true && body.checkedWith === 'provider' ? 'provider' : null;
+    const res = await call('/edits/set', { id: e[1], changes: checked.changes, before, note, by, checked: body.checked === true, checkedUrl: checkedUrl || null, checkedWith });
     return json(res, res.error ? 400 : 200, cors);
   }
 

@@ -104,7 +104,10 @@
     const e = edits && edits[x.s.id];
     if (!e) return 'none';
     // Only "checked and still right" (no changes): applied once the data's last-checked date has caught up.
-    if (!Object.keys(e.changes).length) return e.checked && String(x.s.lastUpdated || '') < String(e.t).slice(0, 10) ? 'pending' : 'applied';
+    const d0 = String(e.t).slice(0, 10);
+    // A provider's own check also waits until it is recorded as provenance.providerChecked.
+    if (e.checkedWith === 'provider' && String((x.s.provenance && x.s.provenance.providerChecked) || '') < d0) return 'pending';
+    if (!Object.keys(e.changes).length) return e.checked && String(x.s.lastUpdated || '') < d0 ? 'pending' : 'applied';
     const want = settleVenues(e.changes);
     return Object.keys(e.changes).every((k) => norm(x.s[k]) === norm(want[k])) ? 'applied' : 'pending';
   }
@@ -370,6 +373,7 @@
     row(dl, 'Source', p.source);
     row(dl, 'Found via', p.foundVia);
     row(dl, 'Checked against', p.checkedUrl ? link(p.checkedUrl, p.checkedUrl) : null);
+    row(dl, 'Last confirmed by the provider', p.providerChecked ? fmt(p.providerChecked) : null);
     row(dl, 'Evidence it\'s current', p.evidence);
     row(dl, 'Status in the October 2026 research', p.status);
     row(dl, 'Confidence', p.confidence ? p.confidence[0].toUpperCase() + p.confidence.slice(1) : 'Not rated');
@@ -572,7 +576,7 @@ Thank you,
         if (editState(x) === 'pending' && !confirm('There are changes waiting for this service already. Recording it as checked replaces them. Carry on?')) return;
         recordChecked.disabled = true;
         try {
-          const d = await api('PUT', '/log/edits/' + encodeURIComponent(s.id), { changes: {}, before: {}, by: by(), checked: true, checkedUrl: '',
+          const d = await api('PUT', '/log/edits/' + encodeURIComponent(s.id), { changes: {}, before: {}, by: by(), checked: true, checkedUrl: '', checkedWith: 'provider',
             note: 'Checked with ' + r.name + ' (provider) using a review link, ' + fmt(r.t.slice(0, 10)) + ': everything correct.' + (r.note ? ' They added: ' + r.note : '') });
           edits[s.id] = d.item;
           refreshOne(x);
@@ -717,7 +721,8 @@ Thank you,
       const btn = form.querySelector('button[type=submit]');
       btn.disabled = true;
       try {
-        const d = await api('PUT', '/log/edits/' + encodeURIComponent(s.id), { changes, before, note: why.value.trim(), by, checked: checkedBox.checked, checkedUrl: where.value.trim() });
+        const d = await api('PUT', '/log/edits/' + encodeURIComponent(s.id), { changes, before, note: why.value.trim(), by, checked: checkedBox.checked, checkedUrl: where.value.trim(),
+          checkedWith: checkedBox.checked && fromProvider && fromProvider.from !== 'suggestion' ? 'provider' : null });
         edits[s.id] = d.item;
         editing.delete(s.id);
         delete prefill[s.id];
@@ -1220,7 +1225,7 @@ Thank you,
     try { d = JSON.parse(raw); } catch { return; }
     const target = d && services.find((y) => y.s.id === d.id && !y.isNew);
     if (!target) return;
-    prefill[target.s.id] = { changes: d.changes || {}, note: d.note || '' };
+    prefill[target.s.id] = { changes: d.changes || {}, note: d.note || '', from: 'provider' };
     editing.add(target.s.id);
     goToService(target.s.id);
     const f = document.querySelector('#svc-' + CSS.escape(target.s.id) + ' .edit');
