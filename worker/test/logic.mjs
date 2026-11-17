@@ -21,7 +21,7 @@ const fb = await import(pathToFileURL(path.join(root, 'worker/src/feedback.js'))
 const worker = mod.default;
 process.on('exit', () => fs.rmSync(tmp, { force: true }));
 
-const O = 'https://healthy-working-life-kirklees.github.io';
+const O = 'https://site.example';
 let sent = null;
 let reply = null;
 globalThis.fetch = async (url, init) => {
@@ -1003,19 +1003,23 @@ check('digest: helpful counts by mode and language', /\| staff \| pl \| 1 \| 1 \
   const toml = fs.readFileSync(path.join(root, 'worker/wrangler.toml'), 'utf8');
   const live = toml.match(/^ALLOWED_ORIGIN = "([^"]*)"/m)[1];
   const at = async (origin, list = live) => worker.fetch(new Request('https://w/health', { headers: { Origin: origin } }), { ...env('claude-sonnet-5-5'), ALLOWED_ORIGIN: list });
-  for (const o of ['https://hwlsupportfinder.org.uk', 'https://www.hwlsupportfinder.org.uk', 'http://hwlsupportfinder.org.uk', O]) {
+  // The real addresses come from wrangler.toml, so they aren't written out in the tests (the repo is public).
+  const liveList = live.split(',').map((x) => x.trim()).filter(Boolean);
+  const home = liveList[0];
+  check('origins: live config lists at least the site and GitHub Pages', liveList.length >= 2 && liveList.every((x) => /^https?:\/\/[a-z0-9.-]+$/.test(x)), live);
+  for (const o of liveList) {
     const r = await at(o);
     check('origins: live config accepts ' + o, r.headers.get('Access-Control-Allow-Origin') === o);
   }
-  for (const o of ['https://example.com', 'https://hwlsupportfinder.org.uk.evil.com', 'https://hwlsupportfinder.org.uk/', '']) {
+  for (const o of ['https://example.com', home + '.evil.com', home + '/', '']) {
     const r = await at(o);
     check('origins: refuses ' + JSON.stringify(o), r.headers.get('Access-Control-Allow-Origin') === null);
   }
   const r = await at('https://b.example', ' https://a.example , https://b.example ');
   check('origins: list is comma-separated and spaces are ignored', r.headers.get('Access-Control-Allow-Origin') === 'https://b.example');
-  const pre = await worker.fetch(new Request('https://w/feedback', { method: 'OPTIONS', headers: { Origin: 'https://hwlsupportfinder.org.uk' } }), { ...env('claude-sonnet-5-5'), ALLOWED_ORIGIN: live });
+  const pre = await worker.fetch(new Request('https://w/feedback', { method: 'OPTIONS', headers: { Origin: home } }), { ...env('claude-sonnet-5-5'), ALLOWED_ORIGIN: live });
   check('origins: preflight from the new domain is allowed (204)', pre.status === 204);
-  const none = await at('https://hwlsupportfinder.org.uk', '');
+  const none = await at(home, '');
   check('origins: nothing accepted when ALLOWED_ORIGIN is empty', none.headers.get('Access-Control-Allow-Origin') === null);
 }
 
@@ -1024,7 +1028,7 @@ check('digest: helpful counts by mode and language', /\| staff \| pl \| 1 \| 1 \
   const notify = await import(pathToFileURL(path.join(root, 'worker/src/notify.js')).href);
   const sent = [];
   const mailer = (fail = false) => ({ send: async (m) => { if (fail) throw Object.assign(new Error('no'), { code: 'E_SENDER_NOT_VERIFIED' }); sent.push(m); return { messageId: 'm' + sent.length }; } });
-  const pEnv = (extra = {}) => fbEnv({ PILOT_FEEDBACK: 'true', FEEDBACK_EMAIL: mailer(), FEEDBACK_EMAIL_TO: 'admin@hwlsupportfinder.org.uk', FEEDBACK_EMAIL_FROM: 'feedback@hwlsupportfinder.org.uk', ...extra });
+  const pEnv = (extra = {}) => fbEnv({ PILOT_FEEDBACK: 'true', FEEDBACK_EMAIL: mailer(), FEEDBACK_EMAIL_TO: 'admin@site.example', FEEDBACK_EMAIL_FROM: 'feedback@site.example', ...extra });
   const pilotFb = (o = {}) => ({ kind: 'pilot', reasons: ['missed-service'], text: 'It missed the Batley job club for a man looking for work.', schemeIds: ['wellness-to-work'], contacted: 'not-yet', ease: 4, lang: 'en', mode: 'staff', ...o });
   const ws = (await import(pathToFileURL(path.join(root, 'data/services.json')).href, { with: { type: 'json' } })).default.services.find((x) => x.id === 'wellness-to-work');
 
@@ -1085,7 +1089,7 @@ check('digest: helpful counts by mode and language', /\| staff \| pl \| 1 \| 1 \
   sent.length = 0;
   fbStore = mkFbStore();
   await send(pilotFb({ contact: { name: 'Sam Coach', email: 'sam.coach@example.org.uk' } }), { e: pEnv() });
-  check('email: sent for a pilot entry, to the team inbox, from the feedback address', sent.length === 1 && sent[0].to === 'admin@hwlsupportfinder.org.uk' && sent[0].from.email === 'feedback@hwlsupportfinder.org.uk', JSON.stringify(sent[0]));
+  check('email: sent for a pilot entry, to the team inbox, from the feedback address', sent.length === 1 && sent[0].to === 'admin@site.example' && sent[0].from.email === 'feedback@site.example', JSON.stringify(sent[0]));
   check('email: subject has the number and what it is about', /^Support Finder feedback #1: Pilot feedback – Missed a service$/.test(sent[0].subject), sent[0].subject);
   check('email: body has the comment, scheme name, ease and contact', sent[0].text.includes('It missed the Batley job club') && sent[0].text.includes(ws.name + ' (wellness-to-work)') && sent[0].text.includes('Ease of use this time (1–5): 4') && sent[0].text.includes('sam.coach@example.org.uk'), sent[0].text);
   check('email: reply goes to a tester who asked to be contacted', sent[0].replyTo && sent[0].replyTo.email === 'sam.coach@example.org.uk');
@@ -1437,7 +1441,7 @@ check('venues: the apply script (no Origin) can read them', r.status === 200 && 
   const rem = await import(pathToFileURL(path.join(root, 'worker/src/reminders.js')).href);
   store = mkStore();
   const sentMail = [];
-  const remEnv = (extra = {}) => ({ ...logEnv(), FEEDBACK_EMAIL: { send: async (m) => { sentMail.push(m); } }, FEEDBACK_EMAIL_FROM: 'feedback@example.org', FEEDBACK_EMAIL_TO: 'team@example.org', SITE_URL: 'https://hwlsupportfinder.org.uk', ...extra });
+  const remEnv = (extra = {}) => ({ ...logEnv(), FEEDBACK_EMAIL: { send: async (m) => { sentMail.push(m); } }, FEEDBACK_EMAIL_FROM: 'feedback@example.org', FEEDBACK_EMAIL_TO: 'team@example.org', SITE_URL: 'https://site.example', ...extra });
   const T = '2026-11-09';
   const services = [
     { id: 'p2p-proper-job', name: 'Pathways to Possibilities', organisation: 'Proper Job Theatre Company Ltd', open: true, projects: [{ id: 'p2p', name: 'Pathways to Possibilities', overview: 'x', referralsUntil: '2026-11-30' }] },
@@ -1447,7 +1451,7 @@ check('venues: the apply script (no Origin) can read them', r.status === 200 && 
   let res = await rem.sendReminders(remEnv(), services, T);
   const mail = sentMail[0];
   check('reminders: one email to the team for what ends or closes in 30 days', res.sent && sentMail.length === 1 && mail.to === 'team@example.org' && /1 service has projects/.test(mail.subject), JSON.stringify(res));
-  check('reminders: says what and when, with a fresh review link and an email to forward', /stops taking referrals 30 November 2026 \(in 21 days\)/.test(mail.text) && /https:\/\/hwlsupportfinder\.org\.uk\/provider-check\.html#[A-Za-z0-9_-]{32}/.test(mail.text) && /projects stop showing in the Support Finder after their end date/i.test(mail.text) && /Suggest a service/.test(mail.text), mail.text);
+  check('reminders: says what and when, with a fresh review link and an email to forward', /stops taking referrals 30 November 2026 \(in 21 days\)/.test(mail.text) && /https:\/\/site\.example\/provider-check\.html#[A-Za-z0-9_-]{32}/.test(mail.text) && /projects stop showing in the Support Finder after their end date/i.test(mail.text) && /Suggest a service/.test(mail.text), mail.text);
   check('reminders: nothing for later dates or paused services', !/Later|Paused/.test(mail.text));
   check('reminders: the review link is a real provider link', (await logCall('GET', '/log/provider-links')).body.links.some((l) => l.id === 'p2p-proper-job' && l.by === 'Morning reminder'));
   res = await rem.sendReminders(remEnv(), services, '2026-11-10');

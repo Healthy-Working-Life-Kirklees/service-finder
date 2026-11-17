@@ -22,7 +22,8 @@ import '../site/listing-logic.js';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const OUT = path.join(ROOT, 'print', 'out');
-const SITE_URL = 'https://healthy-working-life-kirklees.github.io/service-finder/';
+// The finder's address for the cover's QR code, given when building (SITE_URL=https://... ) once the site is public.
+const SITE_URL = process.env.SITE_URL || '';
 const STALE_DAYS = 135; // same as the site and admin/help.js
 
 const NORTH = ['Batley', 'Dewsbury', 'Mirfield', 'Spen Valley'];
@@ -30,7 +31,7 @@ const SOUTH = ['Colne Valley', 'Holme Valley', 'Huddersfield', 'Kirkburton'];
 
 // The Support Finder isn't public yet. Set this to true to put its web address and
 // QR code back on the cover (the space for them is kept).
-const SHOW_SITE_LINK = false;
+const SHOW_SITE_LINK = Boolean(SITE_URL);
 
 // --site <folder>: build the website version into that folder (see the top of this file).
 const siteArg = process.argv.indexOf('--site');

@@ -54,14 +54,14 @@ Deploys happen on push to `main` via `.github/workflows/`: `pages.yml` (site/, a
 - Keep `lastUpdated` honest. The page and `admin/help.js` both flag entries older than `STALE_DAYS = 135`; if you change the threshold, change it in both.
 - Scheme `id`s are what the model returns and what `test/smoke.sh` and `logic.mjs` assert on. Don't rename them casually.
 - User-facing text follows the house style: plain, informal, UK spelling. The public mode aims for a reading age of about 11 (`MODE_NOTES` in the Worker).
+- Don't write the site's or the Worker's real web addresses in docs, comments or tests: the repo is public and the pilot is invite-only. Use descriptions or placeholders (`https://<organisation>.github.io/<repo-name>/`, `example.org`). The few settings that need them live in `worker/wrangler.toml`.
 - The tool is called the **Healthy Working Life Support Finder** ("Support Finder" for short) in all user-facing text and docs. It was the Service Finder until Nov 2026. The repo name, Pages URL, `hwl-service-finder` Worker name and package names keep `service-finder` on purpose; don't rename them without a planned migration.
 - `site/changes.html` is the "What's changed" page for coaches testing the prototype. When a change is something they'll notice on the public page or in the results, add a plain-English line at the top (newest day first) in the same commit. Leave out behind-the-scenes and Admin-only work.
 - `docs/background/` holds the option appraisals and source prompt (.docx/.pptx). They are history, not specs.
 
 ## Accessibility and translation scope
 
-- Only the public-facing page (https://healthy-working-life-kirklees.github.io/service-finder/)
-  and the results it shows need accessibility features and translation / language options.
+- Only the public-facing page (`site/index.html`) and the results it shows need accessibility features and translation / language options.
 - Everything else, including review tools, commenting, admin and internal pages, is English only
   and doesn't need translation or the public accessibility options.
 
