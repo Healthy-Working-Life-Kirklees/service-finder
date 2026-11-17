@@ -543,7 +543,7 @@ async function worker(route) {
   await page.fill('#by', 'PL');
   await page.click('#unlock');
   await page.waitForSelector('#app:not([hidden])');
-  check('admin: signed in, the six Admin pages are listed', (await page.locator('.admin-tools a').evaluateAll((a) => a.map((x) => x.getAttribute('href')))).join() === 'help.html,organisation.html,services.html,commissioner.html,log.html,feedback.html');
+  check('admin: signed in, the seven Admin pages are listed', (await page.locator('.admin-tools a').evaluateAll((a) => a.map((x) => x.getAttribute('href')))).join() === 'todo.html,help.html,organisation.html,services.html,commissioner.html,log.html,feedback.html');
   check('admin: team bar says signed in with the name', (await page.textContent('.teambar .team-auth')).includes('Signed in as PL'));
   // ---------- Admin test mode ----------
   const usageBefore = usageSent.length;
@@ -574,7 +574,7 @@ async function worker(route) {
   await page.goto(ON + '/admin/?next=help.html');
   await page.waitForURL(/\/admin\/help\.html$/);
   check('admin: already signed in, a sign-in link goes straight on', page.url().endsWith('/admin/help.html'));
-  check('admin: every page links back to the To do list (Admin home)', (await page.locator('.teambar a', { hasText: 'To do' }).getAttribute('href')) === './');
+  check('admin: every page links to the Admin home and the To do list', (await page.locator('.teambar a', { hasText: 'Admin home' }).getAttribute('href')) === './' && (await page.locator('.teambar a', { hasText: 'To do' }).getAttribute('href')) === 'todo.html');
   check('admin: the word MVP is not on the help page', !(await page.content()).includes('MVP'));
 
   // ---------- help page ----------
@@ -1187,8 +1187,11 @@ async function worker(route) {
   providerLinks = [{ token: 'r'.repeat(32), id: 'audio-boost', contact: 'Sam', by: 'PL', created: new Date(Date.now() - 86400e3).toISOString(), expires: new Date(Date.now() + 20 * 86400e3).toISOString(), cancelled: null, sent: 1,
     replies: [{ t: replyT, name: 'Sam', allCorrect: false, note: 'New number', changes: { phone: '01924 000001', gate: ab.gate.filter((g) => g !== 'Lives in Kirklees' && g !== 'Aged 18 or over') }, before: { phone: ab.phone, gate: ab.gate } }] },
     { token: 'w'.repeat(32), id: 'my-way-forward', contact: 'Jo', by: 'PL', created: new Date(Date.now() - 2 * 86400e3).toISOString(), expires: new Date(Date.now() + 20 * 86400e3).toISOString(), cancelled: null, sent: 0, replies: [] }];
-  fbStore.push({ ...fbBase, id: 8, kind: 'gap', reasons: ['missing-service'], missedService: { name: 'Mental health support sessions', role: 'provider', organisation: 'TCD Mental Health Charity', organisationOverview: 'A charity in Kirklees.', age: '20+', exclusions: "Under 11's", eligibility: 'Mental Health', healthNeed: 'none', groups: ['young-people', 'young-adults', 'adults', 'adults-50', 'older-people', 'parents', 'mothers', 'fathers', 'women', 'men', 'mental-health'], email: 'x@example.org', projects: [{ name: 'Peer groups', sessions: [{ group: 'Young adults', age: '20 to 25', where: 'Jo Cox House', day: 'wed' }] }] } });
   await page.goto(ON + '/admin/');
+  await page.waitForSelector('#app:not([hidden])');
+  check('admin home: the Admin pages only, with the To do list on its own page', (await page.locator('#todo').count()) === 0 && (await page.getAttribute('.admin-tools a >> nth=0', 'href')) === 'todo.html');
+  fbStore.push({ ...fbBase, id: 8, kind: 'gap', reasons: ['missing-service'], missedService: { name: 'Mental health support sessions', role: 'provider', organisation: 'TCD Mental Health Charity', organisationOverview: 'A charity in Kirklees.', age: '20+', exclusions: "Under 11's", eligibility: 'Mental Health', healthNeed: 'none', groups: ['young-people', 'young-adults', 'adults', 'adults-50', 'older-people', 'parents', 'mothers', 'fathers', 'women', 'men', 'mental-health'], email: 'x@example.org', projects: [{ name: 'Peer groups', sessions: [{ group: 'Young adults', age: '20 to 25', where: 'Jo Cox House', day: 'wed' }] }] } });
+  await page.goto(ON + '/admin/todo.html');
   await page.waitForSelector('#todo .todo-sec');
   const todoText = await page.textContent('#todo');
   check('to do: the partner reply is listed to check, with the Healthy Working Life rule flagged', todoText.includes('Audio Boost: 2 changes from Sam') && todoText.includes('remove a grant funding rule'), todoText.slice(0, 600));
@@ -1202,7 +1205,7 @@ async function worker(route) {
   await page.waitForSelector('.msg.ok');
   const ed = edits['audio-boost'];
   check('reply: saved as a checked edit, keeping the programme rule and using the rest', ed && ed.checked === true && ed.changes.phone === '01924 000001' && ed.changes.gate.includes('Lives in Kirklees') && !ed.changes.gate.includes('Aged 18 or over') && ed.note.includes('From Sam'), JSON.stringify(ed));
-  await page.goto(ON + '/admin/');
+  await page.goto(ON + '/admin/todo.html');
   await page.waitForSelector('#todo .todo-sec');
   check('to do: the reply has moved to "ready to go live"', !(await page.textContent('#todo')).includes('2 changes from Sam') && (await page.textContent('.todo-ready')).includes('Audio Boost'));
   // Using none of a reply's changes marks it as dealt with.

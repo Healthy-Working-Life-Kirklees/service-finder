@@ -1,4 +1,4 @@
-// The To do list on the Admin home page: everything waiting for the team, in one list, each with its next step.
+// The To do list (todo.html): everything waiting for the team, in one list, each with its next step.
 //   To check: partner replies, suggested services, changes that couldn't go live, projects ending soon.
 //   Ready to go live: edits, decisions, new services and organisation or venue changes saved but not yet live,
 //     with one button to put them live.
@@ -155,7 +155,7 @@
       el('div', { class: 'apply-row' }, live, el('span', { class: 'hint', text: 'Checks run again, then the finder, the AI’s list and the printable directory update in a few minutes.' })), msg);
     box.replaceChildren(
       el('div', { class: 'todo-head' },
-        el('h2', { class: 'mt0', text: 'To do' }),
+        el('h1', { class: 'mt0', text: 'To do' }),
         el('p', { class: 'hint', text: 'Everything waiting for the team, in one list. Each item says what to do next.' }),
         el('p', { class: 'todo-stats' }, el('span', { class: 'pill warn', text: a.length + ' to check' }), el('span', { class: 'pill', text: r.length + ' ready to go live' }), el('span', { class: 'pill', text: plural(w.length, 'waiting on a partner', 'waiting on partners') }))),
       section('To check', a.length, a.map(item)),
