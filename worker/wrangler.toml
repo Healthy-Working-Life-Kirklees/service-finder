@@ -4,10 +4,9 @@ compatibility_date = "2025-09-01"
 workers_dev = true
 
 [vars]
-# The GitHub Pages origin (no path, no trailing slash). Anything else gets a 403.
-# The addresses the pages are served from, separated by commas. The site's own domain, plus the GitHub Pages
-# address it started on. http://hwlsupportfinder.org.uk is only there until GitHub Pages has issued the HTTPS
-# certificate and "Enforce HTTPS" is ticked; remove it then.
+# The addresses the pages are served from (no path, no trailing slash), separated by commas: the site's own
+# domain, plus the GitHub Pages address it started on. Anything else gets a 403. The http:// one is only there
+# until GitHub Pages has issued the HTTPS certificate and "Enforce HTTPS" is ticked; remove it then.
 ALLOWED_ORIGIN = "https://hwlsupportfinder.org.uk,https://www.hwlsupportfinder.org.uk,http://hwlsupportfinder.org.uk,https://healthy-working-life-kirklees.github.io"
 ANTHROPIC_MODEL = "claude-sonnet-5-5"
 MAX_PER_DAY = "100"

@@ -22,7 +22,7 @@ The tool's name is **Healthy Working Life Support Finder** (it was called the Se
 
 The page is public, so these matter:
 
-1. The Worker only accepts requests from the site's own addresses (`ALLOWED_ORIGIN` in `worker/wrangler.toml`, a comma-separated list: https://hwlsupportfinder.org.uk and the GitHub Pages address).
+1. The Worker only accepts requests from the site's own addresses (`ALLOWED_ORIGIN` in `worker/wrangler.toml`, a comma-separated list: the site's own domain and its GitHub Pages address).
 2. Per-IP limit of 10 requests a minute (Rate Limiting binding).
 3. A hard global cap of `MAX_PER_DAY` chat requests a day (a small Durable Object holding a date and a number).
 4. **Set a monthly spend limit in the Anthropic Console.** That is the real backstop.
@@ -34,7 +34,7 @@ The page is public, so these matter:
 3. **Deploy the Worker.** Actions > "Deploy Worker to Cloudflare" > Run workflow. Note the `https://hwl-service-finder.<your-subdomain>.workers.dev` address it creates.
 4. **API key.** Cloudflare dashboard > Workers & Pages > hwl-service-finder > Settings > Variables and Secrets > add a secret called `ANTHROPIC_API_KEY`.
 5. **Point the page at the Worker.** Settings > Secrets and variables > Actions > Variables, add `WORKER_URL` with the workers.dev address (no trailing slash).
-6. **Deploy the page.** Actions > "Deploy site to GitHub Pages" > Run workflow. The page appears at `https://healthy-working-life-kirklees.github.io/<repo-name>/`.
+6. **Deploy the page.** Actions > "Deploy site to GitHub Pages" > Run workflow. The page appears at `https://<organisation>.github.io/<repo-name>/`. Share the address only with people in the pilot.
 
 If the site's domain, the repo name or the organisation changes, update `ALLOWED_ORIGIN` in `worker/wrangler.toml`, or the page can't reach the Worker: searches fail and the feedback links don't appear.
 
@@ -268,9 +268,9 @@ During the pilot there is a fourth, fuller form for testers:
 
 **Switch on and off:** feedback is on unless `FEEDBACK_ENABLED` in `worker/wrangler.toml` is `"false"`. To switch it off, change it to `"false"` and merge (the Worker redeploys). Sending then returns 404, `/health` says `feedback: false`, and the page hides all the feedback links. Change it back to `"true"` to switch it on again. Entries already stored are kept, and can still be read.
 
-**Feedback emails:** each new entry, apart from a plain "Yes, it was helpful", is also emailed to the admins after it is stored, with a link to the review page. The email holds only what was stored (with personal details already removed) plus scheme names, and replying to a pilot entry goes straight to the tester if they asked to be contacted. A failed email never loses the feedback. The code is `worker/src/notify.js`. It needs three things: the `FEEDBACK_EMAIL` binding and `FEEDBACK_EMAIL_FROM` (`feedback@hwlsupportfinder.org.uk`), both in `worker/wrangler.toml`, and the `FEEDBACK_EMAIL_TO` **secret**: the admins' addresses, comma-separated. It is a secret so personal addresses stay out of this public repo. If any of the three is missing, nothing is sent.
+**Feedback emails:** each new entry, apart from a plain "Yes, it was helpful", is also emailed to the admins after it is stored, with a link to the review page. The email holds only what was stored (with personal details already removed) plus scheme names, and replying to a pilot entry goes straight to the tester if they asked to be contacted. A failed email never loses the feedback. The code is `worker/src/notify.js`. It needs three things: the `FEEDBACK_EMAIL` binding and `FEEDBACK_EMAIL_FROM` (a feedback@ address on the site's domain), both in `worker/wrangler.toml`, and the `FEEDBACK_EMAIL_TO` **secret**: the admins' addresses, comma-separated. It is a secret so personal addresses stay out of this public repo. If any of the three is missing, nothing is sent.
 
-The emails go straight to the admins' own addresses, not to `admin@hwlsupportfinder.org.uk`. Sending to **verified destination addresses** is free on the Workers Free plan, even with only Email Routing switched on; sending anywhere else needs Email Sending, which is only on Workers Paid. One-off setup in Cloudflare:
+The emails go straight to the admins' own addresses, not to the shared admin mailbox. Sending to **verified destination addresses** is free on the Workers Free plan, even with only Email Routing switched on; sending anywhere else needs Email Sending, which is only on Workers Paid. One-off setup in Cloudflare:
 
 1. Email Service > Email Routing > Destination addresses: add each admin's address. Each admin clicks the link in Cloudflare's verification email.
 2. Workers & Pages > hwl-service-finder > Settings > Variables and Secrets: add a **secret** called `FEEDBACK_EMAIL_TO` with the addresses, comma-separated (for example `first@example.org,second@example.org`).
@@ -308,11 +308,11 @@ It has two parts. **What's wrong**: reports grouped by scheme, most reported fir
 While the pilot runs, the site is kept out of Google and other search engines in two ways:
 
 1. **A tag on every page.** `<meta name="robots" content="noindex, nofollow">` is in `site/index.html`, `site/changes.html`, the printable directory (built by `scripts/build-print.mjs`), every Admin page and the old `/mvp/` redirect pages (written by `.github/workflows/pages.yml`).
-2. **A Cloudflare header on everything else.** Files that can't carry a tag, such as `services.json`, images and fonts, get an `X-Robots-Tag: noindex, nofollow` header from a Cloudflare rule: dashboard > hwlsupportfinder.org.uk > Rules > Response Header Transform Rules > "Pilot – hide from search engines". This only works because the site's DNS records (the four `A` records and the `www` CNAME) are **Proxied** (orange cloud). SSL/TLS mode must stay on Full, not Flexible, or GitHub Pages gives a "too many redirects" error.
+2. **A Cloudflare header on everything else.** Files that can't carry a tag, such as `services.json`, images and fonts, get an `X-Robots-Tag: noindex, nofollow` header from a Cloudflare rule: dashboard > the site's domain > Rules > Response Header Transform Rules > "Pilot – hide from search engines". This only works because the site's DNS records (the four `A` records and the `www` CNAME) are **Proxied** (orange cloud). SSL/TLS mode must stay on Full, not Flexible, or GitHub Pages gives a "too many redirects" error.
 
 There is no `robots.txt`, on purpose: blocking crawlers there would stop them seeing the noindex tag.
 
-To check: search `site:hwlsupportfinder.org.uk` on Google. If anything shows up, use the Removals tool in Google Search Console.
+To check: search Google for `site:` followed by the site's domain. If anything shows up, use the Removals tool in Google Search Console.
 
 ### At go-live
 

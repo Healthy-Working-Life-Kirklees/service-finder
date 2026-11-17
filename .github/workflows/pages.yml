@@ -30,9 +30,9 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # No url here: GitHub would show the site's address on the public repo's Deployments list.
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

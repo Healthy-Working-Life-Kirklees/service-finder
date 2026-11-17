@@ -9,8 +9,12 @@ Stay under the per-IP limit of 10 requests a minute.
 """
 import json, os, sys, time, urllib.request, urllib.error
 
-W = os.environ.get("WORKER_URL", "https://hwl-service-finder.kirklees-hwl.workers.dev") + "/chat"
-O = "https://healthy-working-life-kirklees.github.io"
+# The live Worker's address and one of the site's allowed addresses (ALLOWED_ORIGIN in worker/wrangler.toml),
+# for example: WORKER_URL=https://hwl-service-finder.<subdomain>.workers.dev ORIGIN=https://<site domain>
+if not os.environ.get("WORKER_URL") or not os.environ.get("ORIGIN"):
+    sys.exit("Set WORKER_URL (the live Worker) and ORIGIN (one of the site's allowed addresses) first.")
+W = os.environ["WORKER_URL"].rstrip("/") + "/chat"
+O = os.environ["ORIGIN"].rstrip("/")
 REPEAT = int(os.environ.get("REPEAT", "1"))
 
 TESTS = [

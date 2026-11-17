@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Local smoke test for the Worker. Needs the mock and `wrangler dev` running (see README).
 B=${B:-http://127.0.0.1:8787}
-O="https://healthy-working-life-kirklees.github.io"
+# Requests come "from" the first address in ALLOWED_ORIGIN (worker/wrangler.toml), as the local Worker uses it.
+O=${O:-$(sed -n 's/^ALLOWED_ORIGIN = "\([^,"]*\).*/\1/p' "$(dirname "$0")/../wrangler.toml")}
 J='content-type: application/json'
 ok=0; bad=0
 check() { # name expected actual
