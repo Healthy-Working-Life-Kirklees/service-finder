@@ -1232,6 +1232,15 @@ async function worker(route) {
   await page.waitForURL(/services\.html/);
   await page.waitForSelector('#add-panel:not([hidden]) form, #add-panel:not([hidden]) .edit');
   check('suggestion: starting the listing renames the organisation (keeping the old name) and opens Add a service under it', orgs.tcd && orgs.tcd.changes.name === 'TCD Mental Health Charity' && (await page.inputValue('#add-panel [data-key=organisation] input')) === 'TCD', JSON.stringify(orgs.tcd));
+  // "Show the whole listing" (a link to one service) lands on that service, even once the team's changes load.
+  await page.goto(ON + '/admin/reply.html?id=audio-boost');
+  await page.waitForSelector('#page a:text-is("Show the whole listing")');
+  await page.click('#page a:text-is("Show the whole listing")');
+  await page.waitForSelector('#svc-audio-boost details[open]');
+  await page.waitForTimeout(400);
+  const shownIds = await page.locator('#list > [id^=svc-]').evaluateAll((els) => els.map((e) => e.id));
+  const atTop = await page.evaluate(() => { const r = document.querySelector('#svc-audio-boost').getBoundingClientRect(); return r.top > -5 && r.top < innerHeight / 2 ? true : r.top + ' of ' + innerHeight + ' scrollY ' + scrollY; });
+  check('link to one service: shows that service, open and in view', shownIds[0] === 'svc-audio-boost' && atTop === true, shownIds.slice(0, 3).join() + ' ' + atTop);
   // Organisations.
   await page.goto(ON + '/admin/organisation.html');
   await page.fill('#org-find', 'tcd');
