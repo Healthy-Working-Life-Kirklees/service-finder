@@ -14,13 +14,14 @@
     "Finding work",
     "Health linked to work",
     "MSK",
-    "Staying in work"
+    "Staying in work",
+    "Long-term conditions"
   ],
   "whoFor": "Kirklees residents aged 18 and over with a health condition or disability affecting their ability to get or keep a job.",
   "age": "18+",
   "webpage": "https://www.locala.org.uk/services/wellness-to-work",
   "email": "wellnesstowork@locala.org.uk",
-  "phone": "0300 304 5555 (Locala's main Community Health and Care Hub)",
+  "phone": "0300 304 5555",
   "social": [],
   "locations": [],
   "areas": [
@@ -60,6 +61,10 @@
       "id": "wellness-to-work",
       "name": "Wellness to Work",
       "overview": "A personalised holistic assessment of barriers (health, confidence, skills, general wellbeing), clinical triage where needed, and a dedicated Employment Navigator and health professional who build an action plan. Includes MSK fast-track physiotherapy and occupational therapy vocational rehabilitation. Connects people to partners such as Get Set Goal, Kirklees Active Leisure, Kirklees College and Third Sector Leaders.",
+      "runs": [
+        "appointment",
+        "online"
+      ],
       "sessions": [
         {
           "id": "princess-royal-health-centre",
@@ -83,7 +88,7 @@
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
     "checkedUrl": "https://www.locala.org.uk/services/wellness-to-work",
-    "evidence": "Eligibility and referral wording set by the team on 2026-11-18 from Locala's page (checked 2026-11-17). Phone is Locala's main hub.",
+    "evidence": "Checked by PL on 2026-11-18: Updates minor details",
     "confidence": "medium"
   },
   "listing": {
