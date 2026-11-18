@@ -14,12 +14,16 @@
     "Skills",
     "Wellbeing"
   ],
-  "whoFor": "Young people aged 18 to 24 who want to build creative music skills while looking after their wellbeing.",
+  "whoFor": "Young people aged 18 to 24 who want to build creative music skills while looking after their wellbeing.  Activities include, song writing, music production, instrumental skills and Djing.  Working collaboratively in small groups supported by a music leader. No previous music experience necessary.",
   "age": "18-24",
   "webpage": "https://www.yym.org.uk",
   "email": "becky@yym.org.uk",
   "phone": "07977 223679",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/YorkshireYouthandMusic",
+    "https://www.linkedin.com/company/yorkshire-youth-and-music?originalSubdomain=uk",
+    "https://www.instagram.com/yyandmusic/"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield"
@@ -27,15 +31,16 @@
   "eligibility": [
     "Aged 18 to 24",
     "Lives in Kirklees",
-    "Economically inactive (not working and not looking for work)",
     "Has the right to work in the UK",
     "Has a health condition or disability"
   ],
   "exclusions": [],
   "gate": [
+    "Aged 18 to 24",
     "Lives in Kirklees",
-    "Is economically inactive (not working and not looking for work)",
-    "Has the right to work in the UK"
+    "Has the right to work in the UK",
+    "Has a health condition or disability",
+    "Is economically inactive (not working and not looking for work)"
   ],
   "healthFocus": [
     "any"
@@ -53,25 +58,59 @@
       "id": "sound-steps-2",
       "name": "Sound Steps 2",
       "overview": "Weekly sessions in songwriting, beat-making, recording, music production and DJing, led by experienced professional music leaders, supporting wellbeing, teamwork and personal development.",
+      "runs": [
+        "set"
+      ],
       "duration": "23 weeks",
+      "places": "18",
+      "audience": [
+        "individual"
+      ],
+      "runsFrom": "2026-11-17",
+      "runsTo": "2027-03-26",
+      "referralsFrom": "2026-11-17",
+      "referralsUntil": "2027-02-15",
       "sessions": [
         {
           "id": "lg31-the-media-centre",
-          "venue": "lg31-the-media-centre"
+          "name": "Sound Steps Music Workshops",
+          "note": "Term Time only",
+          "venue": "lg31-the-media-centre",
+          "days": [
+            "mon"
+          ],
+          "start": "12:15",
+          "end": "14:15",
+          "frequency": "weekly"
+        },
+        {
+          "id": "sound-steps-yoga-and-wellbeing",
+          "name": "Sound Steps Yoga and Wellbeing",
+          "note": "term time only until end of February",
+          "venue": "media-centre",
+          "days": [
+            "thu"
+          ],
+          "start": "13:05",
+          "end": "15:00",
+          "frequency": "weekly"
         }
       ]
     }
   ],
   "workExperience": "No",
-  "notes": "Status before November 2026: Live - grant-funded project (status not stated in the pathways document)",
-  "lastUpdated": "2026-09-21",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
-    "evidence": "Eligibility set to the Healthy Working Life grant funding criteria by the programme team (2 November 2026): Kirklees resident, economically inactive, right to work in the UK, health condition or disability, 18+ unless the scheme says otherwise."
+    "evidence": "Checked by LO on 2026-11-18: From Becky Pugh (provider) using a review link, 17 Nov 2026. They said: I think this is completed correctly.  If possible could LG37 Safe Space Studio be added to the list of venues?  \nIf there a way to say people must register before attending?",
+    "providerChecked": "2026-11-18"
   },
   "listing": {
     "decision": "include",
-    "reason": "Healthy Working Life scheme, on the live list from the start."
-  }
+    "reason": "Included by the development team.",
+    "by": "LO",
+    "date": "2026-11-18"
+  },
+  "coachNotes": "We also have a limited number of one to one mentoring sessions available to project participants of the project to support their wellbeing."
 }
