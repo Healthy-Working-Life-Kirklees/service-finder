@@ -18,11 +18,14 @@
   "age": null,
   "webpage": "https://www.kcalc.org.uk",
   "email": null,
-  "phone": null,
+  "phone": "No",
   "social": [
     "https://www.facebook.com/KirkleesCALC"
   ],
-  "locations": [],
+  "locations": [
+    "Dewsbury: Empire House, WF12 8DJ (Mon & Tue 9.30–3)",
+    "Huddersfield: Fusion Housing, Pearl House, HD1 1BA (Fri 10–1)"
+  ],
   "areas": [
     "Dewsbury",
     "Huddersfield",
@@ -55,29 +58,42 @@
       "id": "advice-on-money-housing-and-work",
       "name": "Advice on money, housing and work",
       "overview": "Free advice on benefits, debt, housing, work problems, discrimination, immigration and NHS complaints. Request a call back online or go to a drop-in.",
+      "runs": [
+        "set"
+      ],
       "sessions": [
         {
           "id": "empire-house",
           "venue": "empire-house-3",
-          "note": "Mon & Tue 9.30–3"
+          "days": [
+            "mon",
+            "tue"
+          ],
+          "start": "09:30",
+          "end": "15:00"
         },
         {
           "id": "fusion-housing",
+          "note": "Up to 8 people seen each session",
           "venue": "fusion-housing",
-          "note": "Fri 10–1, up to 8 people seen each session"
+          "days": [
+            "fri"
+          ],
+          "start": "10:00",
+          "end": "13:00"
         }
       ]
     }
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-11-17",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 20",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kcalc.org.uk",
-    "evidence": "Checked against KCALC's site on 2026-11-17: no phone line (AdviceLine closed), call-back form, Dewsbury Mon and Tue 9.30 to 3, Huddersfield drop-in Fri 10 to 1.",
+    "evidence": "Checked by PL on 2026-11-18: Added specfic times and venues",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
@@ -86,5 +102,8 @@
     "reason": "Checked against website",
     "by": "pl",
     "date": "2026-11-17"
-  }
+  },
+  "groups": [
+    "everyone"
+  ]
 }
