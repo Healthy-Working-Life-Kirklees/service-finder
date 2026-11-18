@@ -533,12 +533,8 @@
     {
       "id": "norwich-union-house",
       "name": "Norwich Union House",
-      "address": "Norwich Union House, Market Street, Huddersfield HD1 2LR",
-      "postcode": "HD1 2LR",
-      "ward": "Dalton",
-      "wardCode": "E05016510",
-      "lat": 53.64495,
-      "lng": -1.78469
+      "address": "Norwich Union House, Market Street, Huddersfield HD1 2HL",
+      "postcode": "HD1 2HL"
     },
     {
       "id": "oasis-centre",

@@ -17,8 +17,8 @@
   "whoFor": "Anyone in England who served at least a day and is in contact with the justice system.",
   "age": null,
   "webpage": "https://www.forcesemployment.org.uk/programmes/op-nova/",
-  "email": null,
-  "phone": "0121 262 3058 (charity main line)",
+  "email": "opnova@forcesemployment.org.uk",
+  "phone": "0800 917 7299",
   "social": [],
   "locations": [],
   "areas": [
@@ -82,14 +82,14 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 112",
     "foundVia": "MECC Link",
-    "checkedUrl": "https://www.forcesemployment.org.uk/programmes/op-nova/",
-    "evidence": "Page modified Aug 2026. MECC lists 0800 917 7299 and opnova@forcesemployment.org.uk — not on provider page.",
-    "confidence": "high",
+    "checkedUrl": "https://www.forcesemployment.org.uk/programmes/op-nova/contact/",
+    "evidence": "Confirmed by the team on 2026-11-18 from Op NOVA's contact page for England (blocks automated reading): phone and email.",
+    "confidence": "medium",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
