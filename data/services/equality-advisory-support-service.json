@@ -32,12 +32,11 @@
   "healthFocus": [],
   "referralRoutes": [
     "Phone",
-    "Web chat",
-    "Contact form"
+    "Contact form on the EASS website"
   ],
   "selfReferral": {
     "allowed": "yes",
-    "note": "Phone, use web chat or the contact form"
+    "note": "Phone, or use the contact form on the EASS website"
   },
   "projects": [
     {
@@ -52,14 +51,14 @@
   "workExperience": "No",
   "cost": "Free",
   "languages": "BSL interpreting",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 99",
     "foundVia": "Acas page; Treacle",
-    "checkedUrl": "https://www.equalityhumanrights.com/contact-us",
-    "evidence": "EHRC contact page updated April 2026 gives these details.",
-    "confidence": "high",
+    "checkedUrl": "https://www.equalityadvisoryservice.com/app/contact-us",
+    "evidence": "Confirmed by the team on 2026-11-18 (EASS site blocks automated reading): phone, contact form and hours.",
+    "confidence": "medium",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {

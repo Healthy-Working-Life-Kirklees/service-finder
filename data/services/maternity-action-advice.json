@@ -14,7 +14,7 @@
   ],
   "whoFor": "To be completed: the October 2026 research did not confirm who this is for.",
   "age": null,
-  "webpage": "https://maternityaction.org.uk/",
+  "webpage": "https://maternityaction.org.uk/advice-form/",
   "email": null,
   "phone": null,
   "social": [],
@@ -27,11 +27,11 @@
   "gate": [],
   "healthFocus": [],
   "referralRoutes": [
-    "To be completed"
+    "Online advice form (Monday to Friday)"
   ],
   "selfReferral": {
-    "allowed": "tbc",
-    "note": "To be completed."
+    "allowed": "yes",
+    "note": "Use the online advice form (Monday to Friday)."
   },
   "projects": [
     {
@@ -41,7 +41,7 @@
     }
   ],
   "workExperience": "Not known",
-  "notes": "Why it wasn't on the main list: Site blocks automated checks.",
+  "notes": "Why it wasn't on the main list: Site blocks automated checks. 18 Nov 2026: team confirmed the online advice form (Mon to Fri); who it's for and what it offers still to complete.",
   "lastUpdated": "2026-10-14",
   "reviewCycle": "Quarterly",
   "provenance": {

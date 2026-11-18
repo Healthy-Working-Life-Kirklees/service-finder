@@ -16,8 +16,8 @@
   "whoFor": "11–30 not in work, education or training.",
   "age": "11-30",
   "webpage": "https://www.kingstrust.org.uk/",
-  "email": "yhoutreach@kingstrust.org.uk",
-  "phone": null,
+  "email": null,
+  "phone": "0800 842 842",
   "social": [],
   "locations": [],
   "areas": [
@@ -32,12 +32,13 @@
   "gate": [],
   "healthFocus": [],
   "referralRoutes": [
-    "Email the regional outreach team",
+    "Phone",
+    "Live chat on the website",
     "Sign up online"
   ],
   "selfReferral": {
     "allowed": "yes",
-    "note": "Email the regional outreach team or sign up online"
+    "note": "Phone, use the live chat on their website, or sign up online"
   },
   "projects": [
     {
@@ -51,14 +52,14 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 81",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=1974",
-    "evidence": "Kirklees directory updated 12 Oct 2026.",
-    "confidence": "medium",
+    "checkedUrl": "https://www.kingstrust.org.uk/",
+    "evidence": "Checked on 2026-11-18: no regional email on their site; they prefer phone or live chat (team confirmed). Age 11 to 30 matches.",
+    "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {

@@ -12,7 +12,7 @@
     "Finding work",
     "Skills"
   ],
-  "whoFor": "Unemployed adults 19+.",
+  "whoFor": "Unemployed adults 19+ and people looking to change career.",
   "age": "19+",
   "webpage": "https://aim2learn.org/",
   "email": "enquiries@aim2learn.org",
@@ -24,7 +24,7 @@
     "Kirklees-wide"
   ],
   "eligibility": [
-    "Unemployed adults aged 19 or over"
+    "Unemployed adults aged 19 or over, or people looking to change career"
   ],
   "exclusions": [],
   "gate": [
@@ -59,13 +59,14 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "coachNotes": "Some courses run in Huddersfield; others are in Leeds and Bradford.",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 67",
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "https://aim2learn.org/",
-    "evidence": "© 2026; directory Sept 2026.",
+    "evidence": "Checked against Aim2Learn's site on 2026-11-18: fully funded courses for unemployed adults and career changers; team confirmed courses in Huddersfield.",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },

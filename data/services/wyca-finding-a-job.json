@@ -50,14 +50,14 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 82",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.westyorks-ca.gov.uk/skills/for-adults/finding-a-job/",
-    "evidence": "Live sign-up form Oct 2026; page undated. In Kirklees this is delivered as Employment Kirklees (already an HWL scheme) — may be a duplicate route.",
-    "confidence": "medium",
+    "evidence": "Checked against WYCA's page on 2026-11-17: matches; WY residents only.",
+    "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {

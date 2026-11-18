@@ -16,7 +16,7 @@
   "age": null,
   "webpage": "https://www.leedsandyorkpft.nhs.uk/our-services/op-courage-veterans-mental-health-wellbeing-service/",
   "email": "OpCourageNORTH@cntw.nhs.uk",
-  "phone": "0300 373 3332 (8am–8pm, 7 days)",
+  "phone": "0300 373 3332",
   "social": [],
   "locations": [],
   "areas": [
@@ -56,13 +56,13 @@
   ],
   "workExperience": "No",
   "cost": "Free (NHS)",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 71",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.leedsandyorkpft.nhs.uk/our-services/op-courage-veterans-mental-health-wellbeing-service/",
-    "evidence": "Pages updated Dec 2025 / June 2026; linked from council armed forces page.",
+    "evidence": "Checked against LYPFT's page on 2026-11-18: phone and email match; hours not published, so removed.",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
