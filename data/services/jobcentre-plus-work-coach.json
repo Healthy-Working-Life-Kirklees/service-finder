@@ -49,14 +49,14 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 127",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.gov.uk/looking-for-work-if-disabled",
-    "evidence": "Page updated Sep 2026, but still mentions old programmes.",
-    "confidence": "medium",
+    "evidence": "Checked against the provider's page on 2026-11-17: matches (work coaches: job search, work psychologist referral, Access to Work info).",
+    "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {

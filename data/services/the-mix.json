@@ -51,14 +51,14 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 139",
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.themix.org.uk/",
-    "evidence": "© 2026. MECC still lists an old phone line that no longer appears on the site.",
-    "confidence": "medium",
+    "evidence": "Checked against the provider's page on 2026-11-17: matches (under 25; text 85258 urgent).",
+    "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {

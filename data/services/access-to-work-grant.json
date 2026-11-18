@@ -57,13 +57,13 @@
   "workExperience": "No",
   "cost": "Free (grant)",
   "languages": "BSL video relay; alternative formats",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 87",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://www.gov.uk/access-to-work/apply",
-    "evidence": "GOV.UK updated 5 Oct 2026.",
+    "checkedUrl": "https://www.gov.uk/access-to-work/eligibility",
+    "evidence": "Checked against the provider's page on 2026-11-17: matches (16+, condition/disability, in paid work or starting within 12 weeks; 0800 121 7479 Mon-Fri 9-5; page updated 27 Oct 2026).",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },

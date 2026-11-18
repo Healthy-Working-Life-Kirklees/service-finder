@@ -52,19 +52,20 @@
     }
   ],
   "workExperience": "No",
-  "cost": "Not stated",
-  "lastUpdated": "2026-10-14",
+  "cost": "Free",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 47",
     "foundVia": "Kirklees Community Directory; District Provision Tool",
-    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=7740",
-    "evidence": "Directory July 2026.",
+    "checkedUrl": "https://www.croslandmoorclc.org.uk/contact-us",
+    "evidence": "Contact details match the centre's contact page; email and free courses confirmed by the team on 2026-11-18. Course list still to confirm.",
     "confidence": "medium",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",
     "reason": "On the live list since the October 2026 import, before the development team review."
-  }
+  },
+  "notes": "Course list: Team to check again w/c 30/12 (service check, 18 Nov 2026)."
 }

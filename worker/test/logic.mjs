@@ -675,14 +675,14 @@ check('new: discard', r.status === 200 && Object.keys((await logCall('GET', '/lo
   check('apply edits: a team check is not recorded as the provider\'s', !('providerChecked' in kb2.provenance));
   // a provider's own check (review or verify link) is recorded as provenance.providerChecked
   fs.writeFileSync(inp, JSON.stringify({ edits: {
-    'acas-helpline': { changes: {}, before: {}, note: 'Checked with Jo (provider) using a review link: everything correct.', by: 'PL', checked: true, checkedWith: 'provider', t: '2026-10-18T09:00:00Z' },
-    kbop: { changes: {}, before: {}, note: 'From Sam (partner) using a verify link, 18 Oct 2026.', by: 'PL', checked: true, t: '2026-10-18T09:00:00Z' },
+    'acas-helpline': { changes: {}, before: {}, note: 'Checked with Jo (provider) using a review link: everything correct.', by: 'PL', checked: true, checkedWith: 'provider', t: '2030-01-07T09:00:00Z' },
+    kbop: { changes: {}, before: {}, note: 'From Sam (partner) using a verify link, 18 Oct 2026.', by: 'PL', checked: true, t: '2030-01-07T09:00:00Z' },
   } }));
   const outP = run();
   const ac2 = JSON.parse(fs.readFileSync(path.join(d, 'acas-helpline.json'), 'utf8'));
   const kb3 = JSON.parse(fs.readFileSync(path.join(d, 'kbop.json'), 'utf8'));
-  check('apply provider check: date recorded with the last-checked date', ac2.provenance.providerChecked === '2026-10-18' && ac2.lastUpdated === '2026-10-18', JSON.stringify(ac2.provenance));
-  check('apply provider check: older edits recognised from their note', kb3.provenance.providerChecked === '2026-10-18', JSON.stringify(kb3.provenance));
+  check('apply provider check: date recorded with the last-checked date', ac2.provenance.providerChecked === '2030-01-07' && ac2.lastUpdated === '2030-01-07', JSON.stringify(ac2.provenance));
+  check('apply provider check: older edits recognised from their note', kb3.provenance.providerChecked === '2030-01-07', JSON.stringify(kb3.provenance));
   check('apply provider check: summary says so', /confirmed by the provider/.test(outP), outP);
   check('apply provider check: running again changes nothing', /0 services with edited details, 2 already up to date/.test(run()), run());
   // new services: created as files, waiting for review unless the team also decided

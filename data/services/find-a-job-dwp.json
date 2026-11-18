@@ -47,13 +47,13 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 101",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.gov.uk/find-a-job",
-    "evidence": "Updated Sep 2026.",
+    "evidence": "Checked against the provider's page on 2026-11-17: matches (still active, links to jobs.service.gov.uk).",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
