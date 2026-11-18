@@ -210,7 +210,7 @@ A private link lets one named contact at a scheme check everything the Support F
 **Organisations:** "Organisations" on All services lists every organisation record (`data/organisations.json`) with its services. The team can add an overview and website, rename one (the old name is kept as an alias) or combine one into another when it's listed under two names. Nothing is combined automatically. The organisation overview must not mention Healthy Working Life: that is marked on each service (`hwlFunded`), as an organisation may run other work too. These changes wait with the other team changes and are applied by `apply-decisions.mjs`.
 4. Their reply shows on the service on All services ("Provider replied" at the top of the card):
    - **All correct:** press **Record as checked with the provider**. That saves a "checked as current" change with no edits, which moves the last-checked date on when applied.
-   - **Changes:** they're shown old and new. Press **Review these in Edit details** to open the edit form with their changes filled in, adjust anything, and save. It's then an ordinary waiting change.
+   - **Changes:** they're shown old and new. Press **Review their changes in Edit details** to open the edit form with their changes filled in, adjust anything, and save. It's then an ordinary waiting change. Once a reply has been dealt with, the button goes, so the form isn't opened with older values; use **Edit details**, which shows the listing as it is now.
    Either way nothing reaches the finder until the team's changes are applied (Apply changes now, or Actions > Apply team changes).
 5. **Cancel link** stops a link working straight away. Links also stop at their expiry date. Replies are kept.
 

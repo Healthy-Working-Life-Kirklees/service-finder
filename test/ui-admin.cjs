@@ -582,7 +582,9 @@ async function worker(route) {
   await page.waitForSelector('#data-table tbody tr');
   const schemeCount = DATA.length;
   check(`help: data table lists all ${schemeCount} schemes`, (await page.locator('#data-table tbody tr').count()) === schemeCount);
-  check('help: overdue entries flagged (>= 4)', (await page.locator('#data-table .pill.warn').count()) >= 4, String(await page.locator('#data-table .pill.warn').count()));
+  // Worked out from the data, as the team keeps checking entries and the number goes down.
+  const overdue = DATA.filter((x) => (Date.now() - Date.parse(x.lastUpdated + 'T00:00:00')) / 86400000 > 135).length;
+  check(`help: overdue entries flagged (${overdue} in the data)`, (await page.locator('#data-table .pill.warn').count()) >= overdue, String(await page.locator('#data-table .pill.warn').count()));
   check('help: not-open scheme flagged', (await page.locator('#data-table .pill.bad').count()) === 1);
   check('help: has the key sections', (await page.locator('h2').allTextContents()).join('|').includes('Reporting a problem'));
 
@@ -1208,6 +1210,10 @@ async function worker(route) {
   await page.goto(ON + '/admin/todo.html');
   await page.waitForSelector('#todo .todo-sec');
   check('to do: the reply has moved to "ready to go live"', !(await page.textContent('#todo')).includes('2 changes from Sam') && (await page.textContent('.todo-ready')).includes('Audio Boost'));
+  await page.goto(ON + '/admin/services.html#svc-audio-boost');
+  await page.waitForSelector('#svc-audio-boost details[open]');
+  await page.waitForTimeout(500);
+  check('all services: a reply that has been dealt with has no "Review their changes" button (it would show older values)', (await page.locator('#svc-audio-boost button:has-text("Review their changes")').count()) === 0 && (await page.locator('#svc-audio-boost').innerText()).includes('use Edit details'));
   // Using none of a reply's changes marks it as dealt with.
   providerLinks[0].replies.push({ t: new Date().toISOString(), name: 'Sam', allCorrect: false, note: '', changes: { phone: '01924 999999' }, before: { phone: ab.phone } });
   await page.goto(ON + '/admin/reply.html?id=audio-boost');

@@ -583,7 +583,7 @@ Thank you,
           summary();
         } catch (err) { recordChecked.disabled = false; fail(err); }
       } });
-      const review = el('button', { type: 'button', class: 'btn primary small', text: 'Review these in Edit details', onclick: () => {
+      const review = el('button', { type: 'button', class: 'btn primary small', text: 'Review their changes in Edit details', onclick: () => {
         prefill[s.id] = { changes: r.changes || {}, note: 'From ' + r.name + ' (provider) using a review link, ' + fmt(r.t.slice(0, 10)) + '.' + (r.note ? ' They said: ' + r.note : '') };
         editing.add(s.id);
         refreshOne(x);
@@ -596,8 +596,10 @@ Thank you,
         r.note ? el('p', {}, el('em', { text: '"' + r.note + '"' })) : null,
         keys.length ? el('dl', { class: 'facts' }, keys.flatMap((k) => [el('dt', { text: FIELD_LABEL[k] || k }),
           el('dd', {}, el('del', { text: fmtVal(r.before ? r.before[k] : s[k], k) }), ' → ', el('ins', { text: fmtVal(r.changes[k], k) }))])) : null,
-        handled ? el('p', { class: 'hint', text: 'The team has saved changes for this service since this reply.' }) : null,
-        el('div', { class: 'row-end' }, r.allCorrect ? recordChecked : keys.length ? review : null)));
+        handled ? el('p', { class: 'hint', text: (r.handled ? 'Dealt with by ' + r.handled.by + (r.handled.note ? ': ' + r.handled.note.replace(/\.?$/, '.') : '.') : 'Dealt with: the team has saved changes for this service since this reply.') + ' To change the listing now, use Edit details: it shows what the listing says today.' }) : null,
+        // Once a reply has been dealt with, opening the form filled in with it would show its (older) values as if
+        // they were current, so the button goes.
+        handled ? null : el('div', { class: 'row-end' }, r.allCorrect ? recordChecked : keys.length ? review : null)));
     }
 
     // Links already made.
