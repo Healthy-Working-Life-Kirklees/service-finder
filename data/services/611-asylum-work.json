@@ -54,15 +54,15 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 37",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationdetails.aspx?orgid=7376",
-    "evidence": "Directory updated 30 June 2026.",
-    "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "checkedUrl": "https://www.huddelim.org.uk/611-asylum",
+    "evidence": "Appointments Mon-Thu 9.30-2.30 on 01484 986110 and Friday drop-in on the provider page.",
+    "confidence": "high",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

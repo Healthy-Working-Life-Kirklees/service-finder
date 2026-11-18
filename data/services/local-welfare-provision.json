@@ -12,9 +12,9 @@
     "Benefits and money",
     "Housing"
   ],
-  "whoFor": "Vulnerable people in short-term crisis with food, housing or energy costs",
+  "whoFor": "People in Kirklees in a short-term crisis who can't pay for food or energy.",
   "age": null,
-  "webpage": "https://www.kirklees.gov.uk/lwp",
+  "webpage": "https://www.kirklees.gov.uk/beta/benefits/local-welfare-provision.aspx",
   "email": "lwp@kirklees.gov.uk",
   "phone": "01484 414782 (Mon–Fri 10–1)",
   "social": [],
@@ -23,8 +23,8 @@
     "Kirklees-wide"
   ],
   "eligibility": [
-    "Kirklees resident",
-    "Receives Council Tax Reduction or is registered for council tax",
+    "Gets Council Tax Reduction or is registered for council tax (or has a tenancy agreement)",
+    "Has no other way to meet the need",
     "Facing a short-term crisis"
   ],
   "exclusions": [],
@@ -42,7 +42,7 @@
     {
       "id": "emergency-crisis-help",
       "name": "Emergency crisis help",
-      "overview": "One-off emergency help in a crisis: food parcels, energy vouchers, grants and short-term help with rent.",
+      "overview": "One-off help in a crisis: food parcels, prepaid meter vouchers and Crisis and Resilience Fund grants for food and energy. Help with rent is a separate Housing Payment.",
       "where": [
         "Kirklees"
       ]
@@ -50,15 +50,15 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-11-04",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 27",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees.gov.uk/beta/benefits/local-welfare-provision.aspx",
-    "evidence": "Checked by PL on 2026-11-04: checked eligibility",
+    "evidence": "Council page: food and energy only; rent via Housing Payment. Phone hours 10-1 per the Welcome Centre.",
     "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

@@ -80,13 +80,14 @@
   "workExperience": "No",
   "cost": "Free",
   "notes": "Status before November 2026: Live - open to referrals",
-  "lastUpdated": "2026-11-05",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
     "checkedUrl": "https://carerscountkirklees.org.uk/how-can-we-help/support-and-training/",
-    "evidence": "Provider page checked 5 Nov 2026 (sessions listed to Nov 2026) and matches Pathways v2.1; programme manager confirmed it is current, on-site delivery, both contact emails and that everything is free.",
-    "confidence": "high"
+    "evidence": "Employer support and contact match the provider page.",
+    "confidence": "high",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

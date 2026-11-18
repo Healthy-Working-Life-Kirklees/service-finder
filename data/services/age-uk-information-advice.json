@@ -50,15 +50,15 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 19",
     "foundVia": "MECC Link",
     "checkedUrl": "https://www.ageuk.org.uk/calderdaleandkirklees/our-services/information-and-advice/",
-    "evidence": "© 2026; April 2026 statement of service.",
+    "evidence": "Phone, email and hours match the provider page.",
     "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

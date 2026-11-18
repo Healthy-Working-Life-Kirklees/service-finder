@@ -15,7 +15,7 @@
   "whoFor": "People who find it hard to get into work, especially with learning disabilities.",
   "age": null,
   "webpage": "https://www.facebook.com/StanleysTrainingAndCatering/",
-  "email": null,
+  "email": "Info@direct-training.co.uk",
   "phone": null,
   "social": [],
   "locations": [],
@@ -46,25 +46,27 @@
       "sessions": [
         {
           "id": "heckmondwike",
-          "venue": "heckmondwike"
+          "venue": "heckmondwike",
+          "note": "Heckmondwike Community Centre, Thu 11–1.30 (meals £6)"
         }
       ]
     }
   ],
   "workExperience": "Yes - work experience in a café",
   "cost": "Not stated",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 62",
     "foundVia": "Kirklees Community Directory",
-    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=7572",
-    "evidence": "Directory June 2026 only.",
+    "checkedUrl": "https://www.facebook.com/StanleysTrainingAndCatering/",
+    "evidence": "Facebook page: Heckmondwike Community Centre, Thursdays 11-1.30.",
     "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",
     "reason": "On the live list since the October 2026 import, before the development team review."
-  }
+  },
+  "notes": "18 Nov 2026: venue, times and email from the Facebook page (no website)."
 }

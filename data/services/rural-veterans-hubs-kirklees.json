@@ -61,15 +61,15 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 60",
     "foundVia": "Kirklees Community Directory",
-    "checkedUrl": "https://www.cobseo.org.uk/members/directory/rural-veterans-hubs-kirklees/",
-    "evidence": "Directory updated May 2026; provider events calendar still 2025.",
+    "checkedUrl": "https://www.rvhkirklees.org/",
+    "evidence": "Who it is for matches; phone and email not on the homepage.",
     "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

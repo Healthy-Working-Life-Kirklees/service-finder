@@ -52,15 +52,15 @@
   ],
   "workExperience": "No",
   "cost": "Free (WYCA-funded)",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 2",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees.gov.uk/beta/employment-and-skills/skills-support.aspx",
-    "evidence": "Skills page changed July 2026; mentions Adult Learners' Awards 22 Oct 2026.",
+    "evidence": "Council page confirms 19+, Kirklees, 3+ years UK residence; course search live.",
     "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

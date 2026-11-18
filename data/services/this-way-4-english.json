@@ -55,15 +55,15 @@
   ],
   "workExperience": "Yes - volunteering",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 35",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationdetails.aspx?orgid=8902",
-    "evidence": "Directory updated 30 June 2026; on skills page (July 2026).",
-    "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "evidence": "Community Directory (updated June 2026) matches.",
+    "confidence": "medium",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

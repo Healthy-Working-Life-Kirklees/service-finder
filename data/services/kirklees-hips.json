@@ -15,7 +15,7 @@
   ],
   "whoFor": "People 16+ in Kirklees needing housing support.",
   "age": "16+",
-  "webpage": "http://www.hortonhousing.co.uk",
+  "webpage": "https://www.hortonhousing.co.uk/services-we-offer/accommodation-services/accommodation-services-in-kirklees/hips-kirklees-horton-intervention-and-prevention-service/",
   "email": "hips@hortonhousing.co.uk",
   "phone": "01484 411870",
   "social": [],
@@ -33,11 +33,11 @@
   "gate": [],
   "healthFocus": [],
   "referralRoutes": [
-    "KBOP referral form"
+    "KBOP: 01484 437421, hello@KBOP.org or online form"
   ],
   "selfReferral": {
-    "allowed": "tbc",
-    "note": "Referral is through the KBOP form."
+    "allowed": "yes",
+    "note": "Refer yourself or be referred through KBOP: phone 01484 437421, email hello@KBOP.org or the online form."
   },
   "projects": [
     {
@@ -54,15 +54,15 @@
   ],
   "workExperience": "No",
   "cost": "Not stated",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 55",
     "foundVia": "Kirklees Community Directory",
-    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=2789",
-    "evidence": "Directory May 2026; provider doesn't name HIPS.",
-    "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "checkedUrl": "https://www.hortonhousing.co.uk/services-we-offer/accommodation-services/accommodation-services-in-kirklees/hips-kirklees-horton-intervention-and-prevention-service/",
+    "evidence": "Horton HIPS page: 16+, refer yourself or be referred via KBOP; 01484 411870.",
+    "confidence": "high",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

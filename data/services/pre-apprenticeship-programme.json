@@ -49,15 +49,15 @@
   ],
   "workExperience": "Yes - work experience",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 30",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://www.kirklees.gov.uk/employment-support",
-    "evidence": "Labelled 2026/27; page changed March 2026.",
+    "checkedUrl": "https://www.kirklees.gov.uk/beta/council-housing/support-we-offer/employment-support.aspx",
+    "evidence": "16-18 construction pre-apprenticeship, 2026/27 registration open.",
     "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

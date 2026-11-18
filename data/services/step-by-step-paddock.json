@@ -12,45 +12,45 @@
     "Finding work",
     "Wellbeing"
   ],
-  "whoFor": "To be completed: the October 2026 research did not confirm who this is for.",
+  "whoFor": "Anyone in Kirklees: no eligibility criteria.",
   "age": null,
-  "webpage": "https://paddocktrust.org.uk",
+  "webpage": "https://www.paddocktrust.org.uk/step-by-step/",
   "email": null,
   "phone": null,
   "social": [],
   "locations": [],
   "areas": [
-    "Huddersfield"
+    "Kirklees-wide"
   ],
   "eligibility": [],
   "exclusions": [],
   "gate": [],
   "healthFocus": [],
   "referralRoutes": [
-    "To be completed"
+    "Drop in at a weekly session (14 locations across Kirklees)"
   ],
   "selfReferral": {
-    "allowed": "tbc",
-    "note": "To be completed."
+    "allowed": "yes",
+    "note": "Just drop in, no appointment."
   },
   "projects": [
     {
       "id": "step-by-step-drop-ins",
       "name": "Step by Step drop-ins",
-      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
+      "overview": "Free weekly drop-ins at 14 places across Kirklees with one-to-one help on money and crisis grants, benefits, housing, jobs, skills, volunteering and getting online."
     }
   ],
   "workExperience": "Not known",
-  "notes": "Why it wasn't on the main list: No details or dates on provider site.",
-  "lastUpdated": "2026-10-14",
+  "notes": "Why it wasn't on the main list: No details or dates on provider site. 18 Nov 2026: details filled in from the provider's page; team to decide whether to include.",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 5",
     "foundVia": "Web research or directory review (October 2026)",
-    "evidence": "No details or dates on provider site.",
-    "confidence": "low",
-    "checkedUrl": "https://paddocktrust.org.uk",
-    "status": "Not verified as running (web research, October 2026)"
+    "evidence": "Provider page: no eligibility criteria, 14 weekly drop-in locations.",
+    "confidence": "medium",
+    "checkedUrl": "https://www.paddocktrust.org.uk/step-by-step/",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "review",

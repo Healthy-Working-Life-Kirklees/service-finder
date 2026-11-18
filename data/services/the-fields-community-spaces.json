@@ -56,15 +56,15 @@
   ],
   "workExperience": "No",
   "cost": "Not stated",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 64",
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "https://www.batleymat.co.uk/the-fields-community-spaces/",
-    "evidence": "Sept–Nov 2026 timetable.",
-    "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "evidence": "Phone and email match the provider page.",
+    "confidence": "high",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

@@ -84,15 +84,15 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 9",
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "https://www.inspirenorth.co.uk/our-services/get-help-and-support-page/changes/",
-    "evidence": "2026 timetable on page.",
+    "evidence": "Age, address, contacts and referral route match the provider page.",
     "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

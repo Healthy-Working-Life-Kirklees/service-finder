@@ -15,7 +15,7 @@
   ],
   "whoFor": "Adults and children affected by someone else's use.",
   "age": null,
-  "webpage": "https://www.changegrowlive.org/drug-alcohol-kirklees/family-support",
+  "webpage": "https://www.changegrowlive.org/service/kirklees-drug-alcohol/family-support",
   "email": null,
   "phone": "01484 353333",
   "social": [],
@@ -78,15 +78,15 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 54",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://www.changegrowlive.org/drug-alcohol-kirklees/family-support",
-    "evidence": "Live page on CGL Kirklees site (© 2026).",
-    "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "checkedUrl": "https://www.changegrowlive.org/service/kirklees-drug-alcohol/family-support",
+    "evidence": "Old address redirects here; details match the page.",
+    "confidence": "high",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

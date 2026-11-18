@@ -14,7 +14,7 @@
   ],
   "whoFor": "Veterans applying for Kirklees Council jobs.",
   "age": null,
-  "webpage": "https://www.kirklees.gov.uk/armedforces",
+  "webpage": "https://www.kirklees.gov.uk/beta/employment-information/armed-forces.aspx",
   "email": null,
   "phone": null,
   "social": [],
@@ -52,15 +52,15 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 17",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://www.kirklees.gov.uk/armedforces",
-    "evidence": "Page changed Oct 2026.",
+    "checkedUrl": "https://www.kirklees.gov.uk/beta/employment-information/armed-forces.aspx",
+    "evidence": "Old address redirects here; details match the page.",
     "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

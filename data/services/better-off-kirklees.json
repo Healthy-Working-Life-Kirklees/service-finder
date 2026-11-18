@@ -9,13 +9,11 @@
     "individual"
   ],
   "categories": [
-    "Benefits and money",
-    "Finding work",
-    "Digital skills"
+    "Benefits and money"
   ],
   "whoFor": "Kirklees residents.",
   "age": null,
-  "webpage": "https://www.betteroffkirklees.org.uk/#/home",
+  "webpage": "https://www.betteroffkirklees.org.uk/",
   "email": null,
   "phone": null,
   "social": [],
@@ -31,7 +29,7 @@
   "gate": [],
   "healthFocus": [],
   "referralRoutes": [
-    "Use the website: https://www.betteroffkirklees.org.uk/#/home"
+    "Use the website: https://www.betteroffkirklees.org.uk/"
   ],
   "selfReferral": {
     "allowed": "yes",
@@ -40,8 +38,8 @@
   "projects": [
     {
       "id": "benefits-and-jobs-website",
-      "name": "Benefits and jobs website",
-      "overview": "Website that works out benefits you might get, helps you apply or appeal, lists jobs and volunteering and tracks your job search.",
+      "name": "Benefits and care costs website",
+      "overview": "Website to apply for Housing Benefit and Council Tax Reduction, appeal a decision, or work out what you will pay towards adult social care.",
       "where": [
         "Online"
       ]
@@ -49,15 +47,15 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 41",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=8624",
-    "evidence": "Directory updated 11 Aug 2026; site itself couldn't be read.",
-    "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "checkedUrl": "https://www.betteroffkirklees.org.uk/",
+    "evidence": "Site now covers care cost assessments, Housing Benefit and Council Tax; no jobs content.",
+    "confidence": "high",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

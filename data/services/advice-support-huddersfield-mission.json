@@ -52,15 +52,15 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 39",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://huddersfieldmission.org.uk/pages/16-advice-support",
-    "evidence": "Page undated; homepage news June 2026.",
-    "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "checkedUrl": "https://www.huddersfieldmission.org.uk/pages/16-advice-support",
+    "evidence": "Weekday drop-in 9.30-12 and afternoon appointments on the provider page.",
+    "confidence": "high",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",
