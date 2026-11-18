@@ -22,7 +22,9 @@
   "social": [
     "https://www.facebook.com/Kirklees.TalkingTherapies/"
   ],
-  "locations": [],
+  "locations": [
+    "Across Kirklees, via Kirklees Talking Therapies venues, libraries and remote appointments"
+  ],
   "areas": [
     "Kirklees-wide",
     "Online"
@@ -65,12 +67,12 @@
   "workExperience": "No",
   "languages": "Interpreters available",
   "notes": "Status before November 2026: Live - open to referrals",
-  "lastUpdated": "2026-11-06",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
-    "evidence": "Checked by PL on 2026-11-06: From Zahir (provider) using a review link, 6 Nov 2026.",
-    "providerChecked": "2026-11-06"
+    "evidence": "Checked by pl on 2026-11-17: From Zahir (provider) using a review link, 6 Nov 2026.",
+    "providerChecked": "2026-11-17"
   },
   "listing": {
     "decision": "include",
