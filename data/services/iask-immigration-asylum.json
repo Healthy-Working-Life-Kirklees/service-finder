@@ -11,11 +11,11 @@
   "categories": [
     "Refugees and new arrivals"
   ],
-  "whoFor": "Asylum seekers, refugees and migrants needing immigration advice (advice only, no employment offer).",
+  "whoFor": "People seeking asylum and refugees in Kirklees.",
   "age": null,
-  "webpage": "https://www.i-ask.co.uk",
+  "webpage": "https://i-ask.co.uk/",
   "email": null,
-  "phone": null,
+  "phone": "07702 382647 (Mon–Thu 10–4)",
   "social": [],
   "locations": [],
   "areas": [
@@ -26,30 +26,31 @@
   "gate": [],
   "healthFocus": [],
   "referralRoutes": [
-    "To be completed"
+    "Drop in on Thursdays 1–4 at the Quaker Meeting House, Church Street, Paddock",
+    "Phone"
   ],
   "selfReferral": {
-    "allowed": "tbc",
-    "note": "To be completed."
+    "allowed": "yes",
+    "note": "Drop in on a Thursday afternoon or phone Monday to Thursday."
   },
   "projects": [
     {
       "id": "immigration-and-asylum-support-kirklees-iask",
       "name": "Immigration and Asylum Support Kirklees (IASK)",
-      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
+      "overview": "Free immigration casework (OISC level 2), welfare support and outreach from a team that includes people who have been through the asylum system."
     }
   ],
   "workExperience": "Not known",
-  "notes": "Why it wasn't on the main list: Site © 2023; advice only, no employment offer. Directory Oct 2025, no closure notice; Quakers House, Paddock HD1 4TR.",
-  "lastUpdated": "2026-10-14",
+  "notes": "Why it wasn't on the main list: Site © 2023; advice only, no employment offer. Directory Oct 2025, no closure notice; Quakers House, Paddock HD1 4TR. 18 Nov 2026: details filled in from the provider's page; team to decide whether to include.",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 6",
     "foundVia": "Web research or directory review (October 2026)",
-    "evidence": "Site © 2023; advice only, no employment offer. Directory Oct 2025, no closure notice; Quakers House, Paddock HD1 4TR.",
-    "confidence": "low",
-    "checkedUrl": "https://www.i-ask.co.uk",
-    "status": "Not verified as running (web research, October 2026)"
+    "evidence": "Provider site: services, Thursday drop-in at Quaker Meeting House Paddock, phone line hours.",
+    "confidence": "medium",
+    "checkedUrl": "https://i-ask.co.uk/",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "review",

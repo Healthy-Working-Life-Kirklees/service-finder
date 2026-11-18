@@ -749,6 +749,42 @@
       "wardCode": "E05016575",
       "lat": 53.52492,
       "lng": -1.51973
+    },
+    {
+      "id": "longley-park-golf-club",
+      "name": "Longley Park Golf Club",
+      "address": "Longley Park Golf Club, Maple Street, Huddersfield HD5 9AX",
+      "postcode": "HD5 9AX"
+    },
+    {
+      "id": "mirfield-library",
+      "name": "Mirfield Library",
+      "address": "Mirfield Library, Easthorpe Lodge, Huddersfield Road, Mirfield WF14 8AN",
+      "postcode": "WF14 8AN"
+    },
+    {
+      "id": "underbank-rangers-rugby-club",
+      "name": "Underbank Rangers Rugby Club",
+      "address": "Underbank Rangers Rugby Club, Dunford Road, Holmfirth HD9 2RR",
+      "postcode": "HD9 2RR"
+    },
+    {
+      "id": "the-loft-cleckheaton",
+      "name": "The Loft, Cleckheaton",
+      "address": "The Loft, 10A Northgate, Cleckheaton BD19 5AA",
+      "postcode": "BD19 5AA"
+    },
+    {
+      "id": "dewsbury-fire-station",
+      "name": "Dewsbury Fire Station",
+      "address": "Dewsbury Fire Station, 21 Carlton Road, Dewsbury WF13 2AT",
+      "postcode": "WF13 2AT"
+    },
+    {
+      "id": "batley-library",
+      "name": "Batley Library",
+      "address": "Batley Library (New Way entrance), 14 Market Place, Batley WF17 5DA",
+      "postcode": "WF17 5DA"
     }
   ]
 }

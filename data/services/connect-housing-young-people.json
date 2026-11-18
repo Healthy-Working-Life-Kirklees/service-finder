@@ -51,15 +51,15 @@
   ],
   "workExperience": "No",
   "cost": "Not stated",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 66",
     "foundVia": "Kirklees Community Directory",
-    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=8075",
-    "evidence": "Directory Oct 2026 only.",
-    "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "checkedUrl": "https://www.connecthousing.org.uk/find-a-home/housing-with-specialist-support/",
+    "evidence": "Under 25s, Huddersfield and Heckmondwike, 0300 5000 600 on the provider page.",
+    "confidence": "high",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

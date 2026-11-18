@@ -15,7 +15,7 @@
   ],
   "whoFor": "Adults 18+ in Kirklees.",
   "age": "18+",
-  "webpage": "https://www.changegrowlive.org/drug-alcohol-s-kirklees/drugs-alcohol",
+  "webpage": "https://www.changegrowlive.org/service/kirklees-drug-alcohol",
   "email": null,
   "phone": "01484 353333",
   "social": [],
@@ -84,15 +84,15 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 22",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://www.changegrowlive.org/drug-alcohol-s-kirklees/drugs-alcohol",
-    "evidence": "Site © 2026 with current hours. Separate from IPS for CGL service users.",
+    "checkedUrl": "https://www.changegrowlive.org/service/kirklees-drug-alcohol",
+    "evidence": "Old address redirects here; details match the page.",
     "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

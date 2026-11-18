@@ -55,15 +55,15 @@
   ],
   "workExperience": "Yes - volunteering",
   "cost": "Not stated",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 61",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.s2r.org.uk/",
-    "evidence": "June 2026 activity schedule on site.",
-    "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "evidence": "Open access, referral form, phone and email match the provider site.",
+    "confidence": "high",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

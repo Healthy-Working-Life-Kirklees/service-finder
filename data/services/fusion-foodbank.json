@@ -1,6 +1,6 @@
 {
   "id": "fusion-foodbank",
-  "name": "Fusion Foodbank",
+  "name": "Food and More (foodbank and advice)",
   "organisation": "Fusion Housing",
   "open": true,
   "hwlFunded": false,
@@ -12,37 +12,41 @@
     "Benefits and money",
     "Housing"
   ],
-  "whoFor": "Kirklees residents in urgent need.",
+  "whoFor": "People in North Kirklees who can't afford food.",
   "age": null,
-  "webpage": "https://www.fusionhousing.org.uk/Our-Services/fusion-foodbank-and-more/",
-  "email": null,
-  "phone": "01484 414782 (LWP food claims)",
+  "webpage": "https://fusionhousing.org.uk/services/food-and-more-service/",
+  "email": "Diversion@fusionhousing.org.uk",
+  "phone": "01924 454770 (advice team); food referrals via LWP 01484 414782",
   "social": [],
   "locations": [],
   "areas": [
     "Dewsbury",
-    "Kirklees-wide"
+    "Batley",
+    "Spen Valley",
+    "Mirfield"
   ],
   "eligibility": [
-    "Kirklees residents in urgent need who can't afford food"
+    "Lives in North Kirklees",
+    "In crisis and can't afford food",
+    "Has a referral"
   ],
   "exclusions": [],
   "gate": [],
   "healthFocus": [],
   "referralRoutes": [
-    "Phone Local Welfare Provision (food claims)",
-    "Dewsbury office",
-    "Ask your support worker"
+    "Ask a support worker or professional to refer you",
+    "Phone Local Welfare Provision, 01484 414782, Mon–Fri",
+    "Visit Fusion Hub, Floor 2, Empire House, Dewsbury, weekdays 10–3"
   ],
   "selfReferral": {
     "allowed": "partly",
-    "note": "Go through the Local Welfare Provision phone line, the Dewsbury office, or a support worker."
+    "note": "You need a referral: from a support worker, through Local Welfare Provision, or by visiting Fusion Hub in Dewsbury."
   },
   "projects": [
     {
       "id": "food-packs",
       "name": "Food packs",
-      "overview": "Free food packs for people who can't afford food.",
+      "overview": "Food packs (collect from Empire House, Dewsbury, the next working day, 11–3) plus one-to-one help with money, grants, debts, getting online and short courses.",
       "where": [
         "Dewsbury office"
       ]
@@ -50,15 +54,15 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 51",
     "foundVia": "MECC Link",
-    "checkedUrl": "https://www.fusionhousing.org.uk/Our-Services/fusion-foodbank-and-more/",
-    "evidence": "Page undated.",
-    "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "checkedUrl": "https://fusionhousing.org.uk/services/food-and-more-service/",
+    "evidence": "Old page gone; Food and More page: North Kirklees, referral needed, Diversion team contacts.",
+    "confidence": "high",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

@@ -17,7 +17,7 @@
   ],
   "whoFor": "Kirklees College students - mainly 16-19 year olds, plus adult and apprentice learners - needing wellbeing and employability support.",
   "age": "16+ (College students)",
-  "webpage": "https://www.kirkleescollege.ac.uk/supporting-you/",
+  "webpage": "https://kirkleescollege.ac.uk/student-support/supporting-you/",
   "email": "support@kirkleescollege.ac.uk",
   "phone": "01484 437000",
   "social": [],
@@ -69,11 +69,14 @@
   ],
   "workExperience": "Yes",
   "notes": "Status before November 2026: Live - open to referrals",
-  "lastUpdated": "2026-11-12",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
-    "evidence": "Checked by PL on 2026-11-12: Eligible groups and locations"
+    "evidence": "Old address redirects here; details match the page.",
+    "checkedUrl": "https://kirkleescollege.ac.uk/student-support/supporting-you/",
+    "confidence": "high",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

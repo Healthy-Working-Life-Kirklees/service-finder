@@ -52,15 +52,15 @@
   ],
   "workExperience": "Yes - training to volunteer in schools",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 56",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees.gov.uk/beta/employment-and-skills/kirklees-success-centre.aspx",
-    "evidence": "Page changed June 2025; linked from July 2026 skills page. No 2026 bootcamp intake confirmed.",
-    "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "evidence": "19+, courses, Early Years Skills Bootcamp and contacts match the council page.",
+    "confidence": "high",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

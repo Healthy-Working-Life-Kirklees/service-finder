@@ -64,15 +64,15 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-11-05",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 8",
     "foundVia": "Kirklees Community Directory",
-    "checkedUrl": "https://carerscountkirklees.org.uk/contact-us/",
-    "evidence": "Checked by PL on 2026-11-05: Checked areas",
+    "checkedUrl": "https://carerscountkirklees.org.uk/kirklees-mental-health-service/",
+    "evidence": "Who it is for and contacts match the provider pages.",
     "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

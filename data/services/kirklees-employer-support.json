@@ -47,15 +47,15 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 48",
     "foundVia": "Follow-up from WYCA",
     "checkedUrl": "https://www.kirklees.gov.uk/beta/employment-and-skills/employer-support.aspx",
-    "evidence": "Page changed March 2025.",
-    "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "evidence": "Council page matches.",
+    "confidence": "high",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

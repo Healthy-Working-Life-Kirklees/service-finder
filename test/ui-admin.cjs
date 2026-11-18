@@ -719,12 +719,12 @@ async function worker(route) {
   check('decide: saved and shown as waiting to be applied', decisions['samaritans-helpline'] && decisions['samaritans-helpline'].decision === 'exclude' && decisions['samaritans-helpline'].by === 'TB');
   check('decide: "Saved." confirmation', (await page.textContent('#svc-samaritans-helpline .decide .msg[role=status]')).includes('Saved'));
   // an incomplete service: choosing include warns that it can't go live yet
-  await page.goto(ON + '/admin/services.html?q=kbop');
-  await page.waitForSelector('#svc-kbop .decide');
-  await page.check('#svc-kbop input[value=include]');
-  check('decide: warns when an incomplete service is chosen for the live list', await page.locator('#svc-kbop .decide .msg.info').isVisible());
-  await page.click('#svc-kbop .decide button');
-  await page.waitForSelector('#svc-kbop .pill.blue');
+  await page.goto(ON + '/admin/services.html?q=lukes-lads-tcd');
+  await page.waitForSelector('#svc-lukes-lads-tcd .decide');
+  await page.check('#svc-lukes-lads-tcd input[value=include]');
+  check('decide: warns when an incomplete service is chosen for the live list', await page.locator('#svc-lukes-lads-tcd .decide .msg.info').isVisible());
+  await page.click('#svc-lukes-lads-tcd .decide button');
+  await page.waitForSelector('#svc-lukes-lads-tcd .pill.blue');
 
   // ---------- adding a new service ----------
   await page.goto(ON + '/admin/services.html');
@@ -813,45 +813,45 @@ async function worker(route) {
   check('decide: summary counts decisions waiting to be applied', sStats.some((x) => x.startsWith('2') && x.includes('waiting to be applied')), sStats.join(' | '));
   const [dd] = await Promise.all([page.waitForEvent('download'), page.click('#export-decisions')]);
   const saved = JSON.parse(fs.readFileSync(await dd.path(), 'utf8'));
-  check('decide: decisions download for apply-decisions', saved.decisions.kbop.decision === 'include' && saved.decisions['samaritans-helpline'].decision === 'exclude' && 'edits' in saved);
+  check('decide: decisions download for apply-decisions', saved.decisions['lukes-lads-tcd'].decision === 'include' && saved.decisions['samaritans-helpline'].decision === 'exclude' && 'edits' in saved);
 
   // ---------- editing a service's details ----------
-  await page.goto(ON + '/admin/services.html?q=kbop');
-  await page.waitForSelector('#svc-kbop .edit-open button');
-  await page.click('#svc-kbop .edit-open button');
-  await page.waitForSelector('#svc-kbop form.edit-form');
-  check('edit: form starts from the data', (await page.inputValue('#ed-kbop-name')) === 'Kirklees Better Outcomes Partnership (KBOP)' && (await page.inputValue('#ed-kbop-level')) === 'local');
-  check('edit: "To be completed" boxes highlighted', (await page.locator('#svc-kbop .edit .tbc').count()) >= 3, String(await page.locator('#svc-kbop .edit .tbc').count()));
-  await page.click('#svc-kbop form.edit-form button[type=submit]');
-  check('edit: nothing changed is caught', (await page.textContent('#svc-kbop .edit .msg')).includes('Nothing has changed'));
-  await page.fill('#ed-kbop-phone', '01484 000000');
-  await page.fill('#ed-kbop-whoFor', 'Adults in Kirklees with complex needs.');
-  await page.check('#ed-kbop-areas input[value=Batley]');
-  await page.locator('#svc-kbop .lf-proj textarea').first().fill('One-to-one key worker support.');
-  check('edit: changed questions are marked', (await page.locator('#svc-kbop .lf-field.changed').count()) >= 2 && (await page.locator('#svc-kbop .lf-projects-box.changed').count()) === 1);
-  await page.click('#svc-kbop form.edit-form button[type=submit]');
-  check('edit: needs a reason', (await page.textContent('#svc-kbop .edit .msg')).includes('what changed'));
-  await page.fill('#ed-kbop-why', 'Phoned the provider');
-  await page.check('#ed-kbop-checked');
-  await page.click('#svc-kbop form.edit-form button[type=submit]');
-  await page.waitForSelector('#svc-kbop .waiting');
-  const sent = edits.kbop;
-  check('edit: ticking an area keeps the existing order and adds it last', JSON.stringify(sent.changes.areas) === JSON.stringify([...ALL.find((x) => x.id === 'kbop').areas, 'Batley']), JSON.stringify(sent.changes.areas));
+  await page.goto(ON + '/admin/services.html?q=lukes-lads-tcd');
+  await page.waitForSelector('#svc-lukes-lads-tcd .edit-open button');
+  await page.click('#svc-lukes-lads-tcd .edit-open button');
+  await page.waitForSelector('#svc-lukes-lads-tcd form.edit-form');
+  check('edit: form starts from the data', (await page.inputValue('#ed-lukes-lads-tcd-name')) === "Luke's Lads" && (await page.inputValue('#ed-lukes-lads-tcd-level')) === 'local');
+  check('edit: "To be completed" boxes highlighted', (await page.locator('#svc-lukes-lads-tcd .edit .tbc').count()) >= 3, String(await page.locator('#svc-lukes-lads-tcd .edit .tbc').count()));
+  await page.click('#svc-lukes-lads-tcd form.edit-form button[type=submit]');
+  check('edit: nothing changed is caught', (await page.textContent('#svc-lukes-lads-tcd .edit .msg')).includes('Nothing has changed'));
+  await page.fill('#ed-lukes-lads-tcd-phone', '01484 000000');
+  await page.fill('#ed-lukes-lads-tcd-whoFor', 'Adults in Kirklees with complex needs.');
+  await page.check('#ed-lukes-lads-tcd-areas input[value=Batley]');
+  await page.locator('#svc-lukes-lads-tcd .lf-proj textarea').first().fill('One-to-one key worker support.');
+  check('edit: changed questions are marked', (await page.locator('#svc-lukes-lads-tcd .lf-field.changed').count()) >= 2 && (await page.locator('#svc-lukes-lads-tcd .lf-projects-box.changed').count()) === 1);
+  await page.click('#svc-lukes-lads-tcd form.edit-form button[type=submit]');
+  check('edit: needs a reason', (await page.textContent('#svc-lukes-lads-tcd .edit .msg')).includes('what changed'));
+  await page.fill('#ed-lukes-lads-tcd-why', 'Phoned the provider');
+  await page.check('#ed-lukes-lads-tcd-checked');
+  await page.click('#svc-lukes-lads-tcd form.edit-form button[type=submit]');
+  await page.waitForSelector('#svc-lukes-lads-tcd .waiting');
+  const sent = edits['lukes-lads-tcd'];
+  check('edit: ticking an area keeps the existing order and adds it last', JSON.stringify(sent.changes.areas) === JSON.stringify([...ALL.find((x) => x.id === 'lukes-lads-tcd').areas, 'Batley']), JSON.stringify(sent.changes.areas));
   check('edit: categories untouched are not sent (order kept)', !('categories' in sent.changes));
   check('edit: only the changed fields are sent, with what the data said', sent && Object.keys(sent.changes).sort().join() === 'areas,phone,projects,whoFor' && sent.before.phone === null && sent.checked === true && sent.by === 'TB', JSON.stringify(sent && sent.changes));
-  check('edit: waiting changes shown, old and new', (await page.textContent('#svc-kbop .waiting')).includes('01484 000000') && (await page.locator('#svc-kbop .waiting del').count()) === 4);
-  check('edit: badge says it is waiting to be applied', (await page.locator('#svc-kbop .pill.blue', { hasText: 'Details edited by TB' }).count()) === 1);
-  await page.click('#svc-kbop .edit-open button');
-  await page.waitForSelector('#svc-kbop form.edit-form');
-  check('edit: editing again starts from the waiting changes', (await page.inputValue('#ed-kbop-phone')) === '01484 000000');
-  await page.click('#svc-kbop .edit button:has-text("Cancel")');
+  check('edit: waiting changes shown, old and new', (await page.textContent('#svc-lukes-lads-tcd .waiting')).includes('01484 000000') && (await page.locator('#svc-lukes-lads-tcd .waiting del').count()) === 4);
+  check('edit: badge says it is waiting to be applied', (await page.locator('#svc-lukes-lads-tcd .pill.blue', { hasText: 'Details edited by TB' }).count()) === 1);
+  await page.click('#svc-lukes-lads-tcd .edit-open button');
+  await page.waitForSelector('#svc-lukes-lads-tcd form.edit-form');
+  check('edit: editing again starts from the waiting changes', (await page.inputValue('#ed-lukes-lads-tcd-phone')) === '01484 000000');
+  await page.click('#svc-lukes-lads-tcd .edit button:has-text("Cancel")');
   await page.goto(ON + '/admin/services.html?decision=edited');
   await page.waitForSelector('.svc');
   check('edit: "details edited" filter', (await page.locator('.svc').count()) === 1);
   page.once('dialog', (d) => d.accept());
-  await page.click('#svc-kbop .waiting button');
-  await page.waitForSelector('#svc-kbop .waiting', { state: 'detached' });
-  check('edit: waiting changes can be discarded', !edits.kbop);
+  await page.click('#svc-lukes-lads-tcd .waiting button');
+  await page.waitForSelector('#svc-lukes-lads-tcd .waiting', { state: 'detached' });
+  check('edit: waiting changes can be discarded', !edits['lukes-lads-tcd']);
 
   // ---------- organisations ----------
   await page.click('#open-orgs');
@@ -902,7 +902,7 @@ async function worker(route) {
   await page.click('#venues-panel button:has-text("Close venues")');
 
   // ---------- "Apply changes now": what the last run couldn't apply ----------
-  // kbop is chosen for the live list (above) but its details still say "To be completed", so the run sets it aside.
+  // Luke's Lads is chosen for the live list (above) but its details still say "To be completed", so the run sets it aside.
   const ranAt = new Date(Date.now() - 60000).toISOString();
   const lastRun = { id: 9, status: 'completed', conclusion: 'success', created: ranAt, updated: ranAt, title: 'Apply team changes and put them live (from the All services page, TB)', url: 'https://github.com/run' };
   const waitingNow = async () => Number(((await page.textContent('#apply-pending')).match(/^(\d+) services? ha/) || [0, 0])[1]);
@@ -911,14 +911,14 @@ async function worker(route) {
   await page.waitForSelector('#apply-now:not([hidden])');
   await page.waitForFunction(() => document.querySelector('#apply-pending').textContent.length > 0);
   const waitBefore = await waitingNow();
-  applyStatus = { ...applyStatus, report: { run: 9, setAside: [{ kind: 'service', id: 'kbop', name: 'KBOP', by: 'TB', why: 'chosen to go on the live list, but its details still say "To be completed"' }] } };
+  applyStatus = { ...applyStatus, report: { run: 9, setAside: [{ kind: 'service', id: 'lukes-lads-tcd', name: "Luke's Lads", by: 'TB', why: 'chosen to go on the live list, but its details still say "To be completed"' }] } };
   await page.reload();
   await page.waitForSelector('#apply-aside:not([hidden])');
   const asideText = await page.textContent('#apply-aside');
-  check('apply: what the last run couldn\'t apply is listed, with why', asideText.includes('1 change couldn\u2019t be applied') && asideText.includes('KBOP') && asideText.includes('To be completed'), asideText);
+  check('apply: what the last run couldn\'t apply is listed, with why', asideText.includes('1 change couldn\u2019t be applied') && asideText.includes("Luke's Lads") && asideText.includes('To be completed'), asideText);
   check('apply: those aren\'t counted as waiting', (await waitingNow()) === waitBefore - 1 && (await page.textContent('#apply-pending')).includes('couldn\u2019t be applied'), waitBefore + " / " + (await page.textContent('#apply-pending')));
-  await page.click('#apply-aside a:has-text("KBOP")');
-  check('apply: the link opens that service', await page.locator('#svc-kbop details').evaluate((d) => d.open).catch(() => false));
+  await page.click('#apply-aside a:has-text("Luke\'s Lads")');
+  check('apply: the link opens that service', await page.locator('#svc-lukes-lads-tcd details').evaluate((d) => d.open).catch(() => false));
   applyStatus = null;
   // ---------- "Checked with the provider" filter ----------
   const soon = new Date(Date.now() + 20 * 864e5).toISOString();

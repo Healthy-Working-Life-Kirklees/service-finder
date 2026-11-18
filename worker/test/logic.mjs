@@ -631,6 +631,16 @@ check('new: discard', r.status === 200 && Object.keys((await logCall('GET', '/lo
 {
   const d = fs.mkdtempSync(path.join(os.tmpdir(), 'dec-'));
   for (const id of ['kbop', 'samaritans-helpline', 'acas-helpline', 'hopeline247-papyrus']) fs.copyFileSync(path.join(root, 'data/services', id + '.json'), path.join(d, id + '.json'));
+  // kbop's real details have since been filled in, so put the test copy back to an incomplete entry
+  {
+    const f = path.join(d, 'kbop.json');
+    const k = JSON.parse(fs.readFileSync(f, 'utf8'));
+    Object.assign(k, { whoFor: 'To be completed.', email: null, phone: null, referralRoutes: ['To be completed'], selfReferral: { allowed: 'tbc', note: 'To be completed.' }, lastUpdated: '2026-10-14' });
+    k.projects = [{ id: k.projects[0].id, name: k.projects[0].name, overview: 'To be completed.' }];
+    k.listing = { decision: 'review', reason: 'Not live until the details are checked and completed.' };
+    delete k.notes;
+    fs.writeFileSync(f, JSON.stringify(k, null, 2));
+  }
   fs.copyFileSync(path.join(root, 'data/organisations.json'), path.join(d, 'organisations.json'));
   const realOrgs = fs.readFileSync(path.join(root, 'data/organisations.json'), 'utf8');
   const inp = path.join(d, 'decisions.json');

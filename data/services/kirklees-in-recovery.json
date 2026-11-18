@@ -76,15 +76,15 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 58",
     "foundVia": "Kirklees Community Directory",
-    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=8159",
-    "evidence": "Directory July 2026; site's newest content 2021.",
+    "checkedUrl": "https://kirkleesinrecovery.com/",
+    "evidence": "Site live (contact form); phone and email not shown on it.",
     "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

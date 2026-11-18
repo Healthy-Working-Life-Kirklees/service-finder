@@ -13,10 +13,10 @@
     "Mental health",
     "Wellbeing"
   ],
-  "whoFor": "To be completed: the October 2026 research did not confirm who this is for.",
+  "whoFor": "Men who want to talk and walk with others.",
   "age": null,
   "webpage": "https://www.menwalkingandtalking.co.uk/walks/huddersfield-walk/",
-  "email": null,
+  "email": "hello@mwat.co.uk",
   "phone": null,
   "social": [],
   "locations": [],
@@ -30,30 +30,30 @@
     "mental-health"
   ],
   "referralRoutes": [
-    "To be completed"
+    "Just turn up (times on their Facebook page)"
   ],
   "selfReferral": {
-    "allowed": "tbc",
-    "note": "To be completed."
+    "allowed": "yes",
+    "note": "No booking: just turn up at the start point."
   },
   "projects": [
     {
       "id": "men-walking-and-talking-huddersfield",
       "name": "Men Walking and Talking – Huddersfield",
-      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
+      "overview": "Free weekly peer support walk for men, starting at the Harold Wilson statue, St George's Square, Huddersfield. No booking."
     }
   ],
   "workExperience": "Not known",
-  "notes": "Why it wasn't on the main list: Directory June 2025; not checked.",
-  "lastUpdated": "2026-10-14",
+  "notes": "Why it wasn't on the main list: Directory June 2025; not checked. 18 Nov 2026: details filled in from the provider's page; team to decide whether to include.",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 31",
     "foundVia": "Web research or directory review (October 2026)",
-    "evidence": "Directory June 2025; not checked.",
-    "confidence": "low",
+    "evidence": "Provider page: weekly free walk, St George's Square start, no booking; times on Facebook.",
+    "confidence": "medium",
     "checkedUrl": "https://www.menwalkingandtalking.co.uk/walks/huddersfield-walk/",
-    "status": "Not verified as running (web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "review",

@@ -91,10 +91,14 @@
   ],
   "workExperience": "Yes",
   "notes": "Status before November 2026: Live - open to referrals",
-  "lastUpdated": "2025-11-25",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
+    "checkedUrl": "https://www.changegrowlive.org/service/kirklees-drug-alcohol/dewsbury",
+    "evidence": "IPS for 18+ in CGL treatment; KirkleesIPS@cgl.org.uk, 01484 353333 / 07721 969722.",
+    "confidence": "high",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

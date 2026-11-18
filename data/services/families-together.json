@@ -15,7 +15,7 @@
   ],
   "whoFor": "Kirklees children, young people and families.",
   "age": "Children and young people; up to 25 with SEND",
-  "webpage": "https://www.kirklees.gov.uk/familiestogethergatewaysupportrequest",
+  "webpage": "https://www.kirklees.gov.uk/beta/working-with-children/early-support-family.aspx",
   "email": null,
   "phone": "01484 456823",
   "social": [],
@@ -57,15 +57,15 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 16",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://www.kirklees.gov.uk/familiestogethergatewaysupportrequest",
-    "evidence": "Page changed Oct 2026.",
+    "checkedUrl": "https://www.kirklees.gov.uk/beta/working-with-children/early-support-family.aspx",
+    "evidence": "Old address redirects here; details match the page.",
     "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

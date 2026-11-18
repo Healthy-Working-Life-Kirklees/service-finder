@@ -12,11 +12,11 @@
     "Mental health",
     "Disability & neurodiversity"
   ],
-  "whoFor": "To be completed: the October 2026 research did not confirm who this is for.",
+  "whoFor": "People with mental ill-health, learning disabilities, physical or sensory impairments or a brain injury, older people, and carers.",
   "age": null,
-  "webpage": "http://www.cloverleaf-advocacy.co.uk",
-  "email": null,
-  "phone": null,
+  "webpage": "https://cloverleaf-advocacy.co.uk/",
+  "email": "referrals@cloverleaf-advocacy.co.uk",
+  "phone": "01924 454875",
   "social": [],
   "locations": [],
   "areas": [
@@ -29,30 +29,32 @@
     "any"
   ],
   "referralRoutes": [
-    "To be completed"
+    "Referral form on the website (for yourself or someone else)",
+    "Phone",
+    "Email"
   ],
   "selfReferral": {
-    "allowed": "tbc",
-    "note": "To be completed."
+    "allowed": "yes",
+    "note": "Refer yourself with the online form, or by phone or email."
   },
   "projects": [
     {
       "id": "cloverleaf-advocacy",
       "name": "Cloverleaf Advocacy",
-      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
+      "overview": "Free, confidential advocacy to help people have their say, plus self-advocacy and support for unpaid carers."
     }
   ],
   "workExperience": "Not known",
-  "notes": "Why it wasn't on the main list: Directory March 2025; not checked.",
-  "lastUpdated": "2026-10-14",
+  "notes": "Why it wasn't on the main list: Directory March 2025; not checked. 18 Nov 2026: details filled in from the provider's page; team to decide whether to include.",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 32",
     "foundVia": "Web research or directory review (October 2026)",
-    "evidence": "Directory March 2025; not checked.",
-    "confidence": "low",
-    "checkedUrl": "http://www.cloverleaf-advocacy.co.uk",
-    "status": "Not verified as running (web research, October 2026)"
+    "evidence": "Provider site: who it helps, referral forms, 01924 454875, Empire House Dewsbury.",
+    "confidence": "medium",
+    "checkedUrl": "https://cloverleaf-advocacy.co.uk/referrals/",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "review",

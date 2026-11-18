@@ -1,6 +1,6 @@
 {
   "id": "andys-man-club-huddersfield",
-  "name": "Andy's Man Club – Huddersfield",
+  "name": "Andy's Man Club – Kirklees groups",
   "organisation": "ANDYSMANCLUB",
   "open": true,
   "hwlFunded": false,
@@ -20,7 +20,12 @@
   "social": [],
   "locations": [],
   "areas": [
-    "Huddersfield"
+    "Huddersfield",
+    "Mirfield",
+    "Holme Valley",
+    "Spen Valley",
+    "Dewsbury",
+    "Batley"
   ],
   "eligibility": [
     "Men aged 18 or over"
@@ -31,7 +36,7 @@
     "mental-health"
   ],
   "referralRoutes": [
-    "Just turn up, Mondays 7pm"
+    "Just turn up at any group, Mondays 7pm"
   ],
   "selfReferral": {
     "allowed": "yes",
@@ -41,30 +46,52 @@
     {
       "id": "men-s-peer-talking-group",
       "name": "Men's peer talking group",
-      "overview": "Free peer talking group for men every Monday at 7pm.",
-      "where": [
-        "directory lists more Kirklees venues — check"
-      ],
+      "overview": "Free peer talking groups for men, every Monday at 7pm (not bank holidays). Peer-led: they can't give urgent help.",
       "sessions": [
         {
-          "id": "cedar-court-hotel",
-          "venue": "cedar-court-hotel",
-          "note": "official list"
+          "id": "longley-park-golf-club",
+          "venue": "longley-park-golf-club",
+          "note": "Mon 7pm"
+        },
+        {
+          "id": "mirfield-library",
+          "venue": "mirfield-library",
+          "note": "Mon 7pm"
+        },
+        {
+          "id": "underbank-rangers-rugby-club",
+          "venue": "underbank-rangers-rugby-club",
+          "note": "Mon 7pm"
+        },
+        {
+          "id": "the-loft-cleckheaton",
+          "venue": "the-loft-cleckheaton",
+          "note": "Mon 7pm"
+        },
+        {
+          "id": "dewsbury-fire-station",
+          "venue": "dewsbury-fire-station",
+          "note": "Mon 7pm"
+        },
+        {
+          "id": "batley-library",
+          "venue": "batley-library",
+          "note": "Mon 7pm"
         }
       ]
     }
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 40",
     "foundVia": "Kirklees Community Directory; MECC Link",
-    "checkedUrl": "https://andysmanclub.co.uk/full-club-lists/",
-    "evidence": "Provider news Oct 2026; only Ainley Top on official list.",
-    "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "checkedUrl": "https://andysmanclub.co.uk/groups/",
+    "evidence": "Group finder: Huddersfield group at Longley Park Golf Club; Mirfield, Holmfirth, Cleckheaton, Dewsbury and Batley groups. Cedar Court is the Ainley Top (Elland) group.",
+    "confidence": "high",
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

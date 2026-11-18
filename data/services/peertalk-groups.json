@@ -13,13 +13,12 @@
   ],
   "whoFor": "Adults 18+.",
   "age": "18+",
-  "webpage": "https://www.peertalk.org.uk/support-groups",
+  "webpage": "https://peertalk.org.uk/peertalk-support-groups/",
   "email": "enquiries@peertalk.org.uk",
   "phone": "07719 562 617",
   "social": [],
   "locations": [],
   "areas": [
-    "Batley",
     "Huddersfield"
   ],
   "eligibility": [
@@ -32,7 +31,6 @@
     "mental-health"
   ],
   "referralRoutes": [
-    "Drop in at Central Methodist Church, Batley, Wednesdays 11-12.30",
     "Drop in at St Paul's Methodist, Dalton, Thursdays 7.30-9pm"
   ],
   "selfReferral": {
@@ -46,11 +44,6 @@
       "overview": "Free weekly groups for adults feeling stressed, low or anxious to talk with people who understand. No booking.",
       "sessions": [
         {
-          "id": "central-methodist-church",
-          "venue": "central-methodist-church",
-          "note": "Wed 11–12.30"
-        },
-        {
           "id": "st-paul-s-methodist",
           "venue": "st-paul-s-methodist",
           "note": "Thu 7.30–9pm"
@@ -60,15 +53,15 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 29",
     "foundVia": "Kirklees Community Directory",
-    "checkedUrl": "https://www.peertalk.org.uk/support-groups",
-    "evidence": "© 2026; leaflet March 2026.",
+    "checkedUrl": "https://peertalk.org.uk/peertalk-support-groups/",
+    "evidence": "Only one Kirklees group listed: St Paul's Methodist, Dalton, Thu 7.30-9; Batley group no longer listed.",
     "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

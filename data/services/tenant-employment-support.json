@@ -17,7 +17,7 @@
   ],
   "whoFor": "Council tenants and their household, aged 16–65, with the right to work in the UK.",
   "age": "16-65",
-  "webpage": "https://www.kirklees.gov.uk/employment-support",
+  "webpage": "https://www.kirklees.gov.uk/beta/council-housing/support-we-offer/employment-support.aspx",
   "email": null,
   "phone": "01484 221028 (Mon–Thu 9–5, Fri 9–4.30)",
   "social": [],
@@ -56,15 +56,15 @@
   ],
   "workExperience": "Yes - placements and volunteering",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 15",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://www.kirklees.gov.uk/employment-support",
-    "evidence": "Page created March 2026; advertises 2026/27 programmes.",
+    "checkedUrl": "https://www.kirklees.gov.uk/beta/council-housing/support-we-offer/employment-support.aspx",
+    "evidence": "Old address redirects here; details match the page.",
     "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

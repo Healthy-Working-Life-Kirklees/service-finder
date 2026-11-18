@@ -15,7 +15,7 @@
   "whoFor": "Staff, volunteers and residents.",
   "age": null,
   "webpage": "https://www.kirkleeswelcomes.org.uk/",
-  "email": "pathways@kcalc.org.uk",
+  "email": "migrationandresettlement@kirklees.gov.uk",
   "phone": null,
   "social": [],
   "locations": [],
@@ -47,15 +47,15 @@
   "workExperience": "No",
   "cost": "Free",
   "notes": "A directory of other services, not a service people are referred to.",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 57",
     "foundVia": "Kirklees Community Directory; District Provision Tool",
     "checkedUrl": "https://www.kirkleeswelcomes.org.uk/",
-    "evidence": "Directory updated Aug 2026; in DPT (Apr 2026); site undated.",
+    "evidence": "Site live; contact email migrationandresettlement@kirklees.gov.uk.",
     "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "review",
