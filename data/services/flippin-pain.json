@@ -58,10 +58,13 @@
   ],
   "workExperience": "No",
   "notes": "1,000 Why We Hurt licences funded by NHS West Yorkshire ICB. DPIA completed; Cora Health is data controller.\n\nStatus before November 2026: Live - open to referrals",
-  "lastUpdated": "2026-08-03",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
+    "checkedUrl": "https://www.flippinpain.co.uk/",
+    "evidence": "Checked against the Flippin' Pain site on 2026-11-18: persistent pain over 3 months; Kirklees Health & Care Partnership listed as partner. Email kept from Pathways v2.1 (site uses a contact form).",
+    "confidence": "medium"
   },
   "listing": {
     "decision": "include",

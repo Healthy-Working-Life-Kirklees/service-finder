@@ -20,7 +20,7 @@
   "age": "16-25",
   "webpage": "https://www.ckcareers.co.uk/services-for-adults/adult-contracts",
   "email": "healthyworkinglife@ckcareers.org.uk",
-  "phone": "01484 213858",
+  "phone": "01484 242000",
   "social": [
     "https://www.facebook.com/CKCareers",
     "https://www.instagram.com/ckcareers"
@@ -65,10 +65,13 @@
   ],
   "workExperience": "Yes",
   "notes": "Status before November 2026: Live - open to referrals",
-  "lastUpdated": "2025-11-13",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
+    "checkedUrl": "https://www.ckcareers.co.uk/services-for-adults/adult-contracts",
+    "evidence": "Checked against C+K's page on 2026-11-18: 16 to 25 NEET with health issues, email matches; phone is C+K's main line (no programme number published).",
+    "confidence": "high"
   },
   "listing": {
     "decision": "include",

@@ -60,7 +60,9 @@
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
   },
   "listing": {
-    "decision": "include",
-    "reason": "Healthy Working Life scheme, on the live list from the start."
+    "decision": "exclude",
+    "reason": "Excluded by the development team (service check, 18 Nov 2026): a grants programme for organisations, not a service people can use directly.",
+    "by": "PL",
+    "date": "2026-11-18"
   }
 }
