@@ -50,14 +50,14 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 125",
     "foundVia": "District Provision Tool",
     "checkedUrl": "https://www.timpson.co.uk/services/dry-cleaners/dry-cleaning-unemployed-interview",
-    "evidence": "Current, no end date.",
-    "confidence": "medium",
+    "evidence": "Checked against the provider's page on 2026-11-17: matches (unemployed with genuine interview; ~500 shops; undated page).",
+    "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {

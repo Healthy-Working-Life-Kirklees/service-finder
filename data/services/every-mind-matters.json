@@ -50,13 +50,13 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 100",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.nhs.uk/every-mind-matters/",
-    "evidence": "Modified Sep 2026.",
+    "evidence": "Checked against the provider's page on 2026-11-17: matches (Mind Plan, updated Nov 2026).",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },

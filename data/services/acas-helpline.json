@@ -53,13 +53,13 @@
   "workExperience": "No",
   "cost": "Free (call charges may apply)",
   "languages": "Interpreter on request",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-17",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 84",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.acas.org.uk/contact/get-advice",
-    "evidence": "Guidance updated June 2026.",
+    "evidence": "Checked against the provider's page on 2026-11-17: matches (0300 123 1100 Mon-Fri 8-6).",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
