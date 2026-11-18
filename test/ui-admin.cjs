@@ -243,7 +243,10 @@ async function worker(route) {
   check('main: "other options" offered under the results', (await page.locator('.more-options .chip').count()) === 1);
   check('usage: page visit sent with no identifiers', usageSent.some((e) => e.e === 'visit') && usageSent.every((e) => Object.keys(e).every((k) => ['e', 's', 'k', 'lang', 'mode'].includes(k))), JSON.stringify(usageSent));
   check('main: scheme card rendered from the data file', (await page.locator('.card h3').first().textContent()) === 'My Way Forward');
-  check('main: overdue warning on the stale entry', (await page.locator('.card .stale').count()) === 1);
+  // Worked out from the data: My Way Forward is the card shown, and it is flagged only while it is overdue.
+  const mwfData = DATA.find((x) => x.id === 'my-way-forward');
+  const mwfOverdue = (Date.now() - Date.parse(mwfData.lastUpdated + 'T00:00:00')) / 86400000 > 135;
+  check('main: overdue warning only when the entry is overdue', (await page.locator('.card .stale').count()) === (mwfOverdue ? 1 : 0));
 
   // ---------- folding cards ----------
   {
@@ -585,7 +588,7 @@ async function worker(route) {
   // Worked out from the data, as the team keeps checking entries and the number goes down.
   const overdue = DATA.filter((x) => (Date.now() - Date.parse(x.lastUpdated + 'T00:00:00')) / 86400000 > 135).length;
   check(`help: overdue entries flagged (${overdue} in the data)`, (await page.locator('#data-table .pill.warn').count()) >= overdue, String(await page.locator('#data-table .pill.warn').count()));
-  check('help: not-open scheme flagged', (await page.locator('#data-table .pill.bad').count()) === 1);
+  check('help: not-open schemes flagged', (await page.locator('#data-table .pill.bad').count()) === DATA.filter((x) => !x.open).length);
   check('help: has the key sections', (await page.locator('h2').allTextContents()).join('|').includes('Reporting a problem'));
 
   // ---------- all services page ----------
@@ -606,7 +609,7 @@ async function worker(route) {
   check('services: search is kept in the address', page.url().includes('q=gambling'));
   await page.click('#clear');
   await page.selectOption('#f-type', 'hwl');
-  check('services: HWL filter shows the HWL schemes', (await page.locator('.svc').count()) === DATA.filter((x) => x.hwlFunded).length);
+  check('services: HWL filter shows the HWL schemes', (await page.locator('.svc').count()) === ALL.filter((x) => x.hwlFunded).length);
   await page.goto(ON + '/admin/services.html?review=closed');
   await page.waitForSelector('.svc');
   check('services: filters restored from the address (not open)', (await page.locator('.svc').count()) === ALL.filter((x) => !x.open).length);

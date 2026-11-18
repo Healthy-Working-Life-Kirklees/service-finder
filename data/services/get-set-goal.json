@@ -21,7 +21,7 @@
   "age": "18+",
   "webpage": "https://www.hud.ac.uk/gsg/",
   "email": "GetSetGoal@hud.ac.uk",
-  "phone": "01484 472201",
+  "phone": "01484 472201 (Mon–Fri 9–4)",
   "social": [],
   "locations": [
     "University of Huddersfield campus",
@@ -46,13 +46,13 @@
     "any"
   ],
   "referralRoutes": [
-    "Online self referral: https://forms.office.com/pages/responsepage.aspx?id=2p8utZEGhUW9_FzK4c4YkKgnxFOY-bxNpu8du5KE9JtUQUpPN1ZMSzZEUlc5SU1KMVExNDBPMDQ4NSQlQCN0PWcu&route=shorturl",
+    "Online booking form: https://forms.office.com/e/uG5m3vFW4X",
     "Online - organisation referral: https://forms.office.com/pages/responsepage.aspx?id=2p8utZEGhUW9_FzK4c4YkKgnxFOY-bxNpu8du5KE9JtUNkVLMlFTSkhZSlBEMzhDUjFLMThBMDg3NyQlQCN0PWcu&route=shorturl"
   ],
   "selfReferral": {
     "allowed": "yes",
-    "note": "Yes, via the online form",
-    "url": "https://forms.office.com/pages/responsepage.aspx?id=2p8utZEGhUW9_FzK4c4YkKgnxFOY-bxNpu8du5KE9JtUQUpPN1ZMSzZEUlc5SU1KMVExNDBPMDQ4NSQlQCN0PWcu&route=shorturl"
+    "note": "Book online with the booking form",
+    "url": "https://forms.office.com/e/uG5m3vFW4X"
   },
   "projects": [
     {
@@ -81,7 +81,7 @@
     }
   ],
   "workExperience": "No",
-  "notes": "Status before November 2026: Live - open to referrals",
+  "notes": "Status before November 2026: Live - open to referrals 18 Nov 2026: the university's page now describes 1:1 wellbeing sessions for any adult 18+; asking whether the HWL employer offer still runs.",
   "lastUpdated": "2026-08-03",
   "reviewCycle": "Quarterly",
   "provenance": {
