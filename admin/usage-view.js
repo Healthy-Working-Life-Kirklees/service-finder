@@ -21,14 +21,16 @@
   const A11Y_LABELS = { 'size-large': 'Larger text (A+)', 'size-larger': 'Largest text (A++)', contrast: 'High contrast' };
   const ANSWER_LABELS = { yes: 'Yes', notyet: 'Not yet', no: 'No' };
 
-  // Anthropic's list prices in US dollars per million tokens: base input, output, cache read, cache write (5 minute).
-  // From https://platform.claude.com/docs/en/about-claude/pricing, checked 4 Nov 2026. Update them here if the
+  // Anthropic's list prices in US dollars per million tokens: base input, output, cache read, cache write (1 hour, twice
+  // the input price: the Worker has kept the service list for an hour since 16 Nov 2026; before that it was 5 minutes at
+  // 1.25 times, so cache-write costs for earlier days read a little high).
+  // From https://platform.claude.com/docs/en/about-claude/pricing, checked 16 Nov 2026. Update them here if the
   // prices change. The page only gives an estimate: the Anthropic Console's Cost page is the official figure.
-  const PRICES_CHECKED = '4 Nov 2026';
+  const PRICES_CHECKED = '16 Nov 2026';
   const PRICES = [
-    [/^claude-sonnet-5/, { input: 2, output: 10, cacheRead: 0.1, cacheWrite: 2.5 }],
-    [/^claude-opus-5/, { input: 4, output: 20, cacheRead: 0.2, cacheWrite: 5 }],
-    [/^claude-haiku-4-5/, { input: 1, output: 5, cacheRead: 0.1, cacheWrite: 1.25 }],
+    [/^claude-sonnet-5/, { input: 2, output: 10, cacheRead: 0.1, cacheWrite: 4 }],
+    [/^claude-opus-5/, { input: 4, output: 20, cacheRead: 0.2, cacheWrite: 8 }],
+    [/^claude-haiku-4-5/, { input: 1, output: 5, cacheRead: 0.1, cacheWrite: 2 }],
   ];
   const priceFor = (model) => (PRICES.find(([re]) => re.test(model)) || [])[1] || null;
   const costOf = (model, t) => {
