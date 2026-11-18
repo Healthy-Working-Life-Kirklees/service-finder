@@ -67,7 +67,9 @@
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
-    "decision": "include",
-    "reason": "On the live list since the October 2026 import, before the development team review."
+    "decision": "exclude",
+    "reason": "Excluded by the development team (service check, 18 Nov 2026).",
+    "by": "PL",
+    "date": "2026-11-18"
   }
 }

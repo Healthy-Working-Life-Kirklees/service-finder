@@ -12,9 +12,9 @@
     "Mental health",
     "Refugees and new arrivals"
   ],
-  "whoFor": "Refugees and asylum seekers in Kirklees.",
-  "age": null,
-  "webpage": "https://www.solace-uk.org.uk/",
+  "whoFor": "Refugees and asylum seekers over 17 living in Kirklees or Calderdale.",
+  "age": "Over 17",
+  "webpage": "https://www.solace-uk.org.uk/therapy/kirklees-and-calderdale",
   "email": "info@solace-uk.org.uk",
   "phone": "0113 824 6796",
   "social": [],
@@ -23,7 +23,9 @@
     "Kirklees-wide"
   ],
   "eligibility": [
-    "Refugees and asylum seekers in Kirklees"
+    "Refugees and asylum seekers",
+    "Over 17",
+    "Living in Kirklees or Calderdale"
   ],
   "exclusions": [],
   "gate": [
@@ -33,19 +35,19 @@
     "mental-health"
   ],
   "referralRoutes": [
-    "Professional referral"
+    "Referral by a health professional or support organisation (online form)"
   ],
   "selfReferral": {
     "allowed": "no",
-    "note": "Needs a referral from a professional"
+    "note": "A health professional or support organisation refers using Solace's online form. The person must agree to the referral."
   },
   "projects": [
     {
       "id": "trauma-therapy-for-refugees",
       "name": "Trauma therapy for refugees",
-      "overview": "Talking therapy for refugees and asylum seekers who've lived through war, torture or other trauma, with a Kirklees team.",
+      "overview": "Talking therapy for refugees and asylum seekers who've lived through trauma, torture or trafficking, plus a weekly stress management group in Kirklees. Places are limited; they aim to see people within 4 months.",
       "where": [
-        "Kirklees, Calderdale and Wakefield"
+        "Kirklees and Calderdale"
       ],
       "sessions": [
         {
@@ -57,13 +59,14 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "coachNotes": "Demand is high and places are limited. Keep supporting the person while they wait.",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 73",
     "foundVia": "District Provision Tool",
-    "checkedUrl": "https://www.solace-uk.org.uk/therapy/",
-    "evidence": "© 2026; 2025–28 strategy.",
+    "checkedUrl": "https://www.solace-uk.org.uk/therapy/kirklees-and-calderdale",
+    "evidence": "Checked against Solace's Kirklees and Calderdale page on 2026-11-18: over 17, professional referral only, phone and email match.",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },

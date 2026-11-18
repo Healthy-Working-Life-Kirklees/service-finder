@@ -16,7 +16,7 @@
   "whoFor": "People in prison or on probation in Yorkshire and the Humber.",
   "age": null,
   "webpage": "https://www.creatingfutureopportunities.gov.uk/cfo-evolution-referrals/",
-  "email": "CFOEvolution@growthco.uk",
+  "email": "cfo-servicedesk@justice.gov.uk",
   "phone": "01942 423444 (service desk)",
   "social": [],
   "locations": [],
@@ -61,7 +61,7 @@
     "مجرمانہ ریکارڈ"
   ],
   "referralRoutes": [
-    "Referral form, usually via probation",
+    "Online referral form, usually via probation",
     "Community referral by email"
   ],
   "selfReferral": {
@@ -83,13 +83,13 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 68",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://www.creatingfutureopportunities.gov.uk/?p=3483",
-    "evidence": "Page modified May 2026; runs to at least April 2027.",
+    "checkedUrl": "https://www.creatingfutureopportunities.gov.uk/cfo-evolution-referrals/",
+    "evidence": "Checked against CFO's referral page on 2026-11-18: service desk phone and email, online referral form. Huddersfield hub at Norwich Union House confirmed by the team.",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },

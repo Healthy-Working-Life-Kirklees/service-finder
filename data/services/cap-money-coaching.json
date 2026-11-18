@@ -16,7 +16,7 @@
   "age": null,
   "webpage": "https://capuk.org/get-help/money-coaching",
   "email": "startmoneycoaching@capuk.org",
-  "phone": "01274 760720",
+  "phone": "0800 328 0006 (Mon–Thu 9.30–5, Fri 9.30–3.30)",
   "social": [],
   "locations": [],
   "areas": [
@@ -47,13 +47,13 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 93",
     "foundVia": "Kirklees Community Directory",
     "checkedUrl": "https://capuk.org/get-help/money-coaching",
-    "evidence": "2026 client report referenced.",
+    "evidence": "Checked on 2026-11-18: free money coaching found by postcode; phone and hours confirmed by the team.",
     "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },

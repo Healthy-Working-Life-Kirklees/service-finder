@@ -14,9 +14,9 @@
   ],
   "whoFor": "Anyone in the UK.",
   "age": null,
-  "webpage": "https://www.moneyhelper.org.uk/en/contact-us",
+  "webpage": "https://www.moneyhelper.org.uk/en",
   "email": null,
-  "phone": "0800 011 3797",
+  "phone": "0800 011 3797 (Mon–Fri 9–5)",
   "social": [],
   "locations": [],
   "areas": [
@@ -51,14 +51,14 @@
   "workExperience": "No",
   "cost": "Free",
   "languages": "Interpreter; BSL; Welsh",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 110",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://www.moneyhelper.org.uk/en/contact-us",
-    "evidence": "© 2026.",
-    "confidence": "high",
+    "checkedUrl": "https://www.moneyhelper.org.uk/en",
+    "evidence": "Confirmed by the team on 2026-11-18 (MoneyHelper's site blocks automated reading): phone and hours.",
+    "confidence": "medium",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {

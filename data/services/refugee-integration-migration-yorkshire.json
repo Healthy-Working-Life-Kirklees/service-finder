@@ -12,36 +12,39 @@
     "Refugees and new arrivals",
     "Finding work"
   ],
-  "whoFor": "To be completed: the October 2026 research did not confirm who this is for.",
+  "whoFor": "New refugees in Yorkshire and the Humber, including Kirklees.",
   "age": null,
   "webpage": "https://www.migrationyorkshire.org.uk/node/482",
-  "email": null,
-  "phone": null,
+  "email": "admin@migrationyorkshire.org.uk",
+  "phone": "0113 378 8188",
   "social": [],
   "locations": [],
   "areas": [
     "Kirklees-wide"
   ],
-  "eligibility": [],
+  "eligibility": [
+    "New refugees"
+  ],
   "exclusions": [],
   "gate": [],
   "healthFocus": [],
   "referralRoutes": [
-    "To be completed"
+    "Phone",
+    "Email"
   ],
   "selfReferral": {
     "allowed": "tbc",
-    "note": "To be completed."
+    "note": "Contact Migration Yorkshire by phone or email."
   },
   "projects": [
     {
       "id": "refugee-integration-service",
       "name": "Refugee Integration Service",
-      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
+      "overview": "Up to 6 months' one-to-one support for new refugees with housing, benefits, work and training, by phone and sometimes face to face, with interpreters."
     }
   ],
   "workExperience": "Not known",
-  "notes": "Why it wasn't on the main list: Page last changed Aug 2023.",
+  "notes": "Why it wasn't on the main list: Page last changed Aug 2023. 18 Nov 2026: details filled in from the page (last updated Aug 2023); still need Migration Yorkshire to confirm it's running before it goes live.",
   "lastUpdated": "2026-10-14",
   "reviewCycle": "Quarterly",
   "provenance": {
