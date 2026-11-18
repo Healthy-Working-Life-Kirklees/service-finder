@@ -10,9 +10,10 @@
   ],
   "categories": [
     "Employment rights",
-    "Women"
+    "Women",
+    "Benefits and money"
   ],
-  "whoFor": "To be completed: the October 2026 research did not confirm who this is for.",
+  "whoFor": "Pregnant women and new parents with questions about rights at work, maternity pay or benefits.",
   "age": null,
   "webpage": "https://maternityaction.org.uk/advice-form/",
   "email": null,
@@ -20,36 +21,43 @@
   "social": [],
   "locations": [],
   "areas": [
-    "Kirklees-wide"
+    "Kirklees-wide",
+    "Online"
   ],
-  "eligibility": [],
+  "eligibility": [
+    "Pregnant, on maternity leave or a new parent",
+    "Has a question about rights at work, maternity pay or benefits"
+  ],
   "exclusions": [],
   "gate": [],
   "healthFocus": [],
   "referralRoutes": [
-    "Online advice form (Monday to Friday)"
+    "Online advice form (Monday to Friday): ask for email advice or a call back"
   ],
   "selfReferral": {
     "allowed": "yes",
-    "note": "Use the online advice form (Monday to Friday)."
+    "note": "Fill in the online form (Monday to Friday) and choose email advice or a call back. You can ask for an interpreter on the form."
   },
   "projects": [
     {
       "id": "maternity-action-advice-line",
       "name": "Maternity Action advice line",
-      "overview": "To be completed: the research found the service but did not confirm what it currently offers."
+      "overview": "Free legal advice on maternity rights at work, maternity pay, benefits, redundancy, pregnancy discrimination and returning to work. They aim to reply within 5 to 10 working days."
     }
   ],
   "workExperience": "Not known",
-  "notes": "Why it wasn't on the main list: Site blocks automated checks. 18 Nov 2026: team confirmed the online advice form (Mon to Fri); who it's for and what it offers still to complete.",
-  "lastUpdated": "2026-10-14",
+  "cost": "Free",
+  "languages": "Interpreters available (ask on the form)",
+  "coachNotes": "If the form says they've reached their limit for the day, try again the next day. They don't advise on childcare costs.",
+  "notes": "Why it wasn't on the main list: Site blocks automated checks. 18 Nov 2026: details filled in from Maternity Action's advice line page, sent by the team.",
+  "lastUpdated": "2026-11-18",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 39",
     "foundVia": "Web research or directory review (October 2026)",
-    "evidence": "Site blocks automated checks.",
-    "confidence": "low",
-    "checkedUrl": "https://maternityaction.org.uk/",
+    "evidence": "Team sent the advice line page on 2026-11-18 (site blocks automated reading): free legal advice by online form, Mon to Fri, email or call back, interpreters, reply in 5 to 10 working days.",
+    "confidence": "high",
+    "checkedUrl": "https://maternityaction.org.uk/advice-line/",
     "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
