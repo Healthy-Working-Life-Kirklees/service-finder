@@ -631,6 +631,9 @@
       const ch = {};
       for (const [k, v] of Object.entries(now)) {
         const was = original[k] === undefined && k === 'mapLinks' ? true : original[k];
+        // The essential lines are a set: the same lines in a different order (the form lists them in eligibility
+        // order) is not a change.
+        if (k === 'gate' && Array.isArray(was) && Array.isArray(v) && norm([...was].sort()) === norm([...v].sort())) continue;
         if (norm(was) !== norm(v)) ch[k] = v;
       }
       return ch;
