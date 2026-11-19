@@ -131,6 +131,16 @@
       "lng": -1.63648
     },
     {
+      "id": "batley-library",
+      "name": "Batley Library",
+      "address": "Batley Library (New Way entrance), 14 Market Place, Batley WF17 5DA",
+      "postcode": "WF17 5DA",
+      "ward": "Batley East",
+      "wardCode": "E05016503",
+      "lat": 53.71421,
+      "lng": -1.63408
+    },
+    {
       "id": "batley-sporting-foundation-community-gym",
       "name": "Batley Sporting Foundation Community Gym",
       "address": "Batley Sporting Foundation Community Gym, Heritage Road, Batley, WF17 7NZ",
@@ -211,6 +221,16 @@
       "lng": -1.78626
     },
     {
+      "id": "cleckheaton-helath-centre",
+      "name": "Cleckheaton Helath Centre",
+      "address": "Greenside, Cleckheaton",
+      "postcode": "BD19 5AP",
+      "ward": "Cleckheaton",
+      "wardCode": "E05016506",
+      "lat": 53.72222,
+      "lng": -1.71317
+    },
+    {
       "id": "crosland-moor-clc",
       "name": "Crosland Moor CLC",
       "address": "Crosland Moor CLC HD4 5RX",
@@ -239,6 +259,16 @@
       "wardCode": "E05016512",
       "lat": 53.6925,
       "lng": -1.63112
+    },
+    {
+      "id": "dewsbury-fire-station",
+      "name": "Dewsbury Fire Station",
+      "address": "Dewsbury Fire Station, 21 Carlton Road, Dewsbury WF13 2AT",
+      "postcode": "WF13 2AT",
+      "ward": "Dewsbury East",
+      "wardCode": "E05016512",
+      "lat": 53.69707,
+      "lng": -1.63391
     },
     {
       "id": "dewsbury-health-centre",
@@ -511,6 +541,16 @@
       "lng": -1.78267
     },
     {
+      "id": "longley-park-golf-club",
+      "name": "Longley Park Golf Club",
+      "address": "Longley Park Golf Club, Maple Street, Huddersfield HD5 9AX",
+      "postcode": "HD5 9AX",
+      "ward": "Netherton & Newsome",
+      "wardCode": "E05016523",
+      "lat": 53.64232,
+      "lng": -1.77091
+    },
+    {
       "id": "manorfield",
       "name": "Manorfield",
       "address": "Manorfield WF17 7DQ",
@@ -529,6 +569,16 @@
       "wardCode": "E05016510",
       "lat": 53.6493,
       "lng": -1.78047
+    },
+    {
+      "id": "mirfield-library",
+      "name": "Mirfield Library",
+      "address": "Mirfield Library, Easthorpe Lodge, Huddersfield Road, Mirfield WF14 8AN",
+      "postcode": "WF14 8AN",
+      "ward": "Mirfield",
+      "wardCode": "E05016522",
+      "lat": 53.67411,
+      "lng": -1.69351
     },
     {
       "id": "norwich-union-house",
@@ -731,6 +781,26 @@
       "lng": -1.78065
     },
     {
+      "id": "the-loft-cleckheaton",
+      "name": "The Loft, Cleckheaton",
+      "address": "The Loft, 10A Northgate, Cleckheaton BD19 5AA",
+      "postcode": "BD19 5AA",
+      "ward": "Cleckheaton",
+      "wardCode": "E05016506",
+      "lat": 53.72412,
+      "lng": -1.71371
+    },
+    {
+      "id": "underbank-rangers-rugby-club",
+      "name": "Underbank Rangers Rugby Club",
+      "address": "Underbank Rangers Rugby Club, Dunford Road, Holmfirth HD9 2RR",
+      "postcode": "HD9 2RR",
+      "ward": "Holme Valley South",
+      "wardCode": "E05016518",
+      "lat": 53.55743,
+      "lng": -1.77839
+    },
+    {
       "id": "wakefield-road-allotments",
       "name": "Wakefield Road Allotments",
       "address": "Wakefield Road Allotments, Dalton HD5 9XN",
@@ -749,42 +819,6 @@
       "wardCode": "E05016575",
       "lat": 53.52492,
       "lng": -1.51973
-    },
-    {
-      "id": "longley-park-golf-club",
-      "name": "Longley Park Golf Club",
-      "address": "Longley Park Golf Club, Maple Street, Huddersfield HD5 9AX",
-      "postcode": "HD5 9AX"
-    },
-    {
-      "id": "mirfield-library",
-      "name": "Mirfield Library",
-      "address": "Mirfield Library, Easthorpe Lodge, Huddersfield Road, Mirfield WF14 8AN",
-      "postcode": "WF14 8AN"
-    },
-    {
-      "id": "underbank-rangers-rugby-club",
-      "name": "Underbank Rangers Rugby Club",
-      "address": "Underbank Rangers Rugby Club, Dunford Road, Holmfirth HD9 2RR",
-      "postcode": "HD9 2RR"
-    },
-    {
-      "id": "the-loft-cleckheaton",
-      "name": "The Loft, Cleckheaton",
-      "address": "The Loft, 10A Northgate, Cleckheaton BD19 5AA",
-      "postcode": "BD19 5AA"
-    },
-    {
-      "id": "dewsbury-fire-station",
-      "name": "Dewsbury Fire Station",
-      "address": "Dewsbury Fire Station, 21 Carlton Road, Dewsbury WF13 2AT",
-      "postcode": "WF13 2AT"
-    },
-    {
-      "id": "batley-library",
-      "name": "Batley Library",
-      "address": "Batley Library (New Way entrance), 14 Market Place, Batley WF17 5DA",
-      "postcode": "WF17 5DA"
     }
   ]
 }

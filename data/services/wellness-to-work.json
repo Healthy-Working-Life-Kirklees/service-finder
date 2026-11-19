@@ -49,7 +49,9 @@
     "Online contact form (self or someone else): https://www.locala.org.uk/services/wellness-to-work",
     "Online - practitioner or employer referral",
     "In person - via events",
-    "Via in-house teams"
+    "Via in-house teams",
+    "Direct Contact Form Link:",
+    "https://forms.cloud.microsoft/pages/responsepage.aspx?id=TRd65w2wskS6x-U4hSD1q2hm9EFdoxFPk_HFIx2WwqFUN09GVERVNkc1QjY5Qlc1UFBUT0U0UzYyVCQlQCN0PWcu&route=shorturl"
   ],
   "selfReferral": {
     "allowed": "yes",
@@ -68,7 +70,8 @@
       "sessions": [
         {
           "id": "princess-royal-health-centre",
-          "venue": "princess-royal-health-centre"
+          "venue": "princess-royal-health-centre",
+          "frequency": "weekly"
         },
         {
           "id": "batley-health-centre",
@@ -83,18 +86,39 @@
   ],
   "workExperience": "No",
   "notes": "Status before November 2026: Live - open to referrals",
-  "lastUpdated": "2026-11-18",
+  "lastUpdated": "2026-11-19",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
     "checkedUrl": "https://www.locala.org.uk/services/wellness-to-work",
-    "evidence": "Checked by PL on 2026-11-18: Updates minor details",
-    "confidence": "medium"
+    "evidence": "Checked by PL on 2026-11-19: From Donna (partner) using a verify link, 19 Nov 2026. Used: About the organisation, How people get in, Who it's for (groups), What happens, where and when, Venues used by every project.",
+    "confidence": "medium",
+    "providerChecked": "2026-11-19"
   },
   "listing": {
     "decision": "include",
     "reason": "Checked with Donna",
     "by": "PL",
     "date": "2026-11-18"
-  }
+  },
+  "groups": [
+    "adults",
+    "adults-50",
+    "parents",
+    "mothers",
+    "fathers",
+    "women",
+    "men",
+    "carers",
+    "disabled",
+    "health-condition",
+    "refugees",
+    "ethnic-minority",
+    "lgbtq",
+    "students",
+    "veterans"
+  ],
+  "venues": [
+    "cleckheaton-helath-centre"
+  ]
 }
