@@ -4,26 +4,33 @@
 // Both show the same questions with the same wording, in the same order, so a partner and the team are always
 // looking at the same thing. Team-only questions are shown only in "team" mode.
 //
-// The order follows how an organisation thinks about its work: the organisation, the service, how to get in touch
-// and refer, who it's for, then what happens, where and when: each project, how it runs, and its sessions (a time
-// and place, or a group such as a cohort). "Who it's for" is asked once, for the service; a project or session only
-// records what is different, so nothing is asked twice.
+// Three parts (November 2026 redesign):
+//   1. The service and who can join: the organisation (and any partners), the service, who can use it (where they
+//      live, health, work situation, age, any other eligibility, who it isn't for), priority groups and the kind of
+//      support. These are asked once, for the whole service.
+//   2. Contact and how people get in: contact details, whether a referral is needed and who can make it, and how.
+//   3. Activities and timetable: each activity (a project in the data), whether it has cohorts, and where and when
+//      it meets. An activity or cohort can only narrow who the service is for, never widen it.
+// On the partner page the parts are shown one at a time ("stepped"), with links between them; in Admin they are all
+// on one page.
 //
-// Eligibility is one list: each line can be ticked "Essential" (we'd turn people away without it), which is what the
-// data keeps as "gate". So there is no separate "turn away" question.
+// Where each answer came from (LISTING.labelOf) is shown next to it: "Found on your website" or "Unknown: please
+// answer". Partners must answer the unknown "who can use it" and referral questions before sending changes.
 //
-// Venues come from one shared list (data/venues.json): people pick one as they type, or write out a new one (name,
-// address, postcode), which becomes a venue when the change is applied.
+// Data shapes: a cohort is stored as the sessions of a project that share a group of their own (name, age,
+// criteria, dates, places): one session per time and place. A time and place with no group is a plain session.
 //
-// Needs site/listing-logic.js (character limits, groups, days and date checks). English only, like the team pages.
+// Needs site/listing-logic.js. English only, like the team pages.
 //
-//   const f = LISTING_FORM.build({ values, original, mode, choices, organisations, venues, prefix, headingLevel, onChange });
-//   f.node       the form's sections, to put inside your own <form>
+//   const f = LISTING_FORM.build({ values, original, mode, choices, organisations, venues, prefix, headingLevel, onChange, stepped, listingLabel });
+//   f.node       the form's parts, to put inside your own <form>
+//   f.parts      the three part elements (append your own send box to the last one)
 //   f.read()     every answer, in the same shape as the data
 //   f.changes()  only the answers that differ from "original"
-//   f.check()    null, or { message, el } for the first problem (the caller shows it and focuses el)
+//   f.check()    null, or { message, el } for the first problem (the part holding it is shown)
 //   f.mark(ch)   marks the questions in ch as "Changed"
-//   f.addProject()  adds an empty project and focuses it
+//   f.show(n)    shows part n (1 to 3) when stepped
+//   f.addProject()  adds an empty activity and focuses it
 (() => {
   'use strict';
 
@@ -57,6 +64,7 @@
   const slug = (t) => String(t || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 50).replace(/-+$/, '');
   const tbc = (v) => JSON.stringify(v == null ? '' : v).includes(PLACEHOLDER);
   const POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i;
+  const andList = (a) => (a.length > 1 ? a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1] : a[0] || '');
 
   const HEALTH = {
     any: 'Any health condition or disability',
@@ -70,71 +78,33 @@
   const AUDIENCE = { individual: 'People looking for support for themselves', employer: 'Employers', organisation: 'Organisations and professionals', student: 'Students' };
   const SELF = { yes: 'Yes', partly: 'Sometimes (some people can)', no: 'No, they need to be referred', tbc: 'Not decided yet' };
   const LEVEL = { local: 'Local (Kirklees)', regional: 'Regional (West Yorkshire or wider)', national: 'National' };
-  const DATE_LABEL = { runsFrom: 'Runs from', runsTo: 'Runs until', referralsFrom: 'Taking referrals from', referralsUntil: 'Taking referrals until' };
-  const DATES_HINT = "Leave blank if it's ongoing. If you give an end date or a date referrals close, it stops showing in the Support Finder automatically after that date. We'll check with you 30 days before.";
+  const DATE_LABEL = { referralsFrom: 'Taking referrals from', referralsUntil: 'Taking referrals until', runsFrom: 'Runs from', runsTo: 'Runs until' };
+  const DATE_ORDER = ['referralsFrom', 'referralsUntil', 'runsFrom', 'runsTo'];
+  const DATES_HINT = "Leave blank if it's ongoing. After an end date, or the date referrals close, it stops showing in the Support Finder by itself. We'll check with you 30 days before.";
   const ESSENTIAL_HINT = 'Tick "Essential" only if you would have to turn someone away without it: the Support Finder won\'t suggest you to people who clearly don\'t meet it.';
+  const PARTS = ['The service and who can join', 'Contact and how people get in', 'Activities and timetable'];
+  const BENEFITS = ['Universal Credit, with a work coach (looking for work)', 'Universal Credit, any', "Jobseeker's Allowance (JSA)", 'Employment and Support Allowance (ESA)', 'Personal Independence Payment (PIP)'];
+  const TOWNS = ['Batley', 'Colne Valley', 'Dewsbury', 'Holme Valley', 'Huddersfield', 'Kirkburton', 'Mirfield', 'Spen Valley'];
 
-  // The questions, in order. [key, label, kind, hint, options]
-  // kinds: text, area (with a character limit), lines, checks, yesno, self, projects, bool, select, org, elig, venues
-  function sections(mode) {
-    const team = mode === 'team';
-    const out = [
-      ['About your organisation', [
-        ['organisation', 'Name of organisation', 'org', 'Start typing to choose from the organisations we already list. If yours isn\'t there, type its full name.', { required: true }],
-        ['organisationOverview', 'Organisation overview', 'area', "About two sentences on your organisation's wider work. It is shown with all of your organisation's services, so describe the organisation here, not one project.", { limit: L.LIMITS.orgOverview }],
-      ]],
-      ['About the service', [
-        ['name', 'Name of the service', 'text', '', { required: true }],
-        ['whoFor', 'Who your service is for', 'area', 'One or two sentences, in plain words. Coaches see this on the service card.', { required: true, limit: L.LIMITS.whoFor }],
-        ['open', 'Are you taking new referrals at the moment?', 'yesno', 'If not, the Support Finder won\'t suggest your service until you are.', {}],
-      ]],
-      ['Contact details and how people get in', [
-        ['webpage', 'Website', 'text', 'The best page for people to find out more, starting https://', { type: 'url' }],
-        ['email', 'Email address', 'text', '', { type: 'email' }],
-        ['phone', 'Phone number', 'text', '', { type: 'tel' }],
-        ['social', 'Social media', 'lines', 'Links, one per line.', {}],
-        ['referralRoutes', 'How people are referred or apply', 'lines', 'One way per line: who to contact and how. For example "Referral from a work coach" or "Apply online: https://…". At least one.', { min: 1 }],
-        ['selfReferral', 'Can people refer themselves?', 'self', '', {}],
-        ['cost', 'Cost', 'text', 'Leave empty if it is free.', {}],
-        ['languages', 'Languages and formats', 'text', 'For example "Interpreters available" or "Easy read leaflets". Leave empty if English only.', {}],
-        ['workExperience', 'Does it include volunteering or work experience?', 'text', 'For example "No" or "Yes, a six-week placement".', { required: true }],
-      ]],
-      ["Who it's for", [
-        ['groups', 'Who it\'s for: tick the groups it is specifically for', 'checks', 'These let us count what is available, for example "services for young people in Batley". Tick "Everyone (no restriction)" if anyone who meets your criteria can use it.', { choices: 'groups', labels: L.GROUPS }],
-        ['age', 'Age', 'text', 'For example 18+ or 16 to 25. Leave empty if there is no age limit. If a project or session has a different age, give it there.', {}],
-        ['eligibility', 'Who can use your service', 'elig', 'What someone needs to be or have, one point per line. For example "Lives in Kirklees" (essential) or "Has a health condition". ' + ESSENTIAL_HINT, {}],
-        ['exclusions', "Is there anyone you can't support?", 'lines', 'One per line, for example "People with work-search commitments as part of a benefits claim" or "Men (the service is for women)". The Support Finder won\'t suggest your service to them. Leave empty if none.', {}],
-        ['healthFocus', 'Do people need a health condition or disability to use your service?', 'checks', 'Leave all unticked if not. Tick "Any health condition or disability" if any will do, or only the specific ones your service is for.', { choices: 'healthFocus', labels: HEALTH }],
-        ['audience', 'Who do you work with?', 'checks', 'Tick all that apply.', { choices: 'audience', labels: AUDIENCE, min: 1 }],
-      ]],
-      ['What happens, where and when', [
-        ['projects', 'Projects', 'projects', 'Most services have one project. Add another if you run something different, or the same thing for a different group.', {}],
-        ['venues', 'Venues used by every project', 'venues', 'Only if all your projects use the same places. Places for one project go with that project.', {}],
-        ['locations', 'Other places, in words', 'lines', 'Places without a postcode, one per line, for example "Online" or "Community venues across Kirklees".', {}],
-      ]],
-      ['Anything else', [
-        ['coachNotes', 'Anything coaches should know', 'area', 'Shown on the service card. For example waiting times, or what to bring.', { limit: L.LIMITS.coachNotes }],
-      ]],
-    ];
-    if (team) {
-      out.push(['Team only', [
-        ['areas', 'Where it runs', 'checks', 'The towns where it has a base or runs sessions. Tick "Kirklees-wide" if anyone in Kirklees can use it, and "Online" if it can be done online or by phone. This is not where people must live (that goes under "Who can use your service").', { choices: 'areas', min: 1 }],
-        ['categories', 'Categories', 'checks', 'How the finder groups services. Most important first: newly ticked ones go last.', { choices: 'categories', min: 1 }],
-        ['level', 'Level', 'select', '', { choices: 'level', labels: LEVEL }],
-        ['reviewCycle', 'Review cycle', 'select', '', { choices: 'reviewCycle' }],
-        ['hwlFunded', 'Healthy Working Life funded (this service only; never the organisation)', 'bool', '', {}],
-        ['mapLinks', 'Show map and directions buttons on the card', 'bool', 'Untick for a confidential venue.', { default: true }],
-        ['logo', 'Logo file', 'text', 'A file name in site/img/logos/, such as example.webp. Leave empty for none.', {}],
-        ['requiresMention', 'Only shown when the person mentions', 'lines', 'Words or patterns, one per line. Leave empty for most services.', {}],
-        ['notes', 'Team notes', 'area', 'For the team only. Never shown on the cards or sent to the AI.', {}],
-      ]]);
-    }
-    return out;
+  // The answers whose label is shown (found online, or unknown), and the box they belong to.
+  const LABELLED = ['organisationOverview', 'whoFor', 'residence', 'healthFocus', 'work', 'age', 'eligibility', 'exclusions', 'groups', 'audience', 'categories', 'webpage', 'email', 'phone', 'referral', 'referralRoutes', 'cost', 'languages', 'workExperience', 'coachNotes', 'projects'];
+  // New questions partners must answer when they send changes (unknown until they do).
+  const MUST_ANSWER = { residence: 'Please say who can use it, by where they live.', work: 'Please say whether someone needs to be in a particular work situation.', referral: 'Please say whether someone needs a referral.' };
+
+  // "18+", "16-25", "16 to 25", "18 and over", "up to 25": the numbers, when the words are that simple.
+  function ageNumbers(t) {
+    const s = String(t || '').trim().toLowerCase();
+    let m;
+    if ((m = s.match(/^(\d{1,3}) ?\+$/)) || (m = s.match(/^(\d{1,3}) (and|or) (over|above|older)$/)) || (m = s.match(/^(over|aged) (\d{1,3})$/))) return { min: Number(m[2] && /\d/.test(m[2]) ? m[2] : m[1]) };
+    if ((m = s.match(/^(\d{1,3}) ?(-|–|to) ?(\d{1,3})$/))) return { min: Number(m[1]), max: Number(m[3]) };
+    if ((m = s.match(/^(up to|under) (\d{1,3})$/))) return { max: Number(m[2]) - (m[1] === 'under' ? 1 : 0) };
+    return null;
   }
 
   // ---------- one form ----------
   function build(opts) {
     const mode = opts.mode === 'team' ? 'team' : 'partner';
+    const team = mode === 'team';
     const values = opts.values || {};
     const original = opts.original || values;
     const choices = opts.choices || {};
@@ -147,14 +117,18 @@
     const id = (k) => P + '-' + k;
     let seq = 0;
     const uid = (k) => P + '-' + k + '-' + ++seq;
-    const boxes = {}; // key -> the element holding that question (for "Changed" and focusing)
+    const boxes = {}; // key -> the element holding that question (for "Changed", labels and focusing)
     const readers = {}; // key -> () => value
-    const extra = {}; // key -> () => value, for answers read alongside another question (gate, with eligibility)
-    const root = el('div', { class: 'lf' });
+    const root = el('div', { class: 'lf' + (opts.stepped ? ' lf-stepped' : '') });
     const changed = () => opts.onChange && opts.onChange();
     const venueListId = id('venue-list');
     const venueLabel = (v) => `${v.name} (${L.venueLine(v)})`;
     root.append(el('datalist', { id: venueListId }, venues.map((v) => el('option', { value: venueLabel(v) }))));
+    const orgListId = id('orgs');
+    root.append(el('datalist', { id: orgListId }, list(opts.organisations).map((n) => el('option', { value: n }))));
+    // The listing's own label (for labelOf): the partner page is told it, as it isn't sent the provenance.
+    const labelSource = opts.listingLabel ? { ...values, provenance: undefined, hwlFunded: opts.listingLabel === 'confirmed' } : values;
+    const labelOf = (k) => L.labelOf(labelSource, k);
 
     // A character count under a text box, for the boxes with a limit.
     function counter(input, limit) {
@@ -171,55 +145,71 @@
     const described = (...ids) => ids.filter(Boolean).join(' ') || null;
     const changedTag = () => el('p', { class: 'changed-tag', text: 'Changed', hidden: true });
     const small = (t) => el('button', { type: 'button', class: 'btn secondary small', ...t });
+    const hintP = (text, hid) => (text ? el('p', { class: 'hint', id: hid || null, text }) : null);
 
     function textQuestion(k, label, hint, o, val) {
       const hintId = hint ? id(k) + '-hint' : null;
-      const isArea = o.kindArea;
-      const input = isArea
+      const input = o.area
         ? el('textarea', { id: id(k), rows: '3', 'aria-describedby': described(hintId, o.limit ? id(k) + '-count' : null) })
-        : el('input', { id: id(k), type: o.type || 'text', autocomplete: 'off', 'aria-describedby': described(hintId), required: o.required ? true : null });
+        : el('input', { id: id(k), type: o.type || 'text', autocomplete: 'off', list: o.list || null, placeholder: o.placeholder || null, 'aria-describedby': described(hintId), required: o.required ? true : null });
       input.value = val == null ? '' : String(val);
       const box = el('div', { class: 'lf-field' + (tbc(val) ? ' tbc' : ''), 'data-key': k },
         el('label', { for: id(k), text: label + (o.required ? ' (mandatory)' : '') }),
-        hint ? el('p', { class: 'hint', id: hintId, text: hint }) : null,
-        input,
-        o.limit ? counter(input, o.limit) : null,
-        changedTag());
-      return { box, read: () => input.value.trim() };
+        hintP(hint, hintId), input, o.limit ? counter(input, o.limit) : null, changedTag());
+      return { box, input, read: () => input.value.trim() };
     }
 
-    function linesQuestion(k, label, hint, val, rows) {
-      const hintId = hint ? id(k) + '-hint' : null;
-      const input = el('textarea', { id: id(k), rows: String(Math.max(rows || 2, list(val).length + 1)), 'aria-describedby': hintId });
-      input.value = list(val).join('\n');
-      const box = el('div', { class: 'lf-field' + (tbc(val) ? ' tbc' : ''), 'data-key': k },
-        el('label', { for: id(k), text: label }), hint ? el('p', { class: 'hint', id: hintId, text: hint }) : null, input, changedTag());
-      return { box, read: () => linesOf(input.value) };
+    // A list of lines, one box each, with "Remove" and "Add another".
+    function linesQuestion(k, label, hint, val, o = {}) {
+      const holder = el('div', { class: 'lf-lines' });
+      const add = (v) => {
+        const i = el('input', { type: 'text', id: uid(k), value: v || '', list: o.list || null, 'aria-label': (o.aria || label) + ' ' + (holder.children.length + 1), placeholder: o.placeholder || null });
+        const r = el('div', { class: 'lf-line' }, i, small({ text: 'Remove', 'aria-label': 'Remove this line', onclick: () => { r.remove(); changed(); } }));
+        r._input = i;
+        holder.append(r);
+        return i;
+      };
+      for (const v of list(val)) add(v);
+      if (!holder.children.length && !o.empty) add('');
+      const box = el(o.inner ? 'div' : 'div', { class: 'lf-field' + (tbc(val) ? ' tbc' : ''), 'data-key': k },
+        el('p', { class: 'lf-lab', text: label }), hintP(hint), holder,
+        small({ text: o.addText || 'Add another', onclick: () => { add('').focus(); changed(); } }), o.inner ? null : changedTag());
+      return { box, read: () => [...holder.children].map((r) => r._input.value.trim()).filter(Boolean), first: () => holder.querySelector('input') };
     }
 
-    function checksQuestion(k, label, hint, o, val) {
+    function checksQuestion(k, label, hint, opts2, labels, val, o = {}) {
       const have = new Set(list(val));
       const hintId = hint ? id(k) + '-hint' : null;
-      const opts2 = list(choices[o.choices]);
-      const box = el('fieldset', { class: 'lf-field lf-checks' + (tbc(val) ? ' tbc' : ''), 'data-key': k, id: id(k), 'aria-describedby': hintId },
-        el('legend', { text: label }),
-        hint ? el('p', { class: 'hint', id: hintId, text: hint }) : null,
-        el('div', { class: 'choices' }, opts2.map((v) => el('label', {}, el('input', { type: 'checkbox', value: v, checked: have.has(v) }), (o.labels && o.labels[v]) || v))),
-        changedTag());
+      const box = el('fieldset', { class: 'lf-field lf-checks' + (o.columns ? ' lf-cols' : ''), 'data-key': k, id: id(k), 'aria-describedby': hintId },
+        el('legend', { text: label }), hintP(hint, hintId),
+        el('div', { class: 'choices' }, opts2.map((v) => el('label', {}, el('input', { type: 'checkbox', value: v, checked: have.has(v) }), (labels && labels[v]) || v))),
+        o.inner ? null : changedTag());
       // Keep the order the service already has (categories are most important first); newly ticked ones go last.
       const read = () => {
-        const ticked = [...box.querySelectorAll('.choices input:checked')].map((i) => i.value);
+        const ticked = [...box.querySelectorAll(':scope > .choices input:checked')].map((i) => i.value);
         const had = list(val).filter((v) => ticked.includes(v));
         return [...had, ...ticked.filter((v) => !had.includes(v))];
       };
       return { box, read };
     }
 
+    // Radio buttons. Returns the box, the chosen value, and a way to listen for changes.
+    function radios(k, label, options, val, hint) {
+      const name = uid(k);
+      const hintId = hint ? name + '-hint' : null;
+      const box = el('fieldset', { class: 'lf-field lf-radios', 'data-key': k, id: id(k), 'aria-describedby': hintId },
+        el('legend', { text: label }), hintP(hint, hintId),
+        el('div', { class: 'choices lf-stack' }, options.map(([v, t]) => el('label', {}, el('input', { type: 'radio', name, value: v, checked: val === v }), t))));
+      const get = () => { const c = box.querySelector(':scope > .choices input:checked'); return c ? c.value : ''; };
+      return { box, get, on: (fn) => box.querySelector(':scope > .choices').addEventListener('change', fn), first: () => box.querySelector('input') };
+    }
+    // A box that opens under an answer.
+    const opens = (...kids) => el('div', { class: 'lf-opens' }, ...kids);
+
     // Eligibility lines, each with an "Essential" tick. Reads back as { eligibility, gate }. A line that was only in
     // "gate" before (essential, not written as eligibility) stays that way unless it is changed or unticked.
-    function eligList(lab, hint, elig, gate, compact) {
+    function eligList(lab, hint, elig, gate, compact, before) {
       const holder = el('div', { class: 'lf-elig-rows' });
-      const hintId = hint ? uid('eh') : null;
       function row(text, essential, gateOnly) {
         const t = el('input', { type: 'text', id: uid('el'), 'aria-label': lab + ': one point' });
         t.value = text || '';
@@ -236,8 +226,8 @@
       for (const x of list(gate)) if (!list(elig).includes(x)) row(x, true, true);
       if (!holder.children.length && !compact) row('', false, false);
       const box = el('div', { class: 'lf-field lf-elig-box' },
-        el('p', { class: 'lf-lab', text: lab }), hint ? el('p', { class: 'hint', id: hintId, text: hint }) : null, holder,
-        small({ text: compact ? 'Add a point' : 'Add another point', onclick: () => { row('', false, false)._input.focus(); changed(); } }));
+        el('p', { class: 'lf-lab', text: lab }), hintP(hint), before || null, holder,
+        small({ text: compact ? 'Add a point' : 'Add another line', onclick: () => { row('', false, false)._input.focus(); changed(); } }));
       const read = () => {
         const rows = [...holder.children].map((r) => r._read()).filter((x) => x.text);
         return { eligibility: rows.filter((x) => !x.gateOnly).map((x) => x.text), gate: rows.filter((x) => x.essential).map((x) => x.text) };
@@ -245,14 +235,15 @@
       return { box, read };
     }
 
-    function datesGroup(prefix, src, legend) {
+    function datesGroup(prefix, src, legend, refWord) {
       const ins = {};
       const box = el('fieldset', { class: 'lf-dates' }, el('legend', { text: legend }), el('p', { class: 'hint', text: DATES_HINT }),
-        el('div', { class: 'lf-grid' }, L.DATE_KEYS.map((k) => {
+        el('div', { class: 'lf-grid' }, DATE_ORDER.map((k) => {
           const i = el('input', { type: 'date', id: uid(prefix + k) });
           i.value = (src && src[k]) || '';
           ins[k] = i;
-          return el('div', { class: 'lf-field' }, el('label', { for: i.id, text: DATE_LABEL[k] }), i);
+          const lab = refWord ? DATE_LABEL[k].replace('Taking referrals', refWord) : DATE_LABEL[k];
+          return el('div', { class: 'lf-field' }, el('label', { for: i.id, text: lab }), i);
         })));
       return { box, read: () => Object.fromEntries(L.DATE_KEYS.filter((k) => ins[k].value).map((k) => [k, ins[k].value])) };
     }
@@ -268,21 +259,22 @@
       const nAddr = el('input', { type: 'text', id: uid('va') });
       const nPc = el('input', { type: 'text', id: uid('vp'), autocomplete: 'off', size: '10' });
       if (value && typeof value === 'object') { nName.value = value.name || ''; nAddr.value = value.address || ''; nPc.value = value.postcode || ''; }
+      nPc.addEventListener('input', () => { const c = nPc.value.replace(/[^A-Za-z0-9 ]/g, '').toUpperCase().slice(0, 8); if (c !== nPc.value) nPc.value = c; });
       const hintId = uid('vh');
       const status = el('p', { class: 'hint lf-match', id: hintId });
       const fresh = el('div', { class: 'lf-newvenue', hidden: true },
-        el('p', { class: 'hint', text: "A venue we don't list yet. Please give its name, address and full postcode, so it can go on the map and the timetable." }),
+        el('p', { class: 'hint', text: "A place we don't list yet. Please give its name, address and full postcode, so it can go on the map and the timetable." }),
         el('div', { class: 'lf-grid' },
-          el('div', { class: 'lf-field' }, el('label', { for: nName.id, text: 'Venue name' }), nName),
+          el('div', { class: 'lf-field' }, el('label', { for: nName.id, text: 'Name of the place' }), nName),
           el('div', { class: 'lf-field' }, el('label', { for: nAddr.id, text: 'Address' }), nAddr),
-          el('div', { class: 'lf-field' }, el('label', { for: nPc.id, text: 'Postcode' }), nPc)));
+          el('div', { class: 'lf-field' }, el('label', { for: nPc.id, text: 'Full postcode' }), nPc)));
       const match = () => venues.find((v) => venueLabel(v) === pick.value.trim());
       const upd = () => {
         const v = pick.value.trim();
         const m = match();
         fresh.hidden = !v || Boolean(m);
         if (!fresh.hidden && !nName.value) nName.value = v;
-        status.textContent = !v ? '' : m ? (m.ward ? `Venue we know, in ${m.ward} ward.` : 'Venue we know.') : '';
+        status.textContent = !v ? 'Start typing to choose a place we already list.' : m ? (m.ward ? `A place we know, in ${m.ward} ward.` : 'A place we know.') : '';
       };
       pick.addEventListener('input', upd);
       pick.addEventListener('change', upd);
@@ -302,7 +294,7 @@
         problem() {
           const r = this.read();
           if (!r || typeof r === 'string') return null;
-          if (!r.name) return { message: 'Please give the new venue a name.', el: nName };
+          if (!r.name) return { message: 'Please give the new place a name.', el: nName };
           if (!r.address) return { message: `Please give the address of ${r.name}.`, el: nAddr };
           if (!POSTCODE_RE.test(r.postcode)) return { message: `Please give the full postcode of ${r.name}, such as WF17 5DR.`, el: nPc };
           return null;
@@ -310,193 +302,278 @@
       };
     }
 
-    // ----- projects and their sessions -----
     const allPickers = [];
-    function projectsQuestion(label, hint, val) {
+    const smallText = (lab, v, hintText, o = {}) => {
+      const i = el(o.area ? 'textarea' : 'input', { type: o.area ? null : 'text', id: uid('p'), rows: o.area ? '3' : null, placeholder: o.placeholder || null });
+      i.value = v || '';
+      return { node: el('div', { class: 'lf-field' }, el('label', { for: i.id, text: lab }), hintP(hintText), i, o.limit ? counter(i, o.limit) : null), get: () => i.value.trim(), input: i };
+    };
+    const smallLines = (lab, v, hintText) => {
+      const i = el('textarea', { id: uid('p'), rows: String(Math.max(2, list(v).length + 1)) });
+      i.value = list(v).join('\n');
+      return { node: el('div', { class: 'lf-field' }, el('label', { for: i.id, text: lab }), hintP(hintText), i), get: () => linesOf(i.value) };
+    };
+
+    // ----- a time and place: a venue, days, times, how often -----
+    function placeRow(holder, s = {}, o = {}) {
+      const picker = venuePicker('Place', s.venue);
+      allPickers.push(picker);
+      const dayBoxes = L.DAYS.map((d) => el('label', {}, el('input', { type: 'checkbox', value: d, checked: list(s.days).includes(d) }), ' ' + L.DAY_NAMES[d].slice(0, 3)));
+      const start = el('input', { type: 'time', id: uid('st'), step: '300' });
+      start.value = s.start || '';
+      const end = el('input', { type: 'time', id: uid('en'), step: '300' });
+      end.value = s.end || '';
+      const freq = el('select', { id: uid('fr') }, Object.entries(L.FREQUENCY).map(([k, w]) => el('option', { value: k, text: w[0].toUpperCase() + w.slice(1) })));
+      freq.value = s.frequency || 'weekly';
+      const freqWas = s.frequency || '';
+      const note = smallText('Anything else about when, in words', s.note, 'For example "first Tuesday of the month" or "term time only".');
+      const where = smallLines('Other places, in words', s.where, 'Only for places without a postcode, such as "Online".');
+      // A plain time and place (no cohort) can have its own dates: an earlier run, say.
+      const dates = o.ownDates ? datesGroup('s', s, 'Dates for this time and place, if different') : null;
+      const more = el('details', { class: 'lf-more' }, el('summary', { text: o.ownDates ? 'Other places in words, or dates for this time and place' : 'Other places, in words' }), where.node, dates ? dates.box : null);
+      if (list(s.where).length || (dates && L.DATE_KEYS.some((k) => s[k]))) more.open = true;
+      const fs = el('fieldset', { class: 'lf-session', 'data-id': s.id || '' }, el('legend', { text: 'Time and place' }),
+        picker.node,
+        el('fieldset', { class: 'lf-days' }, el('legend', { text: 'Days' }), el('div', { class: 'choices' }, dayBoxes)),
+        el('div', { class: 'lf-grid' },
+          el('div', { class: 'lf-field' }, el('label', { for: start.id, text: 'From' }), start),
+          el('div', { class: 'lf-field' }, el('label', { for: end.id, text: 'Until' }), end),
+          el('div', { class: 'lf-field' }, el('label', { for: freq.id, text: 'How often' }), freq)),
+        note.node, more,
+        small({ text: 'Remove this time and place', onclick: () => { fs.remove(); allPickers.splice(allPickers.indexOf(picker), 1); changed(); } }));
+      fs._read = () => {
+        const out = { id: fs.dataset.id };
+        const v = picker.read();
+        if (v) out.venue = v;
+        const w = where.get();
+        if (w.length) out.where = w;
+        const days = dayBoxes.map((b) => b.querySelector('input')).filter((i) => i.checked).map((i) => i.value);
+        if (days.length) out.days = days;
+        if (start.value) out.start = start.value;
+        if (end.value) out.end = end.value;
+        // "Every week" is the default: only stored when it was there before, or another choice is made for a day or time.
+        if (freqWas) out.frequency = freq.value;
+        else if ((days.length || start.value) && freq.value !== 'weekly') out.frequency = freq.value;
+        const n = note.get();
+        if (n) out.note = n;
+        if (s.when && !days.length) out.when = s.when; // "when" in words from before November 2026, kept until there are days
+        if (dates) Object.assign(out, dates.read());
+        return out;
+      };
+      fs._first = picker.input;
+      fs._picker = picker;
+      holder.append(fs);
+      return fs;
+    }
+    function timetable(rows, o) {
+      const holder = el('div', { class: 'lf-sessions' });
+      for (const s of rows) placeRow(holder, s, o);
+      const box = el('div', { class: 'lf-sessions-box' },
+        el(SUBH, { class: 'lf-sub', text: o.title }),
+        hintP('Add one for each place and day, with the times.'),
+        holder,
+        small({ text: 'Add a time and place', onclick: () => { placeRow(holder, {}, o)._first.focus(); changed(); } }));
+      return { box, holder, read: () => [...holder.children].map((c) => c._read()).filter((x) => Object.keys(x).length > 1) };
+    }
+
+    // Who an activity or cohort is for, when it is narrower than the level above: an age, and criteria.
+    function narrower(src, what) {
+      const age = smallText('Age for this ' + what, src.age, 'For example 18 to 24, or 50+. Leave empty if the age is the same.');
+      const elig = eligList('Anything else only this ' + what + ' needs', 'It can only narrow who the service is for. ' + ESSENTIAL_HINT, src.eligibility, src.gate, true);
+      return { node: opens(el('div', { class: 'lf-grid' }, age.node), elig.box), age, elig };
+    }
+
+    // ----- a cohort: one run, or one group, made of the sessions that share it -----
+    const GROUP_KEYS = ['name', 'age', 'eligibility', 'gate', 'places', ...L.DATE_KEYS];
+    const groupKey = (s) => JSON.stringify(GROUP_KEYS.map((k) => canon(s[k])));
+    function cohortBox(holder, sessions, act) {
+      const first = sessions[0] || {};
+      const name = smallText('Name of the cohort (mandatory)', first.name, 'For example "Cohort 1: ages 18 to 24". This is how coaches and the AI tell them apart.');
+      const isNarrow = Boolean(first.age || list(first.eligibility).length || list(first.gate).length);
+      const open = radios('cohort-open', 'Is this cohort open to everyone the activity is for?', [['yes', 'Yes'], ['no', "No, it's for a particular group"]], sessions.length ? (isNarrow ? 'no' : 'yes') : '');
+      const nar = narrower(first, 'cohort');
+      const showNar = () => { nar.node.hidden = open.get() !== 'no'; };
+      open.on(showNar);
+      const dates = datesGroup('c', first, 'Dates for this cohort', act.refWord());
+      const places = smallText('Number of places', first.places, 'Leave empty if not limited.');
+      places.input.addEventListener('input', () => { const c = places.input.value.replace(/\D/g, ''); if (c !== places.input.value && !/\D/.test(first.places || '')) places.input.value = c; });
+      const tt = timetable(sessions.filter((x) => x.venue || list(x.days).length || x.start || x.note || list(x.where).length || x.when), { title: 'Where and when this cohort meets', ownDates: false });
+      // Session ids are kept: the rows read back in order and take the cohort's existing ids first.
+      const ids = sessions.map((x) => x.id).filter(Boolean);
+      const legend = el('legend', {});
+      const title = () => { legend.textContent = 'Cohort' + (name.get() ? ': ' + name.get() : ''); };
+      name.input.addEventListener('input', title);
+      title();
+      const fs = el('fieldset', { class: 'lf-session lf-group lf-cohort' }, legend, name.node, open.box, nar.node, dates.box, el('div', { class: 'lf-grid' }, places.node), tt.box,
+        small({ text: 'Remove this cohort', onclick: () => { fs.remove(); changed(); } }));
+      showNar();
+      fs._read = () => {
+        const g = {};
+        if (name.get()) g.name = name.get();
+        if (open.get() === 'no') {
+          if (nar.age.get()) g.age = nar.age.get();
+          const e = nar.elig.read();
+          if (e.eligibility.length) g.eligibility = e.eligibility;
+          if (e.gate.length) g.gate = e.gate;
+        }
+        if (places.get()) g.places = places.get();
+        Object.assign(g, dates.read());
+        const rows = tt.read();
+        const out = (rows.length ? rows : [{ id: '' }]).map((r, i) => ({ ...r, ...g, id: r.id || ids[i] || '' }));
+        return out;
+      };
+      fs._name = name.input;
+      fs._open = open;
+      fs._age = nar.age;
+      holder.append(fs);
+      return fs;
+    }
+
+    // ----- activities (projects in the data) -----
+    function projectsQuestion(val) {
       const wrap = el('div', { class: 'lf-projects' });
-      const box = el('div', { class: 'lf-field lf-projects-box', 'data-key': 'projects' },
-        el('p', { class: 'hint', text: hint }), wrap,
-        small({ text: 'Add another project', onclick: () => addNew() }),
-        changedTag());
-
-      function smallText(lab, v, hintText, type) {
-        const i = el('input', { type: type || 'text', id: uid('p') });
-        i.value = v || '';
-        return { node: el('div', { class: 'lf-field' }, el('label', { for: i.id, text: lab }), hintText ? el('p', { class: 'hint', text: hintText }) : null, i), get: () => i.value.trim(), input: i };
-      }
-      function smallLines(lab, v, hintText) {
-        const i = el('textarea', { id: uid('p'), rows: String(Math.max(2, list(v).length + 1)) });
-        i.value = list(v).join('\n');
-        return { node: el('div', { class: 'lf-field' }, el('label', { for: i.id, text: lab }), hintText ? el('p', { class: 'hint', text: hintText }) : null, i), get: () => linesOf(i.value) };
-      }
-
-      // A session: a time and place, or a group of its own (such as a cohort), or both.
-      // kind: 'place' (a time and place) or 'group' (a group or cohort of its own, such as an age group). A saved
-      // session with an age or its own criteria opens as a group.
-      function addSession(holder, s = {}, kind) {
-        const group = kind ? kind === 'group' : Boolean(s.age || list(s.eligibility).length || list(s.gate).length);
-        const picker = venuePicker('Venue', s.venue);
-        allPickers.push(picker);
-        const dayBoxes = L.DAYS.map((d) => el('label', {}, el('input', { type: 'checkbox', value: d, checked: list(s.days).includes(d) }), ' ' + L.DAY_NAMES[d].slice(0, 3)));
-        const start = el('input', { type: 'time', id: uid('st'), step: '300' });
-        start.value = s.start || '';
-        const end = el('input', { type: 'time', id: uid('en'), step: '300' });
-        end.value = s.end || '';
-        const freq = el('select', { id: uid('fr') }, el('option', { value: '', text: 'Choose' }), Object.entries(L.FREQUENCY).map(([k, w]) => el('option', { value: k, text: w[0].toUpperCase() + w.slice(1) })));
-        freq.value = s.frequency || '';
-        const f = {
-          name: group ? smallText('Name of the group (mandatory)', s.name, 'For example "Cohort 1: ages 18 to 24". This is how coaches and the AI tell the groups apart.') : smallText('Name, if it has one', s.name, 'For example "elevate connect (drop-in)".'),
-          note: smallText('Anything else about when or where, in words', s.note, 'For example "first Tuesday of the month" or "term time only".'),
-          places: smallText('Number of places', s.places, 'Leave empty if not limited.'),
-          age: group ? smallText('Age for this group', s.age, 'For example 18 to 24, or 50+. Leave empty if the age is the same as the project.') : smallText('Age, if this time and place is for a particular age group', s.age, 'For example 50+.'),
-          where: smallLines('Other places, in words', s.where, 'Only for places without a postcode, such as "Online".'),
-        };
-        const elig = eligList(group ? 'Who can join this group' : 'Extra criteria for this time and place', 'Only what is different from the project, for example "Aged 18 to 24". ' + ESSENTIAL_HINT, s.eligibility, s.gate, true);
-        const dates = datesGroup('s', s, group ? 'Dates for this group, if different from the project' : 'Dates, if different from the project');
-        // A group says who it's for first, in plain view. A time and place keeps those questions folded away.
-        const more = el('details', { class: 'lf-more' }, el('summary', { text: group ? 'Places, dates or other places for this group' : 'Is this time and place for a particular group? Age, criteria, places or dates' }),
-          group ? null : el('div', { class: 'lf-grid' }, f.age.node), group ? null : elig.box,
-          el('div', { class: 'lf-grid' }, f.places.node), dates.box, f.where.node);
-        if ((!group && (s.age || list(s.eligibility).length || list(s.gate).length)) || s.places || L.DATE_KEYS.some((k) => s[k]) || list(s.where).length) more.open = true;
-        const legend = el('legend', {});
-        const title = () => { const n = f.name.get(); legend.textContent = (group ? 'Group or cohort' : 'Time and place') + (n ? ': ' + n : ''); };
-        f.name.input.addEventListener('input', title);
-        title();
-        const fs = el('fieldset', { class: 'lf-session' + (group ? ' lf-group' : ''), 'data-id': s.id || '', 'data-kind': group ? 'group' : 'place' }, legend,
-          f.name.node, group ? el('div', { class: 'lf-grid' }, f.age.node) : null, group ? elig.box : null,
-          group ? el('p', { class: 'lf-lab lf-group-where', text: 'Where and when this group meets' }) : null, picker.node,
-          el('fieldset', { class: 'lf-days' }, el('legend', { text: 'Days' }), el('div', { class: 'choices' }, dayBoxes)),
-          el('div', { class: 'lf-grid' },
-            el('div', { class: 'lf-field' }, el('label', { for: start.id, text: 'From' }), start),
-            el('div', { class: 'lf-field' }, el('label', { for: end.id, text: 'Until' }), end),
-            el('div', { class: 'lf-field' }, el('label', { for: freq.id, text: 'How often' }), freq)),
-          f.note.node, more,
-          small({ text: group ? 'Remove this group' : 'Remove this time and place', onclick: () => { fs.remove(); allPickers.splice(allPickers.indexOf(picker), 1); changed(); } }));
-        fs._read = () => {
-          const out = { id: fs.dataset.id };
-          const name = f.name.get();
-          if (name) out.name = name;
-          const v = picker.read();
-          if (v) out.venue = v;
-          const where = f.where.get();
-          if (where.length) out.where = where;
-          const days = dayBoxes.map((b) => b.querySelector('input')).filter((i) => i.checked).map((i) => i.value);
-          if (days.length) out.days = days;
-          if (start.value) out.start = start.value;
-          if (end.value) out.end = end.value;
-          if (freq.value) out.frequency = freq.value;
-          for (const k of ['note', 'age', 'places']) { const x = f[k].get(); if (x) out[k] = x; }
-          // "when" in words from before November 2026 is kept until the session has days and times.
-          if (s.when && !days.length) out.when = s.when;
-          const e = elig.read();
-          if (e.eligibility.length) out.eligibility = e.eligibility;
-          if (e.gate.length) out.gate = e.gate;
-          Object.assign(out, dates.read());
-          return out;
-        };
-        fs._first = group ? f.name.input : picker.input;
-        fs._nameInput = f.name.input;
-        holder.append(fs);
-        return fs;
-      }
+      const multi = radios('multi', 'Does this service run more than one separate activity?', [['no', 'No, one activity'], ['yes', 'Yes']], list(val).length > 1 ? 'yes' : list(val).length ? 'no' : '', 'For example a weekly drop-in and a six-week course. Two groups doing the same thing at different times, or for different people, are cohorts, not separate activities.');
+      const addBtn = small({ text: 'Add another activity', onclick: () => addNew() });
+      const box = el('div', { class: 'lf-field lf-projects-box', 'data-key': 'projects' }, multi.box, wrap, addBtn, changedTag());
+      const showMulti = () => {
+        const n = wrap.children.length;
+        if (n > 1) { multi.box.querySelector('input[value=yes]').checked = true; }
+        multi.box.querySelector('input[value=no]').disabled = n > 1;
+        addBtn.hidden = multi.get() !== 'yes';
+        for (const fs of wrap.children) fs._remove.hidden = n < 2;
+        renumber();
+      };
+      multi.on(showMulti);
 
       function addProject(p = {}) {
         const f = {
-          name: smallText('Project name (mandatory)', p.name, ''),
-          when: smallText('Days and times, in words', p.when, 'Only if it doesn\'t fit the sessions below, for example "Flexible, arranged with you".'),
-          duration: smallText('How long it lasts', p.duration, 'For example "12 weeks" or "Ongoing".'),
-          places: smallText('Number of places', p.places, 'For example "20 places". Leave empty if not limited.'),
-          age: smallText('Age, if different from the service', p.age, ''),
-          area: smallText('The area it covers', p.area, 'For example "All of Kirklees", or the towns.'),
+          name: smallText('Name of the activity', p.name, 'Leave empty if it\'s the same as the service.'),
+          duration: smallText('How long someone takes part', p.duration, 'Not the dates or times, which go below. For example: 6 weekly sessions, up to 12 weeks of one-to-one support, or drop in as often as you like.'),
+          area: smallText('Where appointments happen, or the area covered', p.area, 'For example "Home visits across Kirklees" or "At GP surgeries in Dewsbury".'),
+          when: smallText('When, in words', p.when, 'For example opening hours, or "Flexible, arranged with you".'),
           where: smallLines('Other places, in words', p.where, 'Places without a postcode, for example "Online" or "Community venues across Kirklees".'),
+          places: smallText('Number of places', p.places, 'Leave empty if not limited.'),
         };
         const ovId = uid('ov');
         const ov = el('textarea', { id: ovId, rows: '3', 'aria-describedby': ovId + '-count' });
         ov.value = p.overview || '';
         const ovBox = el('div', { class: 'lf-field' }, el('label', { for: ovId, text: 'What happens (mandatory)' }),
-          el('p', { class: 'hint', text: 'What happens in this project, in a few sentences.' }), ov, counter(ov, L.LIMITS.projectOverview));
-        // How it runs. Ticking "set times and places" shows the sessions; "by appointment" asks for the area.
+          hintP('What someone does or gets, in a few sentences.'), ov, counter(ov, L.LIMITS.projectOverview));
+        // How it runs. "Set times and places" shows the timetable; by appointment or online asks where and when in words.
         const runs = new Set(list(p.runs));
         if (!runs.size && list(p.sessions).some((x) => x.venue || list(x.days).length)) runs.add('set');
         const runBoxes = Object.entries(L.RUNS).map(([k, w]) => el('label', {}, el('input', { type: 'checkbox', value: k, checked: runs.has(k) }), ' ' + w));
-        const runSet = el('fieldset', { class: 'lf-field lf-checks lf-runs' }, el('legend', { text: 'How does it run?' }), el('p', { class: 'hint', text: 'Tick all that apply.' }), el('div', { class: 'choices' }, runBoxes));
+        const runSet = el('fieldset', { class: 'lf-field lf-checks lf-runs' }, el('legend', { text: 'How does it run? Tick all that apply.' }), el('div', { class: 'choices lf-stack' }, runBoxes));
+        const ticked = () => new Set(runBoxes.map((b) => b.querySelector('input')).filter((i) => i.checked).map((i) => i.value));
+        const isNarrow = Boolean(p.age || list(p.eligibility).length || list(p.gate).length || list(p.audience).length);
+        const open = radios('act-open', 'Is this activity open to everyone the service is for?', [['yes', 'Yes'], ['no', "No, it's narrower"]], p.name || p.overview ? (isNarrow ? 'no' : 'yes') : '');
+        const nar = narrower(p, 'activity');
         const aud = new Set(list(p.audience));
-        const audBox = el('fieldset', { class: 'lf-field lf-checks' }, el('legend', { text: 'Who this project works with, if different from the service' }),
-          el('p', { class: 'hint', text: 'Leave all unticked if it is the same as the service.' }),
-          el('div', { class: 'choices' }, list(choices.audience).map((v) => el('label', {}, el('input', { type: 'checkbox', value: v, checked: aud.has(v) }), AUDIENCE[v] || v))));
-        const elig = eligList('Extra criteria for this project', 'Only criteria that are different from the service. ' + ESSENTIAL_HINT, p.eligibility, p.gate, true);
-        const dates = datesGroup('p', p, 'Dates');
-        const sessions = el('div', { class: 'lf-sessions' });
-        const sessionsBox = el('div', { class: 'lf-sessions-box' },
-          el(SUBH, { class: 'lf-sub', text: 'Times, places and groups' }),
-          el('p', { class: 'hint', text: 'Add a time and place for each venue and day it runs. If the project runs separately for different groups, such as two cohorts for different age groups, add a group or cohort for each, with who it is for and where and when it meets.' }),
-          sessions,
-          el('div', { class: 'lf-row' },
-            small({ text: 'Add a time and place', onclick: () => { addSession(sessions, {}, 'place')._first.focus(); changed(); } }),
-            small({ text: 'Add a group or cohort', onclick: () => { addSession(sessions, {}, 'group')._first.focus(); changed(); } })));
-        const areaBox = f.area.node;
-        const fs = el('fieldset', { class: 'lf-proj' + (tbc(p) ? ' tbc' : ''), 'data-id': p.id || '' },
-          el('legend', { class: 'lf-proj-legend' }),
-          f.name.node, ovBox, runSet, sessionsBox, areaBox, f.where.node, f.when.node,
-          f.duration.node, el('div', { class: 'lf-grid' }, f.places.node, f.age.node),
-          elig.box, audBox, dates.box,
-          el('div', { class: 'lf-row' },
-            small({ text: 'Remove this project', onclick: () => {
-              if (wrap.children.length < 2) return alert('A service needs at least one project. Change this one instead.');
-              fs.remove(); renumber(); changed();
-            } })));
-        const showRuns = () => {
-          const ticked = new Set(runBoxes.map((b) => b.querySelector('input')).filter((i) => i.checked).map((i) => i.value));
-          sessionsBox.hidden = !ticked.has('set') && !sessions.children.length;
-          areaBox.hidden = !ticked.has('appointment') && !f.area.get();
+        const audBox = team ? el('fieldset', { class: 'lf-field lf-checks' }, el('legend', { text: 'Who this activity works with, if different from the service' }),
+          el('div', { class: 'choices' }, list(choices.audience).map((v) => el('label', {}, el('input', { type: 'checkbox', value: v, checked: aud.has(v) }), AUDIENCE[v] || v)))) : null;
+        if (audBox) nar.node.append(audBox);
+        // Cohorts: the sessions with a group of their own (or their own dates), grouped.
+        const sess = list(p.sessions);
+        const isGroup = (s) => L.forGroup(s) || Boolean(s.name && L.DATE_KEYS.some((k) => s[k]));
+        const groups = new Map();
+        for (const s of sess.filter(isGroup)) { const k = groupKey(s); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(s); }
+        const plain = sess.filter((s) => !isGroup(s));
+        const cohorts = radios('cohorts', 'Are there different cohorts?', [['yes', 'Yes'], ['no', 'No']], groups.size ? 'yes' : p.name || p.overview ? 'no' : '',
+          'Yes if it runs more than once with different dates (one after another), or for different groups at the same time (side by side).');
+        const act = { refWord: () => (referralNeeded() === 'no' ? 'Open for people to join' : null) };
+        const actDates = datesGroup('p', p, 'Dates', act.refWord());
+        const cohortHolder = el('div', { class: 'lf-cohorts' });
+        const fs = el('fieldset', { class: 'lf-proj' + (tbc(p) ? ' tbc' : ''), 'data-id': p.id || '' }, el('legend', { class: 'lf-proj-legend' }));
+        for (const g of groups.values()) cohortBox(cohortHolder, g, act);
+        const cohortBlock = el('div', { class: 'lf-cohort-block' }, cohortHolder,
+          small({ text: 'Add another cohort', onclick: () => { cohortBox(cohortHolder, [], act)._name.focus(); changed(); } }));
+        const plainTt = timetable(plain, { title: 'Where and when it meets', ownDates: true });
+        const plainBlock = el('div', { class: 'lf-plain-block' }, actDates.box, el('div', { class: 'lf-grid' }, f.places.node), plainTt.box);
+        const words = el('div', { class: 'lf-words' }, f.area.node, f.when.node);
+        fs._remove = small({ text: 'Remove this activity', onclick: () => { fs.remove(); showMulti(); changed(); } });
+        fs.append(f.name.node, ovBox, f.duration.node, runSet, words, open.box, nar.node, cohorts.box, cohortBlock, plainBlock,
+          el('details', { class: 'lf-more' }, el('summary', { text: 'Other places, in words' }), f.where.node),
+          el('div', { class: 'lf-row' }, fs._remove));
+        if (list(p.where).length) fs.querySelector(':scope > details.lf-more').open = true;
+        const showParts = () => {
+          const t = ticked();
+          plainTt.box.hidden = !t.has('set') && !plainTt.holder.children.length;
+          words.hidden = !(t.has('appointment') || t.has('online')) && !f.area.get() && !f.when.get();
+          nar.node.hidden = open.get() !== 'no';
+          cohortBlock.hidden = cohorts.get() !== 'yes';
+          plainBlock.hidden = cohorts.get() !== 'no';
+          for (const c of cohortHolder.children) c.querySelector('.lf-sessions-box').hidden = !t.has('set') && !c.querySelector('.lf-sessions').children.length;
         };
         runSet.addEventListener('change', () => {
-          showRuns();
-          const setOn = runBoxes[0].querySelector('input').checked;
-          if (setOn && !sessions.children.length) addSession(sessions);
+          showParts();
+          if (ticked().has('set') && cohorts.get() === 'no' && !plainTt.holder.children.length) placeRow(plainTt.holder, {}, { ownDates: true });
         });
-        for (const s of list(p.sessions)) addSession(sessions, s);
-        showRuns();
+        open.on(showParts);
+        cohorts.on(() => {
+          if (cohorts.get() === 'yes' && !cohortHolder.children.length) cohortBox(cohortHolder, [], act);
+          showParts();
+        });
+        fs._showParts = showParts;
+        showParts();
         fs._read = () => {
-          const out = { id: fs.dataset.id, name: f.name.get(), overview: ov.value.trim() };
-          const r = runBoxes.map((b) => b.querySelector('input')).filter((i) => i.checked).map((i) => i.value);
-          if (r.length) out.runs = r;
-          for (const k of ['area', 'when', 'duration', 'places', 'age']) { const v = f[k].get(); if (v) out[k] = v; }
+          const out = { id: fs.dataset.id, name: f.name.get() || p.name || '', overview: ov.value.trim() };
+          const r = [...ticked()];
+          if (r.length) out.runs = Object.keys(L.RUNS).filter((k) => r.includes(k));
+          for (const k of ['area', 'when', 'duration']) { const v = f[k].get(); if (v) out[k] = v; }
           const where = f.where.get();
           if (where.length) out.where = where;
-          const a = [...audBox.querySelectorAll('input:checked')].map((i) => i.value);
-          if (a.length) out.audience = a;
-          const e = elig.read();
-          if (e.eligibility.length) out.eligibility = e.eligibility;
-          if (e.gate.length) out.gate = e.gate;
-          Object.assign(out, dates.read());
-          const ss = [...sessions.children].map((c) => c._read()).filter((x) => Object.keys(x).length > 1);
-          if (ss.length) out.sessions = ss;
+          if (open.get() === 'no') {
+            if (nar.age.get()) out.age = nar.age.get();
+            const e = nar.elig.read();
+            if (e.eligibility.length) out.eligibility = e.eligibility;
+            if (e.gate.length) out.gate = e.gate;
+            if (audBox) { const a = [...audBox.querySelectorAll('input:checked')].map((i) => i.value); if (a.length) out.audience = a; }
+          } else if (!open.get()) {
+            // Not answered yet: keep what was there.
+            for (const k of ['age', 'eligibility', 'gate', 'audience']) if (p[k] !== undefined) out[k] = p[k];
+          }
+          if (cohorts.get() === 'yes') {
+            const ss = [...cohortHolder.children].flatMap((c) => c._read());
+            if (ss.length) out.sessions = ss;
+            // The activity's own dates and places (each cohort has its own) are kept as they were.
+            for (const k of [...L.DATE_KEYS, 'places']) if (p[k]) out[k] = p[k];
+          } else {
+            Object.assign(out, actDates.read());
+            const pl = f.places.get();
+            if (pl) out.places = pl;
+            const ss = plainTt.read();
+            if (ss.length) out.sessions = ss;
+          }
           return out;
         };
         fs._name = f.name.input;
         fs._ov = ov;
-        fs._sessions = sessions;
+        fs._runs = runSet;
+        fs._open = open;
+        fs._cohorts = cohorts;
+        fs._cohortHolder = cohortHolder;
         fs._name.addEventListener('input', renumber);
         wrap.append(fs);
         return fs;
       }
       function renumber() {
-        [...wrap.children].forEach((fs, i) => { fs.querySelector('.lf-proj-legend').textContent = 'Project ' + (i + 1) + (fs._name.value.trim() ? ': ' + fs._name.value.trim() : ''); });
+        const n = wrap.children.length;
+        [...wrap.children].forEach((fs, i) => { fs.querySelector('.lf-proj-legend').textContent = 'Activity' + (n > 1 ? ' ' + (i + 1) : '') + (fs._name.value.trim() ? ': ' + fs._name.value.trim() : ''); });
       }
       function addNew() {
+        if (multi.get() !== 'yes') multi.box.querySelector('input[value=yes]').checked = true;
         const fs = addProject();
-        renumber();
+        showMulti();
         fs._name.focus();
         changed();
         return fs;
       }
       for (const p of list(val)) addProject(p);
       if (!wrap.children.length) addProject();
-      renumber();
+      showMulti();
 
-      // New projects and sessions get an id made from their name (or venue and day), unique in the service. Existing
-      // ones keep theirs.
+      // New activities and sessions get an id made from their name (or venue and day), unique in the service.
+      // Existing ones keep theirs.
       const read = () => {
         const ps = [...wrap.children].map((fs) => fs._read());
         const used = new Set();
@@ -509,121 +586,364 @@
           return x;
         };
         for (const p of ps) {
+          if (!p.name) p.name = (readers.name && readers.name()) || 'Activity';
           if (!p.id) p.id = fresh(p.name, 'project');
           for (const c of list(p.sessions)) {
             if (c.id) continue;
             const v = typeof c.venue === 'string' ? venueById.get(c.venue) : c.venue;
-            c.id = fresh(c.name || [v && v.name, ...list(c.days)].filter(Boolean).join(' '), 'session');
+            c.id = fresh([c.name, v && v.name, ...list(c.days)].filter(Boolean).join(' '), 'session');
           }
         }
         return ps;
       };
-      return { box, read, rows: () => [...wrap.children], addNew };
+      return { box, read, rows: () => [...wrap.children], addNew, multi };
     }
 
-    // ----- venues used by every project -----
-    function venuesQuestion(k, label, hint, val) {
-      const holder = el('div', { class: 'lf-venue-rows' });
-      const pickers = [];
-      const add = (v) => {
-        const p = venuePicker('Venue', v);
-        pickers.push(p);
+    // ---------- the parts ----------
+    const parts = PARTS.map((t, i) => el('div', { class: 'lf-part', 'data-part': String(i + 1) }));
+    const section = (n, title, ...kids) => { const s = el('section', { class: 'lf-section' }, el(H, { text: title }), ...kids); parts[n - 1].append(s); return s; };
+    const reg = (k, q) => { boxes[k] = q.box; if (q.read) readers[k] = q.read; return q.box; };
+
+    // ===== Part 1: the service and who can join =====
+    reg('organisation', textQuestion('organisation', 'Name of organisation', 'Start typing to choose from the organisations we already list. If yours isn\'t there, type its full name. If the service is run in partnership, put the lead organisation here: the one people contact.', { required: true, list: orgListId }, values.organisation));
+    const orgMatch = el('p', { class: 'hint lf-match' });
+    const orgIn = boxes.organisation.querySelector('input');
+    const orgUpd = () => { const v = orgIn.value.trim(); orgMatch.textContent = !v ? '' : list(opts.organisations).includes(v) ? 'This is an organisation we already list.' : 'This will be added as a new organisation.'; };
+    orgIn.addEventListener('input', orgUpd);
+    orgUpd();
+    boxes.organisation.insertBefore(orgMatch, boxes.organisation.querySelector('.changed-tag'));
+    reg('organisationOverview', textQuestion('organisationOverview', 'What does your organisation do?', "A general overview that is included on every one of your services. Please don't mention funders here. Up to about 50 words.", { area: true, limit: L.LIMITS.orgOverview }, values.organisationOverview));
+    const partners = linesQuestion('partners', 'Is this service run in partnership with other organisations?', 'List the partner organisations, one per line. Leave empty if none. They are shown on the service as "In partnership with".', values.partners, { list: orgListId, empty: true, addText: 'Add a partner', aria: 'Partner organisation' });
+    reg('partners', { box: partners.box, read: () => partners.read() });
+    section(1, 'About your organisation', boxes.organisation, boxes.organisationOverview, boxes.partners);
+
+    reg('name', textQuestion('name', 'Name of the service', "Please add if it's different from the organisation's name.", { required: true }, values.name));
+    reg('whoFor', textQuestion('whoFor', "Who it's for, in a sentence or two", 'Shown on the service card under its name. For example "Women in Kirklees with a health condition who want to get back into work."', { required: true, area: true, limit: L.LIMITS.whoFor }, values.whoFor));
+    section(1, 'About the service',
+      el('p', { class: 'lf-rule' }, el('strong', { text: 'Tell us about the service as a whole here.' }), ' Session details, places, days, times, and cohorts are added in part 3.'),
+      boxes.name, boxes.whoFor);
+
+    // Who can use it, by where they live.
+    const res = values.residence || null;
+    const where = radios('residence', 'Who can use it, by where they live?', [['anyone', 'Anyone, wherever they live'], ['west-yorkshire', 'People living in West Yorkshire'], ['kirklees', 'People living in Kirklees'], ['parts', 'Only people living in certain parts of Kirklees (opens a box to say which)']], res ? res.scope : '',
+      "This is about where people live, not where you meet. Where you meet goes in part 3.");
+    const towns = checksQuestion('residence-areas', 'Which parts of Kirklees? Tick all that apply.', '', TOWNS, null, res && res.areas, { inner: true });
+    const townWarn = el('p', { class: 'lf-warn', role: 'status' });
+    const townBox = opens(towns.box, townWarn);
+    where.box.append(townBox, changedTag());
+    const showTowns = () => {
+      townBox.hidden = where.get() !== 'parts';
+      const t = towns.read();
+      const out = TOWNS.filter((x) => !t.includes(x));
+      townWarn.hidden = !t.length || !out.length;
+      townWarn.textContent = `People living in ${andList(out)} won't be shown this service. If you only mean where you meet, choose "People living in Kirklees" and add the place in part 3.`;
+    };
+    where.on(showTowns);
+    towns.box.addEventListener('change', showTowns);
+    reg('residence', { box: where.box, read: () => {
+      const v = where.get();
+      if (!v) return res;
+      return v === 'parts' ? { scope: 'parts', areas: TOWNS.filter((x) => towns.read().includes(x)) } : { scope: v };
+    } });
+
+    // Health.
+    const hf = values.healthFocus;
+    const hfStart = !Array.isArray(hf) ? '' : !hf.length ? 'no' : hf.length === 1 && hf[0] === 'any' ? 'any' : 'specific';
+    const health = radios('health', 'Does someone need a health condition or disability to use it?', [['no', 'No, anyone can use it'], ['any', 'Yes, any health condition or disability'], ['specific', 'Yes, a specific condition (opens a box to say which)']], hfStart);
+    const healthTicks = checksQuestion('healthFocus-specific', 'Which? Tick all that apply.', 'Someone with any one of these can use it.', Object.keys(HEALTH).filter((k) => k !== 'any'), HEALTH, list(hf).filter((x) => x !== 'any'), { inner: true });
+    const healthNote = textQuestion('healthNote', 'Other conditions, in your words', 'Only if the ticks above don\'t cover it, for example "Arthritis" or "Long COVID".', {}, values.healthNote);
+    const healthBox = opens(healthTicks.box, healthNote.box);
+    health.box.append(healthBox, changedTag());
+    const showHealth = () => { healthBox.hidden = health.get() !== 'specific'; };
+    health.on(showHealth);
+    reg('healthFocus', { box: health.box, read: () => {
+      const v = health.get();
+      if (!v) return hf;
+      if (v === 'no') return [];
+      if (v === 'any') return ['any'];
+      return healthTicks.read();
+    } });
+    readers.healthNote = () => (health.get() === 'specific' ? healthNote.read() : health.get() ? '' : healthNote.read());
+    boxes.healthNote = healthNote.box;
+
+    // Work situation.
+    const wk = values.work || null;
+    const work = radios('work', 'Does someone need to be in a particular work situation to use it?', [['no', "No, it doesn't matter whether they work"], ['yes', 'Yes (opens a box to say which)']], wk ? wk.needed : '');
+    const WORK_OPEN = { benefits: ' (opens a box)', other: ' (opens a box)' };
+    const workTicks = el('div', { class: 'choices lf-stack' });
+    const benefitBox = checksQuestion('work-benefits', 'Which benefits? Tick all that apply.', '', [...BENEFITS, 'Other'], null, list(wk && wk.benefits).map((b) => (BENEFITS.includes(b) ? b : 'Other')), { inner: true });
+    const benefitOther = textQuestion('work-benefit-other', 'Which other benefit?', '', { placeholder: '' }, list(wk && wk.benefits).filter((b) => !BENEFITS.includes(b)).join('; '));
+    const benefitOpens = opens(benefitBox.box, benefitOther.box);
+    const detail = textQuestion('work-detail', 'Anything more specific', 'For example an earnings limit ("earning under £20,000 a year") or another situation ("on a zero-hours contract").', {}, wk && wk.detail);
+    const otherOpens = opens(detail.box);
+    for (const [k, w] of Object.entries(L.WORK)) {
+      workTicks.append(el('label', {}, el('input', { type: 'checkbox', value: k, checked: list(wk && wk.situations).includes(k) }), w + (WORK_OPEN[k] || '')));
+      if (k === 'benefits') workTicks.append(benefitOpens);
+      if (k === 'other') workTicks.append(otherOpens);
+    }
+    const workBox = opens(el('p', { class: 'lf-lab', text: 'Which work situations? Tick all that apply.' }), hintP('Someone in any one of the situations ticked can use it.'), workTicks);
+    work.box.append(workBox, changedTag());
+    const workTicked = () => [...workTicks.querySelectorAll(':scope > label > input:checked')].map((i) => i.value);
+    const showWork = () => {
+      workBox.hidden = work.get() !== 'yes';
+      const t = workTicked();
+      benefitOpens.hidden = !t.includes('benefits');
+      otherOpens.hidden = !t.includes('other') && !detail.read();
+      benefitOther.box.hidden = !benefitBox.read().includes('Other');
+    };
+    work.on(showWork);
+    workTicks.addEventListener('change', showWork);
+    reg('work', { box: work.box, read: () => {
+      const v = work.get();
+      if (!v) return wk;
+      if (v === 'no') return { needed: 'no' };
+      const out = { needed: 'yes', situations: workTicked() };
+      if (out.situations.includes('benefits')) {
+        const b = benefitBox.read().filter((x) => x !== 'Other');
+        if (benefitBox.read().includes('Other') && benefitOther.read()) b.push(...benefitOther.read().split(/\s*;\s*/).filter(Boolean));
+        if (b.length) out.benefits = b;
+      }
+      if (detail.read()) out.detail = detail.read();
+      return out;
+    } });
+
+    // Age: numbers, "No age limit", and the words shown on the card.
+    const nums = Number.isInteger(values.ageMin) || Number.isInteger(values.ageMax) ? { min: values.ageMin, max: values.ageMax } : ageNumbers(values.age);
+    const noAgeWas = /^all ages$/i.test(String(values.age || ''));
+    const noAge = el('input', { type: 'checkbox', id: id('noage'), checked: noAgeWas });
+    const ageMin = el('input', { type: 'text', id: id('agemin'), inputmode: 'numeric', maxlength: '3', autocomplete: 'off', value: nums && nums.min != null ? String(nums.min) : '' });
+    const ageMax = el('input', { type: 'text', id: id('agemax'), inputmode: 'numeric', maxlength: '3', autocomplete: 'off', value: nums && nums.max != null ? String(nums.max) : '' });
+    const ageWordsBox = textQuestion('age', 'Age, as shown on the card', 'Filled in from the numbers. Add to it if there\'s more to say, for example "18+ (support can start before the 18th birthday)".', {}, values.age);
+    const startMin = ageMin.value;
+    const startMax = ageMax.value;
+    let autoAge = values.age || '';
+    const ageNum = (i) => (i.value === '' ? null : Number(i.value));
+    const ageSync = () => {
+      for (const i of [ageMin, ageMax]) { const c = i.value.replace(/\D/g, '').slice(0, 3); if (c !== i.value) i.value = c; }
+      ageMin.disabled = ageMax.disabled = noAge.checked;
+      const w = noAge.checked ? 'All ages' : L.ageWords({ ageMin: ageNum(ageMin) == null ? undefined : ageNum(ageMin), ageMax: ageNum(ageMax) == null ? undefined : ageNum(ageMax) });
+      if (ageWordsBox.input.value.trim() === autoAge.trim() || !ageWordsBox.input.value.trim()) { ageWordsBox.input.value = w; autoAge = w; }
+    };
+    ageMin.addEventListener('input', ageSync);
+    ageMax.addEventListener('input', ageSync);
+    noAge.addEventListener('change', () => { if (noAge.checked) { ageMin.value = ''; ageMax.value = ''; } ageSync(); });
+    ageMin.disabled = ageMax.disabled = noAgeWas;
+    const ageBox = el('fieldset', { class: 'lf-field lf-age', 'data-key': 'ageMin' }, el('legend', { text: 'Age range' }),
+      hintP('Leave "Up to age" empty if there is no upper age.'),
+      el('label', { class: 'lf-inline', for: noAge.id }, noAge, ' No age limit'),
+      el('div', { class: 'lf-grid lf-narrow' },
+        el('div', { class: 'lf-field' }, el('label', { for: ageMin.id, text: 'From age' }), ageMin),
+        el('div', { class: 'lf-field' }, el('label', { for: ageMax.id, text: 'Up to age' }), ageMax)),
+      ageWordsBox.box, changedTag());
+    boxes.ageMin = ageBox;
+    boxes.ageMax = ageBox;
+    boxes.age = ageBox;
+    // Only stored once the numbers are changed, or were there before (so opening the form changes nothing).
+    readers.ageMin = () => { const v = ageNum(ageMin); return Number.isInteger(values.ageMin) || ageMin.value !== startMin || ageMax.value !== startMax || noAge.checked !== noAgeWas ? (noAge.checked ? null : v) : values.ageMin; };
+    readers.ageMax = () => { const v = ageNum(ageMax); return Number.isInteger(values.ageMax) || ageMin.value !== startMin || ageMax.value !== startMax || noAge.checked !== noAgeWas ? (noAge.checked ? null : v) : values.ageMax; };
+    readers.age = () => ageWordsBox.read();
+
+    // The written eligibility, with the answers from above shown first (not stored again).
+    const fromAbove = el('div', { class: 'lf-fromabove', 'aria-live': 'polite' });
+    const elig = eligList('Who can use it (eligibility)', 'Please add any additional eligibility, one point per line. ' + ESSENTIAL_HINT + ' Where they live, health, work situation and age from above are already here, so there\'s no need to write them again.', values.eligibility, values.gate, false, fromAbove);
+    const eligBox = elig.box;
+    eligBox.dataset.key = 'eligibility';
+    eligBox.append(changedTag());
+    boxes.eligibility = eligBox;
+    boxes.gate = eligBox;
+    readers.eligibility = () => elig.read().eligibility;
+    readers.gate = () => elig.read().gate;
+    const showAbove = () => {
+      const now = { residence: readers.residence(), work: readers.work(), healthFocus: readers.healthFocus() };
+      const lines = [];
+      const r = L.residenceWords(now.residence);
+      if (r && now.residence.scope !== 'anyone') lines.push(r);
+      if (list(now.healthFocus).length) lines.push(now.healthFocus.includes('any') ? 'Has a health condition or disability' : 'Has ' + now.healthFocus.map((h) => HEALTH[h].toLowerCase()).join(', or '));
+      const w = now.work && now.work.needed === 'yes' ? L.workWords(now.work) : '';
+      if (w) lines.push('Work situation: ' + w);
+      const a = ageWordsBox.read();
+      if (a && !/^all ages$/i.test(a)) lines.push('Age: ' + a);
+      fromAbove.replaceChildren(...lines.map((t) => el('p', { class: 'lf-above' }, el('span', { text: t }), el('span', { class: 'lf-above-tag', text: 'From above' }))));
+    };
+    const exclusions = linesQuestion('exclusions', "Who it isn't for", 'For example "People with work-search commitments as part of a benefits claim" or "Men (the service is for women)". Leave empty if none.', values.exclusions, { empty: true, aria: "Who it isn't for" });
+    reg('exclusions', exclusions);
+    section(1, 'Who can use it', where.box, health.box, work.box, ageBox, eligBox, boxes.exclusions);
+    parts[0].addEventListener('input', showAbove);
+    parts[0].addEventListener('change', showAbove);
+
+    // Priority groups, who uses it and what kind of support.
+    const gr = values.groups;
+    const priority = radios('priority', 'Does the service have priority groups?', [['no', "No, it's open equally to everyone who can use it"], ['yes', 'Yes (tick which)']], !Array.isArray(gr) || !gr.length ? '' : gr.length === 1 && gr[0] === 'everyone' ? 'no' : 'yes');
+    const groupTicks = checksQuestion('groups-ticks', 'Which groups?', 'Tick the groups the service particularly targets or prioritises.', list(choices.groups).filter((g) => g !== 'everyone'), L.GROUPS, list(gr).filter((g) => g !== 'everyone'), { inner: true });
+    const groupBox = opens(groupTicks.box);
+    priority.box.append(groupBox, changedTag());
+    priority.box.dataset.key = 'groups';
+    const showGroups = () => { groupBox.hidden = priority.get() !== 'yes'; };
+    priority.on(showGroups);
+    reg('groups', { box: priority.box, read: () => { const v = priority.get(); return !v ? gr : v === 'no' ? ['everyone'] : groupTicks.read(); } });
+    reg('audience', checksQuestion('audience', 'Who uses it? Tick all that apply.', '', list(choices.audience), AUDIENCE, values.audience));
+    reg('categories', checksQuestion('categories', 'What kind of support is it? Tick all that apply.', 'Most important first: newly ticked ones go last.', list(choices.categories), null, values.categories, { columns: true }));
+    section(1, 'Priority groups, and what kind of support', priority.box, boxes.audience, boxes.categories);
+
+    // ===== Part 2: contact and how people get in =====
+    reg('webpage', textQuestion('webpage', 'Website', 'The best page for people to find out more, starting https://', { type: 'url' }, values.webpage));
+    reg('email', textQuestion('email', 'Email address for the service', '', { type: 'email' }, values.email));
+    reg('phone', textQuestion('phone', 'Phone number', 'You can add opening hours or a second number after it, for example "01484 000000 (Mon to Fri, 9 to 5)".', { type: 'tel' }, values.phone));
+    reg('social', linesQuestion('social', 'Social media links', 'One per line.', values.social, { empty: true, aria: 'Social media link' }));
+    section(2, 'Contact details', hintP("Please only give the service's work contact details, not anyone's personal details."), boxes.webpage, boxes.email, boxes.phone, boxes.social);
+
+    const rf = values.referral || null;
+    const refNeeded = radios('referral', 'Does someone need a referral before they can take part?', [['no', 'No, people can just turn up or sign up'], ['yes', 'Yes, they must be referred before taking part']], rf ? rf.needed : '');
+    const referralNeeded = () => refNeeded.get() || (rf ? rf.needed : '');
+    const refWho = radios('referral-who', 'Who can make a referral?', [['anyone', 'Anyone, including the person themselves'], ['professional', 'Only a professional (opens a box)']], rf && rf.who ? rf.who : '',
+      'If people can refer themselves, a professional can usually use the same route for them.');
+    const profs = textQuestion('referral-professionals', 'Which professionals can refer?', '', { placeholder: 'For example: GP, work coach or social worker' }, rf && rf.professionals);
+    profs.input.placeholder = 'For example: GP, work coach or social worker';
+    const profBox = opens(profs.box);
+    refWho.box.append(profBox);
+    const whoBox = opens(refWho.box);
+    refNeeded.box.append(whoBox, changedTag());
+    const routes = linesQuestion('referralRoutes', 'How to make a referral', '', values.referralRoutes, { aria: 'Way in' });
+    const routesHint = routes.box.querySelector('.hint') || el('p', { class: 'hint' });
+    if (!routesHint.parentNode) routes.box.insertBefore(routesHint, routes.box.querySelector('.lf-lines'));
+    const routesLab = routes.box.querySelector('.lf-lab');
+    const showRef = () => {
+      const n = referralNeeded();
+      whoBox.hidden = n !== 'yes';
+      profBox.hidden = refWho.get() !== 'professional';
+      routesLab.textContent = n === 'no' ? 'How people sign up or book, if they need to' : 'How to make a referral';
+      routesHint.textContent = n === 'no' ? 'One per line: a link, an email address or a phone number. Leave empty if people just turn up.'
+        : 'One per line: a link to a form, an email address or a phone number. If professionals use a different one, put it on its own line and say so, for example "Professionals: refer at example.org/pro".';
+      for (const p of parts[2].querySelectorAll('.lf-proj')) if (p._showParts) p._showParts();
+    };
+    refNeeded.on(showRef);
+    refWho.on(showRef);
+    reg('referral', { box: refNeeded.box, read: () => {
+      const n = refNeeded.get();
+      if (!n) return rf;
+      if (n === 'no') return { needed: 'no' };
+      const w = refWho.get();
+      if (!w) return { needed: 'yes', who: rf && rf.who ? rf.who : undefined };
+      const out = { needed: 'yes', who: w };
+      if (w === 'professional' && profs.read()) out.professionals = profs.read();
+      return out;
+    } });
+    reg('referralRoutes', routes);
+    // The older self-referral answer, kept in step with the referral answer (the card's badge falls back to it).
+    const sr0 = values.selfReferral || { allowed: 'tbc', note: PLACEHOLDER };
+    readers.selfReferral = () => {
+      const r = readers.referral();
+      if (!r || !refNeeded.get()) return sr0;
+      const keep = sr0.url ? { url: sr0.url } : {};
+      if (r.needed === 'no') return { allowed: 'yes', note: 'No referral needed: people can just turn up or sign up.', ...keep };
+      if (r.who === 'anyone') return { allowed: 'yes', note: 'People can refer themselves.', ...keep };
+      if (r.who === 'professional') return { allowed: 'no', note: 'Referral from a professional' + (r.professionals ? ': ' + r.professionals : '') + '.', ...keep };
+      return sr0;
+    };
+    const paused = el('input', { type: 'checkbox', id: id('paused'), checked: values.open === false });
+    const pausedBox = el('div', { class: 'lf-field lf-bool', 'data-key': 'open' }, el('label', { for: paused.id }, paused, ' Not taking referrals at the moment (paused)'),
+      hintP("Only tick this if you've stopped for now with no end date. Planned dates go in part 3."), changedTag());
+    reg('open', { box: pausedBox, read: () => !paused.checked });
+    section(2, 'How people get in', refNeeded.box, boxes.referralRoutes, pausedBox);
+
+    reg('cost', textQuestion('cost', 'Cost', 'Leave empty if it is free.', { placeholder: 'For example: free' }, values.cost));
+    reg('languages', textQuestion('languages', 'Languages and formats offered besides English', 'For example "Interpreters available" or "Easy read leaflets".', {}, values.languages));
+    reg('workExperience', textQuestion('workExperience', 'Does it include volunteering or work experience?', 'For example "No" or "Yes, a six-week placement".', { required: true }, values.workExperience));
+    reg('coachNotes', textQuestion('coachNotes', 'Anything coaches should know', 'Shown on the service card. For example waiting times, or what to bring.', { area: true, limit: L.LIMITS.coachNotes }, values.coachNotes));
+    section(2, 'Anything else', boxes.cost, boxes.languages, boxes.workExperience, boxes.coachNotes);
+
+    // ===== Part 3: activities and timetable =====
+    const projects = projectsQuestion(values.projects);
+    reg('projects', projects);
+    const p3 = section(3, 'What happens, where and when', boxes.projects);
+    if (team) {
+      // Places used by every activity, and other places in words (mostly from before November 2026).
+      const vHolder = el('div', { class: 'lf-venue-rows' });
+      const vPickers = [];
+      const addV = (v) => {
+        const p = venuePicker('Place', v);
+        vPickers.push(p);
         allPickers.push(p);
-        const r = el('div', { class: 'lf-venue-row' }, p.node, small({ text: 'Remove', 'aria-label': 'Remove this venue', onclick: () => { r.remove(); pickers.splice(pickers.indexOf(p), 1); allPickers.splice(allPickers.indexOf(p), 1); changed(); } }));
-        holder.append(r);
+        const r = el('div', { class: 'lf-venue-row' }, p.node, small({ text: 'Remove', 'aria-label': 'Remove this place', onclick: () => { r.remove(); vPickers.splice(vPickers.indexOf(p), 1); allPickers.splice(allPickers.indexOf(p), 1); changed(); } }));
+        vHolder.append(r);
         return p;
       };
-      for (const v of list(val)) add(v);
-      const box = el('div', { class: 'lf-field', 'data-key': k }, el('p', { class: 'lf-lab', text: label }), el('p', { class: 'hint', text: hint }), holder,
-        small({ text: 'Add a venue', onclick: () => { add(null).input.focus(); changed(); } }), changedTag());
-      return { box, read: () => pickers.map((p) => p.read()).filter(Boolean) };
+      for (const v of list(values.venues)) addV(v);
+      reg('venues', { box: el('div', { class: 'lf-field', 'data-key': 'venues' }, el('p', { class: 'lf-lab', text: 'Places used by every activity' }), hintP('Only if every activity uses the same places. Places for one activity go with it.'), vHolder,
+        small({ text: 'Add a place', onclick: () => { addV(null).input.focus(); changed(); } }), changedTag()), read: () => vPickers.map((p) => p.read()).filter(Boolean) });
+      reg('locations', linesQuestion('locations', 'Other places, in words', 'Places without a postcode, one per line, for example "Online" or "Community venues across Kirklees".', values.locations, { empty: true, aria: 'Place' }));
+      p3.append(boxes.venues, boxes.locations);
     }
 
-    // ----- the organisation, with type-ahead from the organisations already listed -----
-    function orgQuestion(k, label, hint, val) {
-      const listId = id('orgs');
-      const input = el('input', { id: id(k), type: 'text', list: listId, autocomplete: 'off', 'aria-describedby': id(k) + '-hint ' + id(k) + '-match' });
-      input.value = val || '';
-      const names = list(opts.organisations);
-      const match = el('p', { class: 'hint lf-match', id: id(k) + '-match' });
-      const upd = () => {
-        const v = input.value.trim();
-        match.textContent = !v ? '' : names.includes(v) ? 'This is an organisation we already list.' : 'This will be added as a new organisation.';
-      };
-      input.addEventListener('input', upd);
-      upd();
-      const box = el('div', { class: 'lf-field', 'data-key': k },
-        el('label', { for: id(k), text: label + ' (mandatory)' }), el('p', { class: 'hint', id: id(k) + '-hint', text: hint }), input,
-        el('datalist', { id: listId }, names.map((n) => el('option', { value: n }))), match, changedTag());
-      return { box, read: () => input.value.trim() };
+    // ===== Team only =====
+    if (team) {
+      reg('areas', checksQuestion('areas', 'Where it runs', 'The towns where it has a base or runs sessions. Tick "Kirklees-wide" if anyone in Kirklees can use it, and "Online" if it can be done online or by phone. This is not where people must live (that is "Who can use it, by where they live").', list(choices.areas), null, values.areas));
+      reg('level', (() => { const sel = el('select', { id: id('level') }, list(choices.level).map((c) => el('option', { value: c, text: LEVEL[c] || c }))); sel.value = values.level || list(choices.level)[0] || ''; return { box: el('div', { class: 'lf-field', 'data-key': 'level' }, el('label', { for: sel.id, text: 'Level' }), sel, changedTag()), read: () => sel.value }; })());
+      reg('reviewCycle', (() => { const sel = el('select', { id: id('reviewCycle') }, list(choices.reviewCycle).map((c) => el('option', { value: c, text: c }))); sel.value = values.reviewCycle || list(choices.reviewCycle)[0] || ''; return { box: el('div', { class: 'lf-field', 'data-key': 'reviewCycle' }, el('label', { for: sel.id, text: 'Review cycle' }), sel, changedTag()), read: () => sel.value }; })());
+      const bool = (k, label, hint, def) => { const cb = el('input', { type: 'checkbox', id: id(k), checked: values[k] === undefined ? def : values[k] === true }); return { box: el('div', { class: 'lf-field lf-bool', 'data-key': k }, el('label', { for: id(k) }, cb, ' ' + label), hintP(hint), changedTag()), read: () => cb.checked }; };
+      reg('hwlFunded', bool('hwlFunded', 'Healthy Working Life funded (this service only; never the organisation)', '', false));
+      reg('mapLinks', bool('mapLinks', 'Show map and directions buttons on the card', 'Untick for a confidential venue.', true));
+      reg('logo', textQuestion('logo', 'Logo file', 'A file name in site/img/logos/, such as example.webp. Leave empty for none.', {}, values.logo));
+      reg('requiresMention', linesQuestion('requiresMention', 'Only shown when the person mentions', 'Words or patterns, one per line. Leave empty for most services.', values.requiresMention, { empty: true, aria: 'Word or pattern' }));
+      reg('notes', textQuestion('notes', 'Team notes', 'For the team only. Never shown on the cards or sent to the AI.', { area: true }, values.notes));
+      const t = el('section', { class: 'lf-section lf-team' }, el(H, { text: 'Team only' }), boxes.areas, boxes.level, boxes.reviewCycle, boxes.hwlFunded, boxes.mapLinks, boxes.logo, boxes.requiresMention, boxes.notes);
+      parts[2].append(t);
     }
 
-    let projects = null;
-    for (const [title, fields] of sections(mode)) {
-      const sec = el('section', { class: 'lf-section' }, el(H, { text: title }));
-      for (const [k, label, kind, hint, o] of fields) {
-        const v = values[k];
-        let q;
-        if (kind === 'text') q = textQuestion(k, label, hint, o, v);
-        else if (kind === 'area') q = textQuestion(k, label, hint, { ...o, kindArea: true }, v);
-        else if (kind === 'org') q = orgQuestion(k, label, hint, v);
-        else if (kind === 'lines') q = linesQuestion(k, label, hint, v);
-        else if (kind === 'checks') q = checksQuestion(k, label, hint, o, v);
-        else if (kind === 'venues') q = venuesQuestion(k, label, hint, v);
-        else if (kind === 'elig') {
-          const e = eligList(label, hint, values.eligibility, values.gate, false);
-          e.box.dataset.key = 'eligibility';
-          e.box.append(changedTag());
-          q = { box: e.box, read: () => e.read().eligibility };
-          extra.gate = () => e.read().gate;
-          boxes.gate = e.box;
-        } else if (kind === 'yesno') {
-          const sel = el('select', { id: id(k), 'aria-describedby': hint ? id(k) + '-hint' : null }, el('option', { value: 'yes', text: 'Yes' }), el('option', { value: 'no', text: 'No, not at the moment' }));
-          sel.value = v === false ? 'no' : 'yes';
-          q = { box: el('div', { class: 'lf-field', 'data-key': k }, el('label', { for: id(k), text: label }), hint ? el('p', { class: 'hint', id: id(k) + '-hint', text: hint }) : null, sel, changedTag()), read: () => sel.value === 'yes' };
-        } else if (kind === 'select') {
-          const sel = el('select', { id: id(k) }, list(choices[o.choices]).map((c) => el('option', { value: c, text: (o.labels && o.labels[c]) || c })));
-          sel.value = v || list(choices[o.choices])[0] || '';
-          q = { box: el('div', { class: 'lf-field', 'data-key': k }, el('label', { for: id(k), text: label }), sel, changedTag()), read: () => sel.value };
-        } else if (kind === 'bool') {
-          const cb = el('input', { type: 'checkbox', id: id(k), checked: v === undefined ? Boolean(o.default) : v === true });
-          q = { box: el('div', { class: 'lf-field lf-bool', 'data-key': k }, el('label', { for: id(k) }, cb, ' ' + label), hint ? el('p', { class: 'hint', text: hint }) : null, changedTag()), read: () => cb.checked };
-        } else if (kind === 'self') {
-          const sr = v || { allowed: 'tbc', note: '' };
-          const sel = el('select', { id: id('sr-allowed') }, list(choices.selfReferral).map((c) => el('option', { value: c, text: SELF[c] || c })));
-          sel.value = sr.allowed;
-          const note = el('input', { id: id('sr-note'), type: 'text', 'aria-describedby': id('sr-note') + '-hint' });
-          note.value = sr.note || '';
-          const url = el('input', { id: id('sr-url'), type: 'url' });
-          url.value = sr.url || '';
-          q = {
-            box: el('fieldset', { class: 'lf-field lf-checks' + (tbc(sr) ? ' tbc' : ''), 'data-key': 'selfReferral' }, el('legend', { text: label }),
-              el('div', { class: 'lf-field' }, el('label', { for: sel.id, text: 'Can they?' }), sel),
-              el('div', { class: 'lf-field' }, el('label', { for: note.id, text: 'A few words about it (mandatory)' }), el('p', { class: 'hint', id: id('sr-note') + '-hint', text: 'For example "Fill in the form on our website" or "Through a work coach only".' }), note),
-              el('div', { class: 'lf-field' }, el('label', { for: url.id, text: 'Referral or application form link (if there is one)' }), url),
-              changedTag()),
-            read: () => { const o2 = { allowed: sel.value, note: note.value.trim() }; if (url.value.trim()) o2.url = url.value.trim(); return o2; },
-          };
-        } else if (kind === 'projects') {
-          q = projects = projectsQuestion(label, hint, v);
-        }
-        boxes[k] = q.box;
-        readers[k] = q.read;
-        sec.append(q.box);
-      }
-      root.append(sec);
+    // ---------- where each answer came from ----------
+    const answers = values.answers || {};
+    for (const k of LABELLED) {
+      const box = boxes[k];
+      if (!box) continue;
+      const lab = labelOf(k === 'age' ? 'age' : k);
+      if (lab !== 'found' && lab !== 'unknown') continue;
+      if (lab === 'unknown' && !(k in MUST_ANSWER) && team) continue;
+      const src = answers[k] && answers[k].source;
+      const tag = el('p', { class: 'lf-label lf-label-' + lab },
+        lab === 'found' ? 'Found on your website' : 'Unknown: please answer',
+        lab === 'found' && src ? el('a', { href: src, target: '_blank', rel: 'noopener noreferrer', text: ' (where we found it)' }) : null,
+        lab === 'found' && answers[k] && answers[k].quote ? el('span', { class: 'lf-quote', text: ' "' + answers[k].quote + '"' }) : null);
+      const lead = box.querySelector(':scope > legend, :scope > label, :scope > .lf-lab');
+      if (lead) lead.after(tag); else box.prepend(tag);
+      box.classList.add('lf-is-' + lab);
     }
+
+    // ---------- the parts, one at a time on the partner page ----------
+    const steps = el('nav', { class: 'lf-steps', 'aria-label': 'Parts of the form' });
+    let current = 1;
+    function show(n) {
+      current = Math.max(1, Math.min(3, n));
+      if (!opts.stepped) return;
+      parts.forEach((p, i) => { p.hidden = i + 1 !== current; });
+      for (const b of steps.querySelectorAll('button')) b.setAttribute('aria-current', Number(b.dataset.part) === current ? 'step' : 'false');
+    }
+    if (opts.stepped) {
+      steps.append(...PARTS.map((t, i) => el('button', { type: 'button', class: 'lf-step', 'data-part': String(i + 1), text: i + 1 + '. ' + t, onclick: () => { show(i + 1); steps.scrollIntoView({ block: 'start' }); } })),
+        el('p', { class: 'hint lf-steps-note', text: 'Click any part to go back to it at any time. Nothing is sent until you press "Send" at the end.' }));
+      root.append(steps);
+      parts.forEach((p, i) => {
+        const nav = el('div', { class: 'lf-partnav' },
+          i > 0 ? small({ text: 'Back to part ' + i, onclick: () => { show(i); steps.scrollIntoView({ block: 'start' }); } }) : el('span'),
+          i < 2 ? el('button', { type: 'button', class: 'btn primary', text: 'Next: ' + PARTS[i + 1].toLowerCase(), onclick: () => { show(i + 2); steps.scrollIntoView({ block: 'start' }); } }) : null);
+        p.append(nav);
+      });
+    } else {
+      parts.forEach((p, i) => p.prepend(el('p', { class: 'lf-part-title', text: 'Part ' + (i + 1) + ': ' + PARTS[i] })));
+    }
+    root.append(...parts);
+    showTowns(); showHealth(); showWork(); showGroups(); showRef(); showAbove();
+    show(1);
     if (opts.onChange) { root.addEventListener('input', opts.onChange); root.addEventListener('change', opts.onChange); }
 
     // Every answer, in the same shape as the data. Empty optional details are null.
-    const NULLABLE = ['age', 'phone', 'webpage', 'email', 'cost', 'languages', 'coachNotes', 'notes', 'organisationOverview', 'logo'];
+    const NULLABLE = ['age', 'phone', 'webpage', 'email', 'cost', 'languages', 'coachNotes', 'notes', 'organisationOverview', 'logo', 'healthNote', 'partners', 'ageMin', 'ageMax', 'residence', 'work', 'referral'];
     function read() {
       const out = {};
       for (const [k, r] of Object.entries(readers)) out[k] = r();
-      for (const [k, r] of Object.entries(extra)) out[k] = r();
-      for (const k of NULLABLE) if (k in out && !out[k]) out[k] = null;
+      for (const k of NULLABLE) if (k in out && (out[k] === '' || out[k] === undefined || (Array.isArray(out[k]) && !out[k].length))) out[k] = null;
       if ('requiresMention' in out && !out.requiresMention.length) out.requiresMention = null;
       if ('venues' in out && !out.venues.length) out.venues = null;
+      if (out.referral && out.referral.who === undefined) delete out.referral.who;
       return out;
     }
     function changes() {
@@ -631,67 +951,104 @@
       const ch = {};
       for (const [k, v] of Object.entries(now)) {
         const was = original[k] === undefined && k === 'mapLinks' ? true : original[k];
-        // The essential lines are a set: the same lines in a different order (the form lists them in eligibility
-        // order) is not a change.
+        // The essential lines are a set: the same lines in a different order is not a change.
         if (k === 'gate' && Array.isArray(was) && Array.isArray(v) && norm([...was].sort()) === norm([...v].sort())) continue;
         if (norm(was) !== norm(v)) ch[k] = v;
       }
       return ch;
     }
     function mark(ch) {
+      const seen = new Set();
       for (const [k, box] of Object.entries(boxes)) {
-        const on = k in ch || (k === 'eligibility' && 'gate' in ch);
+        if (seen.has(box)) continue;
+        seen.add(box);
+        const keys = Object.entries(boxes).filter(([, b]) => b === box).map(([x]) => x);
+        const on = keys.some((x) => x in ch);
         box.classList.toggle('changed', on);
         const tag = box.querySelector(':scope > .changed-tag');
         if (tag) tag.hidden = !on;
       }
     }
+    // Shows the part holding an element (for a problem to go back to).
+    function reveal(node) {
+      const p = node && node.closest && node.closest('.lf-part');
+      if (p) show(Number(p.dataset.part));
+      let d = node && node.closest && node.closest('details');
+      while (d) { d.open = true; d = d.parentElement && d.parentElement.closest('details'); }
+    }
 
     // The first problem, in plain words, with the box to go back to. Character limits only apply to text that has
     // changed: longer text already in the data is kept as it is.
     function check() {
+      const p = firstProblem();
+      if (p && p.el) reveal(p.el);
+      return p;
+    }
+    function firstProblem() {
       const now = read();
       const q = (k) => boxes[k] && boxes[k].querySelector('input, textarea, select');
       const need = (k, what) => ({ message: what, el: q(k) });
       if (!now.organisation) return need('organisation', 'Please give the name of the organisation.');
       if (!now.name) return need('name', 'Please give the name of the service.');
-      if (!now.whoFor) return need('whoFor', 'Please say who your service is for.');
-      if (!now.workExperience) return need('workExperience', 'Please say whether it includes volunteering or work experience (for example "No").');
-      if (now.webpage && !/^https?:\/\/\S+$/.test(now.webpage)) return need('webpage', "The website needs to start with https:// (copy it from your browser's address bar).");
-      if (now.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(now.email)) return need('email', "The email address doesn't look right.");
-      for (const [k, limit, what] of [['whoFor', L.LIMITS.whoFor, 'Who your service is for'], ['organisationOverview', L.LIMITS.orgOverview, 'The organisation overview'], ['coachNotes', L.LIMITS.coachNotes, '"Anything coaches should know"']]) {
+      if (!now.whoFor) return need('whoFor', "Please say who it's for, in a sentence or two.");
+      for (const [k, limit, what] of [['whoFor', L.LIMITS.whoFor, "Who it's for"], ['organisationOverview', L.LIMITS.orgOverview, 'What your organisation does'], ['coachNotes', L.LIMITS.coachNotes, '"Anything coaches should know"']]) {
         if (now[k] && now[k].length > limit && now[k] !== original[k]) return need(k, `${what} is too long: please keep it to ${limit} characters.`);
       }
       if (now.organisationOverview && now.organisationOverview !== original.organisationOverview && /healthy\s+working\s+life|\bhwl\b/i.test(now.organisationOverview)) return need('organisationOverview', "The organisation overview describes the whole organisation, so please don't mention Healthy Working Life there. It is shown on each service that is part of it.");
-      if (!now.referralRoutes.length) return need('referralRoutes', 'Please give at least one way people are referred or apply.');
-      if (!now.selfReferral.note) return { message: 'Please say a few words about whether people can refer themselves.', el: boxes.selfReferral.querySelector('input[type=text]') };
-      if (!now.audience.length) return need('audience', 'Please tick at least one box under "Who do you work with?".');
+      if (list(now.partners).includes(now.organisation)) return { message: 'The lead organisation is already given above. Please only list the other organisations as partners.', el: partners.first() };
+      if (!team) for (const [k, m] of Object.entries(MUST_ANSWER)) if (!now[k]) return { message: m, el: boxes[k].querySelector('input') };
+      if (where.get() === 'parts' && !towns.read().length) return { message: 'Please tick which parts of Kirklees.', el: towns.box.querySelector('input') };
+      if (health.get() === 'specific' && !healthTicks.read().length && !healthNote.read()) return { message: 'Please tick which health conditions, or write them in.', el: healthTicks.box.querySelector('input') };
+      if (work.get() === 'yes' && !workTicked().length) return { message: 'Please tick at least one work situation.', el: workTicks.querySelector('input') };
+      if (!noAge.checked && now.ageMin != null && now.ageMax != null && now.ageMax < now.ageMin) return { message: 'The "up to" age is lower than the "from" age.', el: ageMax };
+      if (!team && !noAge.checked && ageMin.value === '' && ageMax.value === '' && !String(now.age || '').trim()) return { message: 'Please give an age range, or tick "No age limit".', el: ageMin };
+      if (priority.get() === 'yes' && !groupTicks.read().length) return { message: 'Please tick the priority groups, or choose "No".', el: groupTicks.box.querySelector('input') };
+      if (!list(now.audience).length) return need('audience', 'Please tick at least one box under "Who uses it?".');
+      if (now.webpage && !/^https?:\/\/\S+$/.test(now.webpage)) return need('webpage', "The website needs to start with https:// (copy it from your browser's address bar).");
+      if (now.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(now.email)) return need('email', "The email address doesn't look right.");
+      if (refNeeded.get() === 'yes' && !refWho.get()) return { message: 'Please say who can make a referral.', el: refWho.first() };
+      if (refNeeded.get() === 'yes' && refWho.get() === 'professional' && !profs.read()) return { message: 'Please say which professionals can refer.', el: profs.input };
+      if (!now.referralRoutes.length && referralNeeded() !== 'no') return { message: 'Please give at least one way to make a referral: a link, an email address or a phone number.', el: routes.first() };
+      if (!now.workExperience) return need('workExperience', 'Please say whether it includes volunteering or work experience (for example "No").');
       const rows = projects.rows();
       const was = new Map(list(original.projects).map((p) => [p.id, p]));
+      if (!team && !projects.multi.get()) return { message: 'Please say whether the service runs more than one separate activity.', el: projects.multi.first() };
       for (const [i, p] of now.projects.entries()) {
-        if (!p.name) return { message: `Please give project ${i + 1} a name.`, el: rows[i]._name };
-        if (!p.overview) return { message: `Please say what happens in "${p.name}".`, el: rows[i]._ov };
+        const fs = rows[i];
+        const label = p.name || 'activity ' + (i + 1);
+        if (!p.overview) return { message: `Please say what happens in "${label}".`, el: fs._ov };
         const old = was.get(p.id);
-        if (p.overview.length > L.LIMITS.projectOverview && !(old && old.overview === p.overview)) return { message: `"What happens" for "${p.name}" is too long: please keep it to ${L.LIMITS.projectOverview} characters.`, el: rows[i]._ov };
-      }
-      for (const g of root.querySelectorAll('.lf-group')) {
-        if (g._nameInput && !g._nameInput.value.trim()) return { message: 'Please give each group or cohort a name, such as "Cohort 1: ages 18 to 24".', el: g._nameInput };
+        if (p.overview.length > L.LIMITS.projectOverview && !(old && old.overview === p.overview)) return { message: `"What happens" for "${label}" is too long: please keep it to ${L.LIMITS.projectOverview} characters.`, el: fs._ov };
+        if (!team && !fs._runs.querySelector('input:checked')) return { message: `Please tick how "${label}" runs.`, el: fs._runs.querySelector('input') };
+        if (!team && !fs._open.get()) return { message: `Please say whether "${label}" is open to everyone the service is for.`, el: fs._open.first() };
+        if (!team && !fs._cohorts.get()) return { message: `Please say whether "${label}" has different cohorts.`, el: fs._cohorts.first() };
+        for (const c of fs._cohortHolder.children) {
+          if (fs._cohorts.get() !== 'yes') break;
+          if (!c._name.value.trim()) return { message: 'Please give each cohort a name, such as "Cohort 1: ages 18 to 24".', el: c._name };
+          if (!team && !c._open.get()) return { message: `Please say whether "${c._name.value.trim()}" is open to everyone the activity is for.`, el: c._open.first() };
+          const a = ageNumbers(c._age.get());
+          if (a && c._open.get() === 'no' && !noAge.checked) {
+            if (now.ageMin != null && a.min != null && a.min < now.ageMin) return { message: `"${c._name.value.trim()}" starts at a younger age than the service (${now.ageMin}). A cohort can only narrow who it's for.`, el: c._age.input };
+            if (now.ageMax != null && a.max != null && a.max > now.ageMax) return { message: `"${c._name.value.trim()}" goes above the service's age (${now.ageMax}). A cohort can only narrow who it's for.`, el: c._age.input };
+          }
+        }
       }
       for (const pk of allPickers) {
+        if (pk.node.closest('[hidden]')) continue;
         const pr = pk.problem();
         if (pr) return pr;
       }
       const order = L.checkParts(now.projects);
-      if (order.length) return { message: order[0].replace(/^(Project|Session) id .*used twice.*$/, 'Two projects or sessions have the same name. Please make them different.') + '.', el: boxes.projects };
-      if (mode === 'team') {
-        if (!now.areas.length) return need('areas', 'Please tick at least one box under "Where it runs".');
-        if (!now.categories.length) return need('categories', 'Please tick at least one category.');
+      if (order.length) return { message: order[0].replace(/^(Project|Session) id .*used twice.*$/, 'Two activities or cohorts have the same name. Please make them different.').replace(/stops taking referrals before it starts/, 'stops taking referrals before it starts taking them') + '.', el: boxes.projects.querySelector('input, textarea') };
+      if (team) {
+        if (!list(now.areas).length) return need('areas', 'Please tick at least one box under "Where it runs".');
+        if (!list(now.categories).length) return need('categories', 'Please tick at least one kind of support.');
       }
       return null;
     }
 
-    return { node: root, read, changes, check, mark, boxes, addProject: () => projects.addNew() };
+    return { node: root, parts, read, changes, check, mark, show, boxes, addProject: () => projects.addNew() };
   }
 
-  globalThis.LISTING_FORM = { build, sections, HEALTH, AUDIENCE, SELF, DATE_LABEL };
+  globalThis.LISTING_FORM = { build, HEALTH, AUDIENCE, SELF, DATE_LABEL, PARTS, ageNumbers };
 })();

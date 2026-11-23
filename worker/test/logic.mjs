@@ -498,6 +498,17 @@ check('edits: bad website refused', /website/i.test(await editErr({ webpage: 'ww
 check('edits: bad email refused', /email/i.test(await editErr({ email: 'nope' })));
 check('edits: empty name refused', /can't be empty/.test(await editErr({ name: '  ' })));
 check('edits: categories need at least one', /at least one/.test(await editErr({ categories: [] })));
+{
+  // The new answers from the redesigned form.
+  const ok = async (changes) => { const x = await logCall('PUT', '/log/edits/kbop', { ...goodEdit, changes }); return x.status === 200 ? x.body.item.changes : x.body; };
+  const c = await ok({ residence: { scope: 'parts', areas: ['Dewsbury', 'Batley'] }, work: { needed: 'yes', situations: ['benefits', 'inactive'], benefits: ['Universal Credit, any'], detail: 'On a zero-hours contract' }, referral: { needed: 'yes', who: 'professional', professionals: 'GP' }, partners: ['Dalton Together'], ageMin: 18, ageMax: null, healthNote: 'Arthritis' });
+  check('edits: the new answers are cleaned and kept (towns and situations in the usual order)', JSON.stringify(c.residence) === '{"scope":"parts","areas":["Batley","Dewsbury"]}' && c.work.situations.join() === 'inactive,benefits' && c.referral.professionals === 'GP' && c.partners[0] === 'Dalton Together' && c.ageMin === 18 && c.ageMax === null && c.healthNote === 'Arthritis', JSON.stringify(c));
+  check('edits: "certain parts" needs the towns', /which parts/.test(await editErr({ residence: { scope: 'parts' } })));
+  check('edits: a work situation of "yes" needs a tick', /at least one work situation/.test(await editErr({ work: { needed: 'yes', situations: [] } })));
+  check('edits: "only a professional" needs to say which', /which professionals/.test(await editErr({ referral: { needed: 'yes', who: 'professional' } })));
+  check('edits: an age must be a whole number', /whole number/.test(await editErr({ ageMin: '18+' })));
+  check('edits: where answers came from is checked', /isn't right/.test(await editErr({ answers: { whoFor: { label: 'maybe' } } })) && (await ok({ answers: { whoFor: { label: 'found', source: 'https://example.org', quote: 'For adults' } } })).answers.whoFor.label === 'found');
+}
 check('edits: each project needs an overview', /overview/.test(await editErr({ projects: [{ id: 'x', name: 'x', overview: '' }] })));
 // Projects, sessions, venues and dates.
 const proj = (o = {}) => ({ id: 'job-club', name: 'Job club', overview: 'CV help.', ...o });
@@ -569,7 +580,8 @@ r = await logCall('POST', '/log/provider-links', { id: liveSvc.id, contact: 'Sam
 check('plinks: making one needs the passcode', r.status === 401);
 r = await provCall('GET', tok);
 check('plinks: provider sees the service, the contact name and the choices', r.status === 200 && r.body.service.id === liveSvc.id && r.body.contact === 'Sam Provider' && r.body.choices.healthFocus.includes('any') && r.body.organisations.length > 100 && r.body.lastReply === null, JSON.stringify(r.body).slice(0, 200));
-check('plinks: provider doesn\'t see provenance, listing, trigger words or team notes', !('provenance' in r.body.service) && !('listing' in r.body.service) && !('requiresMention' in r.body.service) && !('notes' in r.body.service) && !('categories' in r.body.service));
+check('plinks: provider doesn\'t see provenance, listing, trigger words or team notes', !('provenance' in r.body.service) && !('listing' in r.body.service) && !('requiresMention' in r.body.service) && !('notes' in r.body.service) && !('areas' in r.body.service));
+check('plinks: provider sees the kinds of support (categories) and the listing\'s own label', Array.isArray(r.body.service.categories) && r.body.choices.categories.includes('Mental health') && ['found', 'confirmed'].includes(r.body.listingLabel));
 r = await provCall('GET', tok, null, { origin: null });
 check('plinks: needs the page origin', r.status === 403);
 r = await provCall('GET', 'x'.repeat(32));
@@ -584,7 +596,7 @@ r = await provCall('POST', tok, { changes: { phone: '01484 222222', eligibility:
 check('plinks: provider can send changes', r.status === 200);
 r = await provCall('POST', tok, { changes: { level: 'national' } });
 check('plinks: provider can\'t change team-only fields', r.status === 400 && /can't be changed/.test(r.body.error));
-for (const k of ['areas', 'categories', 'notes', 'hwlFunded']) {
+for (const k of ['areas', 'notes', 'hwlFunded', 'answers']) {
   r = await provCall('POST', tok, { changes: { [k]: k === 'hwlFunded' ? true : k === 'notes' ? 'x' : ['Batley'] } });
   check('plinks: provider can\'t change ' + k, r.status === 400 && /can't be changed/.test(r.body.error));
 }
@@ -720,6 +732,16 @@ check('new: discard', r.status === 200 && Object.keys((await logCall('GET', '/lo
   check('apply provider check: older edits recognised from their note', kb3.provenance.providerChecked === '2030-01-07', JSON.stringify(kb3.provenance));
   check('apply provider check: summary says so', /confirmed by the provider/.test(outP), outP);
   check('apply provider check: running again changes nothing', /0 services with edited details, 2 already up to date/.test(run()), run());
+  check('apply provider check: no changes leaves no per-answer labels (all confirmed)', !('answers' in ac2));
+  // A provider's changes: those answers are marked "changed", earlier "found online" marks are dropped.
+  const acNow = JSON.parse(fs.readFileSync(path.join(d, 'acas-helpline.json'), 'utf8'));
+  fs.writeFileSync(path.join(d, 'acas-helpline.json'), JSON.stringify({ ...acNow, answers: { whoFor: { label: 'found', source: 'https://example.org' } } }, null, 2) + '\n');
+  fs.writeFileSync(inp, JSON.stringify({ edits: {
+    'acas-helpline': { changes: { residence: { scope: 'kirklees' }, cost: 'Free' }, before: {}, note: 'From Jo (provider) using a verify link.', by: 'PL', checked: true, checkedWith: 'provider', t: '2030-02-01T09:00:00Z' },
+  } }));
+  run();
+  const ac3 = JSON.parse(fs.readFileSync(path.join(d, 'acas-helpline.json'), 'utf8'));
+  check('apply provider check: changed answers are labelled "changed", the rest confirmed', JSON.stringify(ac3.answers) === JSON.stringify({ residence: { label: 'changed', date: '2030-02-01' }, cost: { label: 'changed', date: '2030-02-01' } }) && ac3.residence.scope === 'kirklees', JSON.stringify(ac3.answers));
   // new services: created as files, waiting for review unless the team also decided
   const newOne = { ...newSvc(), cost: 'Free', notes: null };
   fs.writeFileSync(inp, JSON.stringify({

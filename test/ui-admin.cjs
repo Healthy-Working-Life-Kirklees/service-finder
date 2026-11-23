@@ -28,6 +28,7 @@ let applyStatus = null; // what GET /log/apply/status returns (null: "Apply chan
 let providerLinks = []; // provider review links (GET /log/provider-links)
 const edits = {}; // edits to details recorded on the All services page
 const added = {}; // new services added on the All services page
+const providerSent = [];
 const orgs = {}; // organisation changes made on the All services page
 const venueEdits = {}; // venue changes made on the All services page
 const mk = (f, status) => {
@@ -113,9 +114,13 @@ async function worker(route) {
     return json({ status: 'results', message: 'Here is a match.', recommendations: [{ id: 'my-way-forward', why: 'Fits your age and situation.', fit: 'possible', check_first: 'Check they are not claiming Universal Credit with a job-search requirement.' }], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: ['aged 20', 'anxious'], follow_up_questions: [] });
   }
 
+  if (url.pathname.startsWith('/provider/') && req.method() === 'POST') {
+    providerSent.push(JSON.parse(req.postData() || '{}'));
+    return json({ ok: true, t: new Date().toISOString() });
+  }
   if (url.pathname.startsWith('/provider/') && req.method() === 'GET') {
     const all = require(path.join(__dirname, '..', 'data', 'services-all.json'));
-    const svc = all.services.find((x) => x.id === 'my-way-forward');
+    const svc = all.services.find((x) => x.id === (url.pathname.includes('bbbb') ? 'acas-helpline' : 'my-way-forward'));
     return json({ service: svc, contact: 'Sam', expires: '2027-01-31T00:00:00Z', lastReply: null, choices: all.choices, organisations: all.organisations, venues: all.venues, otherServices: [] });
   }
   if (url.pathname.startsWith('/log/')) {
@@ -754,42 +759,61 @@ async function worker(route) {
   await page.fill('#ed-new-service-whoFor', 'Anyone in Batley looking for work.');
   await page.check('#ed-new-service-categories input[value="Finding work"]');
   await page.check('#ed-new-service-areas input[value=Batley]');
-  await page.fill('#ed-new-service-referralRoutes', 'Drop in');
-  await page.fill('#ed-new-service-sr-note', 'Just turn up');
+  check('add: the form is in three parts, all on one page for the team', (await page.locator('#add-panel .lf-part').count()) === 3 && (await page.locator('#add-panel .lf-part-title').allTextContents()).join('|') === 'Part 1: The service and who can join|Part 2: Contact and how people get in|Part 3: Activities and timetable' && (await page.locator('#add-panel .lf-steps').count()) === 0);
+  // Who can use it: where they live (certain parts warns who won't see it), health, work situation, age.
+  await page.locator('#ed-new-service-residence input[value=parts]').check();
+  await page.locator('#ed-new-service-residence-areas input[value=Batley]').check();
+  check('add: "certain parts of Kirklees" says who won\'t be shown it', (await page.textContent('#ed-new-service-residence .lf-warn')).includes("won't be shown this service") && (await page.textContent('#ed-new-service-residence .lf-warn')).includes('Dewsbury'));
+  await page.locator('#ed-new-service-work input[value=yes]').check();
+  await page.locator('#ed-new-service-work label:has-text("Claiming certain benefits") input').check();
+  await page.locator('#ed-new-service-work-benefits label:has-text("Universal Credit, any") input').check();
+  await page.fill('#ed-new-service-agemin', '18+');
+  check('add: age boxes take numbers only, and fill in the words for the card', (await page.inputValue('#ed-new-service-agemin')) === '18' && (await page.inputValue('#ed-new-service-age')) === '18+');
+  check('add: eligibility shows the answers from above', (await page.locator('#add-panel .lf-fromabove .lf-above').allTextContents()).join('|') === 'People living in BatleyFrom above|Work situation: Claiming Universal Credit, anyFrom above|Age: 18+From above', (await page.locator('#add-panel .lf-fromabove .lf-above').allTextContents()).join('|'));
+  // How people get in: no referral needed, so the ways in are optional.
+  await page.locator('#ed-new-service-referral input[value=no]').check();
+  check('add: with no referral needed, the box asks how people sign up', (await page.textContent('#add-panel [data-key=referralRoutes] .lf-lab')) === 'How people sign up or book, if they need to' && !(await page.locator('#ed-new-service-referral-who').isVisible()));
+  await page.locator('#add-panel [data-key=referralRoutes] .lf-line input').first().fill('Drop in');
   check('add: the organisation box suggests organisations already listed', (await page.locator('#add-panel datalist option').count()) > 100);
   check('add: a new organisation name is accepted and shown as new', (await page.textContent('#add-panel .lf-match')).includes('new organisation'));
   await page.locator('#add-panel .lf-proj input[type=text]').first().fill('Job club');
   await page.locator('#add-panel .lf-proj textarea').first().fill('CV help and job search.');
-  await page.locator('#add-panel .lf-proj input[type=date]').nth(0).fill('2027-02-01');
-  await page.locator('#add-panel .lf-proj input[type=date]').nth(1).fill('2027-01-01');
+  await page.locator('#add-panel .lf-proj fieldset[data-key=cohorts] input[value=no]').check();
+  await page.locator('#add-panel .lf-plain-block .lf-dates input[type=date]').nth(2).fill('2027-02-01');
+  await page.locator('#add-panel .lf-plain-block .lf-dates input[type=date]').nth(3).fill('2027-01-01');
   await page.fill('#ed-new-service-why', 'Suggested by a work coach');
   await page.click('#add-panel button[type=submit]');
-  check('add: a project that ends before it starts is caught', (await page.textContent('#add-panel .msg')).includes('ends before it starts'), await page.textContent('#add-panel .msg'));
-  await page.locator('#add-panel .lf-proj input[type=date]').nth(1).fill('');
-  check('add: the timetable shows once "At set times and places" is ticked', !(await page.locator('#add-panel .lf-sessions-box').isVisible()));
+  check('add: an activity that ends before it starts is caught', (await page.textContent('#add-panel .msg')).includes('ends before it starts'), await page.textContent('#add-panel .msg'));
+  await page.locator('#add-panel .lf-plain-block .lf-dates input[type=date]').nth(3).fill('');
+  check('add: the timetable shows once "At set times and places" is ticked', !(await page.locator('#add-panel .lf-plain-block .lf-sessions-box').isVisible()));
   await page.locator('#add-panel .lf-runs label:has-text("At set times and places") input').check();
-  check('add: ...with a first session ready to fill in', await page.locator('#add-panel .lf-sessions-box').isVisible() && (await page.locator('#add-panel .lf-session').count()) === 1);
+  check('add: ...with a first time and place ready to fill in', await page.locator('#add-panel .lf-plain-block .lf-sessions-box').isVisible() && (await page.locator('#add-panel .lf-session').count()) === 1);
   const sess = page.locator('#add-panel .lf-session').first();
-  await sess.getByLabel('Name, if it has one', { exact: true }).fill('Tuesday group');
-  await sess.getByLabel('Venue', { exact: true }).fill('Batley Library');
-  check('add: a venue we don\'t list asks for its address and postcode', await sess.locator('.lf-newvenue').isVisible() && (await sess.getByLabel('Venue name', { exact: true }).inputValue()) === 'Batley Library');
+  await sess.getByLabel('Place', { exact: true }).fill('Batley Library');
+  check('add: a place we don\'t list asks for its address and postcode', await sess.locator('.lf-newvenue').isVisible() && (await sess.getByLabel('Name of the place', { exact: true }).inputValue()) === 'Batley Library');
   await sess.getByLabel('Address', { exact: true }).fill('Market Place, Batley');
-  await sess.getByLabel('Postcode', { exact: true }).fill('WF17');
+  await sess.getByLabel('Full postcode', { exact: true }).fill('WF17');
   await sess.locator('.lf-days label:has-text("Tue") input').check();
   await sess.getByLabel('From', { exact: true }).fill('10:00');
   await sess.getByLabel('Until', { exact: true }).fill('12:00');
+  check('add: "How often" starts at every week', (await sess.getByLabel('How often', { exact: true }).inputValue()) === 'weekly');
   await page.click('#add-panel button[type=submit]');
-  check('add: a new venue needs its full postcode', (await page.textContent('#add-panel .msg')).includes('full postcode'), await page.textContent('#add-panel .msg'));
-  await sess.getByLabel('Postcode', { exact: true }).fill('wf17 5da');
-  // A group or cohort: who it's for first, and it needs a name.
-  await page.locator('#add-panel button:text-is("Add a group or cohort")').click();
-  const grp = page.locator('#add-panel .lf-group').first();
-  check('add: "Add a group or cohort" asks for its name and age first', (await grp.locator('legend').first().textContent()) === 'Group or cohort' && await grp.getByLabel('Age for this group', { exact: true }).isVisible());
+  check('add: a new place needs its full postcode', (await page.textContent('#add-panel .msg')).includes('full postcode'), await page.textContent('#add-panel .msg'));
+  await sess.getByLabel('Full postcode', { exact: true }).fill('wf17 5da');
+  // Cohorts: each needs a name; it is labelled with it.
+  await page.locator('#add-panel .lf-proj fieldset[data-key=cohorts] input[value=yes]').check();
+  const grp = page.locator('#add-panel .lf-cohort').first();
+  check('add: "Are there different cohorts?" Yes adds a cohort', (await page.locator('#add-panel .lf-cohort').count()) === 1 && (await grp.locator('legend').first().textContent()) === 'Cohort' && !(await page.locator('#add-panel .lf-plain-block').isVisible()));
   await page.click('#add-panel button[type=submit]');
-  check('add: a group needs a name', (await page.textContent('#add-panel .msg')).includes('give each group or cohort a name'), await page.textContent('#add-panel .msg'));
-  await grp.getByLabel('Name of the group (mandatory)', { exact: true }).fill('Cohort 1: ages 18 to 24');
-  check('add: the group is labelled with its name', (await grp.locator('legend').first().textContent()) === 'Group or cohort: Cohort 1: ages 18 to 24');
-  await grp.locator('button:text-is("Remove this group")').click();
+  check('add: a cohort needs a name', (await page.textContent('#add-panel .msg')).includes('give each cohort a name'), await page.textContent('#add-panel .msg'));
+  await grp.getByLabel('Name of the cohort (mandatory)', { exact: true }).fill('Cohort 1: ages 18 to 24');
+  check('add: the cohort is labelled with its name', (await grp.locator('legend').first().textContent()) === 'Cohort: Cohort 1: ages 18 to 24');
+  await grp.locator('fieldset[data-key=cohort-open] input[value=no]').check();
+  await grp.getByLabel('Age for this cohort', { exact: true }).fill('16 to 24');
+  await page.click('#add-panel button[type=submit]');
+  check('add: a cohort can only narrow the service\'s age', (await page.textContent('#add-panel .msg')).includes('can only narrow'), await page.textContent('#add-panel .msg'));
+  await grp.locator('button:text-is("Remove this cohort")').click();
+  await page.locator('#add-panel .lf-proj fieldset[data-key=cohorts] input[value=no]').check();
   await page.fill('#ed-new-service-why', 'Suggested by a work coach');
   await page.click('#add-panel button[type=submit]');
   check('add: warns about a possible duplicate first', (await page.textContent('#add-panel .msg')).includes('may already be listed') && (await page.textContent('#add-panel .msg')).includes('Acas helpline'), await page.textContent('#add-panel .msg'));
@@ -798,7 +822,9 @@ async function worker(route) {
   await page.waitForSelector('#svc-batley-job-club');
   check('add: saved to the Worker as a whole service', added['batley-job-club'] && added['batley-job-club'].service.areas.join() === 'Batley' && added['batley-job-club'].service.name === 'Batley Job Club');
   const np = added['batley-job-club'].service.projects;
-  check('add: the project and session are saved with ids made from their names, the start date, the day and times, and the new venue written out', np.length === 1 && np[0].id === 'job-club' && np[0].runsFrom === '2027-02-01' && !np[0].runsTo && np[0].runs.join() === 'set' && JSON.stringify(np[0].sessions) === JSON.stringify([{ id: 'tuesday-group', name: 'Tuesday group', venue: { name: 'Batley Library', address: 'Market Place, Batley', postcode: 'WF17 5DA' }, days: ['tue'], start: '10:00', end: '12:00' }]), JSON.stringify(np));
+  check('add: the activity and time and place are saved with ids made from their names, the start date, the day and times, and the new place written out', np.length === 1 && np[0].id === 'job-club' && np[0].runsFrom === '2027-02-01' && !np[0].runsTo && np[0].runs.join() === 'set' && JSON.stringify(np[0].sessions) === JSON.stringify([{ id: 'batley-library-tue', venue: { name: 'Batley Library', address: 'Market Place, Batley', postcode: 'WF17 5DA' }, days: ['tue'], start: '10:00', end: '12:00' }]), JSON.stringify(np));
+  const ns = added['batley-job-club'].service;
+  check('add: the new answers are saved: where they live, work situation, age and referral', JSON.stringify(ns.residence) === '{"scope":"parts","areas":["Batley"]}' && JSON.stringify(ns.work) === '{"needed":"yes","situations":["benefits"],"benefits":["Universal Credit, any"]}' && ns.ageMin === 18 && ns.ageMax === null && ns.age === '18+' && JSON.stringify(ns.referral) === '{"needed":"no"}' && ns.selfReferral.allowed === 'yes', JSON.stringify({ r: ns.residence, w: ns.work, a: [ns.ageMin, ns.ageMax, ns.age], rf: ns.referral, sr: ns.selfReferral }));
   check('add: listed as new, with the "new" filter on', (await page.locator('.svc').count()) === 1 && (await page.inputValue('#f-listing')) === 'new' && (await page.locator('#svc-batley-job-club .pill.blue', { hasText: 'New: not yet in the data' }).count()) === 1);
   check('add: can be decided on like any other', (await page.locator('#svc-batley-job-club .decide input[type=radio]').count()) === 3);
   await page.check('#svc-batley-job-club input[value=include]');
@@ -1199,6 +1225,48 @@ async function worker(route) {
   await page.locator('.pc-form textarea, .pc-form input[type=text]').first().dispatchEvent('input');
   await page.waitForTimeout(200);
   check('partner page: with unsent changes, the different-service section says to send them first', await page.locator('.pc-unsent').isVisible());
+  {
+    // The three parts, one at a time; where answers came from; questions that must be answered; the draft.
+    await page.evaluate(() => localStorage.clear());
+    await page.goto(ON + '/provider-check.html#' + 'b'.repeat(32));
+    await page.reload(); // only the # changed, so load the page again
+    await page.waitForSelector('#pc-app:not([hidden])');
+    const visibleParts = async () => page.locator('.lf-part:visible').evaluateAll((ps) => ps.map((p) => p.dataset.part).join());
+    check('partner form: three parts, one shown at a time, with links between them', (await page.locator('.lf-steps .lf-step').count()) === 3 && (await visibleParts()) === '1' && (await page.locator('.lf-step[aria-current=step]').textContent()) === '1. The service and who can join');
+    check('partner form: answers found online say so, unknown ones ask to be answered', (await page.locator('[data-key=whoFor] .lf-label-found').textContent()).startsWith('Found on your website') && (await page.locator('#pc-residence .lf-label-unknown').textContent()) === 'Unknown: please answer');
+    await page.click('.lf-part[data-part="1"] .lf-partnav .btn.primary');
+    check('partner form: "Next" goes to part 2', (await visibleParts()) === '2');
+    await page.click('.lf-step[data-part="3"]');
+    check('partner form: the send box is at the end of part 3', (await visibleParts()) === '3' && await page.locator('.pc-send').isVisible());
+    await page.click('.lf-step[data-part="1"]');
+    await page.fill('#pc-whoFor', 'People in Kirklees looking for a way forward.');
+    await page.click('.lf-step[data-part="3"]');
+    await page.click('.pc-send button[type=submit]');
+    check('partner form: sending changes asks for the unknown questions first, and goes back to them', (await page.textContent('.pc-msg')).includes('by where they live') && (await visibleParts()) === '1', await page.textContent('.pc-msg'));
+    await page.waitForTimeout(600);
+    await page.reload();
+    await page.waitForSelector('#pc-app:not([hidden])');
+    check('partner form: a draft is kept on this device and filled in again', (await page.inputValue('#pc-whoFor')) === 'People in Kirklees looking for a way forward.' && (await page.textContent('.pc-draft')).includes("We've filled in the answers you saved"));
+    await page.locator('#pc-residence input[value=kirklees]').check();
+    await page.locator('#pc-work input[value=no]').check();
+    await page.locator('#pc-noage').check();
+    await page.click('.lf-step[data-part="2"]');
+    await page.locator('#pc-referral input[value=yes]').check();
+    await page.locator('#pc-referral-who input[value=professional]').check();
+    await page.fill('#pc-referral-professionals', 'GP or work coach');
+    await page.click('.lf-step[data-part="3"]');
+    const proj = page.locator('.lf-proj').first();
+    for (const k of ['multi']) await page.locator('fieldset[data-key=' + k + '] input[value=no]').check();
+    if (!(await proj.locator('.lf-runs input:checked').count())) await proj.locator('.lf-runs label:has-text("By appointment") input').check();
+    await proj.locator('fieldset[data-key=act-open] input[value=yes]').check();
+    await proj.locator('fieldset[data-key=cohorts] input[value=no]').check();
+    const before = providerSent.length;
+    await page.click('.pc-send button[type=submit]');
+    await page.waitForSelector('.pc-thanks');
+    const got = providerSent[before];
+    check('partner form: sends only what changed, with the new answers', got && got.changes.whoFor === 'People in Kirklees looking for a way forward.' && JSON.stringify(got.changes.residence) === '{"scope":"kirklees"}' && JSON.stringify(got.changes.work) === '{"needed":"no"}' && JSON.stringify(got.changes.referral) === '{"needed":"yes","who":"professional","professionals":"GP or work coach"}' && got.changes.selfReferral.allowed === 'no' && got.changes.age === 'All ages' && !('name' in got.changes), JSON.stringify(got && got.changes));
+    check('partner form: the draft is cleared once sent', await page.evaluate(() => !Object.keys(localStorage).some((k) => k.startsWith('hwl-verify-draft-'))));
+  }
 
   // ---------- the To do list, checking a partner's reply and a suggestion, organisations ----------
   await page.goto(ON + '/admin/');

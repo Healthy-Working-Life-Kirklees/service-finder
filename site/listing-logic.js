@@ -303,6 +303,8 @@
     if (a && LABELS[a.label]) return a.label;
     const v = service ? service[field] : undefined;
     if (field === 'selfReferral' && v && v.allowed === 'tbc') return 'unknown';
+    // An empty list is an answer for these ("no health requirement", "nobody is excluded"), not a gap.
+    if (Array.isArray(v) && !v.length && ['healthFocus', 'exclusions', 'social', 'locations', 'gate'].includes(field)) return listingLabel(service);
     return emptyAnswer(v) ? 'unknown' : listingLabel(service);
   }
   // The order services are listed in when they fit about as well: Healthy Working Life schemes, then services the

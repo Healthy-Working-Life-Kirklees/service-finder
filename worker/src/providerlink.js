@@ -18,7 +18,9 @@ const ID_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const DAY = 86400000;
 // Fields not shown to the provider: they can't change them here and they're about maintaining the data.
 // (Which fields a provider can't change is checker.TEAM_ONLY, in serviceedit.js.)
-const HIDDEN = new Set(['provenance', 'listing', 'requiresMention', 'logo', 'lastUpdated', 'reviewCycle', 'level', 'hwlFunded', 'notes', 'mapLinks', 'areas', 'categories']);
+// "answers" and the provider-checked date are sent (as "labels"), so the page can say which answers were found on their
+// website and which are still unknown.
+const HIDDEN = new Set(['provenance', 'listing', 'requiresMention', 'logo', 'lastUpdated', 'reviewCycle', 'level', 'hwlFunded', 'notes', 'mapLinks', 'areas']);
 
 const clean = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
@@ -110,8 +112,10 @@ export async function handleProvider(request, env, url, cors, originOk, checker,
       expires: link.expires,
       service: shown,
       choices: {
-        audience: enumOf(P.audience), healthFocus: enumOf(P.healthFocus), selfReferral: enumOf(P.selfReferral.properties.allowed), groups: enumOf(P.groups),
+        audience: enumOf(P.audience), healthFocus: enumOf(P.healthFocus), selfReferral: enumOf(P.selfReferral.properties.allowed), groups: enumOf(P.groups), categories: enumOf(P.categories),
       },
+      // Where each answer came from (LISTING.labelOf needs the listing's own label).
+      listingLabel: globalThis.LISTING.listingLabel(service),
       // Every organisation's name, so the form can suggest them as the person types.
       organisations: checker.organisations || [],
       // Every venue already listed (name, address and postcode only), so they can pick one instead of retyping it.
