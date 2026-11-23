@@ -53,6 +53,9 @@
     "allowed": "yes",
     "note": "Request a call back online or go to a drop-in"
   },
+  "referral": {
+    "needed": "no"
+  },
   "projects": [
     {
       "id": "advice-on-money-housing-and-work",
@@ -105,5 +108,13 @@
   },
   "groups": [
     "everyone"
-  ]
+  ],
+  "answers": {
+    "referral": {
+      "label": "found",
+      "source": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationdetails.aspx?orgid=387",
+      "quote": "We no longer answer calls through our Advice Line number, however you can complete and submit the online form and someone will call or email you to discuss your issue.",
+      "date": "2026-11-23"
+    }
+  }
 }

@@ -16,6 +16,9 @@
   ],
   "whoFor": "Workers and employers.",
   "age": null,
+  "residence": {
+    "scope": "anyone"
+  },
   "webpage": "https://www.acas.org.uk/contact/get-advice",
   "email": null,
   "phone": "0300 123 1100",
@@ -39,6 +42,9 @@
   "selfReferral": {
     "allowed": "yes",
     "note": "Phone the helpline or get advice online"
+  },
+  "referral": {
+    "needed": "no"
   },
   "projects": [
     {
@@ -66,5 +72,19 @@
   "listing": {
     "decision": "include",
     "reason": "On the live list since the October 2026 import, before the development team review."
+  },
+  "answers": {
+    "residence": {
+      "label": "found",
+      "source": "https://www.acas.org.uk/contact/get-advice",
+      "quote": "The Acas helpline is for anyone who needs employment law or work advice.",
+      "date": "2026-11-23"
+    },
+    "referral": {
+      "label": "found",
+      "source": "https://www.acas.org.uk/contact/get-advice",
+      "quote": "Contact us for confidential, free advice.",
+      "date": "2026-11-23"
+    }
   }
 }
