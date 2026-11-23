@@ -239,6 +239,15 @@ Thank you,
   };
   function suggestionQuestions(ms, org) {
     const out = [];
+    // The full service form: the person from the service answered the questions in the listing's own shape, so
+    // only the overlap with listings we already have is worth asking about.
+    if (ms.listing) {
+      if (org) {
+        const others = servicesOfOrg(org).filter((s) => orgSimple(s.name) !== orgSimple(ms.name));
+        if (others.length) out.push({ what: 'Other ' + org.name + ' services', said: 'We already list: ' + others.map((s) => s.name).join('; '), why: 'Is it separate from these, or part of one of them?' });
+      }
+      return out;
+    }
     const groups = list(ms.groups);
     const minAge = ageNums(ms.age);
     const under = String(ms.exclusions || '').match(/under\s*(\d{1,2})/i);

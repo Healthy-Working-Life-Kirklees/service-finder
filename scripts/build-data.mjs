@@ -58,13 +58,13 @@ const venueIdsOf = (s) => [...(s.venues || []), ...(s.projects || []).flatMap((p
 const live = services.filter((s) => s.listing && s.listing.decision === 'include');
 const liveVenueIds = new Set(live.flatMap(venueIdsOf));
 const liveVenues = venues.filter((v) => liveVenueIds.has(v.id)).map(({ notes, ...v }) => v);
-fs.writeFileSync(out, JSON.stringify({ ...meta, count: live.length, organisations: orgList, venues: liveVenues, services: live }, null, 2) + '\n');
-// The All services page's edit form offers the same choices the schema allows.
+// The forms (All services in Admin, and the public service form) offer the same choices the schema allows.
 const schema = JSON.parse(fs.readFileSync(path.join(root, 'data', 'schema.json'), 'utf8'));
 const P = schema.properties;
 const choices = {
   level: P.level.enum, reviewCycle: P.reviewCycle.enum, audience: P.audience.items.enum, categories: P.categories.items.enum,
   areas: P.areas.items.enum, healthFocus: P.healthFocus.items.enum, selfReferral: P.selfReferral.properties.allowed.enum, groups: P.groups.items.enum,
 };
+fs.writeFileSync(out, JSON.stringify({ ...meta, count: live.length, choices, organisations: orgList, venues: liveVenues, services: live }, null, 2) + '\n');
 fs.writeFileSync(outAll, JSON.stringify({ ...meta, count: services.length, choices, organisations: orgs, venues, services }, null, 2) + '\n');
 console.log(`Built data/services.json (${live.length} on the live list) and data/services-all.json (all ${services.length}).`);

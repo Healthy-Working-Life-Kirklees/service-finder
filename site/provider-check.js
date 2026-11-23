@@ -197,7 +197,7 @@
       el('p', {}, 'Only use this to tell us about ', el('strong', { text: 'a different service' }), ` from ${s.organisation}, not ${s.name}. It opens a separate form in a new tab and doesn't send anything on this page.`),
       el('p', { text: `To add another activity to ${s.name}, use part 3 of the form above ("Does this service run more than one separate activity?"), then send it with your other changes.` }),
       unsentNote,
-      el('p', {}, el('a', { class: 'btn secondary', href: './?suggest=service&org=' + encodeURIComponent(s.organisation), target: '_blank', rel: 'noopener', text: 'Tell us about a different service (opens in a new tab)' })),
+      el('p', {}, el('a', { class: 'btn secondary', href: './suggest.html?org=' + encodeURIComponent(s.organisation), target: '_blank', rel: 'noopener', text: 'Tell us about a different service (opens in a new tab)' })),
       others.length ? el('p', { text: `We also list these services from ${s.organisation}: ${others.map((x) => x.name).join('; ')}. To check those too, ask the Healthy Working Life team for their links.` }) : null);
     $('#pc-app').replaceChildren(intro, build(true), more);
     refresh();

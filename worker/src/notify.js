@@ -100,10 +100,18 @@ export function buildEmail(entry, names = new Map(), reviewUrl = '') {
     // The fuller details from "Suggest a service", in the order the form asks for them.
     const L = globalThis.LISTING;
     for (const [k, v] of Object.entries(ms)) {
-      if (['name', 'website', 'area', 'role', 'projects'].includes(k)) continue;
+      if (['name', 'website', 'area', 'role', 'projects', 'listing'].includes(k)) continue;
       add(SERVICE_LABELS[k] || k, v === true ? 'Yes' : k === 'groups' ? L.groupNames(v).join(', ') : Array.isArray(v) ? v.join(', ') : v);
     }
     // Last, one project to a line, as they are the longest part.
+    if (ms.listing) {
+      const l = ms.listing;
+      add('Filled in the full service form', 'Yes: open it in Admin to add it as a new service');
+      add('Who it\'s for', l.whoFor);
+      add('Who can use it, by where they live', l.residence && L.residenceWords(l.residence));
+      add('Work situation', l.work && (l.work.needed === 'no' ? 'Any' : L.workWords(l.work)));
+      add('Activities', (l.projects || []).map((p) => p.name).join('; '));
+    }
     const projects = L.suggestedProjectLines(ms.projects);
     if (projects.length) lines.push(SERVICE_LABELS.projects + ':', ...projects.map((p, i) => `  ${i + 1}. ${p}`));
   }

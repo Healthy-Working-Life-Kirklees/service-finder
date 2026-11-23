@@ -48,6 +48,8 @@ const MAX_NOTE = 500;
 const MAX_BODY = 4096;
 // A suggested service with all its details can be longer than other feedback.
 const MAX_BODY_GAP = 16384;
+// A whole listing from the service form (suggest.html): the same shape as a service, so it is bigger.
+const MAX_BODY_LISTING = 60000;
 const RETENTION_MONTHS = 12;
 // The fields each kind of entry may send. Anything else is rejected.
 const ALLOWED = {
@@ -110,7 +112,7 @@ function list(v, allowed, label, { min = 0, max = allowed.length } = {}) {
 export const SERVICE_FIELDS = ['name', 'website', 'area', 'role', 'organisation', 'organisationOverview', 'addTo', 'whoFor', 'open', 'projectName', 'projectOverview', 'where', 'when', 'duration', 'places',
   'runsFrom', 'runsTo', 'referralsFrom', 'referralsUntil', 'age', 'eligibility', 'gate', 'exclusions', 'healthNeed', 'conditions', 'audience', 'categories', 'noMap', 'level', 'phone', 'email', 'social',
   'referral', 'selfReferral', 'cost', 'languages', 'workExperience', 'coachNotes', 'logoOk', 'contactName', 'projects', 'groups',
-  'description', 'activities', 'running', 'dates', 'addresses'];
+  'description', 'activities', 'running', 'dates', 'addresses', 'listing'];
 const SERVICE_TEXT = {
   organisation: 150, organisationOverview: 300, whoFor: 300, projectName: 150, projectOverview: 400, where: 500, when: 150, duration: 150, places: 60,
   age: 60, eligibility: 800, gate: 500, exclusions: 500, conditions: 300, phone: 80, email: 150, social: 300, referral: 600, cost: 200, languages: 200, workExperience: 300,
@@ -348,6 +350,17 @@ export function validateFeedback(body, ctx, { pilot = false } = {}) {
       if (!entry.missedService.role) return { error: 'Please say whether you are from the service or suggesting it.' };
       if (!entry.missedService.organisation) return { error: 'Please give the name of the organisation that runs it.' };
       if (entry.missedService.conditions && entry.missedService.healthNeed !== 'specific') return { error: 'Conditions go with "Yes, a specific condition".' };
+      // A whole listing from the service form, from someone at the service: checked the same way as the team's
+      // own edits (serviceedit.js), leaving out what they left blank. It becomes a new service in Admin.
+      if (ms.listing !== undefined && ms.listing !== null) {
+        if (entry.missedService.role !== 'provider') return { error: 'The full service form is for someone from the service.' };
+        if (!ctx.checker || typeof ms.listing !== 'object' || Array.isArray(ms.listing)) return { error: 'The service details could not be read.' };
+        const blank = (v) => v === null || v === undefined || v === '' || (Array.isArray(v) && !v.length);
+        const filled = Object.fromEntries(Object.entries(ms.listing).filter(([k, v]) => !blank(v) && !ctx.checker.TEAM_ONLY.includes(k)));
+        const r = ctx.checker.checkChanges(filled);
+        if (r.error) return { error: r.error };
+        entry.missedService.listing = r.changes;
+      }
     } else if (entry.reasons.includes('missing-service')) {
       return { error: 'Please give the name of the service.' };
     }
@@ -515,7 +528,8 @@ export async function handleFeedback(request, env, url, cors, originOk, ctx, exe
     if (request.method !== 'POST' || !feedbackOn(env)) return json({ error: 'Not found.' }, 404, cors);
     if (!originOk) return json({ error: 'Not allowed.' }, 403, cors);
     const text = await request.text();
-    if (text.length > MAX_BODY_GAP || (text.length > MAX_BODY && !/"kind"\s*:\s*"gap"/.test(text))) return json({ error: 'That feedback was too large.' }, 413, cors);
+    const limit = /"listing"\s*:\s*\{/.test(text) ? MAX_BODY_LISTING : MAX_BODY_GAP;
+    if (text.length > limit || (text.length > MAX_BODY && !/"kind"\s*:\s*"gap"/.test(text))) return json({ error: 'That feedback was too large.' }, 413, cors);
     if (env.FEEDBACK_LIMITER) {
       const { success } = await env.FEEDBACK_LIMITER.limit({ key: ip });
       if (!success) return json({ error: 'You have sent quite a lot of feedback in a short time. Please wait a minute and try again.' }, 429, cors);

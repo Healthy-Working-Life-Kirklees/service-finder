@@ -71,13 +71,23 @@
     const dl = el('dl', { class: 'facts' });
     for (const [k, lab] of Object.entries(LABELS)) {
       const v = ms[k];
-      if (v == null || v === '' || (Array.isArray(v) && !v.length) || v === false) continue;
+      if (v == null || v === '' || (Array.isArray(v) && !v.length) || v === false || (ms.listing && k in ms.listing)) continue;
       dl.append(el('dt', { text: lab }), el('dd', { text: value(k, v) }));
+    }
+    // The full service form: the whole listing, one line per question answered.
+    if (ms.listing) {
+      for (const [k, v] of Object.entries(ms.listing)) {
+        if (k === 'projects' || k === 'name' || k === 'organisation') continue;
+        const w = F.words(v, k);
+        if (w) dl.append(el('dt', { text: F.FIELD_LABEL[k] || k }), el('dd', {}, ...F.linked(w)));
+      }
+      const ps = list(ms.listing.projects).map(F.projectWords).filter(Boolean);
+      if (ps.length) dl.append(el('dt', { text: 'Activities and timetable' }), el('dd', {}, el('ol', { class: 'mt0' }, ps.map((t) => el('li', { text: t })))));
     }
     const projects = F.LL.suggestedProjectLines(ms.projects);
     if (projects.length) dl.append(el('dt', { text: 'Projects' }), el('dd', {}, el('ol', { class: 'mt0' }, projects.map((t) => el('li', { text: t })))));
     const step3 = el('section', { class: 'change' }, el('h2', { text: '3. What they told us' }),
-      el('p', { class: 'hint mt0', text: 'Sent on ' + day(x.date) + ' by ' + (ms.role === 'provider' ? 'someone from the service' : ms.role === 'suggester' ? 'someone who knows about it' : 'someone') + (ms.website ? '. Website: ' + ms.website : '') + '.' }), dl);
+      el('p', { class: 'hint mt0', text: 'Sent on ' + day(x.date) + ' by ' + (ms.role === 'provider' ? 'someone from the service' : ms.role === 'suggester' ? 'someone who knows about it' : 'someone') + (ms.website ? '. Website: ' + ms.website : '') + '.' + (ms.listing ? ' They filled in the full service form, so the listing starts with all their answers.' : '') }), dl);
 
     // 4. What to do.
     const start = el('button', { type: 'button', class: 'btn primary', text: org ? 'Start the listing under ' + org.name : 'Start the listing', onclick: async () => {

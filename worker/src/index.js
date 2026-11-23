@@ -147,6 +147,8 @@ const FEEDBACK_DATA = {
   names: new Map(SERVICES.map((s) => [s.id, s.name])),
   areas: [...new Set(SERVICES.flatMap((s) => s.areas || []))].sort(),
   categories: [...new Set(SERVICES.flatMap((s) => s.categories || []))].sort(),
+  // A whole listing from the service form is checked like the team's edits.
+  checker: EDIT_CHECKER,
 };
 // Schemes built for a specific circumstance are only shown if the person's own words mention it.
 const MENTION = new Map(

@@ -490,7 +490,7 @@ html.high-contrast .dir-btn { border: 2px solid #000; color: #000; background: #
 .fb-more > summary { cursor: pointer; font-weight: 700; color: var(--blue); font-family: var(--heading-font); margin-bottom: .5rem; }
 .fb-tick input[type=radio] { flex: none; width: 1.25rem; height: 1.25rem; margin: .2rem 0 0; accent-color: var(--blue); }
 html.high-contrast .suggest-panel { border-color: #000; }
-.suggest-btn[hidden], .suggest-panel[hidden], .fb-rest[hidden], .fb-prompt[hidden] { display: none; }
+.suggest-btn[hidden], .suggest-panel[hidden], .fb-rest[hidden], .fb-prompt[hidden], .fb-actions .btn[hidden], .fb-field[hidden] { display: none; }
 /* Someone from the service: the listing questions are shown, not folded. */
 .fb-provider .fb-more > summary { display: none; }
 .fb-prompt { margin: .25rem 0 .75rem; padding: .6rem .8rem; background: var(--light); border-inline-start: 4px solid var(--blue); border-radius: 6px; }

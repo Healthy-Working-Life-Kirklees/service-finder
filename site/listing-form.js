@@ -22,7 +22,8 @@
 //
 // Needs site/listing-logic.js. English only, like the team pages.
 //
-//   const f = LISTING_FORM.build({ values, original, mode, choices, organisations, venues, prefix, headingLevel, onChange, stepped, listingLabel });
+//   const f = LISTING_FORM.build({ values, original, mode, choices, organisations, venues, prefix, headingLevel, onChange, stepped, listingLabel, showLabels });
+//   (showLabels: false for a brand new service, where every answer would otherwise say "Unknown")
 //   f.node       the form's parts, to put inside your own <form>
 //   f.parts      the three part elements (append your own send box to the last one)
 //   f.read()     every answer, in the same shape as the data
@@ -896,7 +897,7 @@
 
     // ---------- where each answer came from ----------
     const answers = values.answers || {};
-    for (const k of LABELLED) {
+    for (const k of opts.showLabels === false ? [] : LABELLED) {
       const box = boxes[k];
       if (!box) continue;
       const lab = labelOf(k === 'age' ? 'age' : k);

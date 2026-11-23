@@ -907,6 +907,13 @@ Thank you,
     return [p];
   }
   function fromSuggestion(d) {
+    // The full service form (suggest.html) sends the whole listing, already in the data's shape: use it as it is,
+    // over a blank service, with the team's own fields left at their defaults.
+    if (d.listing && typeof d.listing === 'object') {
+      const s = { ...blankService(), ...settleVenues(d.listing) };
+      for (const k of ['hwlFunded', 'notes', 'areas', 'level', 'reviewCycle', 'answers', 'requiresMention', 'mapLinks', 'logo']) if (k in blankService()) s[k] = blankService()[k]; else delete s[k];
+      return s;
+    }
     const s = blankService();
     const ok = (k, v) => (choices[k] || []).includes(v);
     s.name = d.name || '';
@@ -947,6 +954,7 @@ Thank you,
   function suggestionNote(d) {
     const by = d.role === 'provider' ? 'someone from the service' : d.role === 'suggester' ? 'someone who knows about it' : 'someone';
     const extra = [];
+    if (d.listing) extra.push('They filled in the full service form' + (d.contactName ? ' (' + d.contactName + ')' : '') + ': choose the area, level and review cycle.');
     if (d.healthNeed === 'specific') extra.push('Needs a specific health condition (' + (d.conditions || 'not said') + '): choose the health focus.');
     if (d.noMap) extra.push('Online or phone only, with no venue to map: consider turning the map buttons off in the file.');
     if (d.logoOk) extra.push('They said we may use their logo: ask them for it.');
