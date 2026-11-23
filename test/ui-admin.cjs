@@ -1242,7 +1242,9 @@ async function worker(route) {
     await page.fill('#pc-whoFor', 'People in Kirklees looking for a way forward.');
     await page.click('.lf-step[data-part="3"]');
     await page.click('.pc-send button[type=submit]');
-    check('partner form: sending changes asks for the unknown questions first, and goes back to them', (await page.textContent('.pc-msg')).includes('by where they live') && (await visibleParts()) === '1', await page.textContent('.pc-msg'));
+    check('partner form: unanswered questions are a reminder before sending, not a rule', await page.locator('.pc-left').isVisible() && (await page.textContent('.pc-left')).includes('Who can use it, by where they live') && (await page.locator('.pc-left button', { hasText: 'Send anyway' }).count()) === 1 && providerSent.length === 0, await page.textContent('.pc-left'));
+    await page.locator('.pc-left button', { hasText: 'Who can use it, by where they live' }).click();
+    check('partner form: each one goes back to its question', (await visibleParts()) === '1');
     await page.waitForTimeout(600);
     await page.reload();
     await page.waitForSelector('#pc-app:not([hidden])');
@@ -1251,6 +1253,7 @@ async function worker(route) {
     await page.locator('#pc-work input[value=no]').check();
     await page.locator('#pc-noage').check();
     await page.click('.lf-step[data-part="2"]');
+    await page.fill('#pc-workExperience', '');
     await page.locator('#pc-referral input[value=yes]').check();
     await page.locator('#pc-referral-who input[value=professional]').check();
     await page.fill('#pc-referral-professionals', 'GP or work coach');
@@ -1262,9 +1265,10 @@ async function worker(route) {
     await proj.locator('fieldset[data-key=cohorts] input[value=no]').check();
     const before = providerSent.length;
     await page.click('.pc-send button[type=submit]');
+    if (await page.locator('.pc-left button', { hasText: 'Send anyway' }).isVisible()) await page.locator('.pc-left button', { hasText: 'Send anyway' }).click();
     await page.waitForSelector('.pc-thanks');
     const got = providerSent[before];
-    check('partner form: sends only what changed, with the new answers', got && got.changes.whoFor === 'People in Kirklees looking for a way forward.' && JSON.stringify(got.changes.residence) === '{"scope":"kirklees"}' && JSON.stringify(got.changes.work) === '{"needed":"no"}' && JSON.stringify(got.changes.referral) === '{"needed":"yes","who":"professional","professionals":"GP or work coach"}' && got.changes.selfReferral.allowed === 'no' && got.changes.age === 'All ages' && !('name' in got.changes), JSON.stringify(got && got.changes));
+    check('partner form: sends only what changed, with the new answers', got && got.changes.whoFor === 'People in Kirklees looking for a way forward.' && JSON.stringify(got.changes.residence) === '{"scope":"kirklees"}' && JSON.stringify(got.changes.work) === '{"needed":"no"}' && JSON.stringify(got.changes.referral) === '{"needed":"yes","who":"professional","professionals":"GP or work coach"}' && got.changes.selfReferral.allowed === 'no' && got.changes.age === 'All ages' && !('name' in got.changes) && !('workExperience' in got.changes), JSON.stringify(got && got.changes));
     check('partner form: the draft is cleared once sent', await page.evaluate(() => !Object.keys(localStorage).some((k) => k.startsWith('hwl-verify-draft-'))));
   }
 

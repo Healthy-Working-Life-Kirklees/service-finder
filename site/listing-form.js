@@ -88,8 +88,12 @@
 
   // The answers whose label is shown (found online, or unknown), and the box they belong to.
   const LABELLED = ['organisationOverview', 'whoFor', 'residence', 'healthFocus', 'work', 'age', 'eligibility', 'exclusions', 'groups', 'audience', 'categories', 'webpage', 'email', 'phone', 'referral', 'referralRoutes', 'cost', 'languages', 'workExperience', 'coachNotes', 'projects'];
-  // New questions partners must answer when they send changes (unknown until they do).
-  const MUST_ANSWER = { residence: 'Please say who can use it, by where they live.', work: 'Please say whether someone needs to be in a particular work situation.', referral: 'Please say whether someone needs a referral.' };
+  // The new questions, which stay "unknown" until they're answered. Partners can leave them (or anything else
+  // optional) blank: before sending they are told what is still unanswered, and can send anyway.
+  const NEW_QUESTIONS = { residence: 'Who can use it, by where they live', work: 'Work situation', referral: 'Does someone need a referral?' };
+  // On the partner page, a required answer we already had that is left blank keeps what we had, rather than being
+  // wiped (blank means "not changing it", not "none").
+  const KEEP_IF_BLANK = ['workExperience', 'referralRoutes', 'audience', 'categories'];
 
   // "18+", "16-25", "16 to 25", "18 and over", "up to 25": the numbers, when the words are that simple.
   function ageNumbers(t) {
@@ -897,7 +901,7 @@
       if (!box) continue;
       const lab = labelOf(k === 'age' ? 'age' : k);
       if (lab !== 'found' && lab !== 'unknown') continue;
-      if (lab === 'unknown' && !(k in MUST_ANSWER) && team) continue;
+      if (lab === 'unknown' && !(k in NEW_QUESTIONS) && team) continue;
       const src = answers[k] && answers[k].source;
       const tag = el('p', { class: 'lf-label lf-label-' + lab },
         lab === 'found' ? 'Found on your website' : 'Unknown: please answer',
@@ -944,6 +948,7 @@
       if ('requiresMention' in out && !out.requiresMention.length) out.requiresMention = null;
       if ('venues' in out && !out.venues.length) out.venues = null;
       if (out.referral && out.referral.who === undefined) delete out.referral.who;
+      if (!team) for (const k of KEEP_IF_BLANK) if (k in out && (!out[k] || (Array.isArray(out[k]) && !out[k].length)) && original[k] != null) out[k] = original[k];
       return out;
     }
     function changes() {
@@ -996,36 +1001,29 @@
       }
       if (now.organisationOverview && now.organisationOverview !== original.organisationOverview && /healthy\s+working\s+life|\bhwl\b/i.test(now.organisationOverview)) return need('organisationOverview', "The organisation overview describes the whole organisation, so please don't mention Healthy Working Life there. It is shown on each service that is part of it.");
       if (list(now.partners).includes(now.organisation)) return { message: 'The lead organisation is already given above. Please only list the other organisations as partners.', el: partners.first() };
-      if (!team) for (const [k, m] of Object.entries(MUST_ANSWER)) if (!now[k]) return { message: m, el: boxes[k].querySelector('input') };
       if (where.get() === 'parts' && !towns.read().length) return { message: 'Please tick which parts of Kirklees.', el: towns.box.querySelector('input') };
       if (health.get() === 'specific' && !healthTicks.read().length && !healthNote.read()) return { message: 'Please tick which health conditions, or write them in.', el: healthTicks.box.querySelector('input') };
       if (work.get() === 'yes' && !workTicked().length) return { message: 'Please tick at least one work situation.', el: workTicks.querySelector('input') };
       if (!noAge.checked && now.ageMin != null && now.ageMax != null && now.ageMax < now.ageMin) return { message: 'The "up to" age is lower than the "from" age.', el: ageMax };
-      if (!team && !noAge.checked && ageMin.value === '' && ageMax.value === '' && !String(now.age || '').trim()) return { message: 'Please give an age range, or tick "No age limit".', el: ageMin };
       if (priority.get() === 'yes' && !groupTicks.read().length) return { message: 'Please tick the priority groups, or choose "No".', el: groupTicks.box.querySelector('input') };
-      if (!list(now.audience).length) return need('audience', 'Please tick at least one box under "Who uses it?".');
+      if (team && !list(now.audience).length) return need('audience', 'Please tick at least one box under "Who uses it?".');
       if (now.webpage && !/^https?:\/\/\S+$/.test(now.webpage)) return need('webpage', "The website needs to start with https:// (copy it from your browser's address bar).");
       if (now.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(now.email)) return need('email', "The email address doesn't look right.");
       if (refNeeded.get() === 'yes' && !refWho.get()) return { message: 'Please say who can make a referral.', el: refWho.first() };
       if (refNeeded.get() === 'yes' && refWho.get() === 'professional' && !profs.read()) return { message: 'Please say which professionals can refer.', el: profs.input };
-      if (!now.referralRoutes.length && referralNeeded() !== 'no') return { message: 'Please give at least one way to make a referral: a link, an email address or a phone number.', el: routes.first() };
-      if (!now.workExperience) return need('workExperience', 'Please say whether it includes volunteering or work experience (for example "No").');
+      if (team && !now.referralRoutes.length && referralNeeded() !== 'no') return { message: 'Please give at least one way to make a referral: a link, an email address or a phone number.', el: routes.first() };
+      if (team && !now.workExperience) return need('workExperience', 'Please say whether it includes volunteering or work experience (for example "No").');
       const rows = projects.rows();
       const was = new Map(list(original.projects).map((p) => [p.id, p]));
-      if (!team && !projects.multi.get()) return { message: 'Please say whether the service runs more than one separate activity.', el: projects.multi.first() };
       for (const [i, p] of now.projects.entries()) {
         const fs = rows[i];
         const label = p.name || 'activity ' + (i + 1);
         if (!p.overview) return { message: `Please say what happens in "${label}".`, el: fs._ov };
         const old = was.get(p.id);
         if (p.overview.length > L.LIMITS.projectOverview && !(old && old.overview === p.overview)) return { message: `"What happens" for "${label}" is too long: please keep it to ${L.LIMITS.projectOverview} characters.`, el: fs._ov };
-        if (!team && !fs._runs.querySelector('input:checked')) return { message: `Please tick how "${label}" runs.`, el: fs._runs.querySelector('input') };
-        if (!team && !fs._open.get()) return { message: `Please say whether "${label}" is open to everyone the service is for.`, el: fs._open.first() };
-        if (!team && !fs._cohorts.get()) return { message: `Please say whether "${label}" has different cohorts.`, el: fs._cohorts.first() };
         for (const c of fs._cohortHolder.children) {
           if (fs._cohorts.get() !== 'yes') break;
           if (!c._name.value.trim()) return { message: 'Please give each cohort a name, such as "Cohort 1: ages 18 to 24".', el: c._name };
-          if (!team && !c._open.get()) return { message: `Please say whether "${c._name.value.trim()}" is open to everyone the activity is for.`, el: c._open.first() };
           const a = ageNumbers(c._age.get());
           if (a && c._open.get() === 'no' && !noAge.checked) {
             if (now.ageMin != null && a.min != null && a.min < now.ageMin) return { message: `"${c._name.value.trim()}" starts at a younger age than the service (${now.ageMin}). A cohort can only narrow who it's for.`, el: c._age.input };
@@ -1047,7 +1045,26 @@
       return null;
     }
 
-    return { node: root, parts, read, changes, check, mark, show, boxes, addProject: () => projects.addNew() };
+    // What is still unanswered (the new questions, and anything we have nothing for), for "send anyway?".
+    function unanswered() {
+      const now = read();
+      const out = [];
+      const add = (label, node) => out.push({ label, el: node, go: () => { reveal(node); node.scrollIntoView({ block: 'center' }); const i = node.querySelector('input, textarea, select'); if (i) i.focus(); } });
+      for (const [k, label] of Object.entries(NEW_QUESTIONS)) if (!now[k]) add(label, boxes[k]);
+      if (!Array.isArray(now.healthFocus)) add('Health condition or disability', boxes.healthFocus);
+      if (!noAge.checked && now.ageMin == null && now.ageMax == null && !String(now.age || '').trim()) add('Age range', ageBox);
+      if (!Array.isArray(now.groups) || !now.groups.length) add('Priority groups', boxes.groups);
+      for (const [k, label] of [['webpage', 'Website'], ['email', 'Email address'], ['phone', 'Phone number']]) if (!now[k]) add(label, boxes[k]);
+      if (!list(now.referralRoutes).length && referralNeeded() !== 'no') add('How to make a referral', boxes.referralRoutes);
+      for (const [i, fs] of projects.rows().entries()) {
+        const n = projects.rows().length > 1 ? ' (activity ' + (i + 1) + ')' : '';
+        if (!fs._runs.querySelector('input:checked')) add('How it runs' + n, fs._runs);
+        if (!fs._cohorts.get()) add('Whether it has cohorts' + n, fs._cohorts.box);
+      }
+      return out;
+    }
+
+    return { node: root, parts, read, changes, check, mark, show, unanswered, boxes, addProject: () => projects.addNew() };
   }
 
   globalThis.LISTING_FORM = { build, HEALTH, AUDIENCE, SELF, DATE_LABEL, PARTS, ageNumbers };

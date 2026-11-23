@@ -77,6 +77,7 @@
     form.append(draftNote, lf.node);
     const status = el('p', { class: 'pc-count', role: 'status', 'aria-live': 'polite' });
     const msg = el('p', { class: 'pc-msg', role: 'alert', hidden: true });
+    const left = el('div', { class: 'pc-left', role: 'status', hidden: true });
     const correct = el('button', { type: 'button', class: 'btn primary', text: 'Everything is correct', onclick: () => send(true) });
     const sendBtn = el('button', { type: 'submit', class: 'btn primary', text: 'Send my changes' });
     const undo = el('button', { type: 'button', class: 'btn secondary', text: 'Undo my changes', onclick: () => { if (confirm('Undo all your changes and go back to the details we hold?')) { draftDrop(); form.replaceWith(build(false)); refresh(); window.scrollTo(0, 0); } } });
@@ -86,12 +87,12 @@
       el('div', { class: 'lf-field' }, el('label', { for: id('note'), text: 'Anything else you would like to tell us' }), el('p', { class: 'hint', id: id('note') + '-hint', text: "If something's wrong but you're not sure how to change it, tell us here." }), el('textarea', { id: id('note'), rows: '4', maxlength: '2000', 'aria-describedby': id('note') + '-hint' })),
       status,
       el('div', { class: 'pc-buttons' }, correct, sendBtn, undo),
-      msg);
+      msg, left);
     // The send box is the end of part 3.
     const last = lf.parts[lf.parts.length - 1];
     last.insertBefore(sendBox, last.querySelector('.lf-partnav'));
     form.classList.add('lf');
-    form._ui = { status, msg, correct, sendBtn, undo };
+    form._ui = { status, msg, left, correct, sendBtn, undo };
     form.addEventListener('submit', (e) => { e.preventDefault(); send(false); });
     return form;
   }
@@ -111,16 +112,28 @@
     draftTimer = setTimeout(() => { if (n) draftSet({ t: new Date().toISOString(), changes: ch }); else draftDrop(); }, 400);
   }
 
-  async function send(allCorrect) {
+  async function send(allCorrect, anyway) {
     const ui = form._ui;
     const say = (t) => { ui.msg.textContent = t; ui.msg.hidden = false; };
     ui.msg.hidden = true;
+    ui.left.hidden = true;
     const ch = allCorrect ? {} : lf.changes();
     // The checks the Worker makes too, said here first in plain words, with the box to go back to.
     if (!allCorrect) {
       const p = lf.check();
       if (p) { say(p.message); if (p.el && p.el.focus) p.el.focus(); return; }
       if (!Object.keys(ch).length && form.querySelector('#' + id('note')).value.trim().length < 3) return say("You haven't changed anything. Change the details above, or tell us what's wrong in the box above.");
+      // Anything still unanswered: a reminder, not a rule. They can fill it in, or send anyway.
+      const left = anyway ? [] : lf.unanswered();
+      if (left.length) {
+        ui.left.replaceChildren(
+          el('p', { class: 'mt0' }, el('strong', { text: `You've left ${left.length} ${left.length === 1 ? 'question' : 'questions'} unanswered.` }), " The more coaches know, the better they can match people to your service, but it's fine to leave something out if it doesn't apply or you're not sure."),
+          el('ul', {}, left.map((x) => el('li', {}, el('button', { type: 'button', class: 'linklike', text: x.label, onclick: x.go })))),
+          el('p', {}, el('button', { type: 'button', class: 'btn primary', text: 'Send anyway', onclick: () => send(false, true) })));
+        ui.left.hidden = false;
+        ui.left.scrollIntoView({ block: 'nearest' });
+        return;
+      }
     }
     const buttons = [ui.correct, ui.sendBtn, ui.undo];
     buttons.forEach((b) => (b.disabled = true));
