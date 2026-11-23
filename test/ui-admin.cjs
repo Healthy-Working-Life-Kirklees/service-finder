@@ -1188,7 +1188,7 @@ async function worker(route) {
     await page.waitForSelector('#pc-app:not([hidden])');
     const visibleParts = async () => page.locator('.lf-part:visible').evaluateAll((ps) => ps.map((p) => p.dataset.part).join());
     check('partner form: three parts, one shown at a time, with links between them', (await page.locator('.lf-steps .lf-step').count()) === 3 && (await visibleParts()) === '1' && (await page.locator('.lf-step[aria-current=step]').textContent()) === '1. The service and who can join');
-    check('partner form: answers found online say so, unknown ones ask to be answered', (await page.locator('[data-key=whoFor] .lf-label-found').textContent()).startsWith('Found on your website') && (await page.locator('#pc-residence .lf-label-unknown').textContent()) === 'Unknown: please answer');
+    check('partner form: answers found online say so, unknown ones ask to be answered', (await page.locator('[data-key=whoFor] .lf-label-found').textContent()).startsWith('Found on your website') && (await page.locator('#pc-work .lf-label-unknown').textContent()) === 'Unknown: please answer' && (await page.locator('#pc-residence .lf-label-found').count()) === 1);
     await page.click('.lf-part[data-part="1"] .lf-partnav .btn.primary');
     check('partner form: "Next" goes to part 2', (await visibleParts()) === '2');
     await page.click('.lf-step[data-part="3"]');
@@ -1197,8 +1197,8 @@ async function worker(route) {
     await page.fill('#pc-whoFor', 'People in Kirklees looking for a way forward.');
     await page.click('.lf-step[data-part="3"]');
     await page.click('.pc-send button[type=submit]');
-    check('partner form: unanswered questions are a reminder before sending, not a rule', await page.locator('.pc-left').isVisible() && (await page.textContent('.pc-left')).includes('Who can use it, by where they live') && (await page.locator('.pc-left button', { hasText: 'Send anyway' }).count()) === 1 && providerSent.length === 0, await page.textContent('.pc-left'));
-    await page.locator('.pc-left button', { hasText: 'Who can use it, by where they live' }).click();
+    check('partner form: unanswered questions are a reminder before sending, not a rule', await page.locator('.pc-left').isVisible() && (await page.textContent('.pc-left')).includes('Work situation') && (await page.locator('.pc-left button', { hasText: 'Send anyway' }).count()) === 1 && providerSent.length === 0, await page.textContent('.pc-left'));
+    await page.locator('.pc-left button', { hasText: 'Work situation' }).click();
     check('partner form: each one goes back to its question', (await visibleParts()) === '1');
     await page.waitForTimeout(600);
     await page.reload();
