@@ -133,6 +133,8 @@
     gate: 'Essential (turned away without)', referralRoutes: 'How people get in', selfReferral: 'Can people refer themselves?', projects: 'What happens, where and when', workExperience: 'Work experience or volunteering',
     cost: 'Cost', languages: 'Languages and formats', coachNotes: 'Anything coaches should know', groups: "Who it's for (groups)", notes: 'Team notes', reviewCycle: 'Review cycle',
     hwlFunded: 'Healthy Working Life funded', mapLinks: 'Map buttons', logo: 'Logo', requiresMention: 'Only shown when mentioned',
+    partners: 'In partnership with', residence: 'Who can use it, by where they live', work: 'Work situation', healthNote: 'Health conditions, in their words', ageMin: 'Age from', ageMax: 'Age up to',
+    referral: 'Referral needed, and who can make it', answers: 'Where the answers came from',
   };
   const SELF = { yes: 'Yes', partly: 'Partly', no: 'No, they need a referral', tbc: 'Not known yet' };
   const venueText = (v) => {
@@ -151,12 +153,32 @@
     if (k === 'projects') return list(v).map(projectWords).join(' | ');
     if (k === 'groups') return LL.groupNames(v).join('; ');
     if (k === 'venues') return list(v).map(venueText).join('; ');
-    if (Array.isArray(v)) return v.join('; ');
+    if (Array.isArray(v) && k !== 'healthFocus') return v.join('; ');
+    if (k === 'residence' && typeof v === 'object') return LL.residenceWords(v);
+    if (k === 'work' && typeof v === 'object') return v.needed === 'no' ? 'Any work situation' : LL.workWords(v);
+    if (k === 'referral' && typeof v === 'object') return v.needed === 'no' ? 'No referral needed: people can just turn up or sign up' : v.who === 'professional' ? 'Referral needed, only from a professional' + (v.professionals ? ': ' + v.professionals : '') : v.who === 'anyone' ? 'Referral needed: anyone can make it, including the person themselves' : 'Referral needed';
+    if (k === 'healthFocus') return v.map((h) => (h === 'any' ? 'Any health condition or disability' : h.replace(/-/g, ' '))).join('; ');
     if (k === 'selfReferral' && typeof v === 'object') return (SELF[v.allowed] || v.allowed) + (v.note ? '. ' + v.note : '') + (v.url ? ' ' + v.url : '');
     if (v === true) return 'Yes';
     if (v === false) return 'No';
     if (typeof v === 'object') return JSON.stringify(v);
     return String(v);
+  }
+
+  // Text with its web addresses as links that open in a new tab, so they can be checked with one click.
+  const URL_IN_TEXT = /\b(https?:\/\/[^\s<>"')]+|www\.[^\s<>"')]+)/gi;
+  function linked(text) {
+    const t = String(text == null ? '' : text);
+    const out = [];
+    let last = 0;
+    for (const m of t.matchAll(URL_IN_TEXT)) {
+      const raw = m[0].replace(/[.,;:]+$/, '');
+      out.push(t.slice(last, m.index));
+      out.push(el('a', { href: /^https?:/i.test(raw) ? raw : 'https://' + raw, target: '_blank', rel: 'noopener noreferrer', text: raw }));
+      last = m.index + raw.length;
+    }
+    out.push(t.slice(last));
+    return out.filter((x) => x !== '');
   }
 
   // ---------- partner replies ----------
@@ -291,7 +313,7 @@ Thank you,
   }
 
   window.FLOW = {
-    API, AUTH, LL, S, el, list, plural, day, when, api, copy, norm, load, putLive, FIELD_LABEL, words, projectWords, sessionWords, venueText,
+    API, AUTH, LL, S, el, list, plural, day, when, api, copy, norm, load, putLive, FIELD_LABEL, words, linked, projectWords, sessionWords, venueText,
     byId, listingOf, editState, decisionState, orgPending, venuePending, settleVenues,
     linksFor, linkLive, linkUrl, newestReply, reminderText, isSuggestion, suggestionState, matchOrg, orgSimple, servicesOfOrg, partnerServicesOf, suggestionQuestions,
   };

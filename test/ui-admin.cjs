@@ -1274,7 +1274,7 @@ async function worker(route) {
   const replyT = new Date(Date.now() - 3600e3).toISOString();
   const ab = ALL.find((x) => x.id === 'audio-boost');
   providerLinks = [{ token: 'r'.repeat(32), id: 'audio-boost', contact: 'Sam', by: 'PL', created: new Date(Date.now() - 86400e3).toISOString(), expires: new Date(Date.now() + 20 * 86400e3).toISOString(), cancelled: null, sent: 1,
-    replies: [{ t: replyT, name: 'Sam', allCorrect: false, note: 'New number', changes: { phone: '01924 000001', gate: ab.gate.filter((g) => g !== 'Lives in Kirklees' && g !== 'Aged 18 or over') }, before: { phone: ab.phone, gate: ab.gate } }] },
+    replies: [{ t: replyT, name: 'Sam', allCorrect: false, note: 'New number', changes: { phone: '01924 000001', gate: ab.gate.filter((g) => g !== 'Lives in Kirklees' && g !== 'Aged 18 or over'), referralRoutes: ['Apply at https://example.org/apply-now.'] }, before: { phone: ab.phone, gate: ab.gate, referralRoutes: ab.referralRoutes } }] },
     { token: 'w'.repeat(32), id: 'my-way-forward', contact: 'Jo', by: 'PL', created: new Date(Date.now() - 2 * 86400e3).toISOString(), expires: new Date(Date.now() + 20 * 86400e3).toISOString(), cancelled: null, sent: 0, replies: [] }];
   await page.goto(ON + '/admin/');
   await page.waitForSelector('#app:not([hidden])');
@@ -1283,12 +1283,19 @@ async function worker(route) {
   await page.goto(ON + '/admin/todo.html');
   await page.waitForSelector('#todo .todo-sec');
   const todoText = await page.textContent('#todo');
-  check('to do: the partner reply is listed to check, with the Healthy Working Life rule flagged', todoText.includes('Audio Boost: 2 changes from Sam') && todoText.includes('remove a grant funding rule'), todoText.slice(0, 600));
+  check('to do: "Ready to go live" comes first', (await page.locator('#todo .todo-sec h2').first().textContent()).startsWith('Ready to go live'));
+  const checkSec = page.locator('#todo .todo-sec', { hasText: 'Check these: duplicates and partnerships' });
+  check('to do: possible duplicate organisations and partnerships are listed to check', (await checkSec.textContent()).includes('"Kirklees Council Employment & Skills Service" and "Kirklees Council Employment and Skills"') && (await checkSec.textContent()).includes('WYCA with Kirklees Council') && (await checkSec.textContent()).includes('"Paddock Trust" (a partner on Employment Kirklees)'), (await checkSec.textContent()).slice(0, 800));
+  const nDupes = await checkSec.locator('.todo-item').count();
+  await checkSec.locator('.todo-item', { hasText: 'WYCA with Kirklees Council' }).locator('button:text-is("It’s one organisation")').click();
+  check('to do: "It’s one organisation" takes it off the list', (await page.locator('#todo .todo-sec', { hasText: 'Check these' }).locator('.todo-item').count()) === nDupes - 1);
+  check('to do: the partner reply is listed to check, with the Healthy Working Life rule flagged', todoText.includes('Audio Boost: 3 changes from Sam') && todoText.includes('remove a grant funding rule'), todoText.slice(0, 600));
   check('to do: the suggestion is listed, with things to ask', todoText.includes('Mental health support sessions, from TCD Mental Health Charity') && /\d+ things to ask/.test(todoText));
   check('to do: a link with no reply is "waiting on a partner", with a reminder to copy', todoText.includes('My Way Forward: no reply yet') && await page.locator('#todo button', { hasText: 'Copy a reminder email' }).count() === 1);
   await page.click('#todo a:text-is("Check changes")');
   await page.waitForSelector('.change');
   check('reply: one card per change, old and new', (await page.locator('.change').count()) >= 2 && (await page.textContent('#page')).includes('01924 000001'));
+  check('reply: links in a change can be clicked (and open in a new tab)', (await page.getAttribute('.change .now a[href="https://example.org/apply-now"]', 'target')) === '_blank');
   check('reply: the Healthy Working Life rule is kept, the rest can be used', (await page.textContent('.change.blocked')).includes('Kept as it is: "Lives in Kirklees"'));
   await page.click('.decide-bar button:text-is("Save as checked")');
   await page.waitForSelector('.msg.ok');
@@ -1296,7 +1303,7 @@ async function worker(route) {
   check('reply: saved as a checked edit, keeping the programme rule and using the rest', ed && ed.checked === true && ed.changes.phone === '01924 000001' && ed.changes.gate.includes('Lives in Kirklees') && !ed.changes.gate.includes('Aged 18 or over') && ed.note.includes('From Sam'), JSON.stringify(ed));
   await page.goto(ON + '/admin/todo.html');
   await page.waitForSelector('#todo .todo-sec');
-  check('to do: the reply has moved to "ready to go live"', !(await page.textContent('#todo')).includes('2 changes from Sam') && (await page.textContent('.todo-ready')).includes('Audio Boost'));
+  check('to do: the reply has moved to "ready to go live"', !(await page.textContent('#todo')).includes('3 changes from Sam') && (await page.textContent('.todo-ready')).includes('Audio Boost'));
   await page.goto(ON + '/admin/services.html#svc-audio-boost');
   await page.waitForSelector('#svc-audio-boost details[open]');
   await page.waitForTimeout(500);

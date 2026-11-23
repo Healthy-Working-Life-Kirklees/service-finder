@@ -40,7 +40,7 @@
 
     // All correct: one button.
     if (r.allCorrect) {
-      const rec = el('button', { type: 'button', class: 'btn primary', text: 'Record as checked with the partner', onclick: async () => {
+      const rec = el('button', { type: 'button', class: 'btn primary', text: 'Accept as verified', onclick: async () => {
         rec.disabled = true;
         try {
           const d = await F.api('PUT', '/log/edits/' + encodeURIComponent(id), { changes: pending, before: {}, by: F.AUTH.by() || 'someone', checked: true, checkedUrl: '', checkedWith: 'provider',
@@ -50,7 +50,7 @@
           rec.hidden = true;
         } catch (err) { rec.disabled = false; say(err.message, 'err'); }
       } });
-      return page.replaceChildren(...head.filter(Boolean), ...[note].filter(Boolean), el('div', { class: 'decide-bar' }, el('span', { text: 'Nothing to change: this records that ' + s.name + ' was checked with the partner.' }), rec), msg);
+      return page.replaceChildren(...head.filter(Boolean), ...[note].filter(Boolean), el('div', { class: 'decide-bar' }, el('span', { text: 'Nothing changed. Accepting records that ' + s.name + '’s details were confirmed by the organisation, so it shows as verified once it goes live.' }), rec), msg);
     }
 
     // One card per change.
@@ -76,8 +76,8 @@
         opt('use', kept.length ? 'Use the rest of it' : 'Use this', true), opt('change', 'Change it first'), opt('skip', "Don't use"));
       const card = el('section', { class: 'change' + (kept.length ? ' blocked' : '') },
         el('h2', { text: F.FIELD_LABEL[k] || k }),
-        el('div', { class: 'change-cols' }, el('div', { class: 'was' }, el('b', { text: 'We had' }), shown(before, k)), el('div', { class: 'now' }, el('b', { text: 'They say' }), shown(r.changes[k], k))),
-        moved ? el('p', { class: 'msg info', text: 'This has changed since they replied. It now says: ' + shown(s[k], k) }) : null,
+        el('div', { class: 'change-cols' }, el('div', { class: 'was' }, el('b', { text: 'We had' }), ...F.linked(shown(before, k))), el('div', { class: 'now' }, el('b', { text: 'They say' }), ...F.linked(shown(r.changes[k], k)))),
+        moved ? el('p', { class: 'msg info' }, 'This has changed since they replied. It now says: ', ...F.linked(shown(s[k], k))) : null,
         kept.length ? el('p', { class: 'kept' }, el('strong', { text: 'Kept as it is: ' }), kept.map((l) => '"' + l + '"').join(', ') + '. ' + (kept.length === 1 ? 'This is' : 'These are') + ' a funding rule for the Healthy Working Life grant projects, so a partner’s reply can’t take ' + (kept.length === 1 ? 'it' : 'them') + ' out. If they think it’s wrong, it’s a question for the programme team.' + (nothingLeft ? ' Nothing else changed here.' : '')) : null,
         choice);
       card._k = k;
