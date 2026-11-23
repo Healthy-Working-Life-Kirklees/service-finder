@@ -480,6 +480,8 @@ async function worker(route) {
   await page.fill('#sg-name', 'Batley Job Club');
   await page.fill('#sg-whoFor', 'Anyone in Batley looking for work.');
   await page.locator('#sg-residence input[value=kirklees]').check();
+  await page.click('.lf-step[data-part="2"]');
+  await page.fill('#sg-webpage', 'www.example.org/job-club');
   await page.click('.lf-step[data-part="3"]');
   await page.locator('.lf-proj textarea').first().fill('Weekly job club with CV help.');
   await page.fill('#sg-yourname', 'Sam');
@@ -489,7 +491,7 @@ async function worker(route) {
   await page.waitForSelector('.pc-thanks');
   const sentFull = lastSent();
   const fm = sentFull.missedService || {};
-  check('service form: sent to the team as a suggested service with the whole listing', sentFull.kind === 'gap' && sentFull.reasons.join() === 'missing-service' && fm.role === 'provider' && fm.name === 'Batley Job Club' && fm.organisation === 'Batley Community Trust' && fm.contactName === 'Sam' && fm.listing && fm.listing.whoFor === 'Anyone in Batley looking for work.' && JSON.stringify(fm.listing.residence) === '{"scope":"kirklees"}' && fm.listing.projects[0].overview === 'Weekly job club with CV help.', JSON.stringify(sentFull).slice(0, 600));
+  check('service form: sent to the team as a suggested service with the whole listing', sentFull.kind === 'gap' && sentFull.reasons.join() === 'missing-service' && fm.role === 'provider' && fm.name === 'Batley Job Club' && fm.organisation === 'Batley Community Trust' && fm.contactName === 'Sam' && fm.listing && fm.listing.whoFor === 'Anyone in Batley looking for work.' && JSON.stringify(fm.listing.residence) === '{"scope":"kirklees"}' && fm.listing.projects[0].overview === 'Weekly job club with CV help.' && fm.listing.webpage === 'https://www.example.org/job-club' && fm.website === 'https://www.example.org/job-club', JSON.stringify(sentFull).slice(0, 600));
   check('service form: offers to add another service from the same organisation', await page.locator('.pc-thanks button', { hasText: 'Tell us about another service' }).isVisible());
   await page.goto(ON + '/');
   await sugBtn.waitFor();

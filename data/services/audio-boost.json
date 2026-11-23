@@ -80,7 +80,8 @@
     "url": "https://yorkshiresoundwomen.com/news/audio-boost-free-sound-industry-skills-workshops/"
   },
   "referral": {
-    "needed": "no"
+    "needed": "yes",
+    "who": "anyone"
   },
   "projects": [
     {

@@ -161,6 +161,12 @@
       const box = el('div', { class: 'lf-field' + (tbc(val) ? ' tbc' : ''), 'data-key': k },
         el('label', { for: id(k), text: label + (o.required ? ' (mandatory)' : '') }),
         hintP(hint, hintId), input, o.limit ? counter(input, o.limit) : null, changedTag());
+      // A web address typed without https:// (www.example.org, example.org/page) gets it added, as browsers do.
+      if (o.type === 'url') {
+        const fix = () => { const t = input.value.trim(); if (t && !/^[a-z][a-z0-9+.-]*:/i.test(t) && /^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(t)) input.value = 'https://' + t; };
+        input.addEventListener('blur', fix);
+        return { box, input, read: () => { fix(); return input.value.trim(); } };
+      }
       return { box, input, read: () => input.value.trim() };
     }
 
@@ -791,7 +797,7 @@
     section(1, 'Priority groups, and what kind of support', priority.box, boxes.audience, boxes.categories);
 
     // ===== Part 2: contact and how people get in =====
-    reg('webpage', textQuestion('webpage', 'Website', 'The best page for people to find out more, starting https://', { type: 'url' }, values.webpage));
+    reg('webpage', textQuestion('webpage', 'Website', 'The best page for people to find out more, for example www.example.org/our-service', { type: 'url' }, values.webpage));
     reg('email', textQuestion('email', 'Email address for the service', '', { type: 'email' }, values.email));
     reg('phone', textQuestion('phone', 'Phone number', 'You can add opening hours or a second number after it, for example "01484 000000 (Mon to Fri, 9 to 5)".', { type: 'tel' }, values.phone));
     reg('social', linesQuestion('social', 'Social media links', 'One per line.', values.social, { empty: true, aria: 'Social media link' }));
@@ -1008,7 +1014,7 @@
       if (!noAge.checked && now.ageMin != null && now.ageMax != null && now.ageMax < now.ageMin) return { message: 'The "up to" age is lower than the "from" age.', el: ageMax };
       if (priority.get() === 'yes' && !groupTicks.read().length) return { message: 'Please tick the priority groups, or choose "No".', el: groupTicks.box.querySelector('input') };
       if (team && !list(now.audience).length) return need('audience', 'Please tick at least one box under "Who uses it?".');
-      if (now.webpage && !/^https?:\/\/\S+$/.test(now.webpage)) return need('webpage', "The website needs to start with https:// (copy it from your browser's address bar).");
+      if (now.webpage && !/^https?:\/\/\S+$/.test(now.webpage)) return need('webpage', "That doesn't look like a web address. Please copy it from your browser's address bar.");
       if (now.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(now.email)) return need('email', "The email address doesn't look right.");
       if (refNeeded.get() === 'yes' && !refWho.get()) return { message: 'Please say who can make a referral.', el: refWho.first() };
       if (refNeeded.get() === 'yes' && refWho.get() === 'professional' && !profs.read()) return { message: 'Please say which professionals can refer.', el: profs.input };
