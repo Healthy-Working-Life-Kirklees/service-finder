@@ -206,6 +206,8 @@ Thank you,
     return S.organisations.find((o) => names(o).some((b) => b.length >= 3 && (a.startsWith(b + ' ') || b.startsWith(a + ' ')))) || null;
   }
   const servicesOfOrg = (o) => S.services.filter((s) => s.organisation === o.name || list(o.aliases).includes(s.organisation));
+  // Services another organisation leads, delivered in partnership with this one (its name or other names in "partners").
+  const partnerServicesOf = (o) => S.services.filter((s) => list(s.partners).some((p) => p === o.name || list(o.aliases).includes(p)));
 
   // Things to ask the person who suggested a service before it can be listed: answers that disagree, or that are
   // too short to match people on. Each: { what, said, why }.
@@ -291,6 +293,6 @@ Thank you,
   window.FLOW = {
     API, AUTH, LL, S, el, list, plural, day, when, api, copy, norm, load, putLive, FIELD_LABEL, words, projectWords, sessionWords, venueText,
     byId, listingOf, editState, decisionState, orgPending, venuePending, settleVenues,
-    linksFor, linkLive, linkUrl, newestReply, reminderText, isSuggestion, suggestionState, matchOrg, orgSimple, servicesOfOrg, suggestionQuestions,
+    linksFor, linkLive, linkUrl, newestReply, reminderText, isSuggestion, suggestionState, matchOrg, orgSimple, servicesOfOrg, partnerServicesOf, suggestionQuestions,
   };
 })();

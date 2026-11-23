@@ -1,7 +1,11 @@
 {
   "id": "employment-kirklees",
   "name": "Employment Kirklees",
-  "organisation": "Kirklees Council with delivery by C+K Careers and Paddock Trust",
+  "organisation": "Kirklees Council",
+  "partners": [
+    "C+K Careers",
+    "Paddock Trust"
+  ],
   "logo": "paddock-trust.webp",
   "open": true,
   "hwlFunded": true,

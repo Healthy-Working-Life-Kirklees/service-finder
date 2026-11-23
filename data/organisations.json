@@ -138,7 +138,10 @@
     },
     {
       "id": "community-platform-together-cic-and-the-branch",
-      "name": "Community Platform Together CIC and The Branch"
+      "name": "Community Platform Together CIC",
+      "aliases": [
+        "Community Platform Together CIC and The Branch"
+      ]
     },
     {
       "id": "connect-housing",
@@ -278,7 +281,11 @@
     },
     {
       "id": "kirklees-council",
-      "name": "Kirklees Council"
+      "name": "Kirklees Council",
+      "aliases": [
+        "Kirklees Council with delivery by C+K Careers and Paddock Trust"
+      ],
+      "notes": "Overview from the Employment Kirklees listing (about its delivery partners, so not used as the council's overview): C+K works to deliver a range of services designed to reduce the number of young people who are NEET and support adults into positive destinations.\nPaddock Trust services include employment support programmes, specialist mentoring, advice & guidance services,  well-being support & digital inclusion."
     },
     {
       "id": "kirklees-council-digital-inclusion",
@@ -303,11 +310,6 @@
     {
       "id": "kirklees-council-libraries",
       "name": "Kirklees Council Libraries"
-    },
-    {
-      "id": "kirklees-council-with-delivery-by-c-k-careers-and",
-      "name": "Kirklees Council with delivery by C+K Careers and Paddock Trust",
-      "overview": "C+K works to deliver a range of services designed to reduce the number of young people who are NEET and support adults into positive destinations.\nPaddock Trust services include employment support programmes, specialist mentoring, advice & guidance services,  well-being support & digital inclusion."
     },
     {
       "id": "kirklees-in-recovery-cic",
@@ -348,7 +350,10 @@
     },
     {
       "id": "ls2y-and-dalton-together",
-      "name": "LS2Y and Dalton Together"
+      "name": "LS2Y",
+      "aliases": [
+        "LS2Y and Dalton Together"
+      ]
     },
     {
       "id": "macmillan-cancer-support",
@@ -460,11 +465,10 @@
     },
     {
       "id": "ravensthorpe-community-centre",
-      "name": "Ravensthorpe Community Centre"
-    },
-    {
-      "id": "ravensthorpe-community-centre-rcc-and-taleem-centr",
-      "name": "Ravensthorpe Community Centre (RCC) and Taleem Centre"
+      "name": "Ravensthorpe Community Centre",
+      "aliases": [
+        "Ravensthorpe Community Centre (RCC) and Taleem Centre"
+      ]
     },
     {
       "id": "refugee-council",
@@ -665,8 +669,11 @@
     },
     {
       "id": "yorkshire-youth-and-music-and-umbrella-yoga",
-      "name": "Yorkshire Youth & Music and Umbrella Yoga",
-      "overview": "YY&M uses music to improve young people’s lives across Yorkshire. Amongst our activities we run sessions in our Safe Space Studio in Huddersfield, giving young people the chance to explore music-making. Sessions are led by professional music leaders and shaped by each young person’s needs and ideas."
+      "name": "Yorkshire Youth & Music",
+      "overview": "YY&M uses music to improve young people’s lives across Yorkshire. Amongst our activities we run sessions in our Safe Space Studio in Huddersfield, giving young people the chance to explore music-making. Sessions are led by professional music leaders and shaped by each young person’s needs and ideas.",
+      "aliases": [
+        "Yorkshire Youth & Music and Umbrella Yoga"
+      ]
     },
     {
       "id": "young-women-s-trust",

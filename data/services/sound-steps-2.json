@@ -1,7 +1,10 @@
 {
   "id": "sound-steps-2",
   "name": "Sound Steps 2",
-  "organisation": "Yorkshire Youth & Music and Umbrella Yoga",
+  "organisation": "Yorkshire Youth & Music",
+  "partners": [
+    "Umbrella Yoga"
+  ],
   "logo": "yorkshire-youth-music.webp",
   "open": true,
   "hwlFunded": true,

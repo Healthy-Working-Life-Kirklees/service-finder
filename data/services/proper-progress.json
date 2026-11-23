@@ -2,6 +2,10 @@
   "id": "proper-progress",
   "name": "Proper Progress",
   "organisation": "Proper Job Theatre Company",
+  "partners": [
+    "KLTV",
+    "Thread Republic"
+  ],
   "logo": "proper-job.webp",
   "open": true,
   "hwlFunded": true,

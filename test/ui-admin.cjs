@@ -108,6 +108,7 @@ async function worker(route) {
     if (/abuse/i.test(last)) return json({ status: 'results', message: 'I am so sorry. You deserve to be safe.', recommendations: [], safety_concern: true, urgent_types: ['domestic_abuse'], pii_detected: false, understood_needs: [], follow_up_questions: [] });
     if (/unsure/i.test(last)) return json({ status: 'needs_more_info', message: 'Thanks, I can help. One quick question.', recommendations: [], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: ['needs support'], follow_up_questions: ['Which town are you nearest to?'], question_options: [{ question: 'Which town are you nearest to?', options: ['Batley', 'Dewsbury', 'Huddersfield'] }] });
     if (/Jane Smith/.test(last)) return json({ status: 'results', message: 'Here is a match.', recommendations: [], safety_concern: false, urgent_types: [], pii_detected: true, understood_needs: [], follow_up_questions: [] });
+    if (/partnership/i.test(last)) return json({ status: 'results', message: 'Here are some options.', recommendations: [{ id: 'proper-progress', why: 'One.', fit: 'strong' }, { id: 'audio-boost', why: 'Two.', fit: 'possible' }, { id: 'acas-helpline', why: 'Three.', fit: 'possible' }], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: [], follow_up_questions: [] });
     if (/several/i.test(last)) return json({ status: 'results', message: 'Here are some options.', recommendations: [{ id: 'my-way-forward', why: 'One.', fit: 'strong' }, { id: 'acas-helpline', why: 'Two.', fit: 'possible' }, { id: 'nope-not-real', why: 'Dropped.', fit: 'possible' }], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: [], follow_up_questions: [] });
     return json({ status: 'results', message: 'Here is a match.', recommendations: [{ id: 'my-way-forward', why: 'Fits your age and situation.', fit: 'possible', check_first: 'Check they are not claiming Universal Credit with a job-search requirement.' }], safety_concern: false, urgent_types: [], pii_detected: false, understood_needs: ['aged 20', 'anxious'], follow_up_questions: [] });
   }
@@ -273,6 +274,21 @@ async function worker(route) {
     check('usage: opening a card is counted once, with the scheme', usageSent.filter((e) => e.e === 'expand').length === 1 && usageSent.find((e) => e.e === 'expand').s === 'my-way-forward', JSON.stringify(usageSent.filter((e) => e.e === 'expand')));
     await cards.first().locator('.more-btn').click();
     check('cards: pressing again folds it', !(await cards.first().locator('.more').isVisible()) && (await cards.first().locator('.more-btn').textContent()) === 'Show full details');
+    {
+      // Partnerships and where the details came from.
+      const p3 = await ctx.newPage();
+      p3.on('pageerror', (e) => problems.push('pageerror: ' + e.message));
+      await p3.goto(ON + '/');
+      await p3.check('input[name=mode][value=staff]');
+      await p3.fill('#message', 'partnership options please');
+      await p3.click('#send');
+      await p3.waitForSelector('.card');
+      const c3 = p3.locator('.card');
+      check('cards: a partnership shows the lead and "In partnership with" the others', (await c3.first().locator('.org').first().textContent()) === 'Proper Job Theatre Company' && (await c3.first().locator('.org.partners').textContent()) === 'In partnership with KLTV and Thread Republic');
+      check('cards: a service with no partners has no partner line', (await c3.nth(2).locator('.org.partners').count()) === 0);
+      check('cards: a verified listing says the organisation confirmed it; a website listing says so', /^Details confirmed by the organisation on /.test(await c3.nth(1).locator('.meta').textContent()) && /^Details from the service's website, last checked /.test(await c3.nth(2).locator('.meta').textContent()) && /^Information last checked/.test(await c3.first().locator('.meta').textContent()));
+      await p3.close();
+    }
     await p2.click('.cards-bar .all-btn');
     check('cards: "Show full details for all" opens every card', (await p2.locator('.card .more:visible').count()) === 2 && (await p2.textContent('.cards-bar .all-btn')) === 'Hide full details for all');
     await p2.click('.cards-bar .all-btn');

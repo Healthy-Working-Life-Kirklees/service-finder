@@ -356,7 +356,29 @@ check('data: every venue a live service uses is in services.json', (() => { cons
   check('ai data: the date is in the data heading', dataText.startsWith('SERVICE DATA (JSON) for ' + new Date().toISOString().slice(0, 10)));
   check('ai data: the reply tool asks which projects or sessions fit', Boolean(sent.tools[0].input_schema.properties.matches.items.properties.parts));
   check('prompt: explains projects, sessions and parts', /"parts"/.test(sent.system[0].text) && /"sessions"/.test(sent.system[0].text) && /referrals open later/.test(sent.system[0].text));
+  check('ai data: where answers came from and partners are not sent', sentData.every((x) => !('answers' in x) && !('partners' in x)));
+  check('ai data: a service the organisation has verified is marked verified, others are not', sentData.find((x) => x.id === 'audio-boost').verified === true && !('verified' in sentData.find((x) => x.id === 'raise-your-game')));
+  check('prompt: order is Healthy Working Life, then verified, then the rest, never above a better fit', /Healthy Working Life scheme \("hwlFunded": true\) first, then a service the organisation has checked itself \("verified": true\)/.test(sent.system[0].text) && /isn't verified/.test(sent.system[0].text));
+  check('prompt: missing information is unknown, never a reason to leave a service out', /Missing information is unknown/.test(sent.system[0].text));
 }
+{
+  // Where answers came from, and the order services are listed in (site/listing-logic.js).
+  const base = { hwlFunded: false, whoFor: 'Adults.', cost: 'Free', phone: null, selfReferral: { allowed: 'tbc', note: 'x' }, provenance: { source: 'web' } };
+  check('labels: an answer found online is "found"', LS.labelOf(base, 'whoFor') === 'found');
+  check('labels: a missing answer or a self-referral still to be confirmed is "unknown"', LS.labelOf(base, 'phone') === 'unknown' && LS.labelOf(base, 'residence') === 'unknown' && LS.labelOf(base, 'selfReferral') === 'unknown');
+  check('labels: a Healthy Working Life scheme starts as confirmed', LS.labelOf({ ...base, hwlFunded: true }, 'whoFor') === 'confirmed');
+  check('labels: a verified listing is confirmed', LS.labelOf({ ...base, provenance: { source: 'web', providerChecked: '2026-11-20' } }, 'cost') === 'confirmed' && LS.isVerified({ provenance: { providerChecked: '2026-11-20' } }));
+  check('labels: an answer\'s own label wins', LS.labelOf({ ...base, answers: { cost: { label: 'changed' } } }, 'cost') === 'changed');
+  check('priority: Healthy Working Life, then verified, then the rest', LS.priority({ hwlFunded: true }) === 1 && LS.priority({ provenance: { providerChecked: '2026-11-20' } }) === 2 && LS.priority(base) === 3);
+  check('words: where they live, work situation and age', LS.residenceWords({ scope: 'parts', areas: ['Batley', 'Dewsbury'] }) === 'People living in Batley or Dewsbury'
+    && LS.workWords({ needed: 'yes', situations: ['inactive', 'benefits'], benefits: ['Universal Credit'] }) === 'Economically inactive (not working and not looking for work); or Claiming Universal Credit'
+    && LS.workWords({ needed: 'no' }) === 'Any work situation' && LS.ageWords({ ageMin: 18 }) === '18+' && LS.ageWords({ ageMin: 18, ageMax: 24 }) === '18 to 24' && LS.ageWords({ age: 'Adults' }) === 'Adults');
+}
+check('data: partnerships list the lead as the organisation and the others as partners', (() => {
+  const want = { 'pathways-to-potential': ['Community Platform Together CIC', 'The Branch'], 'employment-kirklees': ['Kirklees Council', 'C+K Careers', 'Paddock Trust'], 'growing-together-volunteering': ['LS2Y', 'Dalton Together'], 'wellness-navigators': ['Ravensthorpe Community Centre', 'Taleem Centre'], 'sound-steps-2': ['Yorkshire Youth & Music', 'Umbrella Yoga'], 'proper-progress': ['Proper Job Theatre Company', 'KLTV', 'Thread Republic'] };
+  return Object.entries(want).every(([id, [lead, ...partners]]) => { const x = svc.find((y) => y.id === id); return x.organisation === lead && JSON.stringify(x.partners) === JSON.stringify(partners); });
+})());
+check('data: an old combined organisation name still finds the lead (alias)', (() => { const o = JSON.parse(fs.readFileSync(path.join(root, 'data/organisations.json'), 'utf8')).organisations; return o.some((x) => x.name === 'LS2Y' && (x.aliases || []).includes('LS2Y and Dalton Together')) && !o.some((x) => x.name === 'LS2Y and Dalton Together'); })());
 reply = tool(reply0({ matches: [{ ...m('raise-your-game'), parts: ['cohort-1', 'nonsense', 'cohort-1'] }] }));
 r = await call('claude-sonnet-5-5', { messages: [{ role: 'user', content: 'I am 20, not working, with a health condition, in Huddersfield' }] });
 check('parts: only real, open project or session ids are passed on, once each', JSON.stringify(r.body.recommendations[0].parts) === '["cohort-1"]', JSON.stringify(r.body.recommendations));

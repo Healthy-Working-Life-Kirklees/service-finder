@@ -1,7 +1,10 @@
 {
   "id": "wellness-navigators",
   "name": "Wellness Navigators",
-  "organisation": "Ravensthorpe Community Centre (RCC) and Taleem Centre",
+  "organisation": "Ravensthorpe Community Centre",
+  "partners": [
+    "Taleem Centre"
+  ],
   "logo": "rccl.webp",
   "open": true,
   "hwlFunded": true,

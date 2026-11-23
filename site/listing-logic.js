@@ -46,6 +46,7 @@
     men: 'Men',
     carers: 'Carers',
     disabled: 'Disabled people',
+    send: 'Young people with SEND (up to 25)',
     'health-condition': 'People with a health condition',
     'mental-health': 'People with mental ill health',
     refugees: 'Refugees and migrants',
@@ -282,9 +283,75 @@
   }
   const groupNames = (ids) => (Array.isArray(ids) ? ids.map((g) => GROUPS[g] || g) : []);
 
+  // ---------- Where each answer came from (November 2026) ----------
+  // Every answer in a listing has one of four labels:
+  //   found      found online (the service's website or another public source), by the team or a search agent
+  //   unknown    looked for and not found: left blank for the organisation to answer, never guessed
+  //   confirmed  the organisation checked it and left it as it was, or gave it to the team directly
+  //   changed    the organisation corrected or filled it in, and the team accepted it
+  // Most answers share the listing's label (labelOf works it out): a Healthy Working Life scheme's details came
+  // from its delivery provider, so they start as confirmed; a listing the organisation has verified (its
+  // provenance.providerChecked date) is confirmed; anything else was found online. "answers" holds only the
+  // answers whose label differs, with the source link and the line it came from. A missing answer is unknown.
+  // Unknown never hides a service: only the lines a service marks essential (gate) do.
+  const LABELS = { found: 'Found online', unknown: 'Unknown', confirmed: 'Confirmed', changed: 'Changed' };
+  const isVerified = (service) => Boolean(service && service.provenance && service.provenance.providerChecked);
+  const listingLabel = (service) => (isVerified(service) || (service && service.hwlFunded) ? 'confirmed' : 'found');
+  const emptyAnswer = (v) => v === undefined || v === null || v === '' || (Array.isArray(v) && !v.length) || /^to be completed/i.test(String(v));
+  function labelOf(service, field) {
+    const a = service && service.answers && service.answers[field];
+    if (a && LABELS[a.label]) return a.label;
+    const v = service ? service[field] : undefined;
+    if (field === 'selfReferral' && v && v.allowed === 'tbc') return 'unknown';
+    return emptyAnswer(v) ? 'unknown' : listingLabel(service);
+  }
+  // The order services are listed in when they fit about as well: Healthy Working Life schemes, then services the
+  // organisation has verified, then the rest. (The AI applies this; it never puts a weaker fit first.)
+  const priority = (service) => (service && service.hwlFunded ? 1 : isVerified(service) ? 2 : 3);
+
+  // The structured "who can use it" answers, in words (for cards, the AI and the team).
+  const RESIDENCE = { anyone: 'Anyone, wherever they live', 'west-yorkshire': 'People living in West Yorkshire', kirklees: 'People living in Kirklees', parts: 'People living in certain parts of Kirklees' };
+  const WORK = {
+    unemployed: 'Unemployed and looking for work',
+    inactive: 'Economically inactive (not working and not looking for work)',
+    active: 'Economically active (in work, or looking for work)',
+    employed: 'Employed',
+    'self-employed': 'Self-employed',
+    'off-sick': 'In work but off sick',
+    'at-risk': 'In work but at risk of leaving work because of ill health',
+    progress: 'In work and wanting to progress or change role',
+    neet: 'Not in education, employment or training (NEET)',
+    education: 'In education or training',
+    benefits: 'Claiming certain benefits',
+    'low-paid': 'Low paid',
+    other: 'Other',
+  };
+  function residenceWords(r) {
+    if (!r || !RESIDENCE[r.scope]) return '';
+    if (r.scope !== 'parts' || !(r.areas || []).length) return RESIDENCE[r.scope];
+    const a = r.areas;
+    return 'People living in ' + (a.length > 1 ? a.slice(0, -1).join(', ') + ' or ' + a[a.length - 1] : a[0]);
+  }
+  function workWords(w) {
+    if (!w) return '';
+    if (w.needed === 'no') return 'Any work situation';
+    const bits = (w.situations || []).filter((k) => WORK[k] && k !== 'other').map((k) =>
+      k === 'benefits' && (w.benefits || []).length ? 'Claiming ' + w.benefits.join(' or ') : WORK[k]);
+    if (w.detail) bits.push(w.detail);
+    return bits.join('; or ');
+  }
+  function ageWords(s) {
+    if (!s) return '';
+    if (Number.isInteger(s.ageMin) && Number.isInteger(s.ageMax)) return s.ageMin + ' to ' + s.ageMax;
+    if (Number.isInteger(s.ageMin)) return s.ageMin + '+';
+    if (Number.isInteger(s.ageMax)) return 'Up to ' + s.ageMax;
+    return s.age || '';
+  }
+
   globalThis.LISTING = {
     SOON_DAYS, REMIND_DAYS, LIMITS, DATE_KEYS, RUNS, DAYS, DAY_NAMES, FREQUENCY, GROUPS,
     today, addDays, daysBetween, longDate, datesOf, state, forGroup, parts, visible, isShown, visibleIds, pick, endingSoon, closedParts,
     dateWords, clock, timeWords, venueLine, byDay, venueIds, checkParts, suggestedProjectLines, groupNames, protectedLines, isGrantProject,
+    LABELS, RESIDENCE, WORK, isVerified, listingLabel, labelOf, priority, residenceWords, workWords, ageWords,
   };
 })();

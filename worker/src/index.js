@@ -78,7 +78,8 @@ const EDIT_CHECKER = {
 // Worker itself; provenance, logo, map buttons, review dates and the team's own notes are for maintaining the data.
 // The organisation overview rarely changes who a service suits, so it is left out too. This keeps each request
 // smaller.
-const NOT_FOR_AI = new Set(['webpage', 'email', 'phone', 'social', 'logo', 'mapLinks', 'requiresMention', 'provenance', 'lastUpdated', 'reviewCycle', 'notes', 'listing', 'organisationOverview', 'venues', 'groups']);
+// "answers" (where each answer came from) and "partners" don't change who a service suits either.
+const NOT_FOR_AI = new Set(['webpage', 'email', 'phone', 'social', 'logo', 'mapLinks', 'requiresMention', 'provenance', 'lastUpdated', 'reviewCycle', 'notes', 'listing', 'organisationOverview', 'venues', 'groups', 'answers', 'partners']);
 const VENUES = new Map((data.venues || []).map((v) => [v.id, v]));
 // A venue in words for the AI: "Jo Cox House, Market Square, Batley, WF17 5DR (Batley East ward)".
 const venueWords = (id) => {
@@ -105,8 +106,11 @@ function sessionView(x) {
   return out;
 }
 function aiView(s, today) {
-  const v = Object.fromEntries(Object.entries(s).filter(([k]) => !NOT_FOR_AI.has(k)));
+  // An answer marked unknown is left out, so the AI treats it as not stated rather than as a fact.
+  const v = Object.fromEntries(Object.entries(s).filter(([k]) => !NOT_FOR_AI.has(k) && !(s.answers && s.answers[k] && s.answers[k].label === 'unknown')));
   v.open = LISTING.isShown(s, today);
+  // Verified: the organisation has checked its listing. Used to order services that fit about as well.
+  if (LISTING.isVerified(s)) v.verified = true;
   if ((s.groups || []).length) v.forGroups = s.groups.map((g) => LISTING.GROUPS[g] || g);
   const shared = (s.venues || []).map(venueWords).filter(Boolean);
   if (shared.length) v.locations = [...(s.locations || []), ...shared];

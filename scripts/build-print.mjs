@@ -253,7 +253,7 @@ async function servicePage(s, n) {
   return `<section class="page svc cov-${c.key}" id="${esc(s.id)}" data-keywords="${esc([...(s.categories || []), ...(s.areas || []).map((a) => a === 'Kirklees-wide' ? 'All Kirklees' : a)].join(' '))}">
   <div class="tab"><span>${c.label}</span></div>
   <div class="brandbar"><a class="bb-logo" href="#p1" aria-label="Healthy Working Life: back to the contents"><span class="hwl-logo" aria-hidden="true"></span></a><a class="bb-text" href="#p1">Support Finder</a><span class="bb-cov">${c.label}</span><button type="button" class="print-one" data-print-page aria-label="Print the page for ${esc(s.name)}">Print this page</button></div>
-  <header class="svc-head">${thumb}<div class="ttl"><h2>${esc(s.name)}</h2><p class="org">${esc(s.organisation)}</p><div class="badges">${badges}</div></div></header>
+  <header class="svc-head">${thumb}<div class="ttl"><h2>${esc(s.name)}</h2><p class="org">${esc(s.organisation)}${(s.partners || []).length ? ` in partnership with ${esc(s.partners.join(', ').replace(/, ([^,]*)$/, ' and $1'))}` : ''}</p><div class="badges">${badges}</div></div></header>
   <div class="fit"><div class="svc-body">
     <div class="main">
       <p class="whofor">${esc(s.whoFor)}</p>${orgOverview(s.organisation) ? `<p class="orgabout"><strong>About ${esc(s.organisation)}:</strong> ${esc(orgOverview(s.organisation))}</p>` : ''}
