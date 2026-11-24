@@ -86,8 +86,13 @@ jobs:
         run: node scripts/render-print-pdf.mjs _site
 
       - uses: actions/configure-pages@v5
+      # A name per attempt: a re-run keeps the earlier attempt's artifact, and deploy-pages fails if it finds two
+      # with the same name ("Multiple artifacts named github-pages").
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+          name: github-pages-${{ github.run_attempt }}
       - id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-${{ github.run_attempt }}
