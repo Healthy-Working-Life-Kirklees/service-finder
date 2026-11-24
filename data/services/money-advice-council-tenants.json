@@ -17,7 +17,9 @@
   "webpage": "https://www.kirklees.gov.uk/beta/council-housing/support-we-offer/money-advice.aspx",
   "email": null,
   "phone": "01484 414975",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/@KirkleesHN"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide"

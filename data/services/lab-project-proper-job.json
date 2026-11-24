@@ -17,7 +17,11 @@
   "webpage": "https://www.properjob.org.uk/the-lab-project",
   "email": "mail@properjob.org.uk",
   "phone": "01484 514687",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/ProperJobTheatreCompany",
+    "https://www.instagram.com/properjobtheatre",
+    "https://twitter.com/ProperJobTheatr"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide"

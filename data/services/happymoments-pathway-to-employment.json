@@ -20,7 +20,11 @@
   "webpage": "https://www.happymoments.org.uk",
   "email": "sumayya@happymoments.org.uk",
   "phone": "07792 131367",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/HappyMOMentsBatleyDewsbury/",
+    "https://www.instagram.com/happymomentsbatleydewsbury",
+    "https://x.com/HappyMOMentsBD"
+  ],
   "locations": [],
   "areas": [
     "Dewsbury"

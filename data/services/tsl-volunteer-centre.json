@@ -17,7 +17,10 @@
   "webpage": "https://tslkirklees.org.uk/volunteering-home/",
   "email": "volunteer@tslkirklees.org.uk",
   "phone": "01484 519053 (text/WhatsApp 07776 588691)",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/Thirdsectorleaderskirklees/",
+    "https://twitter.com/tslkirklees"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield",

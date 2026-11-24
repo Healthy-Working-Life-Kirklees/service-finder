@@ -17,7 +17,10 @@
   "webpage": "https://www.migrationyorkshire.org.uk/node/482",
   "email": "admin@migrationyorkshire.org.uk",
   "phone": "0113 378 8188",
-  "social": [],
+  "social": [
+    "https://www.twitter.com/migrationyorks",
+    "https://uk.linkedin.com/company/migration-yorkshire"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide"

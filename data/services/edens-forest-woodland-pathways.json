@@ -18,7 +18,11 @@
   "webpage": "https://www.edensforestcic.org/",
   "email": "info@edensforestcic.org",
   "phone": "07734 898650 / 07934 450806",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/edensforestcic",
+    "https://www.instagram.com/edensforestcic/",
+    "https://twitter.com/edensforestcic"
+  ],
   "locations": [],
   "areas": [
     "Holme Valley",

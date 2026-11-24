@@ -22,7 +22,10 @@
   "webpage": "https://www.waythrough.org.uk/find-support-near-me/kirklees-employment-service/",
   "email": "info.kirkleeses@waythrough.org.uk",
   "phone": "01484 434866",
-  "social": [],
+  "social": [
+    "https://facebook.com/waythroughuk",
+    "https://instagram.com/waythrough_uk"
+  ],
   "locations": [
     "The Media Centre, 7 Northumberland Street, Huddersfield HD1 1RL",
     "Dewsbury base",

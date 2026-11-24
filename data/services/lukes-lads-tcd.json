@@ -17,7 +17,9 @@
   "webpage": "https://www.tcd-charity.co.uk/lukes-lads-mental-health-support",
   "email": null,
   "phone": null,
-  "social": [],
+  "social": [
+    "https://www.facebook.com/TCDuk/"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide"

@@ -17,7 +17,11 @@
   "webpage": "https://huddersfieldmission.org.uk/pages/16-advice-support",
   "email": null,
   "phone": "01484 421461",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/huddersfieldmission",
+    "https://www.instagram.com/huddersfield_mission",
+    "https://www.twitter.com/huddsmission"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield"

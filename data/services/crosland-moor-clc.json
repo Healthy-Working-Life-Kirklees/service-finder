@@ -18,7 +18,9 @@
   "webpage": "https://www.croslandmoorclc.org.uk/",
   "email": "enquiries@croslandmoorclc.org.uk",
   "phone": "01484 462346",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/croslandmoorcommunitylearningcentre/"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield"

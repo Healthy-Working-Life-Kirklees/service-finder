@@ -18,7 +18,9 @@
   "webpage": "https://www.kirkleesbetteroutcomespartnership.org/",
   "email": "hello@kbop.org",
   "phone": "01484 437421",
-  "social": [],
+  "social": [
+    "https://twitter.com/KBOP_Kirklees"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide"

@@ -17,7 +17,11 @@
   "webpage": "https://huddelim.org.uk/611-asylum",
   "email": "info@huddelim.org.uk",
   "phone": "01484 535554 (appts 01484 986110)",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/huddelim",
+    "https://www.instagram.com/huddelim",
+    "https://x.com/huddelim"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield"

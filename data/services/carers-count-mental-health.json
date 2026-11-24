@@ -18,7 +18,10 @@
   "webpage": "https://carerscountkirklees.org.uk/kirklees-mental-health-service/",
   "email": "info@carerscount.org.uk",
   "phone": "0300 012 0231",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/carerscountkirklees",
+    "https://www.instagram.com/carerscountkirklees"
+  ],
   "locations": [],
   "areas": [
     "Dewsbury",
