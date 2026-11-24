@@ -16,7 +16,10 @@
   "webpage": "https://peertalk.org.uk/peertalk-support-groups/",
   "email": "enquiries@peertalk.org.uk",
   "phone": "07719 562 617",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/PeerTalk1",
+    "https://x.com/peer_talk"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield"

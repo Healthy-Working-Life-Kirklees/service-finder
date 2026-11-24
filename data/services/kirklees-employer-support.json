@@ -17,7 +17,10 @@
   "webpage": "https://www.kirklees.gov.uk/beta/employment-and-skills/employer-support.aspx",
   "email": null,
   "phone": null,
-  "social": [],
+  "social": [
+    "https://www.facebook.com/profile.php?id=100090274856872",
+    "https://twitter.com/KCEmployskills"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide"

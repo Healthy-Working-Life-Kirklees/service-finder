@@ -17,7 +17,10 @@
   "webpage": "https://www.westyorkshirecolleges.co.uk/contracted-projects/skills-connect",
   "email": null,
   "phone": null,
-  "social": [],
+  "social": [
+    "https://instagram.com/wyccolleges",
+    "https://twitter.com/WYCColleges"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide"

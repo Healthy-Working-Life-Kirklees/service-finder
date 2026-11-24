@@ -17,7 +17,9 @@
   "webpage": "https://www.northerngamblingservice.nhs.uk/",
   "email": "referral.ngs@nhs.net",
   "phone": "0300 300 1490",
-  "social": [],
+  "social": [
+    "https://twitter.com/nhs_ngs"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide"

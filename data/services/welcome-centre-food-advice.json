@@ -17,7 +17,11 @@
   "webpage": "https://www.thewelcomecentre.org/pages/need-our-help",
   "email": null,
   "phone": "01484 515086",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/TheWelcomeCentreHudds/",
+    "https://www.instagram.com/welcome_hudds/",
+    "https://twitter.com/welcome_hudds"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield",

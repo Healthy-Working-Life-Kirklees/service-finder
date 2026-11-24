@@ -20,7 +20,9 @@
   "webpage": "https://www.tcd-charity.co.uk",
   "email": "charitytcd@gmail.com",
   "phone": "07950 325836",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/TCDuk/"
+  ],
   "locations": [],
   "areas": [
     "Batley",

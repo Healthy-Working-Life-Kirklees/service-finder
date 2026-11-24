@@ -16,7 +16,9 @@
   "webpage": "https://touchstonesupport.org.uk/hereforyou/",
   "email": null,
   "phone": "07741 900395",
-  "social": [],
+  "social": [
+    "https://x.com/HereForYouTS"
+  ],
   "locations": [],
   "areas": [
     "Dewsbury",

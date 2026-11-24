@@ -18,7 +18,10 @@
   "webpage": "https://www.menwalkingandtalking.co.uk/walks/huddersfield-walk/",
   "email": "hello@mwat.co.uk",
   "phone": null,
-  "social": [],
+  "social": [
+    "https://www.facebook.com/profile.php?id=61568556871150",
+    "https://www.instagram.com/menwalkingandtalking/"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield"

@@ -18,7 +18,10 @@
   "webpage": "https://www.kirkleescollege.ac.uk/adult-learners/",
   "email": "customerservices@kirkleescollege.ac.uk",
   "phone": "01484 437100",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/kirkleescollege/",
+    "https://www.instagram.com/kirkleescollege/"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield",

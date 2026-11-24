@@ -17,7 +17,9 @@
   "webpage": "https://www.connecthousing.org.uk/find-a-home/housing-with-specialist-support/",
   "email": "hello@connecthousing.org.uk",
   "phone": "0300 5000 600",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/ConnectHousing/"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield",

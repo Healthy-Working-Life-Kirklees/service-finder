@@ -17,7 +17,9 @@
   "webpage": "https://www.facebook.com/StanleysTrainingAndCatering/",
   "email": "Info@direct-training.co.uk",
   "phone": null,
-  "social": [],
+  "social": [
+    "https://www.facebook.com/StanleysTrainingAndCatering/"
+  ],
   "locations": [],
   "areas": [
     "Spen Valley"

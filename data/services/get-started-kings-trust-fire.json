@@ -18,7 +18,11 @@
   "webpage": "https://westyorksfire.gov.uk/get-started",
   "email": "kingstrust.team@westyorksfire.gov.uk",
   "phone": "01924 334057",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/WYFRS",
+    "https://www.instagram.com/wyfrs/",
+    "https://x.com/WYFRS"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide"

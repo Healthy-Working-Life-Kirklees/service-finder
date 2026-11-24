@@ -17,7 +17,9 @@
   "webpage": "https://www.calderdalecreditunion.co.uk/",
   "email": "admin@calderdalecreditunion.co.uk",
   "phone": "01422 386060",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/calderdalecredit/"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide",

@@ -17,7 +17,9 @@
   "webpage": "https://www.ckcareers.co.uk/services-for-adults",
   "email": "enquiries@ckcareers.co.uk",
   "phone": "01484 242000",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/CKCareers"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield",

@@ -18,7 +18,10 @@
   "webpage": "https://www.growingworks.org.uk/bud/",
   "email": "info@growingworks.org.uk",
   "phone": "07845 415289",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/growingworks",
+    "https://www.instagram.com/growing_works_/"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield"

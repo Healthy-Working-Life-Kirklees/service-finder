@@ -17,7 +17,9 @@
   "webpage": "https://www.thebranch.uk/computer-corner/",
   "email": "info@thebranch.uk",
   "phone": "01484 551551",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/TheBranchHuddersfield/"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield"

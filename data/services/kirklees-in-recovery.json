@@ -16,7 +16,9 @@
   "webpage": "https://kirkleesinrecovery.com",
   "email": "info@kirkleesinrecovery.com",
   "phone": "07469 967631",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/kirkleesinrecovery"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield",

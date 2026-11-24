@@ -20,7 +20,10 @@
   "webpage": "https://kirkleescollege.ac.uk/student-support/supporting-you/",
   "email": "support@kirkleescollege.ac.uk",
   "phone": "01484 437000",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/kirkleescollege/",
+    "https://www.instagram.com/kirkleescollege/"
+  ],
   "locations": [
     "Kirklees College campuses - five sites in Huddersfield and two in Dewsbury, with delivery across North and South Kirklees"
   ],

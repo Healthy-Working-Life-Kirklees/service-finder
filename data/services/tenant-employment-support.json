@@ -20,7 +20,9 @@
   "webpage": "https://www.kirklees.gov.uk/beta/council-housing/support-we-offer/employment-support.aspx",
   "email": null,
   "phone": "01484 221028 (Mon–Thu 9–5, Fri 9–4.30)",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/@KirkleesHN"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide"

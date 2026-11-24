@@ -19,7 +19,10 @@
   "webpage": "https://www.kirklees.gov.uk/beta/health-and-well-being/better-in-kirklees.aspx",
   "email": "bik@touchstonesupport.org.uk",
   "phone": "01924 846808",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/BetterinKirklees/",
+    "https://twitter.com/biktouchstone"
+  ],
   "locations": [],
   "areas": [
     "Dewsbury",

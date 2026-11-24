@@ -18,7 +18,10 @@
   "webpage": "https://www.kirklees.gov.uk/beta/employment-and-skills/kirklees-success-centre.aspx",
   "email": "success.centres@kirklees.gov.uk",
   "phone": "01484 234153",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/profile.php?id=100090274856872",
+    "https://twitter.com/KCEmployskills"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield"
