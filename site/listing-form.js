@@ -338,19 +338,24 @@
       freq.value = s.frequency || 'weekly';
       const freqWas = s.frequency || '';
       const note = smallText('Anything else about when, in words', s.note, 'For example "first Tuesday of the month" or "term time only".');
-      const where = smallLines('Other places, in words', s.where, 'Only for places without a postcode, such as "Online".');
-      // A plain time and place (no cohort) can have its own dates: an earlier run, say.
-      const dates = o.ownDates ? datesGroup('s', s, 'Dates for this time and place, if different') : null;
-      const more = el('details', { class: 'lf-more' }, el('summary', { text: o.ownDates ? 'Other places in words, or dates for this time and place' : 'Other places, in words' }), where.node, dates ? dates.box : null);
-      if (list(s.where).length || (dates && L.DATE_KEYS.some((k) => s[k]))) more.open = true;
+      // Two things most people won't need, each folded away next to what it is about:
+      // a place with no postcode (under the place), and dates that differ from the activity's (at the end).
+      const where = smallLines('Places without a postcode', s.where, 'One per line, for example "Online" or "At home".');
+      const whereMore = el('details', { class: 'lf-more' }, el('summary', { text: 'No postcode, such as online?' }), where.node);
+      if (list(s.where).length) whereMore.open = true;
+      // A plain time and place (no cohort) can have its own dates, for example an earlier run that has ended.
+      const dates = o.ownDates ? datesGroup('s', s, 'Dates for this time and place') : null;
+      const datesMore = dates ? el('details', { class: 'lf-more' }, el('summary', { text: 'Does this time and place have different dates from the rest of the activity?' }),
+        el('p', { class: 'hint', text: 'Only if it starts or ends at a different time, for example an earlier run. Otherwise leave this empty: it uses the activity\'s dates.' }), dates.box) : null;
+      if (dates && L.DATE_KEYS.some((k) => s[k])) datesMore.open = true;
       const fs = el('fieldset', { class: 'lf-session', 'data-id': s.id || '' }, el('legend', { text: 'Time and place' }),
-        picker.node,
+        picker.node, whereMore,
         el('fieldset', { class: 'lf-days' }, el('legend', { text: 'Days' }), el('div', { class: 'choices' }, dayBoxes)),
         el('div', { class: 'lf-grid' },
           el('div', { class: 'lf-field' }, el('label', { for: start.id, text: 'From' }), start),
           el('div', { class: 'lf-field' }, el('label', { for: end.id, text: 'Until' }), end),
           el('div', { class: 'lf-field' }, el('label', { for: freq.id, text: 'How often' }), freq)),
-        note.node, more,
+        note.node, datesMore,
         small({ text: 'Remove this time and place', onclick: () => { fs.remove(); allPickers.splice(allPickers.indexOf(picker), 1); changed(); } }));
       fs._read = () => {
         const out = { id: fs.dataset.id };
@@ -928,14 +933,23 @@
       parts.forEach((p, i) => { p.hidden = i + 1 !== current; });
       for (const b of steps.querySelectorAll('button')) b.setAttribute('aria-current', Number(b.dataset.part) === current ? 'step' : 'false');
     }
+    // Moving between parts goes back to the top of the form. (The parts bar is sticky, so it is always "in view":
+    // scroll to a mark just above it instead, then put the reader at the part's first heading.)
+    const topMark = el('div', { class: 'lf-top' });
+    function toTop() {
+      topMark.scrollIntoView({ block: 'start' });
+      const h = parts[current - 1].querySelector('h2, h3, h4');
+      if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+    }
     if (opts.stepped) {
-      steps.append(...PARTS.map((t, i) => el('button', { type: 'button', class: 'lf-step', 'data-part': String(i + 1), text: i + 1 + '. ' + t, onclick: () => { show(i + 1); steps.scrollIntoView({ block: 'start' }); } })),
+      root.append(topMark);
+      steps.append(...PARTS.map((t, i) => el('button', { type: 'button', class: 'lf-step', 'data-part': String(i + 1), text: i + 1 + '. ' + t, onclick: () => { show(i + 1); toTop(); } })),
         el('p', { class: 'hint lf-steps-note', text: 'Click any part to go back to it at any time. Nothing is sent until you press "Send" at the end.' }));
       root.append(steps);
       parts.forEach((p, i) => {
         const nav = el('div', { class: 'lf-partnav' },
-          i > 0 ? small({ text: 'Back to part ' + i, onclick: () => { show(i); steps.scrollIntoView({ block: 'start' }); } }) : el('span'),
-          i < 2 ? el('button', { type: 'button', class: 'btn primary', text: 'Next: ' + PARTS[i + 1].toLowerCase(), onclick: () => { show(i + 2); steps.scrollIntoView({ block: 'start' }); } }) : null);
+          i > 0 ? small({ text: 'Back to part ' + i, onclick: () => { show(i); toTop(); } }) : el('span'),
+          i < 2 ? el('button', { type: 'button', class: 'btn primary', text: 'Next: ' + PARTS[i + 1].toLowerCase(), onclick: () => { show(i + 2); toTop(); } }) : null);
         p.append(nav);
       });
     } else {

@@ -22,7 +22,7 @@
       const hits = S.organisations.filter((o) => words.every((w) => (o.name + ' ' + list(o.aliases).join(' ')).toLowerCase().includes(w)))
         .sort((a, b) => a.name.localeCompare(b.name, 'en-GB', { sensitivity: 'base' }));
       count.textContent = plural(hits.length, 'organisation', 'organisations');
-      out.replaceChildren(...hits.slice(0, 80).map((o) => {
+      out.replaceChildren(...hits.map((o) => {
         const svcs = F.servicesOfOrg(o);
         const live = svcs.filter((s) => F.listingOf(s) === 'include').length;
         return el('li', {}, el('a', { href: '?id=' + encodeURIComponent(o.id) }, el('strong', { text: o.name }),

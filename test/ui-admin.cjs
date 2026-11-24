@@ -406,7 +406,7 @@ async function worker(route) {
   check('feedback: "from this service, or suggesting it?" is needed', (await gapForm.locator('.fb-error').textContent()).includes('from the service or suggesting it') && lastSent() === sentNo && await page.evaluate(() => document.activeElement.type === 'radio'));
   await svcSub.locator('input[type=radio][value=suggester]').check();
   const topLabels = await svcSub.locator('.fb-rest > .fb-field > label').allTextContents();
-  check('feedback: "not from the organisation" asks for the names and a way to find out more, nothing else', topLabels.join('|') === 'Name of the service (mandatory)|Name of organisation (mandatory)|Its website|Its phone number|Email address for the service|Area it covers' && !(await svcSub.locator('details.fb-more').count()) && (await svcSub.locator('.fb-prompt').textContent()).includes('a website or a contact') && !(await svcSub.locator('label:has-text("You may use our logo")').count()), topLabels.join('|'));
+  check('feedback: "not from the organisation" asks for the names and a way to find out more, nothing else', topLabels.join('|') === 'Name of the service (mandatory)|Name of organisation (mandatory)|Its website|Its phone number|Email address for the service|Area it covers|Anything else we should know?' && !(await svcSub.locator('details.fb-more').count()) && (await svcSub.locator('.fb-prompt').textContent()).includes('a website or a contact') && !(await svcSub.locator('label:has-text("You may use our logo")').count()), topLabels.join('|'));
   await gapForm.locator('button[type=submit]').click();
   check('feedback: the service name is needed', (await gapForm.locator('.fb-error').textContent()).includes('name of the service') && lastSent() === sentNo);
   check('feedback: both missing names get a red box and a message, and focus jumps to the service name', (await svcSub.locator('.fb-field.fb-invalid').count()) === 2 && (await svcSub.locator('.fb-field-error:visible').count()) === 2 && (await svcSub.getByLabel('Name of the service (mandatory)', { exact: true }).getAttribute('aria-invalid')) === 'true' && await page.evaluate(() => document.activeElement.labels && document.activeElement.labels[0].textContent === 'Name of the service (mandatory)'));
@@ -1192,7 +1192,8 @@ async function worker(route) {
     check('partner form: three parts, one shown at a time, with links between them', (await page.locator('.lf-steps .lf-step').count()) === 3 && (await visibleParts()) === '1' && (await page.locator('.lf-step[aria-current=step]').textContent()) === '1. The service and who can join');
     check('partner form: answers found online say so, unknown ones ask to be answered', (await page.locator('[data-key=whoFor] .lf-label-found').textContent()).startsWith('Found on your website') && (await page.locator('#pc-work .lf-label-unknown').textContent()) === 'Unknown: please answer' && (await page.locator('#pc-residence .lf-label-found').count()) === 1);
     await page.click('.lf-part[data-part="1"] .lf-partnav .btn.primary');
-    check('partner form: "Next" goes to part 2', (await visibleParts()) === '2');
+    const formTop = await page.evaluate(() => Math.round(document.querySelector('.lf-top').getBoundingClientRect().top));
+    check('partner form: "Next" goes to part 2, back at the top of the form', (await visibleParts()) === '2' && formTop >= -2 && formTop <= 40, String(formTop));
     await page.click('.lf-step[data-part="3"]');
     check('partner form: the send box is at the end of part 3', (await visibleParts()) === '3' && await page.locator('.pc-send').isVisible());
     await page.click('.lf-step[data-part="1"]');
@@ -1316,6 +1317,10 @@ async function worker(route) {
   check('link to one service: shows that service, open and in view', shownIds[0] === 'svc-audio-boost' && atTop === true, shownIds.slice(0, 3).join() + ' ' + atTop);
   // Organisations.
   await page.goto(ON + '/admin/organisation.html');
+  await page.waitForSelector('.org-list-page li');
+  const orgShown = await page.locator('.org-list-page li').count();
+  const orgCount = await page.locator('#page .count').textContent();
+  check('organisations: the whole list is shown, A to Z', orgShown > 80 && orgCount.startsWith(orgShown + ' '), orgShown + ' ' + orgCount);
   await page.fill('#org-find', 'tcd');
   await page.click('.org-list-page a >> nth=0');
   await page.waitForSelector('.org-head');

@@ -519,7 +519,7 @@
       orgBox.value = prefill.org;
       showAddTo();
     }
-    return { node, read, isProvider: () => role === 'provider', focusFirst: () => roleSet.querySelector('input').focus() };
+    return { node, read, rest, isProvider: () => role === 'provider', isSuggester: () => role === 'suggester', focusFirst: () => roleSet.querySelector('input').focus() };
   }
 
   function gapForm(getMode, onSent, onCancel, prefill = {}) {
@@ -527,6 +527,7 @@
     const categories = fromData('categories');
     const supportAreaId = uid('sarea');
     const service = serviceQuestions(prefill);
+    const commentBox = comment();
     const supportSub = el('div', { class: 'fb-sub', hidden: true },
       ticks([t('fbSupportLegend')], [...categories.map((c) => ({ value: c, label: c, lang: 'en' })), { value: SOMETHING_ELSE, label: t('fbSomethingElse') }], 'category'),
       select(supportAreaId, t('fbSupportArea'), areas));
@@ -536,7 +537,7 @@
         { value: 'missing-support', label: t('fbGapSupport'), extra: supportSub },
         { value: 'missing-other', label: t('fbGapOther') },
       ], 'gap', 'radio'),
-      comment());
+      commentBox);
     // One kind of gap at a time: show the extra questions for the one chosen.
     form.addEventListener('change', (e) => {
       if (e.target.name !== 'gap') return;
@@ -552,11 +553,15 @@
       }
     });
     // Someone from the service sends the full service form instead: this form's Send and comment box step aside.
+    // Not from the service: the comment box goes straight under "Area it covers", with the other details.
     const sendOwn = () => {
-      const hide = Boolean(form.querySelector('input[name=gap][value=missing-service]:checked')) && service.isProvider();
+      const svc = Boolean(form.querySelector('input[name=gap][value=missing-service]:checked'));
+      const hide = svc && service.isProvider();
       const b = form.querySelector('.fb-actions button[type=submit]');
       if (b) b.hidden = hide;
-      for (const c of form.querySelectorAll(':scope > .fb-field textarea[name=text]')) c.closest('.fb-field').hidden = hide;
+      commentBox.hidden = hide;
+      if (svc && service.isSuggester()) { if (commentBox.parentNode !== service.rest) service.rest.append(commentBox); }
+      else if (commentBox.parentNode !== form) form.insertBefore(commentBox, form.querySelector(':scope > .fb-error'));
     };
     form.addEventListener('change', sendOwn);
     form.addEventListener('fb-role', sendOwn);
