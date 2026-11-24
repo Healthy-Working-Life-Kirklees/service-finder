@@ -14,8 +14,8 @@
   ],
   "whoFor": "Anyone.",
   "age": null,
-  "webpage": "https://www.thebranch.uk/calendar/",
-  "email": "alison.lloyd@thebranch.uk",
+  "webpage": "https://www.thebranch.uk/computer-corner/",
+  "email": "info@thebranch.uk",
   "phone": "01484 551551",
   "social": [],
   "locations": [],
@@ -44,21 +44,21 @@
         {
           "id": "jubilee-centre",
           "venue": "jubilee-centre-2",
-          "note": "Mon 10.30–12"
+          "note": "Mon 10.30–12; doesn't always run in school holidays"
         }
       ]
     }
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-24",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 46",
     "foundVia": "Kirklees Community Directory",
-    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=8894",
-    "evidence": "Directory June 2026 only.",
-    "confidence": "medium",
+    "checkedUrl": "https://www.thebranch.uk/computer-corner/",
+    "evidence": "Computer Corner page: Mon 10.30-12 drop-in; info@thebranch.uk, 01484 551551; not always in school holidays.",
+    "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
