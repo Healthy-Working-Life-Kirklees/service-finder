@@ -53,18 +53,19 @@
   ],
   "workExperience": "No",
   "cost": "Free to join; loans charge interest",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-24",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 43",
     "foundVia": "MECC Link",
-    "checkedUrl": "https://www.calderdalecreditunion.co.uk/",
-    "evidence": "Directory Sept 2025; MECC's Huddersfield office no longer shown.",
-    "confidence": "medium",
+    "checkedUrl": "https://calderdalecreditunion.co.uk/join-us/",
+    "evidence": "Phone and email match the provider site; the team confirmed Kirklees residents can join (24 Nov 2026).",
+    "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {
     "decision": "include",
     "reason": "On the live list since the October 2026 import, before the development team review."
-  }
+  },
+  "notes": "24 Nov 2026: development team (PL) confirmed Kirklees residents can join (the website only mentions the Calderdale common bond)."
 }
