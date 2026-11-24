@@ -590,6 +590,9 @@ async function worker(route) {
   check(`help: overdue entries flagged (${overdue} in the data)`, (await page.locator('#data-table .pill.warn').count()) >= overdue, String(await page.locator('#data-table .pill.warn').count()));
   check('help: not-open schemes flagged', (await page.locator('#data-table .pill.bad').count()) === DATA.filter((x) => !x.open).length);
   check('help: has the key sections', (await page.locator('h2').allTextContents()).join('|').includes('Reporting a problem'));
+  check('help: explains keeping the data up to date, with a request to copy', (await page.locator('h2#checks').count()) === 1 && (await page.textContent('#check-request')).includes('service check'));
+  await page.click('button[data-copy="#check-request"]');
+  check('help: the Copy button responds', /Cop|copy/.test(await page.textContent('button[data-copy="#check-request"]')));
 
   // ---------- all services page ----------
   await page.goto(ON + '/admin/services.html');

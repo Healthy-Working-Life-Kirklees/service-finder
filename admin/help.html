@@ -48,6 +48,7 @@
         <li><a href="#how">How it works</a></li>
         <li><a href="#privacy">Privacy while testing</a></li>
         <li><a href="#data">The data it uses</a></li>
+        <li><a href="#checks">Keeping the data up to date</a></li>
         <li><a href="#report">Reporting a problem</a></li>
         <li><a href="#changes">What has changed</a></li>
       </ul>
@@ -139,6 +140,26 @@
       </table>
     </div>
 
+    <h2 id="checks">Keeping the data up to date</h2>
+    <p>Every service needs checking now and then: the finder warns people when an entry hasn't been checked for about four and a half months. Claude does most of this for us, as a scheduled task in the team's Claude project.</p>
+    <h3>The monthly check</h3>
+    <p>On the first working day of each month, Claude picks the services that are coming up for a check (last checked more than 100 days ago), checks each one on the provider's own website, and then on the group's own public Facebook or Instagram page where there's no website. It skips anything a provider has confirmed through a review link in the last 30 days, and anything already waiting for the team.</p>
+    <p>It sorts what it finds into three piles:</p>
+    <ul>
+      <li><strong>Still right</strong>: marked as checked in one pull request on GitHub. Phil or Lewis merges it.</li>
+      <li><strong>Something has changed</strong>: added as rows to the service check sheet in the Claude project. Pick a decision in "Your decision" (Apply, Apply my version, Ask provider or Don't apply), add a note if needed, then ask Claude to "apply the changes in the sheet". Claude makes the edits and opens a pull request.</li>
+      <li><strong>Can't tell from the web</strong>: added to the to-do list in the Claude project as a provider to ask. Send them a review link from <a href="services.html">All services</a>: what they confirm comes back through <a href="todo.html">To do</a> and counts as checked for a year.</li>
+    </ul>
+    <p>Phil gets a phone notification when the check finishes, with a short summary and anything urgent (for example a service that looks closed, or a web address that now goes somewhere it shouldn't).</p>
+    <h3>Running a check now</h3>
+    <p>You don't have to wait for the first of the month. In any chat in the team's Claude project, ask:</p>
+    <p class="copy-row"><code id="check-request">Run the service check now</code> <button class="btn secondary small" type="button" data-copy="#check-request">Copy</button></p>
+    <p>To check particular services, name them, for example:</p>
+    <p class="copy-row"><code id="check-request-some">Run the service check now for Snacko's and Men Walking and Talking</code> <button class="btn secondary small" type="button" data-copy="#check-request-some">Copy</button></p>
+    <p>It runs the same steps as the monthly check, once a day at most. For the checks that need a web browser (Facebook pages, and sites that block automated reading), the computer the task is set up on needs to be switched on with the Claude app open. Without it, the rest of the check still runs and those services are listed as waiting.</p>
+    <h3>Why there's no button here</h3>
+    <p>The check runs in Claude, not on this website, and Claude has no way for a website to start a task. A button here would need the website to hold a key to the team's Claude account, which isn't safe on a public site. Asking in the Claude project takes the same time and keeps the account secure.</p>
+
     <h2 id="report">Reporting a problem</h2>
     <p>Use <a href="log.html">the issues and actions log</a>. It's a shared list for the development team. Like every Admin page it needs the team passcode (ask Phil): you sign in once on the Admin home page and stay signed in until you close the browser tab. A good entry says:</p>
     <ol>
@@ -150,6 +171,7 @@
 
     <h2 id="changes">What has changed</h2>
     <ul>
+      <li><strong>24 Nov 2026</strong>: every service has been checked against the provider's website, and Claude now re-checks services every month. See <a href="#checks">Keeping the data up to date</a>, including how to run a check yourself.</li>
       <li><strong>5 Nov 2026</strong>: the team pages are now the <a href="./">Admin</a> section, reached from one "Admin" link at the bottom of the main page instead of the bar at the top. Every Admin page, including this one, needs the team passcode: you sign in once on the Admin home page.</li>
       <li><strong>16 Oct 2026</strong>: added the 47 remaining services from the research spreadsheet (the "Not verified or closed" tab, the crisis helplines and the directories). They are <em>not</em> on the live finder yet. On the <a href="services.html">All services</a> page, sign in with the team passcode to decide for each service whether to include it on the live list, give it further review, or exclude it completely, and use "Edit details" to correct or complete a service's details. Use "Add a service" to add one that's missing: it is reviewed and decided on like the rest, and only goes live if the team decides to include it. Phil applies the team's changes with the "Apply team changes" button on GitHub.</li>
       <li><strong>15 Oct 2026</strong>: new <a href="services.html">All services</a> page, to search and filter every service and find ones that need checking.</li>
