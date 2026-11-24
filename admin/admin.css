@@ -332,3 +332,5 @@ td.num-cell { text-align: right; white-space: nowrap; width: 1%; }
 .org-list-page a { display: block; background: #fff; border: 1px solid var(--border); border-inline-start: 6px solid var(--blue); border-radius: 6px; padding: .5rem .8rem; text-decoration: none; color: var(--text); }
 .org-list-page a:hover { background: var(--light); }
 @media (min-width: 760px) and (min-height: 600px) { .decide-bar { position: sticky; bottom: 0; box-shadow: 0 -2px 8px rgba(0,0,0,.08); } }
+.copy-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.copy-row code { padding: .2rem .4rem; background: var(--light); border-radius: 4px; }

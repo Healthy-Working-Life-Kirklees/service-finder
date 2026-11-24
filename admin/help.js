@@ -22,6 +22,16 @@
   };
   const age = (iso) => (Date.now() - Date.parse(iso)) / 86400000;
 
+  // "Copy" buttons next to the requests to give Claude
+  for (const b of document.querySelectorAll('button[data-copy]')) {
+    b.addEventListener('click', () => {
+      const text = document.querySelector(b.dataset.copy).textContent;
+      const done = () => { b.textContent = 'Copied'; setTimeout(() => { b.textContent = 'Copy'; }, 2000); };
+      if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, () => { b.textContent = 'Select and copy it'; });
+      else b.textContent = 'Select and copy it';
+    });
+  }
+
   fetch('../services.json', { cache: 'no-cache' })
     .then((r) => r.json())
     .then((d) => {
