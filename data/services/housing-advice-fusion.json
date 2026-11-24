@@ -13,9 +13,9 @@
   ],
   "whoFor": "Anyone in Kirklees with a housing problem.",
   "age": null,
-  "webpage": "http://www.fusionhousing.org.uk",
+  "webpage": "https://fusionhousing.org.uk/services/housing-advice-service/",
   "email": "info@fusionhousing.org.uk",
-  "phone": "01484 425522 / 01924 454770",
+  "phone": "0300 102 5222",
   "social": [],
   "locations": [],
   "areas": [
@@ -55,14 +55,14 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-24",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 53",
     "foundVia": "Kirklees Community Directory",
-    "checkedUrl": "https://communitydirectory.kirklees.gov.uk/communitydirectory/organisationdetails.aspx?orgid=349",
-    "evidence": "Directory Sept 2025 only.",
-    "confidence": "medium",
+    "checkedUrl": "https://fusionhousing.org.uk/services/housing-advice-service/",
+    "evidence": "Housing advice page: 0300 102 5222, info@fusionhousing.org.uk; the team chose this number (24 Nov 2026).",
+    "confidence": "high",
     "status": "Running (checked by web research, October 2026)"
   },
   "listing": {

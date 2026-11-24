@@ -61,7 +61,9 @@
     "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
-    "decision": "review",
-    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+    "decision": "include",
+    "reason": "Included by the development team after the service check (24 Nov 2026).",
+    "by": "PL",
+    "date": "2026-11-24"
   }
 }
