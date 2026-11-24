@@ -1,7 +1,7 @@
 {
   "id": "my-way-forward",
   "name": "My Way Forward",
-  "organisation": "C+K Careers Ltd",
+  "organisation": "C+K Careers",
   "logo": "c-k-careers.webp",
   "open": true,
   "hwlFunded": true,
@@ -65,12 +65,12 @@
   ],
   "workExperience": "Yes",
   "notes": "Status before November 2026: Live - open to referrals",
-  "lastUpdated": "2026-11-18",
+  "lastUpdated": "2026-11-24",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
     "checkedUrl": "https://www.ckcareers.co.uk/services-for-adults/adult-contracts",
-    "evidence": "Checked against C+K's page on 2026-11-18: 16 to 25 NEET with health issues, email matches; phone is C+K's main line (no programme number published).",
+    "evidence": "Checked by PL on 2026-11-24: Org name",
     "confidence": "high"
   },
   "listing": {
