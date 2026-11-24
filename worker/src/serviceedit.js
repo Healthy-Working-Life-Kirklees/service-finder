@@ -106,7 +106,7 @@ export function makeChecker(schema) {
 
   // A project or session. "was" is the same project as it is in the data now (by id), if there is one, so text
   // already over a limit can be kept.
-  const PROJECT_KEYS = ['id', 'name', 'overview', 'runs', 'area', 'where', 'when', 'duration', 'places', 'age', 'audience', 'eligibility', 'gate', ...DATE_KEYS, 'sessions'];
+  const PROJECT_KEYS = ['id', 'name', 'overview', 'runs', 'area', 'where', 'when', 'duration', 'cost', 'places', 'age', 'audience', 'eligibility', 'gate', ...DATE_KEYS, 'sessions'];
   const SESSION_KEYS = ['id', 'name', 'venue', 'where', 'days', 'start', 'end', 'frequency', 'note', 'when', 'places', 'age', 'eligibility', 'gate', ...DATE_KEYS];
   function part(x, keys, what, was) {
     if (!x || typeof x !== 'object' || Array.isArray(x)) return { error: `A ${what} is missing.` };
@@ -133,7 +133,7 @@ export function makeChecker(schema) {
         if (x.runs.length) out.runs = [...new Set(x.runs)];
       }
     }
-    for (const [k, max] of [['area', 300], ['when', 300], ['duration', 300], ['places', 200], ['age', 60], ['note', 300]]) {
+    for (const [k, max] of [['area', 300], ['when', 300], ['duration', 300], ['cost', 200], ['places', 200], ['age', 60], ['note', 300]]) {
       if (!keys.includes(k) || !(k in x) || x[k] == null || x[k] === '') continue;
       const t = str(x[k]);
       if (t === null) return { error: `"${k}" for "${label}" must be text.` };

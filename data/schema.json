@@ -121,6 +121,9 @@
         "duration": {
           "$ref": "#/$defs/text"
         },
+        "cost": {
+          "$ref": "#/$defs/shortText"
+        },
         "places": {
           "$ref": "#/$defs/shortText"
         },

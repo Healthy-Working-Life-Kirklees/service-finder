@@ -263,6 +263,7 @@
       }).filter(Boolean);
       if (sessions.length) bits.push('Where and when: ' + sessions.join('; ') + '.');
       if (p.duration) bits.push('How long: ' + p.duration + '.');
+      if (p.cost) bits.push('Cost: ' + p.cost + '.');
       if (p.places) bits.push('Places: ' + p.places + '.');
       const d = (k, label) => (p[k] ? label + ' ' + longDate(p[k]) : '');
       const dates = [d('runsFrom', 'runs from'), d('runsTo', 'runs until'), d('referralsFrom', 'referrals from'), d('referralsUntil', 'referrals until')].filter(Boolean);

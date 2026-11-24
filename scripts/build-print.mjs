@@ -212,7 +212,7 @@ async function servicePage(s, n) {
   ].join('');
 
   // The projects (and sessions) open or opening soon on the day the directory is built, with their own details.
-  const facts = (o, dates) => [o.when, o.duration, o.places, o.age && o.age !== s.age ? 'Age ' + o.age : '', (o.eligibility || []).length ? 'Also: ' + o.eligibility.join('; ') : '', ...L.dateWords(dates, TODAY)].filter(Boolean);
+  const facts = (o, dates) => [o.when, o.duration, o.cost && o.cost !== s.cost ? 'Cost: ' + o.cost : '', o.places, o.age && o.age !== s.age ? 'Age ' + o.age : '', (o.eligibility || []).length ? 'Also: ' + o.eligibility.join('; ') : '', ...L.dateWords(dates, TODAY)].filter(Boolean);
   const shown = L.visible(s, TODAY);
   const acts = shown.map((x) => {
     const p = x.project;

@@ -88,3 +88,17 @@
 .lf .lf-label-unknown { background: var(--warn-bg, #fff4d6); color: #563a00; border: 1px solid var(--warn); }
 .lf .lf-quote { font-weight: 400; font-style: italic; }
 .lf .lf-is-unknown { border-inline-start: 4px solid var(--warn); padding-inline-start: .6rem; }
+
+/* "Check your answers" before sending */
+.lf-review { border: 2px solid var(--dark-blue); border-radius: 12px; padding: 1rem 1.1rem; margin: 1rem 0; background: #fff; }
+.lf-review:focus { outline: 3px solid var(--focus, #ffbf47); }
+.lf-review h2 { margin-top: 0; }
+.lf-review-list { margin: 0 0 1rem; }
+.lf-review-part h3 { margin: 1.2rem 0 .3rem; font-size: 1.05rem; color: var(--dark-blue); border-top: 3px solid var(--accent); padding-top: .5rem; }
+.lf-review-row { display: grid; grid-template-columns: minmax(10rem, 1fr) 2fr auto; gap: .3rem 1rem; padding: .5rem 0; border-bottom: 1px solid var(--border); }
+.lf-review-row dt { font-weight: 700; }
+.lf-review-row dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.lf-review-change { text-align: right; }
+@media (max-width: 640px) { .lf-review-row { grid-template-columns: 1fr auto; } .lf-review-row dt { grid-column: 1 / -1; } }
+.lf-review-gap { display: block; height: .4rem; }
+.lf-review .btn.small { min-height: 36px; padding: .2rem .8rem; }

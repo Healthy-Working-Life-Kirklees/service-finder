@@ -88,24 +88,34 @@
       ui.left.scrollIntoView({ block: 'nearest' });
       return;
     }
+    // Check your answers, then send from there.
+    const who = form.querySelector('#sg-yourname').value.trim();
+    const note = form.querySelector('#sg-note').value.trim();
+    lf.review({
+      title: 'Check your answers before sending',
+      intro: 'This is everything you have told us. Use "Change" to go back to a question. Nothing is sent until you press the button at the end.',
+      extra: [who || note ? el('dl', { class: 'lf-review-list' }, el('div', { class: 'lf-review-part' }, el('h3', { text: 'From you' })),
+        who ? el('div', { class: 'lf-review-row' }, el('dt', { text: 'Your name' }), el('dd', { text: who })) : null,
+        note ? el('div', { class: 'lf-review-row' }, el('dt', { text: 'Anything else you told us' }), el('dd', { text: note })) : null) : null].filter(Boolean),
+      sendText: 'Send to the Healthy Working Life team',
+      onSend: post,
+    });
+  }
+
+  async function post() {
     const listing = lf.read();
     const website = /^https?:\/\/[^\s/?#]+\.[^\s/?#]+\S*$/i.test(listing.webpage || '') ? listing.webpage : '';
     const ms = { role: 'provider', name: listing.name, organisation: listing.organisation, website, listing };
     const who = form.querySelector('#sg-yourname').value.trim();
     if (who) ms.contactName = who;
-    ui.sendBtn.disabled = true;
-    try {
-      const res = await fetch(API + '/feedback', { method: 'POST', headers: { 'content-type': 'application/json' }, referrerPolicy: 'no-referrer',
-        body: JSON.stringify({ kind: 'gap', reasons: ['missing-service'], text: form.querySelector('#sg-note').value.trim(), missedService: ms, mode: 'staff', lang: 'en' }) });
-      const d = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(res.status === 404 ? 'Sending isn\'t switched on at the moment. Please try again later, or email the Healthy Working Life team.' : d.error || 'Something went wrong. Please try again.');
-      clearTimeout(timer);
-      draftDrop();
-      thanks(listing);
-    } catch (err) {
-      ui.sendBtn.disabled = false;
-      say(err.message === 'Failed to fetch' ? 'Could not connect. Please check your internet connection and try again.' : err.message);
-    }
+    const res = await fetch(API + '/feedback', { method: 'POST', headers: { 'content-type': 'application/json' }, referrerPolicy: 'no-referrer',
+      body: JSON.stringify({ kind: 'gap', reasons: ['missing-service'], text: form.querySelector('#sg-note').value.trim(), missedService: ms, mode: 'staff', lang: 'en' }) })
+      .catch(() => { throw new Error('Could not connect. Please check your internet connection and try again.'); });
+    const d = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(res.status === 404 ? 'Sending isn\'t switched on at the moment. Please try again later, or email the Healthy Working Life team.' : d.error || 'Something went wrong. Please try again.');
+    clearTimeout(timer);
+    draftDrop();
+    thanks(listing);
   }
 
   function thanks(listing) {

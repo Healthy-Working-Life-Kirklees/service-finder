@@ -88,7 +88,7 @@
   const TOWNS = ['Batley', 'Colne Valley', 'Dewsbury', 'Holme Valley', 'Huddersfield', 'Kirkburton', 'Mirfield', 'Spen Valley'];
 
   // The answers whose label is shown (found online, or unknown), and the box they belong to.
-  const LABELLED = ['organisationOverview', 'whoFor', 'residence', 'healthFocus', 'work', 'age', 'eligibility', 'exclusions', 'groups', 'audience', 'categories', 'webpage', 'email', 'phone', 'referral', 'referralRoutes', 'cost', 'languages', 'workExperience', 'coachNotes', 'projects'];
+  const LABELLED = ['organisationOverview', 'whoFor', 'residence', 'healthFocus', 'work', 'age', 'eligibility', 'exclusions', 'groups', 'audience', 'categories', 'webpage', 'email', 'phone', 'referral', 'referralRoutes', 'languages', 'workExperience', 'coachNotes', 'projects'];
   // The new questions, which stay "unknown" until they're answered. Partners can leave them (or anything else
   // optional) blank: before sending they are told what is still unanswered, and can send anyway.
   const NEW_QUESTIONS = { residence: 'Who can use it, by where they live', work: 'Work situation', referral: 'Does someone need a referral?' };
@@ -340,16 +340,30 @@
       const note = smallText('Anything else about when, in words', s.note, 'For example "first Tuesday of the month" or "term time only".');
       // Two things most people won't need, each folded away next to what it is about:
       // a place with no postcode (under the place), and dates that differ from the activity's (at the end).
-      const where = smallLines('Places without a postcode', s.where, 'One per line, for example "Online" or "At home".');
-      const whereMore = el('details', { class: 'lf-more' }, el('summary', { text: 'No postcode, such as online?' }), where.node);
-      if (list(s.where).length) whereMore.open = true;
+      // An online session (a group on Zoom on Tuesdays, say) has no place: "This one is online" takes the place's
+      // spot. It only shows when the activity runs online or by phone. Other places in words (from older listings)
+      // stay in a box of their own, and only show if there are some.
+      const isOnline = (x) => /^online\b/i.test(String(x).trim());
+      const wasOnline = list(s.where).some(isOnline);
+      const onlineTick = el('input', { type: 'checkbox', checked: wasOnline });
+      const onlineBox = el('div', { class: 'lf-field lf-online' }, el('label', {}, onlineTick, ' This one is online, so there is no place'));
+      const otherWhere = list(s.where).filter((x) => !isOnline(x));
+      const where = smallLines('Other places, in words', otherWhere, 'Only for places without a postcode.');
+      const whereMore = otherWhere.length ? where.node : null;
+      const syncOnline = () => {
+        const proj = onlineBox.closest('.lf-proj');
+        const on = proj ? Boolean(proj.querySelector(':scope > .lf-runs input[value=online]:checked')) : true;
+        onlineBox.hidden = !on && !onlineTick.checked;
+        picker.node.hidden = onlineTick.checked;
+      };
+      onlineTick.addEventListener('change', syncOnline);
       // A plain time and place (no cohort) can have its own dates, for example an earlier run that has ended.
       const dates = o.ownDates ? datesGroup('s', s, 'Dates for this time and place') : null;
       const datesMore = dates ? el('details', { class: 'lf-more' }, el('summary', { text: 'Does this time and place have different dates from the rest of the activity?' }),
         el('p', { class: 'hint', text: 'Only if it starts or ends at a different time, for example an earlier run. Otherwise leave this empty: it uses the activity\'s dates.' }), dates.box) : null;
       if (dates && L.DATE_KEYS.some((k) => s[k])) datesMore.open = true;
       const fs = el('fieldset', { class: 'lf-session', 'data-id': s.id || '' }, el('legend', { text: 'Time and place' }),
-        picker.node, whereMore,
+        onlineBox, picker.node, whereMore,
         el('fieldset', { class: 'lf-days' }, el('legend', { text: 'Days' }), el('div', { class: 'choices' }, dayBoxes)),
         el('div', { class: 'lf-grid' },
           el('div', { class: 'lf-field' }, el('label', { for: start.id, text: 'From' }), start),
@@ -361,8 +375,9 @@
         const out = { id: fs.dataset.id };
         const v = picker.read();
         if (v) out.venue = v;
-        const w = where.get();
+        const w = [...(onlineTick.checked ? ['Online'] : []), ...where.get()];
         if (w.length) out.where = w;
+        if (onlineTick.checked) delete out.venue;
         const days = dayBoxes.map((b) => b.querySelector('input')).filter((i) => i.checked).map((i) => i.value);
         if (days.length) out.days = days;
         if (start.value) out.start = start.value;
@@ -378,7 +393,9 @@
       };
       fs._first = picker.input;
       fs._picker = picker;
+      fs._syncOnline = syncOnline;
       holder.append(fs);
+      syncOnline();
       return fs;
     }
     function timetable(rows, o) {
@@ -469,6 +486,7 @@
           when: smallText('When, in words', p.when, 'For example opening hours, or "Flexible, arranged with you".'),
           where: smallLines('Other places, in words', p.where, 'Places without a postcode, for example "Online" or "Community venues across Kirklees".'),
           places: smallText('Number of places', p.places, 'Leave empty if not limited.'),
+          cost: smallText('Cost', p.cost !== undefined ? p.cost : values.cost, 'Leave empty if you\'re not sure.', { placeholder: 'For example: Free, or £3 a session' }),
         };
         const ovId = uid('ov');
         const ov = el('textarea', { id: ovId, rows: '3', 'aria-describedby': ovId + '-count' });
@@ -507,12 +525,12 @@
         const plainBlock = el('div', { class: 'lf-plain-block' }, actDates.box, el('div', { class: 'lf-grid' }, f.places.node), plainTt.box);
         const words = el('div', { class: 'lf-words' }, f.area.node, f.when.node);
         fs._remove = small({ text: 'Remove this activity', onclick: () => { fs.remove(); showMulti(); changed(); } });
-        fs.append(f.name.node, ovBox, f.duration.node, runSet, words, open.box, nar.node, cohorts.box, cohortBlock, plainBlock,
-          el('details', { class: 'lf-more' }, el('summary', { text: 'Other places, in words' }), f.where.node),
+        fs.append(f.name.node, ovBox, f.duration.node, f.cost.node, runSet, words, open.box, nar.node, cohorts.box, cohortBlock, plainBlock,
+          list(p.where).length ? f.where.node : null,
           el('div', { class: 'lf-row' }, fs._remove));
-        if (list(p.where).length) fs.querySelector(':scope > details.lf-more').open = true;
         const showParts = () => {
           const t = ticked();
+          for (const r of fs.querySelectorAll('.lf-session')) if (r._syncOnline) r._syncOnline();
           plainTt.box.hidden = !t.has('set') && !plainTt.holder.children.length;
           words.hidden = !(t.has('appointment') || t.has('online')) && !f.area.get() && !f.when.get();
           nar.node.hidden = open.get() !== 'no';
@@ -535,7 +553,7 @@
           const out = { id: fs.dataset.id, name: f.name.get() || p.name || '', overview: ov.value.trim() };
           const r = [...ticked()];
           if (r.length) out.runs = Object.keys(L.RUNS).filter((k) => r.includes(k));
-          for (const k of ['area', 'when', 'duration']) { const v = f[k].get(); if (v) out[k] = v; }
+          for (const k of ['area', 'when', 'duration', 'cost']) { const v = f[k].get(); if (v) out[k] = v; }
           const where = f.where.get();
           if (where.length) out.where = where;
           if (open.get() === 'no') {
@@ -798,7 +816,7 @@
     priority.on(showGroups);
     reg('groups', { box: priority.box, read: () => { const v = priority.get(); return !v ? gr : v === 'no' ? ['everyone'] : groupTicks.read(); } });
     reg('audience', checksQuestion('audience', 'Who uses it? Tick all that apply.', '', list(choices.audience), AUDIENCE, values.audience));
-    reg('categories', checksQuestion('categories', 'What kind of support is it? Tick all that apply.', 'Most important first: newly ticked ones go last.', list(choices.categories), null, values.categories, { columns: true }));
+    reg('categories', checksQuestion('categories', 'What kind of support is it? Tick all that apply.', null, list(choices.categories), null, values.categories, { columns: true }));
     section(1, 'Priority groups, and what kind of support', priority.box, boxes.audience, boxes.categories);
 
     // ===== Part 2: contact and how people get in =====
@@ -862,11 +880,10 @@
     reg('open', { box: pausedBox, read: () => !paused.checked });
     section(2, 'How people get in', refNeeded.box, boxes.referralRoutes, pausedBox);
 
-    reg('cost', textQuestion('cost', 'Cost', 'Leave empty if it is free.', { placeholder: 'For example: free' }, values.cost));
     reg('languages', textQuestion('languages', 'Languages and formats offered besides English', 'For example "Interpreters available" or "Easy read leaflets".', {}, values.languages));
     reg('workExperience', textQuestion('workExperience', 'Does it include volunteering or work experience?', 'For example "No" or "Yes, a six-week placement".', { required: true }, values.workExperience));
     reg('coachNotes', textQuestion('coachNotes', 'Anything coaches should know', 'Shown on the service card. For example waiting times, or what to bring.', { area: true, limit: L.LIMITS.coachNotes }, values.coachNotes));
-    section(2, 'Anything else', boxes.cost, boxes.languages, boxes.workExperience, boxes.coachNotes);
+    section(2, 'Anything else', boxes.languages, boxes.workExperience, boxes.coachNotes);
 
     // ===== Part 3: activities and timetable =====
     const projects = projectsQuestion(values.projects);
@@ -965,6 +982,13 @@
     function read() {
       const out = {};
       for (const [k, r] of Object.entries(readers)) out[k] = r();
+      // Cost is asked for each activity. When they are all the same (or there is one activity) it is the service's
+      // cost; when they differ, each activity keeps its own.
+      if (Array.isArray(out.projects) && out.projects.length) {
+        const costs = [...new Set(out.projects.map((p) => p.cost || ''))];
+        if (costs.length === 1) { out.cost = costs[0] || null; for (const p of out.projects) delete p.cost; }
+        else out.cost = null;
+      }
       for (const k of NULLABLE) if (k in out && (out[k] === '' || out[k] === undefined || (Array.isArray(out[k]) && !out[k].length))) out[k] = null;
       if ('requiresMention' in out && !out.requiresMention.length) out.requiresMention = null;
       if ('venues' in out && !out.venues.length) out.venues = null;
@@ -1085,7 +1109,105 @@
       return out;
     }
 
-    return { node: root, parts, read, changes, check, mark, show, unanswered, boxes, addProject: () => projects.addNew() };
+    // ---------- "Check your answers" before sending ----------
+    // One line per question, grouped by part, in the order they appear, each with a "Change" link back to it.
+    // only: a list of answer names (the partner page shows just what they changed). Empty answers are left out,
+    // unless "only" names them (then they show as "Left empty").
+    const lead = (box) => { const l = box.querySelector(':scope > legend, :scope > label, :scope > .lf-lab'); return l ? l.textContent.replace(/\s*\(mandatory\)\s*$/, '').trim() : ''; };
+    const RUN_WORDS = L.RUNS;
+    function referralText(r) {
+      if (!r) return '';
+      if (r.needed === 'no') return 'No referral needed';
+      if (r.who === 'professional') return 'A referral is needed, from a professional' + (r.professionals ? ' (' + r.professionals + ')' : '');
+      return 'A referral is needed, and anyone can make it, including the person themselves';
+    }
+    function sessionText(x) {
+      const v = x.venue && (typeof x.venue === 'object' ? x.venue.name : (venueById.get(x.venue) || {}).name || x.venue);
+      const days = list(x.days).map((d) => L.DAY_NAMES[d] || d).join(', ');
+      const time = [x.start, x.end].filter(Boolean).join(' to ');
+      return [x.name, [v, ...list(x.where)].filter(Boolean).join(', '), days, time, x.note].filter(Boolean).join(' · ');
+    }
+    function projectText(p, cost) {
+      const bits = [String(p.overview || '').replace(/[.\s]+$/, ''), p.duration ? 'How long: ' + p.duration : '', p.cost || cost ? 'Cost: ' + (p.cost || cost) : '',
+        list(p.runs).length ? 'Runs: ' + list(p.runs).map((k) => RUN_WORDS[k] || k).join('; ') : '',
+        p.area, p.when, p.places ? 'Places: ' + p.places : '', p.age ? 'Age: ' + p.age : '',
+        ...list(p.sessions).map(sessionText)].filter(Boolean);
+      return [p.name ? '[' + p.name + ']' : '', ...bits].filter(Boolean).join('\n');
+    }
+    function answerText(keys, now) {
+      const k = keys[0];
+      if (keys.includes('ageMin')) return noAge.checked ? 'No age limit' : L.ageWords(now);
+      if (keys.includes('eligibility') || keys.includes('gate')) {
+        const g = list(now.gate);
+        return [...g.map((x) => x + ' (essential)'), ...list(now.eligibility).filter((x) => !g.includes(x))].join('\n');
+      }
+      const v = now[k];
+      if (k === 'open') return v === false ? 'Yes: paused for now' : '';
+      if (v == null || v === '' || (Array.isArray(v) && !v.length)) return '';
+      if (k === 'residence') return L.residenceWords(v);
+      if (k === 'work') return L.workWords(v);
+      if (k === 'referral') return referralText(v);
+      if (k === 'healthFocus') return v.map((x) => HEALTH[x] || x).join('\n') || 'No';
+      if (k === 'groups') return L.groupNames(v).join('\n');
+      if (k === 'audience') return v.map((x) => AUDIENCE[x] || x).join('\n');
+      if (k === 'selfReferral') return [SELF[v.allowed] || '', v.url || '', v.note || ''].filter(Boolean).join('. ');
+      if (k === 'projects') return v.map((p) => projectText(p, now.cost)).join('\n\n');
+      if (typeof v === 'boolean') return v ? 'Yes' : 'No';
+      if (Array.isArray(v)) return v.map((x) => (typeof x === 'object' ? Object.values(x).join(', ') : x)).join('\n');
+      if (typeof v === 'object') return Object.values(v).filter((x) => typeof x !== 'object').join(', ');
+      return String(v);
+    }
+    function summary(only) {
+      const now = read();
+      const seen = new Set();
+      const rows = [];
+      for (const [k, box] of Object.entries(boxes)) {
+        if (seen.has(box) || !root.contains(box)) continue;
+        seen.add(box);
+        const keys = Object.entries(boxes).filter(([, b]) => b === box).map(([x]) => x);
+        if (only && !keys.some((x) => only.includes(x))) continue;
+        const text = answerText(keys, now);
+        if (!text && !only) continue;
+        const part = parts.findIndex((p) => p.contains(box));
+        rows.push({ part, box, label: k === 'projects' ? (list(now.projects).length > 1 ? 'Activities' : 'Activity') : lead(box) || k, text: text || 'Left empty', go: () => { reveal(box); box.scrollIntoView({ block: 'center' }); const i = box.querySelector('input, textarea, select'); if (i) i.focus({ preventScroll: true }); } });
+      }
+      rows.sort((a, b) => a.part - b.part || (a.box.compareDocumentPosition(b.box) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
+      return rows;
+    }
+    // The panel: every answer, "Change" links, and the page's own send button. back() shows the form again.
+    function review({ title, intro, only, sendText, onSend, extra }) {
+      const rows = summary(only);
+      const panel = el('section', { class: 'lf-review', tabindex: '-1', 'aria-labelledby': uid('rv') });
+      const hid = panel.getAttribute('aria-labelledby');
+      const back = (row) => { panel.remove(); root.hidden = false; root.dispatchEvent(new CustomEvent('lf-review-closed', { bubbles: true })); if (row) row.go(); };
+      const dl = el('dl', { class: 'lf-review-list' });
+      let part = -1;
+      for (const r of rows) {
+        if (r.part !== part) { part = r.part; dl.append(el('div', { class: 'lf-review-part' }, el('h3', { text: 'Part ' + (part + 1) + ': ' + PARTS[part] }))); }
+        dl.append(el('div', { class: 'lf-review-row' }, el('dt', { text: r.label }), el('dd', {}, ...r.text.split('\n').flatMap((t, i) => {
+          const bit = /^\[.*\]$/.test(t) ? el('strong', { text: t.slice(1, -1) }) : t === '' ? el('span', { class: 'lf-review-gap' }) : t;
+          return i ? [el('br'), bit] : [bit];
+        })),
+          el('dd', { class: 'lf-review-change' }, el('button', { type: 'button', class: 'btn secondary small', text: 'Change', 'aria-label': 'Change: ' + r.label, onclick: () => back(r) }))));
+      }
+      const sendBtn = el('button', { type: 'button', class: 'btn primary', text: sendText });
+      const msg = el('p', { class: 'pc-msg', role: 'alert', hidden: true });
+      sendBtn.addEventListener('click', async () => {
+        sendBtn.disabled = true;
+        msg.hidden = true;
+        try { await onSend(); panel.remove(); root.hidden = false; } catch (err) { msg.textContent = err.message; msg.hidden = false; sendBtn.disabled = false; }
+      });
+      panel.append(el('h2', { id: hid, text: title }), intro ? el('p', { text: intro }) : null,
+        rows.length ? dl : el('p', { text: 'You have not filled in any answers yet.' }), ...(extra || []),
+        el('div', { class: 'pc-buttons' }, sendBtn, el('button', { type: 'button', class: 'btn secondary', text: 'Go back to the form', onclick: () => back(null) })), msg);
+      root.hidden = true;
+      root.after(panel);
+      panel.focus();
+      panel.scrollIntoView({ block: 'start' });
+      return panel;
+    }
+
+    return { node: root, parts, read, changes, check, mark, show, unanswered, summary, review, boxes, addProject: () => projects.addNew() };
   }
 
   globalThis.LISTING_FORM = { build, HEALTH, AUDIENCE, SELF, DATE_LABEL, PARTS, ageNumbers };

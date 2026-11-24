@@ -261,6 +261,7 @@
     const li = [];
     if (o.when) li.push(el('li', {}, t('whenLabel'), el('span', { ...EN, text: o.when })));
     if (o.duration) li.push(el('li', {}, t('howLong'), el('span', { ...EN, text: o.duration })));
+    if (o.cost && o.cost !== s.cost) li.push(el('li', {}, t('costLabel'), el('span', { ...EN, text: o.cost })));
     if (o.places) li.push(el('li', {}, t('placesLabel'), el('span', { ...EN, text: o.places })));
     if (o.age && o.age !== s.age) li.push(el('li', {}, t('age'), el('span', { ...EN, text: o.age })));
     if ((o.eligibility || []).length) li.push(el('li', {}, t('extraCriteria'), el('span', { ...EN, text: o.eligibility.join('; ') })));

@@ -135,13 +135,32 @@
         return;
       }
     }
-    const buttons = [ui.correct, ui.sendBtn, ui.undo];
-    buttons.forEach((b) => (b.disabled = true));
-    try {
-      const d = await api('POST', { allCorrect, changes: ch, note: form.querySelector('#' + id('note')).value.trim(), name: form.querySelector('#' + id('yourname')).value.trim() });
+    const note = form.querySelector('#' + id('note')).value.trim();
+    const name = form.querySelector('#' + id('yourname')).value.trim();
+    const post = async () => {
+      const d = await api('POST', { allCorrect, changes: ch, note, name });
       clearTimeout(draftTimer);
       draftDrop();
       thanks(allCorrect, d.t, allCorrect ? data.service : { ...data.service, ...ch });
+    };
+    // Changes: check them first, then send from there. "Everything is correct" sends straight away.
+    if (!allCorrect) {
+      lf.review({
+        title: 'Check your changes before sending',
+        intro: Object.keys(ch).length ? 'These are the answers you have changed. Use "Change" to go back to one. Nothing is sent until you press the button at the end.' : '',
+        only: Object.keys(ch),
+        extra: [name || note ? el('dl', { class: 'lf-review-list' }, el('div', { class: 'lf-review-part' }, el('h3', { text: 'From you' })),
+          name ? el('div', { class: 'lf-review-row' }, el('dt', { text: 'Your name' }), el('dd', { text: name })) : null,
+          note ? el('div', { class: 'lf-review-row' }, el('dt', { text: 'Anything else you told us' }), el('dd', { text: note })) : null) : null].filter(Boolean),
+        sendText: 'Send my changes to the Healthy Working Life team',
+        onSend: post,
+      });
+      return;
+    }
+    const buttons = [ui.correct, ui.sendBtn, ui.undo];
+    buttons.forEach((b) => (b.disabled = true));
+    try {
+      await post();
     } catch (err) {
       buttons.forEach((b) => (b.disabled = false));
       say(err.message);

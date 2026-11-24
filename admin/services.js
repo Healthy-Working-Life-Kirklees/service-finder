@@ -288,7 +288,7 @@
       const p = x.project;
       const bits = (o, dates, st) => [
         list(o.runs).length ? 'Runs: ' + o.runs.map((r) => LL.RUNS[r] || r).join(', ') : '', o.area ? 'Area: ' + o.area : '',
-        o.where && o.where.length ? 'Where: ' + o.where.join('; ') : '', o.when ? 'When: ' + o.when : '', o.duration ? 'How long: ' + o.duration : '', o.places ? o.places : '',
+        o.where && o.where.length ? 'Where: ' + o.where.join('; ') : '', o.when ? 'When: ' + o.when : '', o.duration ? 'How long: ' + o.duration : '', o.cost ? 'Cost: ' + o.cost : '', o.places ? o.places : '',
         o.age ? 'Age ' + o.age : '', list(o.eligibility).length ? 'Extra criteria: ' + o.eligibility.join('; ') : '', list(o.gate).length ? 'Essential: ' + o.gate.join('; ') : '',
         list(o.audience).length ? 'Works with: ' + o.audience.join(', ') : '', ...LL.dateWords(dates), STATE_WORDS[st],
       ].filter(Boolean).join('. ');
