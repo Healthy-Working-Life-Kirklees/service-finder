@@ -77,6 +77,17 @@ export async function teamLinks(request, path, body, call, cors, checker) {
     return json(res, res.error ? 404 : 200, cors);
   }
 
+  // Remove one reply completely: { t (the reply's time), by }. For test replies or ones sent by mistake.
+  const rm = path.match(/^\/log\/provider-links\/([A-Za-z0-9_-]{32})\/remove-reply$/);
+  if (request.method === 'POST' && rm) {
+    const by = clean(body.by, 40);
+    if (!by) return json({ error: 'Please give your name or initials.' }, 400, cors);
+    const t = clean(body.t, 40);
+    if (!/^\d{4}-\d\d-\d\dT[\d:.]+Z$/.test(t)) return json({ error: 'Which reply?' }, 400, cors);
+    const res = await call('/plinks/remove-reply', { token: rm[1], t });
+    return json(res, res.error ? 404 : 200, cors);
+  }
+
   return json({ error: 'Not found.' }, 404, cors);
 }
 

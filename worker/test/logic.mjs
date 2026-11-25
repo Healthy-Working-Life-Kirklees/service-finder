@@ -621,6 +621,16 @@ r = await logCall('POST', '/log/provider-links/' + tok + '/handled', { t: gotLin
 check('plinks: ...and with a name', r.status === 400);
 r = await logCall('POST', '/log/provider-links/' + tok + '/handled', { t: gotLink.replies[2].t, by: 'PL' }, { pass: 'nope' });
 check('plinks: ...and the passcode', r.status === 401);
+r = await logCall('POST', '/log/provider-links/' + tok + '/remove-reply', { t: gotLink.replies[3].t, by: 'PL' });
+check('plinks: the team can remove a reply completely', r.status === 200 && r.body.link.replies.length === 3 && !r.body.link.replies.some((x) => x.t === gotLink.replies[3].t) && r.body.link.sent === 3, JSON.stringify(r.body).slice(0, 200));
+r = await provCall('GET', tok);
+check('plinks: ...and the provider page then shows the reply before it', r.body.lastReply && r.body.lastReply.t === gotLink.replies[2].t);
+r = await logCall('POST', '/log/provider-links/' + tok + '/remove-reply', { t: gotLink.replies[3].t, by: 'PL' });
+check('plinks: ...only a reply that exists', r.status === 404);
+r = await logCall('POST', '/log/provider-links/' + tok + '/remove-reply', { t: gotLink.replies[2].t });
+check('plinks: ...and with a name', r.status === 400);
+r = await logCall('POST', '/log/provider-links/' + tok + '/remove-reply', { t: gotLink.replies[2].t, by: 'PL' }, { pass: 'nope' });
+check('plinks: ...and the passcode', r.status === 401);
 r = await logCall('POST', '/log/provider-links/' + tok + '/cancel', { by: 'PL' });
 check('plinks: team can cancel a link', r.status === 200 && r.body.link.cancelled.by === 'PL');
 r = await provCall('GET', tok);

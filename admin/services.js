@@ -618,6 +618,19 @@ Thank you,
         const f = document.querySelector('#svc-' + CSS.escape(s.id) + ' .edit');
         if (f) { f.scrollIntoView({ block: 'start' }); const first = f.querySelector('input, textarea, select'); if (first) first.focus(); }
       } });
+      // Remove a reply completely, for a test reply or one sent by mistake. The provider's page stops mentioning it too.
+      const removeBtn = el('button', { type: 'button', class: 'btn secondary small', text: 'Remove this reply', onclick: async () => {
+        if (!by()) { $('#by').focus(); return say('Please put your name or initials at the top of the page first.', 'err'); }
+        if (!confirm('Remove this reply from ' + r.name + ' (' + when(r.t) + ') completely? Use this for test replies or ones sent by mistake. It can\'t be undone.')) return;
+        removeBtn.disabled = true;
+        try {
+          const d = await api('POST', '/log/provider-links/' + r.link.token + '/remove-reply', { t: r.t, by: by() });
+          const i = plinks.findIndex((l) => l.token === r.link.token);
+          if (i >= 0) plinks[i] = d.link;
+          refreshOne(x);
+          summary();
+        } catch (err) { removeBtn.disabled = false; fail(err); }
+      } });
       box.append(el('div', { class: 'reply' + (handled ? ' handled' : '') },
         el('p', { class: 'mt0' }, el('strong', { text: r.allCorrect ? 'Provider said everything is correct' : keys.length ? 'Provider sent changes' : 'Provider sent a comment' }),
           ' (' + who + ', ' + when(r.t) + ')' + (count > 1 ? '. ' + plural(count, 'reply', 'replies') + ' in all; this is the newest.' : '.')),
@@ -627,7 +640,8 @@ Thank you,
         handled ? el('p', { class: 'hint', text: (r.handled ? 'Dealt with by ' + r.handled.by + (r.handled.note ? ': ' + r.handled.note.replace(/\.?$/, '.') : '.') : 'Dealt with: the team has saved changes for this service since this reply.') + ' To change the listing now, use Edit details: it shows what the listing says today.' }) : null,
         // Once a reply has been dealt with, opening the form filled in with it would show its (older) values as if
         // they were current, so the button goes.
-        handled ? null : el('div', { class: 'row-end' }, r.allCorrect ? recordChecked : keys.length ? review : null)));
+        handled ? null : el('div', { class: 'row-end' }, r.allCorrect ? recordChecked : keys.length ? review : null),
+        el('div', { class: 'row-end' }, removeBtn)));
     }
 
     // Links already made.
