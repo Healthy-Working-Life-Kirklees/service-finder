@@ -480,6 +480,12 @@ async function worker(route) {
   await page.fill('#sg-name', 'Batley Job Club');
   await page.fill('#sg-whoFor', 'Anyone in Batley looking for work.');
   await page.locator('#sg-residence input[value=kirklees]').check();
+  const catBox = page.locator('#sg-categories');
+  await catBox.getByLabel('Benefits and money', { exact: true }).check();
+  check('service form: with one kind of support ticked, there is no "main one" question', !(await catBox.locator('.lf-main').isVisible()));
+  await catBox.getByLabel('Apprenticeships', { exact: true }).check();
+  await catBox.locator('.lf-main').getByLabel('Apprenticeships', { exact: true }).check();
+  check('service form: with two or more, it asks which is the main one, from only those ticked', await catBox.locator('.lf-main').isVisible() && (await catBox.locator('.lf-main input').count()) === 2);
   await page.click('.lf-step[data-part="2"]');
   await page.fill('#sg-webpage', 'www.example.org/job-club');
   await page.click('.lf-step[data-part="3"]');
@@ -512,7 +518,7 @@ async function worker(route) {
   await page.waitForSelector('.pc-thanks');
   const sentFull = lastSent();
   const fm = sentFull.missedService || {};
-  check('service form: sent to the team as a suggested service with the whole listing', sentFull.kind === 'gap' && sentFull.reasons.join() === 'missing-service' && fm.role === 'provider' && fm.name === 'Batley Job Club' && fm.organisation === 'Batley Community Trust' && fm.contactName === 'Sam' && fm.listing && fm.listing.whoFor === 'Anyone in Batley looking for work.' && JSON.stringify(fm.listing.residence) === '{"scope":"kirklees"}' && fm.listing.projects[0].overview === 'Weekly job club with CV help.' && fm.listing.webpage === 'https://www.example.org/job-club' && fm.listing.cost === 'Free' && !('cost' in fm.listing.projects[0]) && JSON.stringify(fm.listing.projects[0].sessions) === '[{"id":"tue","where":["Online"],"days":["tue"]}]' && fm.website === 'https://www.example.org/job-club', JSON.stringify(fm.listing && [fm.listing.cost, fm.listing.projects]));
+  check('service form: sent to the team as a suggested service with the whole listing', sentFull.kind === 'gap' && sentFull.reasons.join() === 'missing-service' && fm.role === 'provider' && fm.name === 'Batley Job Club' && fm.organisation === 'Batley Community Trust' && fm.contactName === 'Sam' && fm.listing && fm.listing.whoFor === 'Anyone in Batley looking for work.' && JSON.stringify(fm.listing.residence) === '{"scope":"kirklees"}' && fm.listing.projects[0].overview === 'Weekly job club with CV help.' && fm.listing.webpage === 'https://www.example.org/job-club' && fm.listing.cost === 'Free' && fm.listing.categories.join() === 'Apprenticeships,Benefits and money' && !('cost' in fm.listing.projects[0]) && JSON.stringify(fm.listing.projects[0].sessions) === '[{"id":"tue","where":["Online"],"days":["tue"]}]' && fm.website === 'https://www.example.org/job-club', JSON.stringify(fm.listing && [fm.listing.cost, fm.listing.projects]));
   check('service form: offers to add another service from the same organisation', await page.locator('.pc-thanks button', { hasText: 'Tell us about another service' }).isVisible());
   await page.goto(ON + '/');
   await sugBtn.waitFor();

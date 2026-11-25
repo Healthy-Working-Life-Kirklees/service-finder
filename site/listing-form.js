@@ -195,7 +195,7 @@
         el('legend', { text: label }), hintP(hint, hintId),
         el('div', { class: 'choices' }, opts2.map((v) => el('label', {}, el('input', { type: 'checkbox', value: v, checked: have.has(v) }), (labels && labels[v]) || v))),
         o.inner ? null : changedTag());
-      // Keep the order the service already has (categories are most important first); newly ticked ones go last.
+      // Keep the order the service already has (the main kind of support first); newly ticked ones go last.
       const read = () => {
         const ticked = [...box.querySelectorAll(':scope > .choices input:checked')].map((i) => i.value);
         const had = list(val).filter((v) => ticked.includes(v));
@@ -816,7 +816,26 @@
     priority.on(showGroups);
     reg('groups', { box: priority.box, read: () => { const v = priority.get(); return !v ? gr : v === 'no' ? ['everyone'] : groupTicks.read(); } });
     reg('audience', checksQuestion('audience', 'Who uses it? Tick all that apply.', '', list(choices.audience), AUDIENCE, values.audience));
-    reg('categories', checksQuestion('categories', 'What kind of support is it? Tick all that apply.', null, list(choices.categories), null, values.categories, { columns: true }));
+    // The kinds of support, then (when two or more are ticked) which one is the main one. The main one goes first in
+    // the list; nothing else in the data changes.
+    {
+      const cat = checksQuestion('categories', 'What kind of support is it? Tick all that apply.', null, list(choices.categories), null, values.categories, { columns: true });
+      const mainName = uid('main');
+      let main = list(values.categories).length > 1 ? list(values.categories)[0] : '';
+      const mainChoices = el('div', { class: 'choices lf-stack' });
+      const mainBox = el('fieldset', { class: 'lf-field lf-radios lf-main' }, el('legend', { text: 'Which one is the main kind of support?' }), mainChoices);
+      const drawMain = () => {
+        const ticked = cat.read();
+        if (!ticked.includes(main)) main = '';
+        mainBox.hidden = ticked.length < 2;
+        mainChoices.replaceChildren(...ticked.map((v) => el('label', {}, el('input', { type: 'radio', name: mainName, value: v, checked: v === main }), v)));
+      };
+      mainChoices.addEventListener('change', (e) => { if (e.target.name === mainName) main = e.target.value; });
+      cat.box.querySelector(':scope > .choices').addEventListener('change', drawMain);
+      cat.box.insertBefore(mainBox, cat.box.querySelector(':scope > .changed-tag'));
+      drawMain();
+      reg('categories', { box: cat.box, read: () => { const t = cat.read(); return main && t.includes(main) ? [main, ...t.filter((v) => v !== main)] : t; } });
+    }
     section(1, 'Priority groups, and what kind of support', priority.box, boxes.audience, boxes.categories);
 
     // ===== Part 2: contact and how people get in =====
@@ -1147,6 +1166,7 @@
       if (k === 'residence') return L.residenceWords(v);
       if (k === 'work') return L.workWords(v);
       if (k === 'referral') return referralText(v);
+      if (k === 'categories') return v.map((x, i) => (i === 0 && v.length > 1 ? x + ' (the main one)' : x)).join('\n');
       if (k === 'healthFocus') return v.map((x) => HEALTH[x] || x).join('\n') || 'No';
       if (k === 'groups') return L.groupNames(v).join('\n');
       if (k === 'audience') return v.map((x) => AUDIENCE[x] || x).join('\n');
