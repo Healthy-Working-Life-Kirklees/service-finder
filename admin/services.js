@@ -288,7 +288,7 @@
       const p = x.project;
       const bits = (o, dates, st) => [
         list(o.runs).length ? 'Runs: ' + o.runs.map((r) => LL.RUNS[r] || r).join(', ') : '', o.area ? 'Area: ' + o.area : '',
-        o.where && o.where.length ? 'Where: ' + o.where.join('; ') : '', o.when ? 'When: ' + o.when : '', o.duration ? 'How long: ' + o.duration : '', o.places ? o.places : '',
+        o.where && o.where.length ? 'Where: ' + o.where.join('; ') : '', o.when ? 'When: ' + o.when : '', o.duration ? 'How long: ' + o.duration : '', o.cost ? 'Cost: ' + o.cost : '', o.places ? o.places : '',
         o.age ? 'Age ' + o.age : '', list(o.eligibility).length ? 'Extra criteria: ' + o.eligibility.join('; ') : '', list(o.gate).length ? 'Essential: ' + o.gate.join('; ') : '',
         list(o.audience).length ? 'Works with: ' + o.audience.join(', ') : '', ...LL.dateWords(dates), STATE_WORDS[st],
       ].filter(Boolean).join('. ');
@@ -460,9 +460,39 @@
     gate: 'Would turn someone away for not having', referralRoutes: 'How to get in', selfReferral: 'Self-referral', projects: 'Projects', workExperience: 'Work experience',
     cost: 'Cost', languages: 'Languages and formats', coachNotes: 'Anything coaches should know', notes: 'Team notes', reviewCycle: 'Review cycle',
     hwlFunded: 'Healthy Working Life funded', mapLinks: 'Map buttons', logo: 'Logo', requiresMention: 'Only shown when mentioned',
+    partners: 'In partnership with', residence: 'Who can use it, by where they live', work: 'Work situation', healthNote: 'Health conditions, in their words', ageMin: 'Age from', ageMax: 'Age up to',
+    referral: 'Referral needed, and who can make it', answers: 'Where the answers came from', venues: 'Places used by every activity',
     // Older names, for changes saved before November 2026.
     status: 'Status', activities: 'What it offers',
   };
+
+  // A value in words, for "old → new" in the changes waiting.
+  function fmtVal(v, k) {
+    if (k === 'projects' || k === 'activities') return projectWords(v) || '(none)';
+    if (v == null || v === '' || (Array.isArray(v) && !v.length)) return k === 'healthFocus' ? 'No health requirement' : '(none)';
+    if (k === 'residence') return LL.residenceWords(v);
+    if (k === 'work') return v.needed === 'no' ? 'Any work situation' : LL.workWords(v);
+    if (k === 'referral') return v.needed === 'no' ? 'No referral needed' : v.who === 'professional' ? 'Only from a professional' + (v.professionals ? ': ' + v.professionals : '') : 'Anyone can refer, including the person themselves';
+    if (k === 'answers') return Object.entries(v).map(([f, a]) => (FIELD_LABEL[f] || f) + ': ' + (LL.LABELS[a.label] || a.label)).join('; ');
+    if (k === 'venues') return list(v).map((x) => (typeof x === 'string' ? x : x.name)).join('; ');
+    if (Array.isArray(v)) return v.join('; ');
+    if (typeof v === 'object' && 'allowed' in v) return (SELF[v.allowed] || v.allowed) + '. ' + v.note + (v.url ? ' ' + v.url : '');
+    if (typeof v === 'object') return JSON.stringify(v);
+    return v === true ? 'Yes' : v === false ? 'No' : String(v);
+  }
+  // Text with its web addresses as links that open in a new tab, so they can be checked with one click.
+  function linked(text) {
+    const t = String(text == null ? '' : text);
+    const out = [];
+    let last = 0;
+    for (const m of t.matchAll(/\b(https?:\/\/[^\s<>"')]+|www\.[^\s<>"')]+)/gi)) {
+      const raw = m[0].replace(/[.,;:]+$/, '');
+      out.push(t.slice(last, m.index), el('a', { href: /^https?:/i.test(raw) ? raw : 'https://' + raw, target: '_blank', rel: 'noopener noreferrer', text: raw }));
+      last = m.index + raw.length;
+    }
+    out.push(t.slice(last));
+    return out.filter((x) => x !== '');
+  }
 
   // A project list in a few words, for "old → new" in the changes waiting.
   function projectWords(ps) {
@@ -475,7 +505,6 @@
 
   function waitingChanges(x) {
     const e = edits[x.s.id];
-    const fmtVal = (v, k) => (k === 'projects' || k === 'activities' ? projectWords(v) || '(none)' : v == null || v === '' ? '(none)' : Array.isArray(v) ? (v.length ? v.join('; ') : '(none)') : typeof v === 'object' ? (SELF[v.allowed] || v.allowed) + '. ' + v.note + (v.url ? ' ' + v.url : '') : v === true ? 'Yes' : v === false ? 'No' : String(v));
     const discard = el('button', { type: 'button', class: 'btn secondary small', text: 'Discard these changes', onclick: async () => {
       if (!confirm('Discard the changes waiting for ' + x.s.name + '?')) return;
       try {
@@ -492,7 +521,7 @@
       el('p', { class: 'mt0' }, el('strong', { text: 'Changes waiting to be applied' }), ' (' + e.by + ', ' + when(e.t) + (e.checked ? ', checked as current' : '') + '): ' + e.note),
       Object.keys(e.changes).length ? null : el('p', { text: 'No changes to the details: the last-checked date moves on when applied.' }),
       el('dl', { class: 'facts' }, Object.keys(e.changes).flatMap((k) => [el('dt', { text: FIELD_LABEL[k] || k }),
-        el('dd', {}, el('del', { text: fmtVal(x.s[k], k) }), ' → ', el('ins', { text: fmtVal(e.changes[k], k) }))])),
+        el('dd', {}, el('del', {}, ...linked(fmtVal(x.s[k], k))), ' → ', el('ins', {}, ...linked(fmtVal(e.changes[k], k))))])),
       discard);
   }
 
@@ -568,7 +597,6 @@ Thank you,
     // The newest reply first, with what to do about it.
     const { reply: r, handled, count } = newestReply(s.id);
     if (r) {
-      const fmtVal = (v, k) => (k === 'projects' || k === 'activities' ? projectWords(v) || '(none)' : v == null || v === '' ? '(none)' : Array.isArray(v) ? (v.length ? v.join('; ') : '(none)') : typeof v === 'object' ? (SELF[v.allowed] || v.allowed) + '. ' + v.note + (v.url ? ' ' + v.url : '') : v === true ? 'Yes' : v === false ? 'No' : String(v));
       const keys = Object.keys(r.changes || {});
       const who = r.name + (r.name !== r.link.contact ? ' (link sent to ' + r.link.contact + ')' : '');
       const recordChecked = el('button', { type: 'button', class: 'btn primary small', text: 'Record as checked with the provider', onclick: async () => {
@@ -595,7 +623,7 @@ Thank you,
           ' (' + who + ', ' + when(r.t) + ')' + (count > 1 ? '. ' + plural(count, 'reply', 'replies') + ' in all; this is the newest.' : '.')),
         r.note ? el('p', {}, el('em', { text: '"' + r.note + '"' })) : null,
         keys.length ? el('dl', { class: 'facts' }, keys.flatMap((k) => [el('dt', { text: FIELD_LABEL[k] || k }),
-          el('dd', {}, el('del', { text: fmtVal(r.before ? r.before[k] : s[k], k) }), ' → ', el('ins', { text: fmtVal(r.changes[k], k) }))])) : null,
+          el('dd', {}, el('del', {}, ...linked(fmtVal(r.before ? r.before[k] : s[k], k))), ' → ', el('ins', {}, ...linked(fmtVal(r.changes[k], k))))])) : null,
         handled ? el('p', { class: 'hint', text: (r.handled ? 'Dealt with by ' + r.handled.by + (r.handled.note ? ': ' + r.handled.note.replace(/\.?$/, '.') : '.') : 'Dealt with: the team has saved changes for this service since this reply.') + ' To change the listing now, use Edit details: it shows what the listing says today.' }) : null,
         // Once a reply has been dealt with, opening the form filled in with it would show its (older) values as if
         // they were current, so the button goes.
@@ -879,6 +907,13 @@ Thank you,
     return [p];
   }
   function fromSuggestion(d) {
+    // The full service form (suggest.html) sends the whole listing, already in the data's shape: use it as it is,
+    // over a blank service, with the team's own fields left at their defaults.
+    if (d.listing && typeof d.listing === 'object') {
+      const s = { ...blankService(), ...settleVenues(d.listing) };
+      for (const k of ['hwlFunded', 'notes', 'areas', 'level', 'reviewCycle', 'answers', 'requiresMention', 'mapLinks', 'logo']) if (k in blankService()) s[k] = blankService()[k]; else delete s[k];
+      return s;
+    }
     const s = blankService();
     const ok = (k, v) => (choices[k] || []).includes(v);
     s.name = d.name || '';
@@ -919,6 +954,7 @@ Thank you,
   function suggestionNote(d) {
     const by = d.role === 'provider' ? 'someone from the service' : d.role === 'suggester' ? 'someone who knows about it' : 'someone';
     const extra = [];
+    if (d.listing) extra.push('They filled in the full service form' + (d.contactName ? ' (' + d.contactName + ')' : '') + ': choose the area, level and review cycle.');
     if (d.healthNeed === 'specific') extra.push('Needs a specific health condition (' + (d.conditions || 'not said') + '): choose the health focus.');
     if (d.noMap) extra.push('Online or phone only, with no venue to map: consider turning the map buttons off in the file.');
     if (d.logoOk) extra.push('They said we may use their logo: ask them for it.');

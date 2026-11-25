@@ -17,6 +17,15 @@
   ],
   "whoFor": "Economically inactive residents aged 18 to 24, or aged 50 and over, who want the skills, confidence and knowledge to move towards work.",
   "age": "18-24 or 50+",
+  "residence": {
+    "scope": "kirklees"
+  },
+  "work": {
+    "needed": "yes",
+    "situations": [
+      "inactive"
+    ]
+  },
   "webpage": null,
   "email": "matthew.crookes@htafcfoundation.com",
   "phone": "07741 671595",
@@ -50,6 +59,10 @@
   "selfReferral": {
     "allowed": "yes",
     "note": "Yes, by emailing help@htafcfoundation.com"
+  },
+  "referral": {
+    "needed": "yes",
+    "who": "anyone"
   },
   "projects": [
     {

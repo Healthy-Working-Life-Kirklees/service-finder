@@ -356,7 +356,29 @@ check('data: every venue a live service uses is in services.json', (() => { cons
   check('ai data: the date is in the data heading', dataText.startsWith('SERVICE DATA (JSON) for ' + new Date().toISOString().slice(0, 10)));
   check('ai data: the reply tool asks which projects or sessions fit', Boolean(sent.tools[0].input_schema.properties.matches.items.properties.parts));
   check('prompt: explains projects, sessions and parts', /"parts"/.test(sent.system[0].text) && /"sessions"/.test(sent.system[0].text) && /referrals open later/.test(sent.system[0].text));
+  check('ai data: where answers came from and partners are not sent', sentData.every((x) => !('answers' in x) && !('partners' in x)));
+  check('ai data: a service the organisation has verified is marked verified, others are not', sentData.find((x) => x.id === 'audio-boost').verified === true && !('verified' in sentData.find((x) => x.id === 'raise-your-game')));
+  check('prompt: order is Healthy Working Life, then verified, then the rest, never above a better fit', /Healthy Working Life scheme \("hwlFunded": true\) first, then a service the organisation has checked itself \("verified": true\)/.test(sent.system[0].text) && /isn't verified/.test(sent.system[0].text));
+  check('prompt: missing information is unknown, never a reason to leave a service out', /Missing information is unknown/.test(sent.system[0].text));
 }
+{
+  // Where answers came from, and the order services are listed in (site/listing-logic.js).
+  const base = { hwlFunded: false, whoFor: 'Adults.', cost: 'Free', phone: null, selfReferral: { allowed: 'tbc', note: 'x' }, provenance: { source: 'web' } };
+  check('labels: an answer found online is "found"', LS.labelOf(base, 'whoFor') === 'found');
+  check('labels: a missing answer or a self-referral still to be confirmed is "unknown"', LS.labelOf(base, 'phone') === 'unknown' && LS.labelOf(base, 'residence') === 'unknown' && LS.labelOf(base, 'selfReferral') === 'unknown');
+  check('labels: a Healthy Working Life scheme starts as confirmed', LS.labelOf({ ...base, hwlFunded: true }, 'whoFor') === 'confirmed');
+  check('labels: a verified listing is confirmed', LS.labelOf({ ...base, provenance: { source: 'web', providerChecked: '2026-11-20' } }, 'cost') === 'confirmed' && LS.isVerified({ provenance: { providerChecked: '2026-11-20' } }));
+  check('labels: an answer\'s own label wins', LS.labelOf({ ...base, answers: { cost: { label: 'changed' } } }, 'cost') === 'changed');
+  check('priority: Healthy Working Life, then verified, then the rest', LS.priority({ hwlFunded: true }) === 1 && LS.priority({ provenance: { providerChecked: '2026-11-20' } }) === 2 && LS.priority(base) === 3);
+  check('words: where they live, work situation and age', LS.residenceWords({ scope: 'parts', areas: ['Batley', 'Dewsbury'] }) === 'People living in Batley or Dewsbury'
+    && LS.workWords({ needed: 'yes', situations: ['inactive', 'benefits'], benefits: ['Universal Credit'] }) === 'Economically inactive (not working and not looking for work); or Claiming Universal Credit'
+    && LS.workWords({ needed: 'no' }) === 'Any work situation' && LS.ageWords({ ageMin: 18 }) === '18+' && LS.ageWords({ ageMin: 18, ageMax: 24 }) === '18 to 24' && LS.ageWords({ age: 'Adults' }) === 'Adults');
+}
+check('data: partnerships list the lead as the organisation and the others as partners', (() => {
+  const want = { 'pathways-to-potential': ['Community Platform Together CIC', 'The Branch'], 'employment-kirklees': ['Kirklees Council', 'C+K Careers', 'Paddock Trust'], 'growing-together-volunteering': ['LS2Y', 'Dalton Together'], 'wellness-navigators': ['Ravensthorpe Community Centre', 'Taleem Centre'], 'sound-steps-2': ['Yorkshire Youth & Music', 'Umbrella Yoga'], 'proper-progress': ['Proper Job Theatre Company', 'KLTV', 'Thread Republic'] };
+  return Object.entries(want).every(([id, [lead, ...partners]]) => { const x = svc.find((y) => y.id === id); return x.organisation === lead && JSON.stringify(x.partners) === JSON.stringify(partners); });
+})());
+check('data: an old combined organisation name still finds the lead (alias)', (() => { const o = JSON.parse(fs.readFileSync(path.join(root, 'data/organisations.json'), 'utf8')).organisations; return o.some((x) => x.name === 'LS2Y' && (x.aliases || []).includes('LS2Y and Dalton Together')) && !o.some((x) => x.name === 'LS2Y and Dalton Together'); })());
 reply = tool(reply0({ matches: [{ ...m('raise-your-game'), parts: ['cohort-1', 'nonsense', 'cohort-1'] }] }));
 r = await call('claude-sonnet-5-5', { messages: [{ role: 'user', content: 'I am 20, not working, with a health condition, in Huddersfield' }] });
 check('parts: only real, open project or session ids are passed on, once each', JSON.stringify(r.body.recommendations[0].parts) === '["cohort-1"]', JSON.stringify(r.body.recommendations));
@@ -476,6 +498,17 @@ check('edits: bad website refused', /website/i.test(await editErr({ webpage: 'ww
 check('edits: bad email refused', /email/i.test(await editErr({ email: 'nope' })));
 check('edits: empty name refused', /can't be empty/.test(await editErr({ name: '  ' })));
 check('edits: categories need at least one', /at least one/.test(await editErr({ categories: [] })));
+{
+  // The new answers from the redesigned form.
+  const ok = async (changes) => { const x = await logCall('PUT', '/log/edits/kbop', { ...goodEdit, changes }); return x.status === 200 ? x.body.item.changes : x.body; };
+  const c = await ok({ residence: { scope: 'parts', areas: ['Dewsbury', 'Batley'] }, work: { needed: 'yes', situations: ['benefits', 'inactive'], benefits: ['Universal Credit, any'], detail: 'On a zero-hours contract' }, referral: { needed: 'yes', who: 'professional', professionals: 'GP' }, partners: ['Dalton Together'], ageMin: 18, ageMax: null, healthNote: 'Arthritis' });
+  check('edits: the new answers are cleaned and kept (towns and situations in the usual order)', JSON.stringify(c.residence) === '{"scope":"parts","areas":["Batley","Dewsbury"]}' && c.work.situations.join() === 'inactive,benefits' && c.referral.professionals === 'GP' && c.partners[0] === 'Dalton Together' && c.ageMin === 18 && c.ageMax === null && c.healthNote === 'Arthritis', JSON.stringify(c));
+  check('edits: "certain parts" needs the towns', /which parts/.test(await editErr({ residence: { scope: 'parts' } })));
+  check('edits: a work situation of "yes" needs a tick', /at least one work situation/.test(await editErr({ work: { needed: 'yes', situations: [] } })));
+  check('edits: "only a professional" needs to say which', /which professionals/.test(await editErr({ referral: { needed: 'yes', who: 'professional' } })));
+  check('edits: an age must be a whole number', /whole number/.test(await editErr({ ageMin: '18+' })));
+  check('edits: where answers came from is checked', /isn't right/.test(await editErr({ answers: { whoFor: { label: 'maybe' } } })) && (await ok({ answers: { whoFor: { label: 'found', source: 'https://example.org', quote: 'For adults' } } })).answers.whoFor.label === 'found');
+}
 check('edits: each project needs an overview', /overview/.test(await editErr({ projects: [{ id: 'x', name: 'x', overview: '' }] })));
 // Projects, sessions, venues and dates.
 const proj = (o = {}) => ({ id: 'job-club', name: 'Job club', overview: 'CV help.', ...o });
@@ -547,7 +580,8 @@ r = await logCall('POST', '/log/provider-links', { id: liveSvc.id, contact: 'Sam
 check('plinks: making one needs the passcode', r.status === 401);
 r = await provCall('GET', tok);
 check('plinks: provider sees the service, the contact name and the choices', r.status === 200 && r.body.service.id === liveSvc.id && r.body.contact === 'Sam Provider' && r.body.choices.healthFocus.includes('any') && r.body.organisations.length > 100 && r.body.lastReply === null, JSON.stringify(r.body).slice(0, 200));
-check('plinks: provider doesn\'t see provenance, listing, trigger words or team notes', !('provenance' in r.body.service) && !('listing' in r.body.service) && !('requiresMention' in r.body.service) && !('notes' in r.body.service) && !('categories' in r.body.service));
+check('plinks: provider doesn\'t see provenance, listing, trigger words or team notes', !('provenance' in r.body.service) && !('listing' in r.body.service) && !('requiresMention' in r.body.service) && !('notes' in r.body.service) && !('areas' in r.body.service));
+check('plinks: provider sees the kinds of support (categories) and the listing\'s own label', Array.isArray(r.body.service.categories) && r.body.choices.categories.includes('Mental health') && ['found', 'confirmed'].includes(r.body.listingLabel));
 r = await provCall('GET', tok, null, { origin: null });
 check('plinks: needs the page origin', r.status === 403);
 r = await provCall('GET', 'x'.repeat(32));
@@ -562,7 +596,7 @@ r = await provCall('POST', tok, { changes: { phone: '01484 222222', eligibility:
 check('plinks: provider can send changes', r.status === 200);
 r = await provCall('POST', tok, { changes: { level: 'national' } });
 check('plinks: provider can\'t change team-only fields', r.status === 400 && /can't be changed/.test(r.body.error));
-for (const k of ['areas', 'categories', 'notes', 'hwlFunded']) {
+for (const k of ['areas', 'notes', 'hwlFunded', 'answers']) {
   r = await provCall('POST', tok, { changes: { [k]: k === 'hwlFunded' ? true : k === 'notes' ? 'x' : ['Batley'] } });
   check('plinks: provider can\'t change ' + k, r.status === 400 && /can't be changed/.test(r.body.error));
 }
@@ -698,6 +732,16 @@ check('new: discard', r.status === 200 && Object.keys((await logCall('GET', '/lo
   check('apply provider check: older edits recognised from their note', kb3.provenance.providerChecked === '2030-01-07', JSON.stringify(kb3.provenance));
   check('apply provider check: summary says so', /confirmed by the provider/.test(outP), outP);
   check('apply provider check: running again changes nothing', /0 services with edited details, 2 already up to date/.test(run()), run());
+  check('apply provider check: no changes leaves no per-answer labels (all confirmed)', !('answers' in ac2));
+  // A provider's changes: those answers are marked "changed", earlier "found online" marks are dropped.
+  const acNow = JSON.parse(fs.readFileSync(path.join(d, 'acas-helpline.json'), 'utf8'));
+  fs.writeFileSync(path.join(d, 'acas-helpline.json'), JSON.stringify({ ...acNow, answers: { whoFor: { label: 'found', source: 'https://example.org' } } }, null, 2) + '\n');
+  fs.writeFileSync(inp, JSON.stringify({ edits: {
+    'acas-helpline': { changes: { residence: { scope: 'kirklees' }, cost: 'Free' }, before: {}, note: 'From Jo (provider) using a verify link.', by: 'PL', checked: true, checkedWith: 'provider', t: '2030-02-01T09:00:00Z' },
+  } }));
+  run();
+  const ac3 = JSON.parse(fs.readFileSync(path.join(d, 'acas-helpline.json'), 'utf8'));
+  check('apply provider check: changed answers are labelled "changed", the rest confirmed', JSON.stringify(ac3.answers) === JSON.stringify({ residence: { label: 'changed', date: '2030-02-01' }, cost: { label: 'changed', date: '2030-02-01' } }) && ac3.residence.scope === 'kirklees', JSON.stringify(ac3.answers));
   // new services: created as files, waiting for review unless the team also decided
   const newOne = { ...newSvc(), cost: 'Free', notes: null };
   fs.writeFileSync(inp, JSON.stringify({
@@ -910,6 +954,23 @@ all = await items();
 const full = all[all.length - 1].missedService;
 check('feedback: a suggestion in the listing shape is kept as written (project, dates, new project of a listed service)', r.status === 201 && full && full.addTo === 'raise-your-game' && full.projectName === 'Cohort 3' && full.runsFrom === '2027-01-11' && full.referralsUntil === '2027-01-04' && full.open === 'yes' && full.gate === 'Lives in Kirklees' && full.coachNotes === 'Bring trainers.' && full.organisationOverview === 'The charity of the football club.', JSON.stringify(full));
 check('feedback: a suggestion from an older page (description, activities, running) is still accepted', (await send(gapFb({ missedService: { name: 'Old page', organisation: 'Org', role: 'suggester', description: 'Helps people.', activities: 'Weekly club', running: 'now', dates: 'From March', addresses: 'Batley' } }))).status === 201);
+// The full service form (suggest.html): the whole listing, checked with the same rules as an edit.
+const listing = { organisation: 'Batley Community Trust', name: 'Batley Job Club', whoFor: 'Anyone in Batley looking for work.', residence: { scope: 'kirklees' }, referral: { needed: 'no' }, projects: [{ id: 'batley-job-club', name: 'Batley Job Club', overview: 'Weekly job club.', sessions: [] }], healthNote: '', partners: [], hwlFunded: true, notes: 'sneaky' };
+r = await send(gapFb({ missedService: { role: 'provider', name: 'Batley Job Club', organisation: 'Batley Community Trust', listing, contactName: 'Sam' } }));
+all = await items();
+const lst = all[all.length - 1].missedService.listing;
+check('service form: a whole listing from the service is accepted and kept', r.status === 201 && lst && lst.whoFor === 'Anyone in Batley looking for work.' && JSON.stringify(lst.residence) === '{"scope":"kirklees"}' && lst.projects[0].overview === 'Weekly job club.', JSON.stringify(r.body) + JSON.stringify(lst));
+check('service form: blanks and team-only fields (Healthy Working Life marker, notes) are dropped', lst && !('healthNote' in lst) && !('partners' in lst) && !('hwlFunded' in lst) && !('notes' in lst), JSON.stringify(lst));
+r = await send(gapFb({ missedService: { role: 'suggester', name: 'X', organisation: 'Y', website: 'https://example.org', listing } }));
+r = await send(gapFb({ missedService: { role: 'provider', name: 'X', organisation: 'Y', listing: { ...listing, projects: [{ id: 'a', name: 'A', overview: 'One.', cost: 'Free' }, { id: 'b', name: 'B', overview: 'Two.', cost: '£3 a session' }] } } }));
+all = await items();
+check('service form: each activity can have its own cost', r.status === 201 && all[all.length - 1].missedService.listing.projects[1].cost === '£3 a session', JSON.stringify(r.body));
+r = await send(gapFb({ missedService: { role: 'suggester', name: 'X', organisation: 'Y', website: 'https://example.org', listing } }));
+check('service form: only someone from the service can send the whole form', r.status === 400, JSON.stringify(r.body));
+r = await send(gapFb({ missedService: { role: 'provider', name: 'X', organisation: 'Y', listing: { ...listing, residence: { scope: 'the moon' } } } }));
+check('service form: a listing that breaks the rules is turned away', r.status === 400, JSON.stringify(r.body));
+r = await send(gapFb({ missedService: { role: 'provider', name: 'X', organisation: 'Y', listing: { ...listing, overviewLong: 'x'.repeat(10) , projects: [{ id: 'p', name: 'P', overview: 'y'.repeat(1900), sessions: [] }], whoFor: 'z'.repeat(400) } } }));
+check('service form: a long listing (over 4 KB) is allowed', r.status !== 413, String(r.status) + JSON.stringify(r.body));
 const csvAll = (await fbCall('GET', '/feedback/export.csv', null, { pass: FB_PASS })).body;
 check('suggestion: CSV has the extra details column', csvAll.includes('"missedServiceDetails"') && csvAll.includes('organisation: Shared Goods Charity'), csvAll.slice(0, 300));
 r = await send(cardFb({ text: 'Number was [removed]' }));

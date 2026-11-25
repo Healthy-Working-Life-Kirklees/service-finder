@@ -1,7 +1,10 @@
 {
   "id": "growing-together-volunteering",
   "name": "Growing Together - Volunteering Pathways",
-  "organisation": "LS2Y and Dalton Together",
+  "organisation": "LS2Y",
+  "partners": [
+    "Dalton Together"
+  ],
   "logo": "ls2y.webp",
   "open": true,
   "hwlFunded": true,

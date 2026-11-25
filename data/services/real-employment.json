@@ -17,6 +17,10 @@
   ],
   "whoFor": "Kirklees adults aged 18 and over with learning disabilities, neurodiversity (including autism), physical disabilities or long-term health conditions who want paid, lasting work.",
   "age": "18+ (transitional support can start before 18th birthday)",
+  "ageMin": 18,
+  "residence": {
+    "scope": "kirklees"
+  },
   "webpage": "https://www.kirklees.gov.uk/beta/real-employment/index.aspx",
   "email": null,
   "phone": "01484 221581 (Monday to Friday, 8.30am-4.30pm)",
@@ -77,6 +81,10 @@
     "allowed": "yes",
     "note": "Yes, via the online form",
     "url": "https://my.kirklees.gov.uk/service/Jobs___Contact_REAL_Employment"
+  },
+  "referral": {
+    "needed": "yes",
+    "who": "anyone"
   },
   "projects": [
     {

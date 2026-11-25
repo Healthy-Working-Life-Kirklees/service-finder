@@ -1,7 +1,10 @@
 {
   "id": "pathways-to-potential",
   "name": "Pathways to Potential",
-  "organisation": "Community Platform Together CIC and The Branch",
+  "organisation": "Community Platform Together CIC",
+  "partners": [
+    "The Branch"
+  ],
   "logo": "community-platform.webp",
   "open": true,
   "hwlFunded": true,

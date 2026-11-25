@@ -384,7 +384,16 @@ for (const [id, e] of Object.entries(edits).sort(([a], [b]) => a.localeCompare(b
     if (!(String(next.lastUpdated || '') > date)) next.lastUpdated = date;
     next.provenance = { ...next.provenance, evidence: `Checked by ${e.by} on ${date}: ${e.note}` };
     if (e.checkedUrl) next.provenance.checkedUrl = e.checkedUrl;
-    if (byProvider(e)) next.provenance.providerChecked = date;
+    if (byProvider(e)) {
+      next.provenance.providerChecked = date;
+      // Where the answers came from: the organisation has now checked every answer, so those it changed are
+      // "changed" and the rest are confirmed (the listing's own label once verified). Earlier "found online" and
+      // "unknown" marks no longer apply.
+      const answers = {};
+      for (const k of keys) if (k !== 'answers' && k !== 'organisationOverview' && k !== 'selfReferral') answers[k] = { label: 'changed', date };
+      if (Object.keys(answers).length) next.answers = answers;
+      else delete next.answers;
+    }
   }
   if (!validate(next)) {
     invalid.push({ id, name: cur.name, by: e.by, errors: validate.errors.map((x) => `${x.instancePath || '(top)'} ${x.message}`).slice(0, 3) });

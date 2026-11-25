@@ -17,6 +17,18 @@
   ],
   "whoFor": "Kirklees adults aged 18 and over who are out of work, off sick or at risk of falling out of work through a health condition, and are ready to use physical activity to manage it.",
   "age": "18+",
+  "ageMin": 18,
+  "residence": {
+    "scope": "kirklees"
+  },
+  "work": {
+    "needed": "yes",
+    "situations": [
+      "inactive",
+      "off-sick",
+      "at-risk"
+    ]
+  },
   "webpage": "https://kal.org.uk/health-wellbeing/fitness-for-work/",
   "email": "referral.admin@kal.org.uk",
   "phone": "01484 234000",
@@ -69,6 +81,10 @@
     "allowed": "yes",
     "note": "Yes, via the online form",
     "url": "https://secure.refer-all.net/referrals/Kirklees/ReferKirklees?id=6040&name=Fitness%20for%20Work"
+  },
+  "referral": {
+    "needed": "yes",
+    "who": "anyone"
   },
   "projects": [
     {

@@ -22,7 +22,7 @@
       const hits = S.organisations.filter((o) => words.every((w) => (o.name + ' ' + list(o.aliases).join(' ')).toLowerCase().includes(w)))
         .sort((a, b) => a.name.localeCompare(b.name, 'en-GB', { sensitivity: 'base' }));
       count.textContent = plural(hits.length, 'organisation', 'organisations');
-      out.replaceChildren(...hits.slice(0, 80).map((o) => {
+      out.replaceChildren(...hits.map((o) => {
         const svcs = F.servicesOfOrg(o);
         const live = svcs.filter((s) => F.listingOf(s) === 'include').length;
         return el('li', {}, el('a', { href: '?id=' + encodeURIComponent(o.id) }, el('strong', { text: o.name }),
@@ -62,6 +62,7 @@
     return el('article', { class: 'org-svc' },
       el('p', { class: 'todo-kind mt0', text: 'Service' }),
       el('h3', {}, el('a', { href: 'services.html#svc-' + encodeURIComponent(s.id), text: s.name })),
+      list(s.partners).length ? el('p', { class: 'mt0', text: 'In partnership with ' + s.partners.join(', ') }) : null,
       el('p', { class: 'mt0' }, pills),
       el('p', { class: 'hint', text: (s.whoFor || '') + (s.lastUpdated ? ' Last checked ' + day(s.lastUpdated) + '.' : '') }),
       el('div', { class: 'tree' }, list(s.projects).map((p) => el('div', {},
@@ -91,6 +92,10 @@
           el('a', { class: 'btn secondary small', href: 'services.html?orgs=' + encodeURIComponent(o.name), text: 'Edit organisation' }),
           el('a', { class: 'btn primary small', href: 'services.html?add=' + encodeURIComponent(o.name), text: 'Add a service' }))),
       ...svcs.map(serviceBox),
+      ...F.partnerServicesOf(o).map((s) => el('article', { class: 'org-svc' },
+        el('p', { class: 'todo-kind mt0', text: 'Delivered in partnership, led by ' + s.organisation }),
+        el('h3', {}, el('a', { href: 'services.html#svc-' + encodeURIComponent(s.id), text: s.name })),
+        el('p', { class: 'hint', text: s.whoFor || '' }))),
       ...pendingNew.map(([id, a]) => el('article', { class: 'org-svc suggested' }, el('p', { class: 'todo-kind mt0', text: 'New service, not added yet' }), el('h3', {}, el('a', { href: 'services.html#svc-' + encodeURIComponent(id), text: a.service.name })), el('p', { class: 'hint', text: 'Saved by ' + a.createdBy + ' on ' + day(a.t) + '. It’s added as "waiting for review" when the team’s changes go live.' }))),
       ...suggested.map((x) => el('article', { class: 'org-svc suggested' },
         el('p', { class: 'todo-kind mt0', text: 'Suggested service · ' + day(x.date) }),

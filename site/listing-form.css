@@ -55,3 +55,50 @@
   .lf-section { padding: .85rem .9rem .3rem; }
   .lf fieldset.lf-proj { padding: .6rem .6rem .3rem; }
 }
+
+/* The three parts (November 2026). On the partner page one part shows at a time. */
+.lf-steps { position: sticky; top: 0; z-index: 5; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: .6rem .75rem; margin: 1rem 0; display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.lf-steps .lf-step { font: inherit; font-size: .95rem; font-weight: 700; border-radius: 999px; padding: .35rem .8rem; border: 2px solid var(--mint, #e1f0ed); background: var(--mint, #e1f0ed); color: var(--dark-blue); text-decoration: underline; cursor: pointer; min-height: 40px; }
+.lf-steps .lf-step[aria-current="step"] { background: var(--dark-blue); border-color: var(--dark-blue); color: #fff; text-decoration: none; }
+.lf-steps .lf-steps-note { flex-basis: 100%; margin: .2rem 0 0; }
+.lf-part-title { font-weight: 700; color: var(--dark-blue); font-size: 1.1rem; margin: 1.5rem 0 0; border-top: 3px solid var(--accent); padding-top: .5rem; }
+.lf-partnav { display: flex; justify-content: space-between; gap: .6rem; flex-wrap: wrap; margin: 1rem 0; }
+.lf .choices.lf-stack { flex-direction: column; align-items: flex-start; gap: .35rem; }
+.lf .lf-cols .choices { display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); }
+.lf .lf-opens { margin: .4rem 0 .4rem 1.6rem; border-inline-start: 3px solid var(--warn); padding: .3rem 0 .3rem .9rem; }
+.lf .lf-opens[hidden] { display: none; }
+.lf .lf-opens > .lf-field:last-child { margin-bottom: .4rem; }
+.lf .lf-warn { background: #fdecea; color: #6b1712; border-radius: 6px; padding: .45rem .7rem; font-weight: 700; margin: .4rem 0 0; }
+.lf .lf-warn[hidden] { display: none; }
+.lf .lf-rule { background: var(--warn-bg, #fff4d6); border: 2px solid var(--warn); border-radius: 8px; padding: .6rem .8rem; margin: 0 0 1rem; }
+.lf .lf-line { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: 0 0 .5rem; }
+.lf .lf-line > input { flex: 1 1 18rem; width: auto; }
+.lf .lf-inline { display: flex; align-items: center; gap: .4rem; font-weight: 700; margin: .2rem 0 .5rem; }
+.lf .lf-inline input { width: 1.25rem; height: 1.25rem; accent-color: var(--blue); }
+.lf .lf-narrow { max-width: 28rem; }
+.lf .lf-narrow input { max-width: 8rem; }
+.lf .lf-fromabove { margin: 0 0 .5rem; }
+.lf .lf-above { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: 0 0 .4rem; padding: .35rem .6rem; background: var(--light); border-radius: 6px; }
+.lf .lf-above-tag { font-size: .8rem; font-weight: 700; border-radius: 999px; padding: .05rem .5rem; background: var(--mint, #e1f0ed); color: var(--dark-blue); }
+.lf fieldset.lf-radios { border: 0; padding: 0; }
+.lf fieldset.lf-cohort { border-inline-start-color: var(--warn); background: #fffdf7; }
+/* Where an answer came from. */
+.lf .lf-label { display: inline-block; margin: 0 0 .35rem; padding: .1rem .55rem; border-radius: 999px; font-size: .85rem; font-weight: 700; }
+.lf .lf-label-found { background: var(--light); color: var(--dark-blue); }
+.lf .lf-label-unknown { background: var(--warn-bg, #fff4d6); color: #563a00; border: 1px solid var(--warn); }
+.lf .lf-quote { font-weight: 400; font-style: italic; }
+.lf .lf-is-unknown { border-inline-start: 4px solid var(--warn); padding-inline-start: .6rem; }
+
+/* "Check your answers" before sending */
+.lf-review { border: 2px solid var(--dark-blue); border-radius: 12px; padding: 1rem 1.1rem; margin: 1rem 0; background: #fff; }
+.lf-review:focus { outline: 3px solid var(--focus, #ffbf47); }
+.lf-review h2 { margin-top: 0; }
+.lf-review-list { margin: 0 0 1rem; }
+.lf-review-part h3 { margin: 1.2rem 0 .3rem; font-size: 1.05rem; color: var(--dark-blue); border-top: 3px solid var(--accent); padding-top: .5rem; }
+.lf-review-row { display: grid; grid-template-columns: minmax(10rem, 1fr) 2fr auto; gap: .3rem 1rem; padding: .5rem 0; border-bottom: 1px solid var(--border); }
+.lf-review-row dt { font-weight: 700; }
+.lf-review-row dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.lf-review-change { text-align: right; }
+@media (max-width: 640px) { .lf-review-row { grid-template-columns: 1fr auto; } .lf-review-row dt { grid-column: 1 / -1; } }
+.lf-review-gap { display: block; height: .4rem; }
+.lf-review .btn.small { min-height: 36px; padding: .2rem .8rem; }

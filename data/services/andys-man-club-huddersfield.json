@@ -14,6 +14,7 @@
   ],
   "whoFor": "Men 18+.",
   "age": "18+",
+  "ageMin": 18,
   "webpage": "https://andysmanclub.co.uk/groups/",
   "email": "info@andysmanclub.co.uk",
   "phone": null,
@@ -44,6 +45,9 @@
   "selfReferral": {
     "allowed": "yes",
     "note": "Just turn up on a Monday at 7pm."
+  },
+  "referral": {
+    "needed": "no"
   },
   "projects": [
     {
@@ -99,5 +103,19 @@
   "listing": {
     "decision": "include",
     "reason": "On the live list since the October 2026 import, before the development team review."
+  },
+  "answers": {
+    "ageMin": {
+      "label": "found",
+      "source": "https://andysmanclub.co.uk/faq/",
+      "quote": "Any man over the age of 18 is able to attend our session.",
+      "date": "2026-11-23"
+    },
+    "referral": {
+      "label": "found",
+      "source": "https://andysmanclub.co.uk/faq/",
+      "quote": "Yes we do! But referrals are not necessary to attend, men can simply turn up.",
+      "date": "2026-11-23"
+    }
   }
 }

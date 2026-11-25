@@ -261,6 +261,7 @@
     const li = [];
     if (o.when) li.push(el('li', {}, t('whenLabel'), el('span', { ...EN, text: o.when })));
     if (o.duration) li.push(el('li', {}, t('howLong'), el('span', { ...EN, text: o.duration })));
+    if (o.cost && o.cost !== s.cost) li.push(el('li', {}, t('costLabel'), el('span', { ...EN, text: o.cost })));
     if (o.places) li.push(el('li', {}, t('placesLabel'), el('span', { ...EN, text: o.places })));
     if (o.age && o.age !== s.age) li.push(el('li', {}, t('age'), el('span', { ...EN, text: o.age })));
     if ((o.eligibility || []).length) li.push(el('li', {}, t('extraCriteria'), el('span', { ...EN, text: o.eligibility.join('; ') })));
@@ -280,6 +281,37 @@
     ];
   }
 
+  // How to get in, as badges. The newer "referral" answer (is one needed, and who can make it) wins over the older
+  // self-referral one when the listing has it.
+  function referralBadges(s) {
+    const r = s.referral;
+    if (r && r.needed === 'no') return [el('span', { class: 'badge self', text: t('noReferral') })];
+    if (r && r.needed === 'yes' && r.who === 'anyone') return [el('span', { class: 'badge self', text: t('selfYes') })];
+    if (r && r.needed === 'yes' && r.who === 'professional') return [el('span', { class: 'badge', text: t('selfNo') })];
+    const a = s.selfReferral && s.selfReferral.allowed;
+    if (a === 'yes') return [el('span', { class: 'badge self', text: t('selfYes') })];
+    if (a === 'partly') return [el('span', { class: 'badge self', text: t('selfPartly') })];
+    if (a === 'tbc') return [el('span', { class: 'badge', text: t('selfTbc') })];
+    if (a === 'no') return [el('span', { class: 'badge', text: t('selfNo') })];
+    return [];
+  }
+  // Where the details came from: confirmed by the organisation (its verify link), from a Healthy Working Life
+  // delivery provider, or found on the service's website.
+  const sourceLine = (s) => t(LISTING && LISTING.isVerified(s) ? 'detailsConfirmed' : s.hwlFunded ? 'lastChecked' : 'detailsOnline', {
+    date: fmtDate(LISTING && LISTING.isVerified(s) ? s.provenance.providerChecked : s.lastUpdated) });
+  const partnersOf = (s) => (Array.isArray(s.partners) && s.partners.length ? s.partners.join(', ').replace(/, ([^,]*)$/, ' and $1') : '');
+  // The structured "who can use it" answers, in words, ahead of the written eligibility lines.
+  function whoLines(s) {
+    if (!LISTING) return [];
+    const out = [];
+    const r = LISTING.residenceWords(s.residence);
+    if (r && s.residence.scope !== 'anyone') out.push(r);
+    const w = s.work && s.work.needed === 'yes' ? LISTING.workWords(s.work) : '';
+    if (w) out.push(w);
+    if (s.healthNote) out.push(s.healthNote);
+    return out;
+  }
+
   function card(rec, opts) {
     const s = services.get(rec.id);
     if (!s) return null;
@@ -294,10 +326,7 @@
       rec.fit === 'strong' ? el('span', { class: 'badge fit-strong', text: t('fitStrong') }) : null,
       rec.fit === 'possible' ? el('span', { class: 'badge fit-possible', text: t('fitPossible') }) : null,
       soon ? el('span', { class: 'badge soon', text: t('refOpenFrom', { date: fmtDate(soon) }) }) : s.open ? el('span', { class: 'badge live', text: t('open') }) : el('span', { class: 'badge notopen', text: t('notOpen') }),
-      s.selfReferral && s.selfReferral.allowed === 'yes' ? el('span', { class: 'badge self', text: t('selfYes') }) : null,
-      s.selfReferral && s.selfReferral.allowed === 'partly' ? el('span', { class: 'badge self', text: t('selfPartly') }) : null,
-      s.selfReferral && s.selfReferral.allowed === 'tbc' ? el('span', { class: 'badge', text: t('selfTbc') }) : null,
-      s.selfReferral && s.selfReferral.allowed === 'no' ? el('span', { class: 'badge', text: t('selfNo') }) : null,
+      ...referralBadges(s),
       s.level === 'regional' ? el('span', { class: 'badge', text: t('levelRegional') }) : null,
       s.level === 'national' ? el('span', { class: 'badge', text: t('levelNational') }) : null,
       age ? el('span', { class: 'badge' }, t('age'), el('span', { ...EN, text: age })) : null,
@@ -318,9 +347,10 @@
       contact,
       whereBlock(s, picked),
       el('h4', { text: t('howIn') }),
-      el('ul', { class: 'routes' }, (s.referralRoutes || []).map(routeNode)),
+      el('ul', { class: 'routes' }, (s.referralRoutes || []).map(routeNode),
+        s.referral && s.referral.who === 'professional' && s.referral.professionals ? el('li', { ...EN, text: t('whoCanRefer', { who: s.referral.professionals }) }) : null),
       el('h4', { text: t('whoJoin') }),
-      el('ul', {}, (s.eligibility || []).map((x) => el('li', { ...EN, text: x }))),
+      el('ul', {}, [...whoLines(s), ...(s.eligibility || [])].map((x) => el('li', { ...EN, text: x }))),
       s.exclusions && s.exclusions.length ? el('h4', { text: t('whoNot') }) : null,
       s.exclusions && s.exclusions.length ? el('ul', {}, s.exclusions.map((x) => el('li', { ...EN, text: x }))) : null,
       projectsBlock(s, picked, on),
@@ -332,7 +362,7 @@
       s.languages ? el('ul', {}, el('li', { ...EN, text: s.languages })) : null,
       s.organisationOverview ? el('h4', { text: t('aboutOrg') }) : null,
       s.organisationOverview ? el('p', { ...EN, text: s.organisationOverview }) : null,
-      el('p', { class: 'meta', text: t('lastChecked', { date: fmtDate(s.lastUpdated) }) }));
+      el('p', { class: 'meta', text: sourceLine(s) }));
     const toggle = moreToggle(s, more, Boolean(opts && opts.open));
 
     const node = el('article', { class: 'card', 'data-scheme': s.id },
@@ -341,6 +371,7 @@
         el('div', { class: 'card-title' },
           el('h3', { ...EN, text: s.name }),
           el('p', { ...EN, class: 'org', text: s.organisation }),
+          partnersOf(s) ? el('p', { class: 'org partners' }, t('inPartnership', { names: '' }).replace(/\s*$/, ' '), el('span', { ...EN, text: partnersOf(s) })) : null,
           badges)),
       rec.why ? el('p', { class: 'why', dir: 'auto', text: rec.why }) : null,
       rec.check_first ? el('p', { class: 'check' }, t('checkFirst'), el('span', { dir: 'auto', text: rec.check_first })) : null,
@@ -388,7 +419,7 @@
 
   // What the Listen button on a card reads out. Scheme details are in English, so they are read in English.
   function spokenText(s, picked) {
-    const parts = [s.name + '. ' + s.organisation + '.'];
+    const parts = [s.name + '. ' + s.organisation + (partnersOf(s) ? ', in partnership with ' + partnersOf(s) : '') + '.'];
     if (s.whoFor) parts.push(s.whoFor);
     for (const x of picked || []) parts.push(x.project.name + (x.sessions.length ? ': ' + x.sessions.map((c) => [c.session.name, LISTING.timeWords(c.session), c.session.venue && venues.has(c.session.venue) ? venues.get(c.session.venue).name : ''].filter(Boolean).join(', ')).join('; ') : '') + '.');
     if (s.phone) parts.push('Phone: ' + s.phone + '.');
@@ -398,7 +429,7 @@
   }
 
   function copyText(s, picked, on) {
-    const lines = [s.name + ' - ' + s.organisation, s.whoFor];
+    const lines = [s.name + ' - ' + s.organisation + (partnersOf(s) ? ' (' + t('inPartnership', { names: partnersOf(s) }) + ')' : ''), s.whoFor];
     for (const x of picked || []) {
       if (x.sessions.length) for (const c of x.sessions) lines.push(x.project.name + [c.session.name, LISTING.timeWords(c.session) || c.session.note || c.session.when, venueLineOf(c.session.venue), ...dateWords(c.dates, on)].filter(Boolean).map((w) => ', ' + w).join(''));
       else lines.push(x.project.name + [x.project.when, ...dateWords(x.dates, on)].filter(Boolean).map((w) => '. ' + w).join(''));
@@ -407,7 +438,7 @@
     if (s.email) lines.push(t('email') + s.email);
     if (s.webpage) lines.push(t('website') + s.webpage);
     if (s.referralRoutes && s.referralRoutes.length) lines.push(t('howIn') + ': ' + s.referralRoutes.join('; '));
-    lines.push(t('lastChecked', { date: fmtDate(s.lastUpdated) }) + ' ' + t('copyConfirm'));
+    lines.push(sourceLine(s) + ' ' + t('copyConfirm'));
     return lines.join('\n');
   }
 

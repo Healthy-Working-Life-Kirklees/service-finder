@@ -17,6 +17,16 @@
   ],
   "whoFor": "Women (cis and trans) and gender-diverse people in Kirklees who are not in work or claiming Universal Credit and are living with a health condition, who want skills and confidence for work in the audio sector.",
   "age": "18+",
+  "ageMin": 18,
+  "residence": {
+    "scope": "kirklees"
+  },
+  "work": {
+    "needed": "yes",
+    "situations": [
+      "inactive"
+    ]
+  },
   "webpage": "https://yorkshiresoundwomen.com/news/audio-boost-free-sound-industry-skills-workshops/",
   "email": "info@yorkshiresoundwomen.com",
   "phone": "07946 531169",
@@ -68,6 +78,10 @@
     "allowed": "yes",
     "note": "Fill in the form linked to in the information page.",
     "url": "https://yorkshiresoundwomen.com/news/audio-boost-free-sound-industry-skills-workshops/"
+  },
+  "referral": {
+    "needed": "yes",
+    "who": "anyone"
   },
   "projects": [
     {

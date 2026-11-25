@@ -24,3 +24,11 @@
   .pc-section { padding: .85rem .9rem .3rem; }
   .pc-buttons .btn { width: 100%; justify-content: center; }
 }
+
+/* The draft note (answers kept in this browser until they're sent). */
+.pc-draft { background: var(--light); border-radius: 8px; padding: .6rem .8rem; margin: 1rem 0 0; }
+.pc-draft .linklike { font: inherit; background: none; border: 0; padding: 0; color: var(--blue); text-decoration: underline; cursor: pointer; }
+
+/* What is still unanswered, before sending. */
+.pc-left { background: var(--warn-bg, #fff4d6); border: 2px solid var(--warn); border-radius: 8px; padding: .7rem .9rem; margin: .8rem 0 0; }
+.pc-left .linklike { font: inherit; background: none; border: 0; padding: 0; color: var(--blue); text-decoration: underline; cursor: pointer; }

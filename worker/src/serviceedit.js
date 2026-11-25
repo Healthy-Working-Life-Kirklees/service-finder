@@ -35,7 +35,7 @@ export function makeChecker(schema) {
   // field -> how to check it
   const TEXT = { name: 150, organisation: 150, whoFor: 600, workExperience: 300 };
   const NULLABLE_TEXT = { age: 60, phone: 200 };
-  const OPTIONAL_TEXT = { cost: 200, languages: 300, coachNotes: 1000, notes: 3000, organisationOverview: 600 };
+  const OPTIONAL_TEXT = { cost: 200, languages: 300, coachNotes: 1000, notes: 3000, organisationOverview: 600, healthNote: 300 };
   // Stricter limits for text that has changed (the forms show these as people type).
   const HWL_RE = /healthy\s+working\s+life|\bhwl\b/i;
   const STRICT = { whoFor: LIMITS.whoFor, coachNotes: LIMITS.coachNotes, organisationOverview: LIMITS.orgOverview };
@@ -49,9 +49,15 @@ export function makeChecker(schema) {
   const EDITABLE = [
     ...Object.keys(TEXT), ...Object.keys(NULLABLE_TEXT), ...Object.keys(OPTIONAL_TEXT), ...Object.keys(ENUM), ...Object.keys(ENUM_LIST),
     ...Object.keys(TEXT_LIST), ...BOOL, 'webpage', 'email', 'selfReferral', 'projects', 'venues', 'logo', 'requiresMention',
+    'partners', 'ageMin', 'ageMax', 'residence', 'work', 'referral', 'answers',
   ];
-  // Fields a provider can't change: how the team sorts, reviews and maintains the data.
-  const TEAM_ONLY = ['level', 'reviewCycle', 'areas', 'categories', 'notes', 'hwlFunded', 'mapLinks', 'logo', 'requiresMention'];
+  // Fields a provider can't change: how the team sorts, reviews and maintains the data. (Where each answer came
+  // from, "answers", is recorded by the team and the apply script.)
+  const TEAM_ONLY = ['level', 'reviewCycle', 'areas', 'notes', 'hwlFunded', 'mapLinks', 'logo', 'requiresMention', 'answers'];
+  const RESIDENCE = enumOf(P.residence.properties.scope);
+  const TOWNS = P.residence.properties.areas.items.enum;
+  const WORK = P.work.properties.situations.items.enum;
+  const LABELS = P.answers.additionalProperties.properties.label.enum;
 
   const URL_RE = /^https?:\/\/\S+$/;
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -64,6 +70,8 @@ export function makeChecker(schema) {
     exclusions: 'Anyone you can\'t support', gate: 'Anything you\'d turn someone away for not having', referralRoutes: 'How people are referred or apply', open: 'Taking referrals', webpage: 'Website', email: 'Email',
     selfReferral: 'Self-referral', projects: 'Projects', hwlFunded: 'Healthy Working Life funded', mapLinks: 'Map buttons', logo: 'Logo', requiresMention: 'Only shown when mentioned',
     groups: "Who it's for (groups)", venues: 'Venues used by every project',
+    partners: 'In partnership with', ageMin: 'Age from', ageMax: 'Age up to', residence: 'Who can use it, by where they live', work: 'Work situation', healthNote: 'Health conditions, in your words',
+    referral: 'Referral', answers: 'Where the answers came from',
   };
 
   const str = (v) => (typeof v === 'string' ? v.trim() : null);
@@ -98,7 +106,7 @@ export function makeChecker(schema) {
 
   // A project or session. "was" is the same project as it is in the data now (by id), if there is one, so text
   // already over a limit can be kept.
-  const PROJECT_KEYS = ['id', 'name', 'overview', 'runs', 'area', 'where', 'when', 'duration', 'places', 'age', 'audience', 'eligibility', 'gate', ...DATE_KEYS, 'sessions'];
+  const PROJECT_KEYS = ['id', 'name', 'overview', 'runs', 'area', 'where', 'when', 'duration', 'cost', 'places', 'age', 'audience', 'eligibility', 'gate', ...DATE_KEYS, 'sessions'];
   const SESSION_KEYS = ['id', 'name', 'venue', 'where', 'days', 'start', 'end', 'frequency', 'note', 'when', 'places', 'age', 'eligibility', 'gate', ...DATE_KEYS];
   function part(x, keys, what, was) {
     if (!x || typeof x !== 'object' || Array.isArray(x)) return { error: `A ${what} is missing.` };
@@ -125,7 +133,7 @@ export function makeChecker(schema) {
         if (x.runs.length) out.runs = [...new Set(x.runs)];
       }
     }
-    for (const [k, max] of [['area', 300], ['when', 300], ['duration', 300], ['places', 200], ['age', 60], ['note', 300]]) {
+    for (const [k, max] of [['area', 300], ['when', 300], ['duration', 300], ['cost', 200], ['places', 200], ['age', 60], ['note', 300]]) {
       if (!keys.includes(k) || !(k in x) || x[k] == null || x[k] === '') continue;
       const t = str(x[k]);
       if (t === null) return { error: `"${k}" for "${label}" must be text.` };
@@ -255,6 +263,62 @@ export function makeChecker(schema) {
         const problems = checkParts(list);
         if (problems.length) return { error: problems[0] + '.' };
         out[k] = list;
+      } else if (k === 'partners') {
+        if (v === null || (Array.isArray(v) && !v.length)) { out[k] = null; continue; }
+        const r = lines(v, label, 10);
+        if (r.error) return r;
+        if (r.value.some((x) => x.length > 150)) return { error: `A name in ${label} is too long (at most 150 characters).` };
+        out[k] = [...new Set(r.value)];
+      } else if (k === 'ageMin' || k === 'ageMax') {
+        if (v === null || v === '') { out[k] = null; continue; }
+        if (!Number.isInteger(v) || v < 0 || v > 120) return { error: `${label} must be a whole number of years.` };
+        out[k] = v;
+      } else if (k === 'residence') {
+        if (v === null) { out[k] = null; continue; }
+        if (!v || typeof v !== 'object' || !RESIDENCE.includes(v.scope)) return { error: `${label}: please choose one of the answers.` };
+        if (v.scope === 'parts') {
+          if (!Array.isArray(v.areas) || !v.areas.length || v.areas.some((a) => !TOWNS.includes(a))) return { error: 'Please tick which parts of Kirklees.' };
+          out[k] = { scope: 'parts', areas: TOWNS.filter((a) => v.areas.includes(a)) };
+        } else out[k] = { scope: v.scope };
+      } else if (k === 'work') {
+        if (v === null) { out[k] = null; continue; }
+        if (!v || typeof v !== 'object' || !['yes', 'no'].includes(v.needed)) return { error: `${label}: please choose one of the answers.` };
+        if (v.needed === 'no') { out[k] = { needed: 'no' }; continue; }
+        if (!Array.isArray(v.situations) || !v.situations.length || v.situations.some((x) => !WORK.includes(x))) return { error: 'Please tick at least one work situation.' };
+        const w = { needed: 'yes', situations: WORK.filter((x) => v.situations.includes(x)) };
+        if (v.benefits != null) {
+          const r = lines(v.benefits, 'Which benefits', 10);
+          if (r.error) return r;
+          if (r.value.length) w.benefits = r.value;
+        }
+        const d = v.detail == null ? '' : str(v.detail);
+        if (d === null || d.length > 300) return { error: 'The more specific work situation is too long (at most 300 characters).' };
+        if (d) w.detail = d;
+        out[k] = w;
+      } else if (k === 'referral') {
+        if (v === null) { out[k] = null; continue; }
+        if (!v || typeof v !== 'object' || !['yes', 'no'].includes(v.needed)) return { error: 'Please say whether someone needs a referral.' };
+        if (v.needed === 'no') { out[k] = { needed: 'no' }; continue; }
+        if (!['anyone', 'professional'].includes(v.who)) return { error: 'Please say who can make a referral.' };
+        const r = { needed: 'yes', who: v.who };
+        const pr = v.professionals == null ? '' : str(v.professionals);
+        if (pr === null || pr.length > 300) return { error: 'Which professionals can refer is too long (at most 300 characters).' };
+        if (v.who === 'professional' && !pr) return { error: 'Please say which professionals can refer.' };
+        if (pr && v.who === 'professional') r.professionals = pr;
+        out[k] = r;
+      } else if (k === 'answers') {
+        if (v === null) { out[k] = null; continue; }
+        if (!v || typeof v !== 'object' || Array.isArray(v)) return { error: `${label} isn't right.` };
+        const a = {};
+        for (const [f, x] of Object.entries(v)) {
+          if (!/^[a-zA-Z]+$/.test(f) || !x || !LABELS.includes(x.label)) return { error: `${label}: "${f}" isn't right.` };
+          const one = { label: x.label };
+          if (x.source) { if (!URL_RE.test(x.source)) return { error: `${label}: the link for "${f}" must start with https://.` }; one.source = x.source; }
+          if (x.quote) { const q = str(x.quote); if (!q || q.length > 500) return { error: `${label}: the line for "${f}" is too long.` }; one.quote = q; }
+          if (x.date) { if (!DATE_RE.test(x.date)) return { error: `${label}: the date for "${f}" isn't right.` }; one.date = x.date; }
+          a[f] = one;
+        }
+        out[k] = Object.keys(a).length ? a : null;
       } else if (k === 'venues') {
         if (v === null) { out[k] = null; continue; }
         if (!Array.isArray(v) || v.length > 30) return { error: `${label} must be a list of up to 30 venues.` };

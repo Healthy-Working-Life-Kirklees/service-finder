@@ -2,6 +2,10 @@
   "id": "proper-progress",
   "name": "Proper Progress",
   "organisation": "Proper Job Theatre Company",
+  "partners": [
+    "KLTV",
+    "Thread Republic"
+  ],
   "logo": "proper-job.webp",
   "open": true,
   "hwlFunded": true,
@@ -17,6 +21,16 @@
   ],
   "whoFor": "Adults who are not working or looking for work because of barriers such as poor physical or mental health, isolation, caring responsibilities, low confidence, disability or language barriers.",
   "age": "18+",
+  "ageMin": 18,
+  "residence": {
+    "scope": "kirklees"
+  },
+  "work": {
+    "needed": "yes",
+    "situations": [
+      "inactive"
+    ]
+  },
   "webpage": null,
   "email": "mollie@properjob.org.uk",
   "phone": "01484 514687 / 07716 639494",
@@ -55,6 +69,10 @@
   "selfReferral": {
     "allowed": "yes",
     "note": "Call or email directly"
+  },
+  "referral": {
+    "needed": "yes",
+    "who": "anyone"
   },
   "projects": [
     {

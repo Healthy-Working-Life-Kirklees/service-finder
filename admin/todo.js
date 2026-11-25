@@ -1,7 +1,9 @@
 // The To do list (todo.html): everything waiting for the team, in one list, each with its next step.
+//   Ready to go live (first, so nothing checked is left waiting): edits, decisions, new services and organisation
+//     or venue changes saved but not yet live, with one button to put them live.
 //   To check: partner replies, suggested services, changes that couldn't go live, projects ending soon.
-//   Ready to go live: edits, decisions, new services and organisation or venue changes saved but not yet live,
-//     with one button to put them live.
+//   Check these: organisations that may be listed twice, names that may be a partnership, and partners that may
+//     be an organisation we already list. "It's fine as it is" hides one in this browser.
 //   Waiting on a partner: verify links with no reply, suggestions where we've asked them something.
 //   Recently live: what went live in the last three weeks.
 // Everything comes from the same places as All services (flow.js); nothing new is stored.
@@ -107,6 +109,53 @@
     return out.sort((a, b) => b.t.localeCompare(a.t));
   }
 
+  // ---------- Check these: possible duplicates and partnerships ----------
+  const DISMISS_KEY = 'hwl-todo-dismissed';
+  const dismissed = () => { try { return new Set(JSON.parse(localStorage.getItem(DISMISS_KEY)) || []); } catch { return new Set(); } };
+  const dismiss = (key) => { const d = dismissed(); d.add(key); try { localStorage.setItem(DISMISS_KEY, JSON.stringify([...d])); } catch { /* ignore */ } };
+  // A name reduced to what identifies it: "&" is "and", "FT" is "Foundation Trust", and "Ltd", "CIC", "the", a word
+  // in brackets and a closing "service" make no difference.
+  const orgKey = (t) => String(t || '').toLowerCase().replace(/\([^)]*\)/g, ' ').replace(/&/g, ' and ').replace(/\bft\b/g, 'foundation trust')
+    .replace(/\b(the|ltd|limited|cic|plc)\b/g, ' ').replace(/[^a-z0-9+]+/g, ' ').trim().replace(/ services?$/, '');
+  function checkThese() {
+    const gone = dismissed();
+    const out = [];
+    const orgs = S.organisations;
+    const used = (o) => F.servicesOfOrg(o).length;
+    const orgsLink = (name) => go('services.html?orgs=' + encodeURIComponent(name), 'Open organisations');
+    // Organisations that may be listed twice.
+    const byKey = new Map();
+    for (const o of orgs) { const k = orgKey(o.name); if (!byKey.has(k)) byKey.set(k, []); byKey.get(k).push(o); }
+    for (const [k, os] of byKey) {
+      if (os.length < 2 || gone.has('dupe:' + k)) continue;
+      out.push({ t: '2', tone: 'check', kind: 'Possible duplicate organisation', title: os.map((o) => '"' + o.name + '"').join(' and '),
+        sub: 'These may be the same organisation (' + os.map((o) => plural(used(o), 'service', 'services')).join(', ') + '). If so, combine them under the right name on the Organisations panel.',
+        action: el('span', { class: 'row-end' }, orgsLink(os[0].name), el('button', { type: 'button', class: 'btn secondary small', text: 'They’re different', onclick: () => { dismiss('dupe:' + k); draw(); } })) });
+    }
+    // Names that may be a partnership joined into one name ("A with B", "A / B", "A, in partnership with B").
+    for (const o of orgs) {
+      if (!used(o) || gone.has('partner:' + o.id) || !/ with | \/ |\/|in partnership/i.test(o.name)) continue;
+      const svcs = F.servicesOfOrg(o);
+      out.push({ t: '1', tone: 'check', kind: 'Possible partnership', title: o.name,
+        sub: 'If this is more than one organisation, put the lead (the one people contact) as the organisation and the others under "In partnership with" on ' + (svcs.length === 1 ? svcs[0].name : 'each service') + '.',
+        action: el('span', { class: 'row-end' }, go(svcHref(svcs[0].id), 'Edit details'), el('button', { type: 'button', class: 'btn secondary small', text: 'It’s one organisation', onclick: () => { dismiss('partner:' + o.id); draw(); } })) });
+    }
+    // Partners that may be an organisation we list under a slightly different name.
+    const names = new Set(orgs.flatMap((o) => [o.name, ...list(o.aliases)]));
+    const seenP = new Set();
+    for (const s of S.services) for (const p of list(s.partners)) {
+      if (names.has(p) || seenP.has(p) || gone.has('pname:' + p)) continue;
+      seenP.add(p);
+      const words = orgKey(p).split(' ').filter((w) => w.length > 2);
+      const like = orgs.filter((o) => words.length && words.every((w) => orgKey(o.name).includes(w)));
+      if (!like.length) continue;
+      out.push({ t: '1', tone: 'check', kind: 'Partner name to check', title: '"' + p + '" (a partner on ' + s.name + ')',
+        sub: 'We also list ' + like.map((o) => '"' + o.name + '"').join(' and ') + '. If it’s the same organisation, use that name in "In partnership with", so it shows on their organisation page.',
+        action: el('span', { class: 'row-end' }, go(svcHref(s.id), 'Edit details'), el('button', { type: 'button', class: 'btn secondary small', text: 'It’s a different organisation', onclick: () => { dismiss('pname:' + p); draw(); } })) });
+    }
+    return out;
+  }
+
   function waiting() {
     const out = [];
     for (const s of S.services) {
@@ -136,6 +185,7 @@
   function draw() {
     const box = document.getElementById('todo');
     const a = toCheck();
+    const c = checkThese();
     const r = ready();
     const w = waiting();
     const rec = recent();
@@ -157,11 +207,12 @@
       el('div', { class: 'todo-head' },
         el('h1', { class: 'mt0', text: 'To do' }),
         el('p', { class: 'hint', text: 'Everything waiting for the team, in one list. Each item says what to do next.' }),
-        el('p', { class: 'todo-stats' }, el('span', { class: 'pill warn', text: a.length + ' to check' }), el('span', { class: 'pill', text: r.length + ' ready to go live' }), el('span', { class: 'pill', text: plural(w.length, 'waiting on a partner', 'waiting on partners') }))),
-      section('To check', a.length, a.map(item)),
+        el('p', { class: 'todo-stats' }, el('span', { class: 'pill', text: r.length + ' ready to go live' }), el('span', { class: 'pill warn', text: a.length + ' to check' }), el('span', { class: 'pill', text: plural(w.length, 'waiting on a partner', 'waiting on partners') }))),
       el('section', { class: 'todo-sec', 'aria-labelledby': 'todo-ready-h' },
         el('h2', { id: 'todo-ready-h' }, 'Ready to go live ', el('span', { class: 'todo-count', text: String(r.length) })),
         r.length ? readyBox : el('p', { class: 'hint', text: 'Nothing waiting. Changes the team saves (edits, decisions, new services) appear here until they are live.' })),
+      section('To check', a.length, a.map(item)),
+      section('Check these: duplicates and partnerships', c.length, c.map(item)),
       section('Waiting on a partner', w.length, w.map(item)),
       el('section', { class: 'todo-sec', 'aria-labelledby': 'todo-recent-h' },
         el('h2', { id: 'todo-recent-h', text: 'Recently live' }),

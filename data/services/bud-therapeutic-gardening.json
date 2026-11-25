@@ -15,6 +15,7 @@
   ],
   "whoFor": "Adults with mental health problems, long-term conditions or who feel isolated.",
   "age": "Adults",
+  "ageMin": 18,
   "webpage": "https://www.growingworks.org.uk/bud/",
   "email": "info@growingworks.org.uk",
   "phone": "07845 415289",
@@ -75,5 +76,13 @@
   "listing": {
     "decision": "include",
     "reason": "On the live list since the October 2026 import, before the development team review."
+  },
+  "answers": {
+    "ageMin": {
+      "label": "found",
+      "source": "https://communitydirectory.kirklees.gov.uk/communityDirectory/organisationDetails.aspx?orgId=7094",
+      "quote": "for people aged 18 and over to aid wellbeing, predominantly for those with a range of vulnerabilities or socially isolated.",
+      "date": "2026-11-23"
+    }
   }
 }

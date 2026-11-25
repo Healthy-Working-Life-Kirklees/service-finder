@@ -416,21 +416,11 @@
     };
     const heading = (key) => el('h3', { class: 'fb-section', text: t(key) });
     const note = () => el('p', { class: 'fb-note', text: t('fbDetailsNote') });
-    // From the service: everything, in sections, in the order of a listing.
-    const PROVIDER = [
-      el('p', { class: 'fb-prompt', text: t('fbProviderPrompt') }),
-      heading('fbSecOrg'), 'organisation', 'addTo', 'organisationOverview',
-      heading('fbSecAbout'), 'name', 'whoFor', 'open', 'website',
-      heading('fbSecProject'), 'projects',
-      heading('fbSecWho'), 'groups', 'audience', 'age', 'eligibility', 'exclusions', 'healthNeed', 'conditions', 'categories',
-      heading('fbSecWhere'), 'area', 'level',
-      heading('fbSecContact'), note(), 'phone', 'email', 'social', 'referral', 'selfReferral', 'cost', 'languages', 'workExperience', 'coachNotes',
-      heading('fbSecLast'), 'logoOk', 'contactName',
-    ];
-    // Suggesting it: five boxes, then the rest folded away.
-    const more = el('details', { class: 'fb-more' }, el('summary', { text: t('fbMoreDetails') }));
-    const SUGGESTER_TOP = ['name', 'organisation', 'addTo', 'website', 'phone', 'area'];
-    const SUGGESTER_MORE = [note(), 'whoFor', 'open', heading('fbSecProject'), 'projects', 'groups', 'audience', 'age', 'eligibility', 'exclusions', 'healthNeed', 'conditions', 'categories', 'level', 'email', 'social', 'referral', 'selfReferral', 'cost', 'languages', 'workExperience'];
+    // From the service: the full service form (suggest.html), the same one organisations use to check a listing.
+    const formLink = el('a', { class: 'btn primary', href: './suggest.html' + (prefill.org ? '?org=' + encodeURIComponent(prefill.org) : ''), target: '_blank', rel: 'noopener', text: t('fbOpenServiceForm') });
+    const PROVIDER = [el('p', { class: 'fb-prompt', text: t('fbProviderGoForm') }), el('p', {}, formLink)];
+    // Not from the organisation, or only a few details: the names and a way to find out more.
+    const SUGGESTER_TOP = [el('p', { class: 'fb-prompt', text: t('fbSuggesterPrompt') }), 'name', 'organisation', 'addTo', 'website', 'phone', 'email', 'area', note()];
     const nodes = (list) => list.map((x) => (typeof x === 'string' ? F[x] : x));
     const roleSet = el('fieldset', { class: 'fb-ticks' },
       el('legend', { text: t('fbRoleLegend') }),
@@ -441,14 +431,11 @@
     let role = '';
     roleSet.addEventListener('change', (e) => {
       role = e.target.value;
-      if (role === 'provider') {
-        more.replaceChildren(more.firstChild);
-        rest.replaceChildren(...nodes(PROVIDER));
-      } else {
-        more.replaceChildren(more.firstChild, ...nodes(SUGGESTER_MORE));
-        more.open = false;
-        rest.replaceChildren(...nodes(SUGGESTER_TOP), more);
-      }
+      if (role === 'provider') rest.replaceChildren(...nodes(PROVIDER));
+      else rest.replaceChildren(...nodes(SUGGESTER_TOP));
+      // The full form has its own Send button: this form's one is for the short version.
+      const f = node.closest('form');
+      if (f) f.dispatchEvent(new CustomEvent('fb-role', { bubbles: true }));
       rest.hidden = false;
     });
     const box = (k) => F[k].querySelector('input, textarea, select');
@@ -478,6 +465,7 @@
     // Reads the answers. Returns { ms } or { error, focus }.
     function read(f) {
       if (!role) return { error: t('fbNeedRole'), focus: roleSet.querySelector('input') };
+      if (role === 'provider') return { error: t('fbProviderUseForm'), focus: formLink };
       const name = redact(val('name'));
       const missing = [!name && 'name', !val('organisation') && 'organisation'].filter(Boolean);
       mark('name', missing.includes('name'));
@@ -487,15 +475,17 @@
       // "www.example.org" is fine: add the https:// for the person.
       if (website && !/^https?:\/\//i.test(website) && /^[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(website)) website = 'https://' + website;
       if (website && !/^https?:\/\/[^\s/?#]+\.[^\s/?#]+\S*$/i.test(website)) return { error: t('fbBadWebsite'), focus: box('website') };
-      if (val('email') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val('email'))) { more.open = true; return { error: t('fbBadEmail'), focus: box('email') }; }
+      if (val('email') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val('email'))) return { error: t('fbBadEmail'), focus: box('email') };
+      // A way to find out more: a website, phone number or email address.
+      if (!website && !val('phone') && !val('email')) return { error: t('fbNeedContact'), focus: box('website') };
       const ms = { name, website, area: val('area'), role };
       for (const k of ['organisation', 'organisationOverview', 'whoFor', 'open', 'age', 'exclusions', 'healthNeed', 'level', 'phone', 'email', 'social', 'referral', 'selfReferral', 'cost', 'languages', 'workExperience', 'coachNotes']) if (showing(k) && val(k)) ms[k] = val(k);
       if (showing('projects')) {
         const rows = [...projectList.children];
         for (const fs of rows) {
           const p = fs._read();
-          if ((p.runsFrom && p.runsTo && p.runsFrom > p.runsTo) || (p.referralsFrom && p.referralsUntil && p.referralsFrom > p.referralsUntil)) { more.open = true; return { error: t('fbBadDates'), focus: fs._dates.querySelector('input') }; }
-          if ((p.sessions || []).some((x) => x.start && x.end && x.start >= x.end)) { more.open = true; return { error: t('fbBadTimes'), focus: fs.querySelector('input[type=time]') }; }
+          if ((p.runsFrom && p.runsTo && p.runsFrom > p.runsTo) || (p.referralsFrom && p.referralsUntil && p.referralsFrom > p.referralsUntil)) return { error: t('fbBadDates'), focus: fs._dates.querySelector('input') };
+          if ((p.sessions || []).some((x) => x.start && x.end && x.start >= x.end)) return { error: t('fbBadTimes'), focus: fs.querySelector('input[type=time]') };
         }
         const ps = rows.map((fs) => fs._read()).filter((p) => Object.keys(p).length);
         if (ps.length) ms.projects = ps;
@@ -529,7 +519,7 @@
       orgBox.value = prefill.org;
       showAddTo();
     }
-    return { node, read, focusFirst: () => roleSet.querySelector('input').focus() };
+    return { node, read, rest, isProvider: () => role === 'provider', isSuggester: () => role === 'suggester', focusFirst: () => roleSet.querySelector('input').focus() };
   }
 
   function gapForm(getMode, onSent, onCancel, prefill = {}) {
@@ -537,6 +527,7 @@
     const categories = fromData('categories');
     const supportAreaId = uid('sarea');
     const service = serviceQuestions(prefill);
+    const commentBox = comment();
     const supportSub = el('div', { class: 'fb-sub', hidden: true },
       ticks([t('fbSupportLegend')], [...categories.map((c) => ({ value: c, label: c, lang: 'en' })), { value: SOMETHING_ELSE, label: t('fbSomethingElse') }], 'category'),
       select(supportAreaId, t('fbSupportArea'), areas));
@@ -546,7 +537,7 @@
         { value: 'missing-support', label: t('fbGapSupport'), extra: supportSub },
         { value: 'missing-other', label: t('fbGapOther') },
       ], 'gap', 'radio'),
-      comment());
+      commentBox);
     // One kind of gap at a time: show the extra questions for the one chosen.
     form.addEventListener('change', (e) => {
       if (e.target.name !== 'gap') return;
@@ -561,6 +552,19 @@
         top.scrollIntoView({ block: 'start', behavior: 'smooth' });
       }
     });
+    // Someone from the service sends the full service form instead: this form's Send and comment box step aside.
+    // Not from the service: the comment box goes straight under "Area it covers", with the other details.
+    const sendOwn = () => {
+      const svc = Boolean(form.querySelector('input[name=gap][value=missing-service]:checked'));
+      const hide = svc && service.isProvider();
+      const b = form.querySelector('.fb-actions button[type=submit]');
+      if (b) b.hidden = hide;
+      commentBox.hidden = hide;
+      if (svc && service.isSuggester()) { if (commentBox.parentNode !== service.rest) service.rest.append(commentBox); }
+      else if (commentBox.parentNode !== form) form.insertBefore(commentBox, form.querySelector(':scope > .fb-error'));
+    };
+    form.addEventListener('change', sendOwn);
+    form.addEventListener('fb-role', sendOwn);
     if (prefill.org) {
       const r = form.querySelector('input[name=gap][value=missing-service]');
       r.checked = true;

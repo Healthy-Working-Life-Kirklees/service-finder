@@ -31,6 +31,13 @@
   let form = null;
   let lf = null; // the shared listing form (listing-form.js)
   let unsentNote = null; // under "A different service?": shown while there are changes not sent yet
+  // A draft: the answers changed so far, kept in this browser only until they're sent, so closing the page loses
+  // nothing. One per link. Never sent anywhere until "Send my changes".
+  const DRAFT_KEY = 'hwl-verify-draft-' + token;
+  const draftGet = () => { try { const d = JSON.parse(localStorage.getItem(DRAFT_KEY)); return d && d.changes ? d : null; } catch { return null; } };
+  const draftSet = (d) => { try { localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); } catch { /* private browsing: no draft */ } };
+  const draftDrop = () => { try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ } };
+  let draftTimer = null;
 
   function problem(text) {
     $('#pc-loading').hidden = true;
@@ -56,23 +63,36 @@
   // The questions themselves are the shared listing form (listing-form.js), the same as the team's form in Admin.
   const id = (k) => 'pc-' + k;
 
-  function build() {
-    lf = LISTING_FORM.build({ values: data.service, original: data.service, mode: 'partner', choices: data.choices, organisations: data.organisations, venues: data.venues, prefix: 'pc', headingLevel: 2, onChange: refresh });
-    form = el('form', { class: 'pc-form', novalidate: true }, lf.node);
+  function build(fromDraft) {
+    const draft = fromDraft ? draftGet() : null;
+    lf = LISTING_FORM.build({ values: draft ? { ...data.service, ...draft.changes } : data.service, original: data.service, mode: 'partner', choices: data.choices, organisations: data.organisations, venues: data.venues, prefix: 'pc', headingLevel: 2, onChange: refresh, stepped: true, listingLabel: data.listingLabel });
+    form = el('form', { class: 'pc-form', novalidate: true });
+    const draftNote = el('p', { class: 'pc-draft', role: 'status' },
+      el('strong', { text: 'Your answers are saved on this device as you go' }), ', so you can close the page and carry on later. ',
+      el('button', { type: 'button', class: 'linklike', text: 'Clear my answers', onclick: () => {
+        if (!confirm("Clear everything you've changed on this page? It can't be got back.")) return;
+        draftDrop(); form.replaceWith(build(false)); refresh(); window.scrollTo(0, 0);
+      } }), ' (on a shared computer).',
+      draft ? el('span', { text: ' We\'ve filled in the answers you saved on ' + date(draft.t) + '.' }) : null);
+    form.append(draftNote, lf.node);
     const status = el('p', { class: 'pc-count', role: 'status', 'aria-live': 'polite' });
     const msg = el('p', { class: 'pc-msg', role: 'alert', hidden: true });
+    const left = el('div', { class: 'pc-left', role: 'status', hidden: true });
     const correct = el('button', { type: 'button', class: 'btn primary', text: 'Everything is correct', onclick: () => send(true) });
     const sendBtn = el('button', { type: 'submit', class: 'btn primary', text: 'Send my changes' });
-    const undo = el('button', { type: 'button', class: 'btn secondary', text: 'Undo my changes', onclick: () => { if (confirm('Undo all your changes and go back to the details we hold?')) { form.replaceWith(build()); refresh(); window.scrollTo(0, 0); } } });
-    form.append(el('section', { class: 'lf-section pc-send' },
+    const undo = el('button', { type: 'button', class: 'btn secondary', text: 'Undo my changes', onclick: () => { if (confirm('Undo all your changes and go back to the details we hold?')) { draftDrop(); form.replaceWith(build(false)); refresh(); window.scrollTo(0, 0); } } });
+    const sendBox = el('section', { class: 'lf-section pc-send' },
       el('h2', { text: 'Send to the Healthy Working Life team' }),
       el('div', { class: 'lf-field' }, el('label', { for: id('yourname'), text: 'Your name' }), el('input', { id: id('yourname'), type: 'text', value: data.contact, autocomplete: 'name', maxlength: '80' })),
       el('div', { class: 'lf-field' }, el('label', { for: id('note'), text: 'Anything else you would like to tell us' }), el('p', { class: 'hint', id: id('note') + '-hint', text: "If something's wrong but you're not sure how to change it, tell us here." }), el('textarea', { id: id('note'), rows: '4', maxlength: '2000', 'aria-describedby': id('note') + '-hint' })),
       status,
       el('div', { class: 'pc-buttons' }, correct, sendBtn, undo),
-      msg));
+      msg, left);
+    // The send box is the end of part 3.
+    const last = lf.parts[lf.parts.length - 1];
+    last.insertBefore(sendBox, last.querySelector('.lf-partnav'));
     form.classList.add('lf');
-    form._ui = { status, msg, correct, sendBtn, undo };
+    form._ui = { status, msg, left, correct, sendBtn, undo };
     form.addEventListener('submit', (e) => { e.preventDefault(); send(false); });
     return form;
   }
@@ -88,24 +108,59 @@
     ui.sendBtn.hidden = n === 0;
     ui.undo.hidden = n === 0;
     if (unsentNote) unsentNote.hidden = n === 0;
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(() => { if (n) draftSet({ t: new Date().toISOString(), changes: ch }); else draftDrop(); }, 400);
   }
 
-  async function send(allCorrect) {
+  async function send(allCorrect, anyway) {
     const ui = form._ui;
     const say = (t) => { ui.msg.textContent = t; ui.msg.hidden = false; };
     ui.msg.hidden = true;
+    ui.left.hidden = true;
     const ch = allCorrect ? {} : lf.changes();
     // The checks the Worker makes too, said here first in plain words, with the box to go back to.
     if (!allCorrect) {
       const p = lf.check();
       if (p) { say(p.message); if (p.el && p.el.focus) p.el.focus(); return; }
       if (!Object.keys(ch).length && form.querySelector('#' + id('note')).value.trim().length < 3) return say("You haven't changed anything. Change the details above, or tell us what's wrong in the box above.");
+      // Anything still unanswered: a reminder, not a rule. They can fill it in, or send anyway.
+      const left = anyway ? [] : lf.unanswered();
+      if (left.length) {
+        ui.left.replaceChildren(
+          el('p', { class: 'mt0' }, el('strong', { text: `You've left ${left.length} ${left.length === 1 ? 'question' : 'questions'} unanswered.` }), " The more coaches know, the better they can match people to your service, but it's fine to leave something out if it doesn't apply or you're not sure."),
+          el('ul', {}, left.map((x) => el('li', {}, el('button', { type: 'button', class: 'linklike', text: x.label, onclick: x.go })))),
+          el('p', {}, el('button', { type: 'button', class: 'btn primary', text: 'Send anyway', onclick: () => send(false, true) })));
+        ui.left.hidden = false;
+        ui.left.scrollIntoView({ block: 'nearest' });
+        return;
+      }
+    }
+    const note = form.querySelector('#' + id('note')).value.trim();
+    const name = form.querySelector('#' + id('yourname')).value.trim();
+    const post = async () => {
+      const d = await api('POST', { allCorrect, changes: ch, note, name });
+      clearTimeout(draftTimer);
+      draftDrop();
+      thanks(allCorrect, d.t, allCorrect ? data.service : { ...data.service, ...ch });
+    };
+    // Changes: check them first, then send from there. "Everything is correct" sends straight away.
+    if (!allCorrect) {
+      lf.review({
+        title: 'Check your changes before sending',
+        intro: Object.keys(ch).length ? 'These are the answers you have changed. Use "Change" to go back to one. Nothing is sent until you press the button at the end.' : '',
+        only: Object.keys(ch),
+        extra: [name || note ? el('dl', { class: 'lf-review-list' }, el('div', { class: 'lf-review-part' }, el('h3', { text: 'From you' })),
+          name ? el('div', { class: 'lf-review-row' }, el('dt', { text: 'Your name' }), el('dd', { text: name })) : null,
+          note ? el('div', { class: 'lf-review-row' }, el('dt', { text: 'Anything else you told us' }), el('dd', { text: note })) : null) : null].filter(Boolean),
+        sendText: 'Send my changes to the Healthy Working Life team',
+        onSend: post,
+      });
+      return;
     }
     const buttons = [ui.correct, ui.sendBtn, ui.undo];
     buttons.forEach((b) => (b.disabled = true));
     try {
-      const d = await api('POST', { allCorrect, changes: ch, note: form.querySelector('#' + id('note')).value.trim(), name: form.querySelector('#' + id('yourname')).value.trim() });
-      thanks(allCorrect, d.t, allCorrect ? data.service : { ...data.service, ...ch });
+      await post();
     } catch (err) {
       buttons.forEach((b) => (b.disabled = false));
       say(err.message);
@@ -143,9 +198,11 @@
       el('p', {}, 'Hello ', el('strong', { text: data.contact }), '. This is everything the ', el('strong', { text: 'Healthy Working Life Support Finder' }), ' holds about ', el('strong', { text: s.name }), '.'),
       el('p', { text: 'Work and health coaches in Kirklees use the Support Finder to find the right support for the people they work with. Its AI uses these details to decide who to suggest your service to, so please check them carefully, especially who it\'s for, where and when you run, and how people get in.' }),
       el('ul', {},
-        el('li', { text: 'If everything is right, press "Everything is correct" at the end.' }),
-        el('li', { text: 'If something is wrong or missing, change it in the boxes below and press "Send my changes". Please add as much as you can: the more coaches know, the better they can match people to your service.' }),
-        el('li', { text: 'Under "What happens, where and when", tell us where and when each project runs: "Add a time and place" for each venue and day, with the times. This builds a timetable of what runs across Kirklees. If a project runs separately for different groups (for example two age cohorts), use "Add a group or cohort" for each.' }),
+        el('li', { text: 'The form has three parts: the service and who can join, contact and how people get in, then activities and timetable. You can move between them at any time.' }),
+        el('li', { text: 'Answers marked "Found on your website" came from your website: please check them. Answers marked "Unknown: please answer" are ones we couldn\'t find.' }),
+        el('li', { text: 'If everything is right, go to part 3 and press "Everything is correct" at the end.' }),
+        el('li', { text: 'If something is wrong or missing, change it and press "Send my changes" at the end of part 3. Please add as much as you can: the more coaches know, the better they can match people to your service.' }),
+        el('li', { text: 'In part 3, tell us where and when each activity runs: "Add a time and place" for each place and day, with the times. This builds a timetable of what runs across Kirklees. If it runs more than once, or separately for different groups (for example two age groups), say it has cohorts and add each one.' }),
         el('li', { text: 'Your changes go to the Healthy Working Life team, who check them before they appear on the Support Finder.' })),
       el('p', { class: 'notice', role: 'note', text: 'This link is just for you and works until ' + date(data.expires) + '. Please don\'t share it.' }),
       last ? el('p', { class: 'pc-last', text: 'You last replied on ' + date(last.t) + (last.allCorrect ? ', saying everything was correct.' : ', with changes.') + ' You can send again if something else needs changing.' }) : null);
@@ -157,11 +214,11 @@
     const more = el('section', { class: 'pc-other', 'aria-labelledby': 'pc-other-title' },
       el('h2', { id: 'pc-other-title', text: 'Do you run a different service?' }),
       el('p', {}, 'Only use this to tell us about ', el('strong', { text: 'a different service' }), ` from ${s.organisation}, not ${s.name}. It opens a separate form in a new tab and doesn't send anything on this page.`),
-      el('p', { text: `To add another project to ${s.name}, use "Add another project" under "What happens, where and when" above, then send it with your other changes.` }),
+      el('p', { text: `To add another activity to ${s.name}, use part 3 of the form above ("Does this service run more than one separate activity?"), then send it with your other changes.` }),
       unsentNote,
-      el('p', {}, el('a', { class: 'btn secondary', href: './?suggest=service&org=' + encodeURIComponent(s.organisation), target: '_blank', rel: 'noopener', text: 'Tell us about a different service (opens in a new tab)' })),
+      el('p', {}, el('a', { class: 'btn secondary', href: './suggest.html?org=' + encodeURIComponent(s.organisation), target: '_blank', rel: 'noopener', text: 'Tell us about a different service (opens in a new tab)' })),
       others.length ? el('p', { text: `We also list these services from ${s.organisation}: ${others.map((x) => x.name).join('; ')}. To check those too, ask the Healthy Working Life team for their links.` }) : null);
-    $('#pc-app').replaceChildren(intro, build(), more);
+    $('#pc-app').replaceChildren(intro, build(true), more);
     refresh();
     $('#pc-loading').hidden = true;
     $('#pc-app').hidden = false;
