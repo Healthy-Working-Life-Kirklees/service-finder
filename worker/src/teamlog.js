@@ -292,6 +292,19 @@ export class LogStore {
       return Response.json({ link });
     }
 
+    // Remove one reply completely (a test reply, or one sent by mistake). Its count against the link's limit goes too.
+    if (url.pathname === '/plinks/remove-reply') {
+      const key = 'plink:' + body.token;
+      const link = await s.get(key);
+      if (!link) return Response.json({ error: 'Not found.' }, { status: 404 });
+      const left = link.replies.filter((x) => x.t !== body.t);
+      if (left.length === link.replies.length) return Response.json({ error: 'That reply was not found.' }, { status: 404 });
+      link.replies = left;
+      link.sent = Math.max(0, (link.sent || 0) - 1);
+      await s.put(key, link);
+      return Response.json({ link });
+    }
+
     if (url.pathname === '/plinks/reply') {
       const key = 'plink:' + body.token;
       const link = await s.get(key);
