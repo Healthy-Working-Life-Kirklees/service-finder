@@ -16,10 +16,12 @@
   ],
   "whoFor": "People who are not in education, employment or training (NEET), or at risk of becoming NEET, who want skills and experience to prepare for volunteering and paid work.",
   "age": "18+",
-  "webpage": null,
+  "webpage": "https://www.batleysportingfoundation.org/",
   "email": "jade@batleysportingfoundation.org",
   "phone": "07584 569117",
-  "social": [],
+  "social": [
+    "Batley sporting foundation"
+  ],
   "locations": [],
   "areas": [
     "Batley"
@@ -28,50 +30,76 @@
     "Not in education, employment or training (NEET)",
     "Aged 18 or over",
     "Lives in Kirklees",
-    "Economically inactive (not working and not looking for work)",
     "Has the right to work in the UK",
     "Has a health condition or disability"
   ],
   "exclusions": [],
   "gate": [
+    "Aged 18 or over",
     "Lives in Kirklees",
-    "Is economically inactive (not working and not looking for work)",
-    "Has the right to work in the UK"
+    "Has the right to work in the UK",
+    "Has a health condition or disability",
+    "Is economically inactive (not working and not looking for work)"
   ],
   "healthFocus": [
     "any"
   ],
   "referralRoutes": [
-    "Application form from Batley Sporting Foundation or online (contact Jade Wardell)"
+    "Application form from Batley Sporting Foundation  (contact Jade Wardell- jade@batleysportingfoundation.org"
   ],
   "selfReferral": {
     "allowed": "yes",
-    "note": "Apply using the application form"
+    "note": "Apply by contacting Jade and filling in the application form"
   },
   "projects": [
     {
       "id": "pathways-to-potential-2",
       "name": "Pathways to Potential 2",
       "overview": "Gives economically inactive people the skills, tools and experience to prepare for volunteering and paid work.",
-      "duration": "Weekly provision",
+      "runs": [
+        "set",
+        "appointment"
+      ],
+      "area": "Kirklees",
+      "when": "Thursday 3rd December 2026",
+      "duration": "Ongoing",
       "sessions": [
         {
           "id": "batley-sporting-foundation-community-gym",
-          "venue": "batley-sporting-foundation-community-gym"
+          "name": "Sign up session",
+          "note": "Drop in sign ups session",
+          "venue": "batley-sporting-foundation-community-gym",
+          "days": [
+            "thu"
+          ],
+          "start": "18:00",
+          "end": "20:00",
+          "frequency": "varies"
         }
       ]
     }
   ],
-  "workExperience": "No",
+  "workExperience": "Yes- we offer volunteer opportunities",
   "notes": "Status before November 2026: Live - grant-funded project (status not stated in the pathways document)",
-  "lastUpdated": "2026-10-01",
+  "lastUpdated": "2026-11-23",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
-    "evidence": "Eligibility set to the Healthy Working Life grant funding criteria by the programme team (2 November 2026): Kirklees resident, economically inactive, right to work in the UK, health condition or disability, 18+ unless the scheme says otherwise."
+    "evidence": "Checked by LO on 2026-11-23: Changed name from Hade to JAde"
   },
   "listing": {
     "decision": "include",
-    "reason": "Healthy Working Life scheme, on the live list from the start."
-  }
+    "reason": "Partner provided information 23/11",
+    "by": "LO",
+    "date": "2026-11-23"
+  },
+  "groups": [
+    "adults",
+    "disabled",
+    "health-condition"
+  ],
+  "venues": [
+    "batley-sporting-foundation-community-gym"
+  ],
+  "coachNotes": "We will be offering a drop in signup session on 3rd December for new sign ups. We are working with many economically inactive adults with our current groups. Referrals all made through Jade and in person."
 }

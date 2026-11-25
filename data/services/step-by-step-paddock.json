@@ -17,7 +17,10 @@
   "webpage": "https://www.paddocktrust.org.uk/step-by-step/",
   "email": null,
   "phone": null,
-  "social": [],
+  "social": [
+    "https://www.facebook.com/PaddockTrust/",
+    "https://twitter.com/Paddock_Trust"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide"

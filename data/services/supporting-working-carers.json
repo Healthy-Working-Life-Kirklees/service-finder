@@ -20,7 +20,10 @@
   "webpage": "https://carerscountkirklees.org.uk/how-can-we-help/support-and-training/#employer-support",
   "email": "annmarie.brabiner@carerscount.org.uk",
   "phone": "0300 012 0231",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/carerscountkirklees",
+    "https://www.instagram.com/carerscountkirklees"
+  ],
   "locations": [
     "Online - 30-minute awareness sessions and one-to-one Teams calls",
     "In person - employer forums (e.g. The Zone, Huddersfield) and employer drop-ins",

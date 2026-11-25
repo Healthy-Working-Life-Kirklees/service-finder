@@ -15,7 +15,7 @@
     "Finding work",
     "Employers"
   ],
-  "whoFor": "Kirklees adults aged 18 and over with learning disabilities, autism or additional needs seeking paid, sustainable employment.",
+  "whoFor": "Kirklees adults aged 18 and over with learning disabilities, neurodiversity (including autism), physical disabilities or long-term health conditions who want paid, lasting work.",
   "age": "18+ (transitional support can start before 18th birthday)",
   "ageMin": 18,
   "residence": {
@@ -36,7 +36,7 @@
   ],
   "eligibility": [
     "Lives in Kirklees and is aged 18 or over",
-    "Has a learning disability, is autistic, or has associated additional needs with a substantial adverse effect on day-to-day activities, lasting or expected to last 12 months or more",
+    "Has a learning disability, is neurodivergent (including autistic), has a physical disability or a long-term health condition",
     "A formal medical diagnosis is not required"
   ],
   "exclusions": [
@@ -100,10 +100,13 @@
   ],
   "workExperience": "No - not offered as a standalone service",
   "notes": "Status before November 2026: Live - open to referrals",
-  "lastUpdated": "2026-08-03",
+  "lastUpdated": "2026-11-24",
   "reviewCycle": "Quarterly",
   "provenance": {
-    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)"
+    "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
+    "checkedUrl": "https://www.kirklees.gov.uk/beta/real-employment/index.aspx",
+    "evidence": "Council page (18 Nov 2026) covers learning disabilities, neurodiversity, physical disabilities and long-term conditions; team applied 24 Nov.",
+    "confidence": "high"
   },
   "listing": {
     "decision": "include",

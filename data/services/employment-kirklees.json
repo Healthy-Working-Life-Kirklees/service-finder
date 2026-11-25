@@ -28,7 +28,10 @@
   "webpage": "https://www.kirklees.gov.uk/beta/employment-and-skills/employment-support.aspx",
   "email": "EmploymentKirklees@Kirklees.gov.uk",
   "phone": "01484 225016",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/profile.php?id=100090274856872",
+    "https://twitter.com/KCEmployskills"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield",

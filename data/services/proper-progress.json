@@ -34,7 +34,11 @@
   "webpage": null,
   "email": "mollie@properjob.org.uk",
   "phone": "01484 514687 / 07716 639494",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/ProperJobTheatreCompany",
+    "https://www.instagram.com/properjobtheatre",
+    "https://twitter.com/ProperJobTheatr"
+  ],
   "locations": [],
   "venues": [
     "46-47-byram-arcade"

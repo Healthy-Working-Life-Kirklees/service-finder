@@ -29,7 +29,11 @@
   "webpage": null,
   "email": "matthew.crookes@htafcfoundation.com",
   "phone": "07741 671595",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/HTAFCFoundation",
+    "https://www.instagram.com/htafc_foundation/",
+    "https://x.com/htafcfoundation"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield"

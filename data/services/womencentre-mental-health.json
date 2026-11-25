@@ -17,7 +17,10 @@
   "webpage": "https://www.womencentre.org.uk/",
   "email": "info@womencentre.org.uk",
   "phone": "01484 450866 (Hudds); 07714 489445 (Dewsbury)",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/womencentrekirkleescalderdale",
+    "https://bsky.app/profile/womencentre.bsky.social"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield",

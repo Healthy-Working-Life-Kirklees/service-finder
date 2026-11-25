@@ -23,7 +23,11 @@
   "webpage": null,
   "email": "shokran.sharaf@rccl.org",
   "phone": "07786 061121",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/rccl.org",
+    "https://www.instagram.com/rccl_routeways/",
+    "https://twitter.com/RCCLTAROUTEWAYS"
+  ],
   "locations": [],
   "areas": [
     "Dewsbury"

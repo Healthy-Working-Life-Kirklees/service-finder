@@ -12,7 +12,7 @@
     "Benefits and money",
     "Housing"
   ],
-  "whoFor": "People in Kirklees in a short-term crisis who can't pay for food or energy.",
+  "whoFor": "Vulnerable people in short-term crisis with food, housing or energy costs.",
   "age": null,
   "webpage": "https://www.kirklees.gov.uk/beta/benefits/local-welfare-provision.aspx",
   "email": "lwp@kirklees.gov.uk",
@@ -50,18 +50,20 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-11-18",
+  "lastUpdated": "2026-11-24",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 27",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees.gov.uk/beta/benefits/local-welfare-provision.aspx",
-    "evidence": "Council page: food and energy only; rent via Housing Payment. Phone hours 10-1 per the Welcome Centre.",
+    "evidence": "Checked by PL on 2026-11-24: reworded who its for",
     "confidence": "high",
     "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",
-    "reason": "On the live list since the October 2026 import, before the development team review."
+    "reason": "Checked on website",
+    "by": "PL",
+    "date": "2026-11-24"
   }
 }

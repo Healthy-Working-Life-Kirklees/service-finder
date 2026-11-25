@@ -18,7 +18,11 @@
   "webpage": "https://www.ageuk.org.uk/calderdaleandkirklees/our-services/information-and-advice/",
   "email": "enquiry@ageukck.org.uk",
   "phone": "01422 252 040",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/AgeUKCalderdaleandKirklees",
+    "https://www.instagram.com/ageukck/",
+    "https://twitter.com/AgeUKCK"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide"

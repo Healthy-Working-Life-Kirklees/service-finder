@@ -17,7 +17,10 @@
   "webpage": "https://cloverleaf-advocacy.co.uk/",
   "email": "referrals@cloverleaf-advocacy.co.uk",
   "phone": "01924 454875",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/cloverleafadvocacy/",
+    "https://www.instagram.com/cloverleafadvocacy/"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide"

@@ -18,9 +18,9 @@
     "Finding work",
     "Volunteering"
   ],
-  "whoFor": "Economically inactive people who want to improve wellbeing, build confidence and move closer to volunteering, training or work, including people facing long-term health conditions, disability, mental health challenges, caring, addiction, debt, risk of homelessness, the criminal justice system or isolation.",
+  "whoFor": "Economically inactive people who want to improve wellbeing, build confidence and move closer to volunteering, training or work, including people facing health conditions, disability, mental health challenges, caring, addiction, debt, risk of homelessness, the criminal justice system or isolation.",
   "age": "18+",
-  "webpage": null,
+  "webpage": "https://www.communityplatform.org.uk",
   "email": "dave@communityplatform.org.uk",
   "phone": "07557 916 390",
   "social": [],
@@ -31,52 +31,96 @@
   "eligibility": [
     "Aged 18 or over",
     "Lives in Kirklees",
-    "Economically inactive (not working and not looking for work)",
     "Has the right to work in the UK",
-    "Has a health condition or disability"
+    "Has a health condition or disability",
+    "Is economically inactive (not working and not looking for work)"
   ],
   "exclusions": [],
   "gate": [
+    "Aged 18 or over",
     "Lives in Kirklees",
-    "Is economically inactive (not working and not looking for work)",
-    "Has the right to work in the UK"
+    "Has the right to work in the UK",
+    "Has a health condition or disability",
+    "Is economically inactive (not working and not looking for work)"
   ],
   "healthFocus": [
     "any"
   ],
   "referralRoutes": [
-    "Self-referral (contact David Ennis)",
+    "Self-referral (contact@communityplatform.org.uk)",
     "Referral through partner organisations in the community"
   ],
   "selfReferral": {
     "allowed": "yes",
-    "note": "Yes"
+    "note": "email contact@communityplatform.org.uk"
   },
   "projects": [
     {
       "id": "pathways-to-potential-programme",
       "name": "Pathways to Potential Programme",
       "overview": "Group workshops and one-to-one guidance covering wellbeing and mindfulness, digital confidence and basic IT skills (including AI), CVs, job searching and interviews, and volunteering and community connections.",
+      "runs": [
+        "set",
+        "appointment"
+      ],
+      "area": "Huddersfield",
       "duration": "10 sessions over eight weeks (three cohorts, 30 places in total)",
+      "places": "30",
+      "where": [
+        "Wider Kirklees eligible, would need to discuss Travel Arrangements"
+      ],
+      "runsFrom": "2026-10-01",
+      "runsTo": "2027-03-19",
+      "referralsFrom": "2026-10-01",
+      "referralsUntil": "2027-01-17",
       "sessions": [
         {
           "id": "the-branch",
+          "note": "A welcoming, accessible community space, delivering supportive and inclusive employability workshops",
           "venue": "the-branch",
-          "note": "a welcoming, accessible community space"
+          "days": [
+            "mon"
+          ],
+          "start": "09:30",
+          "end": "16:00",
+          "frequency": "weekly"
         }
       ]
     }
   ],
   "workExperience": "Volunteering opportunities",
   "notes": "Status before November 2026: Live - grant-funded project (status not stated in the pathways document)",
-  "lastUpdated": "2026-10-01",
+  "lastUpdated": "2026-11-23",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
-    "evidence": "Eligibility set to the Healthy Working Life grant funding criteria by the programme team (2 November 2026): Kirklees resident, economically inactive, right to work in the UK, health condition or disability, 18+ unless the scheme says otherwise."
+    "evidence": "Checked by LO on 2026-11-23: From Bhav Gokani (partner) using a verify link, 20 Nov 2026. Used: Website, How people get in, Can people refer themselves?, Who it's for (groups), What happens, where and when, Anything coaches should know, Who can use the service, Who they work with, Essential (turned away without).",
+    "providerChecked": "2026-11-23"
   },
   "listing": {
     "decision": "include",
-    "reason": "Healthy Working Life scheme, on the live list from the start."
-  }
+    "reason": "Included by the development team.",
+    "by": "LO",
+    "date": "2026-11-23"
+  },
+  "groups": [
+    "adults",
+    "adults-50",
+    "older-people",
+    "parents",
+    "mothers",
+    "fathers",
+    "women",
+    "men",
+    "carers",
+    "disabled",
+    "health-condition",
+    "mental-health",
+    "refugees",
+    "ethnic-minority",
+    "lgbtq",
+    "students",
+    "veterans"
+  ],
+  "coachNotes": "Where participants are uncertain about our Pathways to Potential Programme, please email contact@communityplatform.org.uk and we would be more than happy to contact the participant and discuss the programme and suitability."
 }

@@ -19,7 +19,11 @@
   "webpage": "https://www.flippinpain.co.uk/",
   "email": "info@flippinpain.co.uk",
   "phone": null,
-  "social": [],
+  "social": [
+    "https://www.facebook.com/flippinpain/",
+    "https://www.instagram.com/flippinpain/",
+    "https://www.tiktok.com/@flippinpain"
+  ],
   "locations": [
     "Digital/online - accessible to Kirklees residents from any location"
   ],

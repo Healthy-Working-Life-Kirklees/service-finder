@@ -17,7 +17,10 @@
   "webpage": "https://yorkshire.smartworks.org.uk/",
   "email": "leeds@smartworks.org.uk",
   "phone": "0113 234 6503",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/smartworksleeds/",
+    "https://www.instagram.com/smartworksleeds/"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide",

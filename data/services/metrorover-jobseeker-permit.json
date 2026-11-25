@@ -17,7 +17,10 @@
   "webpage": "https://admin.wymetro.com/tickets-and-passes/daysavers-and-family-tickets/metrorover-tickets-for-job-seekers/",
   "email": null,
   "phone": null,
-  "social": [],
+  "social": [
+    "https://www.facebook.com/westyorkshiremetro",
+    "https://x.com/metrotravelnews"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield",

@@ -19,7 +19,11 @@
   "webpage": "https://www.kirklees.gov.uk/beta/libraries/services-and-resources/library-hubs.aspx",
   "email": null,
   "phone": null,
-  "social": [],
+  "social": [
+    "https://www.facebook.com/kirkleeslibraries",
+    "https://www.instagram.com/kirkleeslibraries/",
+    "https://twitter.com/kirkleeslibrary"
+  ],
   "locations": [],
   "areas": [
     "Dewsbury",

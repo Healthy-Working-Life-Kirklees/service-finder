@@ -16,7 +16,7 @@
     "Wellbeing",
     "Skills"
   ],
-  "whoFor": "Women aged 19 and over who are not working or looking for work and want to improve wellbeing, build confidence and learn new skills.",
+  "whoFor": "Women aged 19 and over whose English is a second language and are not working or looking for work and want to improve wellbeing, build confidence and learn new skills.",
   "age": "19+",
   "webpage": null,
   "email": "shamim.ali@imws.org.uk",
@@ -29,15 +29,18 @@
   "eligibility": [
     "Women aged 19 and over",
     "Lives in Kirklees",
-    "Economically inactive (not working and not looking for work)",
     "Has the right to work in the UK",
-    "Has a health condition or disability"
+    "Has a health condition or disability",
+    "English is a second langauge"
   ],
   "exclusions": [],
   "gate": [
+    "Women aged 19 and over",
     "Lives in Kirklees",
-    "Is economically inactive (not working and not looking for work)",
-    "Has the right to work in the UK"
+    "Has the right to work in the UK",
+    "Has a health condition or disability",
+    "English is a second langauge",
+    "Is economically inactive (not working and not looking for work)"
   ],
   "healthFocus": [
     "any"
@@ -54,25 +57,49 @@
       "id": "empowerher-steps-to-wellbeing-and-work-project",
       "name": "EmpowerHer: Steps to Wellbeing and Work Project",
       "overview": "Beginner ESOL (English) classes, digital skills classes, wellbeing activities, confidence building and one-to-one mentoring.",
+      "runs": [
+        "set"
+      ],
       "duration": "One day a week",
+      "places": "10",
+      "runsFrom": "2026-09-18",
+      "runsTo": "2027-03-18",
+      "referralsFrom": "2026-11-30",
+      "referralsUntil": "2027-01-08",
       "sessions": [
         {
           "id": "al-hikmah-centre",
-          "venue": "al-hikmah-centre"
+          "note": "term time only",
+          "venue": "al-hikmah-centre",
+          "days": [
+            "wed"
+          ],
+          "start": "09:30",
+          "end": "12:00",
+          "frequency": "weekly"
         }
       ]
     }
   ],
   "workExperience": "No",
   "notes": "Status before November 2026: Live - grant-funded project (status not stated in the pathways document)",
-  "lastUpdated": "2026-09-30",
+  "lastUpdated": "2026-11-23",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
-    "evidence": "Eligibility set to the Healthy Working Life grant funding criteria by the programme team (2 November 2026): Kirklees resident, economically inactive, right to work in the UK, health condition or disability, 18+ unless the scheme says otherwise."
+    "evidence": "Checked by LO on 2026-11-23: From Shamim (partner) using a verify link, 18 Nov 2026. Used: Who the service is for, Who it's for (groups), What happens, where and when, Anything coaches should know, Essential (turned away without), Who can use the service.",
+    "providerChecked": "2026-11-23"
   },
   "listing": {
     "decision": "include",
-    "reason": "Healthy Working Life scheme, on the live list from the start."
-  }
+    "reason": "Included by the development team.",
+    "by": "LO",
+    "date": "2026-11-23"
+  },
+  "groups": [
+    "adults",
+    "women",
+    "ethnic-minority"
+  ],
+  "coachNotes": "Please bring NI number, proof of address, ID"
 }

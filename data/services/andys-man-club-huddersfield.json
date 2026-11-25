@@ -18,7 +18,10 @@
   "webpage": "https://andysmanclub.co.uk/groups/",
   "email": "info@andysmanclub.co.uk",
   "phone": null,
-  "social": [],
+  "social": [
+    "https://www.facebook.com/andysmanclub/",
+    "https://www.instagram.com/andysmanclubuk/"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield",

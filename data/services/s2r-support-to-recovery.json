@@ -18,7 +18,11 @@
   "webpage": "https://www.s2r.org.uk/",
   "email": "contact@s2r.org.uk",
   "phone": "07933 358800; office 01484 539531",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/s2rcreatespace",
+    "https://www.instagram.com/s2rcreatespace",
+    "https://bsky.app/profile/s2rcreatespace.bsky.social"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield"

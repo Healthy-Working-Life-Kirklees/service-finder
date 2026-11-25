@@ -17,7 +17,11 @@
   "webpage": "https://www.rccl.org/step-up-service?id=4",
   "email": "info@rccl.org",
   "phone": "01924 510030",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/rccl.org",
+    "https://www.instagram.com/rccl_routeways/",
+    "https://twitter.com/RCCLTAROUTEWAYS"
+  ],
   "locations": [],
   "areas": [
     "Dewsbury"

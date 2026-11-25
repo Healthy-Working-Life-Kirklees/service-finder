@@ -19,7 +19,10 @@
   "webpage": "https://www.leedsmind.org.uk/suicide-bereavement-services-west-yorkshire/",
   "email": "sbs@leedsmind.org.uk",
   "phone": "0113 305 5800",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/LeedsMind/",
+    "https://www.instagram.com/leedsmind/"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide",

@@ -18,7 +18,10 @@
   "webpage": "https://www.changegrowlive.org/service/kirklees-drug-alcohol/family-support",
   "email": null,
   "phone": "01484 353333",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/CGLKirklees",
+    "https://www.instagram.com/changegrowlivekirklees/"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield",

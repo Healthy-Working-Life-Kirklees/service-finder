@@ -46,7 +46,8 @@
     },
     {
       "id": "batley-sporting-foundation",
-      "name": "Batley Sporting Foundation"
+      "name": "Batley Sporting Foundation",
+      "overview": "Supporting the emotional and physical wellbeing of our local community. Creating opportunities for people of all ages and abilities to build confidence, improve health, develop skills and reach their full potential."
     },
     {
       "id": "bridges-outcomes-partnerships",
@@ -446,10 +447,6 @@
     {
       "id": "peertalk",
       "name": "PeerTalk"
-    },
-    {
-      "id": "platform-1",
-      "name": "Platform 1"
     },
     {
       "id": "proper-job-theatre-company",

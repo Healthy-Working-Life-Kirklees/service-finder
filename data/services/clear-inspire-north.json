@@ -18,7 +18,10 @@
   "webpage": "https://inspirenorth.co.uk/our-services/get-help-and-support-page/clear",
   "email": "clear.huddersfield@inspirenorth.co.uk",
   "phone": "01484 519097",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/inspirenorth.clear",
+    "https://www.instagram.com/clear_kirklees/"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield"

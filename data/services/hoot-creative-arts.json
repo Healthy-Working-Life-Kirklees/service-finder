@@ -18,7 +18,11 @@
   "webpage": "https://www.hootcreativearts.co.uk/",
   "email": "info@hootcreativearts.co.uk",
   "phone": "01484 516224",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/hootcreativearts",
+    "https://www.instagram.com/hootcreativearts",
+    "https://www.twitter.com/hootmusic"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield",

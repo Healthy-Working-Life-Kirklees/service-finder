@@ -18,7 +18,10 @@
   "webpage": "https://www.kirklees-talkingtherapies.nhs.uk/",
   "email": "Kirklees.talkingtherapies@swyt.nhs.uk",
   "phone": "01484 343700",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/Kirklees.TalkingTherapies/",
+    "https://twitter.com/CandKTT"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield",
@@ -70,5 +73,6 @@
   "listing": {
     "decision": "include",
     "reason": "On the live list since the October 2026 import, before the development team review."
-  }
+  },
+  "notes": "24 Nov 2026: development team (PL) confirmed Folly Hall Mills is still a venue."
 }

@@ -17,7 +17,9 @@
   "webpage": "https://www.inspirenorth.co.uk/our-services/get-help-and-support-page/changes/",
   "email": "changes@inspirenorth.co.uk",
   "phone": "01924 448975 / 07891 598183",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/InspireNorthUK"
+  ],
   "locations": [],
   "areas": [
     "Batley"

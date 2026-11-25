@@ -17,7 +17,11 @@
   "webpage": "https://www.solace-uk.org.uk/therapy/kirklees-and-calderdale",
   "email": "info@solace-uk.org.uk",
   "phone": "0113 824 6796",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/61576444047410",
+    "https://www.instagram.com/solaceleeds2006/",
+    "https://bsky.app/profile/solaceleeds.bsky.social"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide"
