@@ -17,7 +17,9 @@
   "webpage": "https://www.kirkleeswelcomes.org.uk/",
   "email": "migrationandresettlement@kirklees.gov.uk",
   "phone": null,
-  "social": [],
+  "social": [
+    "https://bsky.app/profile/kirkleescalc.bsky.social"
+  ],
   "locations": [],
   "areas": [
     "Kirklees-wide",

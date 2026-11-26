@@ -16,7 +16,9 @@
   "webpage": "https://fusionhousing.org.uk/services/housing-advice-service/",
   "email": "info@fusionhousing.org.uk",
   "phone": "0300 102 5222",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/FusionHousing1"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield",

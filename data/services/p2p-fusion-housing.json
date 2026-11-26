@@ -20,7 +20,9 @@
   "webpage": null,
   "email": "diversion@fusionhousing.org.uk",
   "phone": "01924 454770",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/FusionHousing1"
+  ],
   "locations": [],
   "areas": [
     "Dewsbury",

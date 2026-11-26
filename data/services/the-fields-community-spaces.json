@@ -18,7 +18,9 @@
   "webpage": "https://www.batleymat.co.uk/the-fields-community-spaces/",
   "email": "fieldscoordinator@batleymat.co.uk",
   "phone": "07497 512 801",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/thespacefieldlane"
+  ],
   "locations": [],
   "areas": [
     "Batley"
