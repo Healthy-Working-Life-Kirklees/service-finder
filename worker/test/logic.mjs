@@ -1479,6 +1479,15 @@ check('orgs: the apply script (no Origin) can read them', r.status === 200 && r.
   check('apply orgs: a new organisation name makes a new organisation', svcIn('acas-managing-disability').organisation === 'Brand New Organisation' && o2.some((o) => o.name === 'Brand New Organisation' && o.id === 'brand-new-organisation') && /New organisations: Brand New Organisation/.test(out), out);
   check('apply orgs: summary says what happened', /Organisations changed \(2\)/.test(out) && /combined into Proper Job Theatre Company/.test(out), out);
   check('apply orgs: running again changes nothing more', /0 organisations changed/.test(execFileSync(process.execPath, [path.join(root, 'scripts/apply-decisions.mjs'), '--input', inp, '--dir', d], { encoding: 'utf8' })));
+  // A stale combine from an earlier run: "Proper Job Old" was combined into the Ltd record, which has since been
+  // combined into Proper Job Theatre Company. Neither old id exists now: that is done, not a problem.
+  fs.writeFileSync(inp, JSON.stringify({ orgs: {
+    'proper-job-old': { changes: { mergeInto: 'proper-job-theatre-company-ltd' }, before: { name: 'Proper Job Old' }, note: 'Same organisation', by: 'PL', t: '2026-11-09T09:00:00Z' },
+    'proper-job-theatre-company-ltd': { changes: { mergeInto: 'proper-job-theatre-company' }, note: 'Same organisation', by: 'PL', t: '2026-11-10T09:00:00Z' },
+    'old-name-only': { changes: { website: 'https://example.org' }, before: { name: 'Proper Job Theatre Company Ltd' }, note: 'Website', by: 'PL', t: '2026-11-10T09:00:00Z' },
+  } }));
+  const again = execFileSync(process.execPath, [path.join(root, 'scripts/apply-decisions.mjs'), '--input', inp, '--dir', d], { encoding: 'utf8' });
+  check('apply orgs: a change to an organisation combined in an earlier run (even via another) is not reported as a problem', !/Organisation changes not applied/.test(again) && /3 already up to date/.test(again), again);
   check('apply orgs: the real organisations file is untouched by a test run', fs.readFileSync(path.join(root, 'data/organisations.json'), 'utf8') === realOrgs);
   void acasNow;
   fs.rmSync(d, { recursive: true, force: true });
