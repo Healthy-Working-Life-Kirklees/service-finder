@@ -360,6 +360,7 @@ check('data: every venue a live service uses is in services.json', (() => { cons
   check('ai data: a service the organisation has verified is marked verified, others are not', sentData.find((x) => x.id === 'audio-boost').verified === true && !('verified' in sentData.find((x) => x.id === 'raise-your-game')));
   check('prompt: order is Healthy Working Life, then verified, then the rest, never above a better fit', /Healthy Working Life scheme \("hwlFunded": true\) first, then a service the organisation has checked itself \("verified": true\)/.test(sent.system[0].text) && /isn't verified/.test(sent.system[0].text));
   check('prompt: missing information is unknown, never a reason to leave a service out', /Missing information is unknown/.test(sent.system[0].text));
+  check('prompt: answers named in "essential" rule someone out like a gate line', /and so do the answers named in "essential"/.test(sent.system[0].text));
 }
 {
   // Where answers came from, and the order services are listed in (site/listing-logic.js).
@@ -506,6 +507,9 @@ check('edits: categories need at least one', /at least one/.test(await editErr({
   check('edits: "certain parts" needs the towns', /which parts/.test(await editErr({ residence: { scope: 'parts' } })));
   check('edits: a work situation of "yes" needs a tick', /at least one work situation/.test(await editErr({ work: { needed: 'yes', situations: [] } })));
   check('edits: "only a professional" needs to say which', /which professionals/.test(await editErr({ referral: { needed: 'yes', who: 'professional' } })));
+  const e = await ok({ essential: ['health', 'residence'] });
+  check('edits: essential answers are kept, in the usual order', JSON.stringify(e.essential) === '["residence","health"]', JSON.stringify(e));
+  check('edits: essential can only name the answers above', /tick only the answers above/.test(await editErr({ essential: ['residence', 'eligibility'] })));
   check('edits: an age must be a whole number', /whole number/.test(await editErr({ ageMin: '18+' })));
   check('edits: where answers came from is checked', /isn't right/.test(await editErr({ answers: { whoFor: { label: 'maybe' } } })) && (await ok({ answers: { whoFor: { label: 'found', source: 'https://example.org', quote: 'For adults' } } })).answers.whoFor.label === 'found');
 }

@@ -779,7 +779,7 @@
 
     // The written eligibility, with the answers from above shown first (not stored again).
     const fromAbove = el('div', { class: 'lf-fromabove', 'aria-live': 'polite' });
-    const elig = eligList('Who can use it (eligibility)', 'Please add any additional eligibility, one point per line. ' + ESSENTIAL_HINT + ' Where they live, health, work situation and age from above are already here, so there\'s no need to write them again.', values.eligibility, values.gate, false, fromAbove);
+    const elig = eligList('Who can use it (eligibility)', 'Please add any additional eligibility, one point per line. ' + ESSENTIAL_HINT + ' Where they live, health, work situation and age from above are already here, with their own "Essential" tick, so there\'s no need to write them again.', values.eligibility, values.gate, false, fromAbove);
     const eligBox = elig.box;
     eligBox.dataset.key = 'eligibility';
     eligBox.append(changedTag());
@@ -787,23 +787,43 @@
     boxes.gate = eligBox;
     readers.eligibility = () => elig.read().eligibility;
     readers.gate = () => elig.read().gate;
-    const showAbove = () => {
+    // The answers from above, each with its own "Essential" tick (stored in "essential" by name, not as words, so
+    // the line always matches the answer). A tick only counts while its answer is there.
+    const ess = new Set(list(values.essential));
+    let shownAbove = [];
+    const aboveLines = () => {
       const now = { residence: readers.residence(), work: readers.work(), healthFocus: readers.healthFocus() };
       const lines = [];
       const r = L.residenceWords(now.residence);
-      if (r && now.residence.scope !== 'anyone') lines.push(r);
-      if (list(now.healthFocus).length) lines.push(now.healthFocus.includes('any') ? 'Has a health condition or disability' : 'Has ' + now.healthFocus.map((h) => HEALTH[h].toLowerCase()).join(', or '));
+      if (r && now.residence.scope !== 'anyone') lines.push(['residence', r]);
+      if (list(now.healthFocus).length) lines.push(['health', now.healthFocus.includes('any') ? 'Has a health condition or disability' : 'Has ' + now.healthFocus.map((h) => HEALTH[h].toLowerCase()).join(', or ')]);
       const w = now.work && now.work.needed === 'yes' ? L.workWords(now.work) : '';
-      if (w) lines.push('Work situation: ' + w);
+      if (w) lines.push(['work', 'Work situation: ' + w]);
       const a = ageWordsBox.read();
-      if (a && !/^all ages$/i.test(a)) lines.push('Age: ' + a);
-      fromAbove.replaceChildren(...lines.map((t) => el('p', { class: 'lf-above' }, el('span', { text: t }), el('span', { class: 'lf-above-tag', text: 'From above' }))));
+      if (a && !/^all ages$/i.test(a)) lines.push(['age', 'Age: ' + a]);
+      return lines;
     };
+    const showAbove = () => {
+      const lines = aboveLines();
+      shownAbove = lines.map(([k]) => k);
+      fromAbove.replaceChildren(...lines.map(([k, t]) => {
+        const tick = el('input', { type: 'checkbox', id: uid('ess'), checked: ess.has(k) });
+        tick.addEventListener('change', () => { if (tick.checked) ess.add(k); else ess.delete(k); });
+        return el('p', { class: 'lf-above lf-elig', 'data-ess': k }, el('span', { text: t }), el('span', { class: 'lf-above-tag', text: 'From above' }),
+          el('label', { class: 'lf-ess', for: tick.id }, tick, ' Essential'));
+      }));
+    };
+    readers.essential = () => {
+      const on = ['residence', 'work', 'age', 'health'].filter((k) => ess.has(k) && shownAbove.includes(k));
+      return on.length ? on : Array.isArray(values.essential) ? [] : null;
+    };
+    boxes.essential = eligBox;
     const exclusions = linesQuestion('exclusions', "Who it isn't for", 'For example "People with work-search commitments as part of a benefits claim" or "Men (the service is for women)". Leave empty if none.', values.exclusions, { empty: true, aria: "Who it isn't for" });
     reg('exclusions', exclusions);
     section(1, 'Who can use it', where.box, health.box, work.box, ageBox, eligBox, boxes.exclusions);
-    parts[0].addEventListener('input', showAbove);
-    parts[0].addEventListener('change', showAbove);
+    const redrawAbove = (e) => { if (!fromAbove.contains(e.target)) showAbove(); };
+    parts[0].addEventListener('input', redrawAbove);
+    parts[0].addEventListener('change', redrawAbove);
 
     // Priority groups, who uses it and what kind of support.
     const gr = values.groups;
@@ -1158,7 +1178,9 @@
       if (keys.includes('ageMin')) return noAge.checked ? 'No age limit' : L.ageWords(now);
       if (keys.includes('eligibility') || keys.includes('gate')) {
         const g = list(now.gate);
-        return [...g.map((x) => x + ' (essential)'), ...list(now.eligibility).filter((x) => !g.includes(x))].join('\n');
+        const e = list(now.essential);
+        const above = aboveLines().map(([x, t]) => t + (e.includes(x) ? ' (essential)' : ''));
+        return [...above, ...g.map((x) => x + ' (essential)'), ...list(now.eligibility).filter((x) => !g.includes(x))].join('\n');
       }
       const v = now[k];
       if (k === 'open') return v === false ? 'Yes: paused for now' : '';

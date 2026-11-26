@@ -460,7 +460,7 @@
     gate: 'Would turn someone away for not having', referralRoutes: 'How to get in', selfReferral: 'Self-referral', projects: 'Projects', workExperience: 'Work experience',
     cost: 'Cost', languages: 'Languages and formats', coachNotes: 'Anything coaches should know', notes: 'Team notes', reviewCycle: 'Review cycle',
     hwlFunded: 'Healthy Working Life funded', mapLinks: 'Map buttons', logo: 'Logo', requiresMention: 'Only shown when mentioned',
-    partners: 'In partnership with', residence: 'Who can use it, by where they live', work: 'Work situation', healthNote: 'Health conditions, in their words', ageMin: 'Age from', ageMax: 'Age up to',
+    partners: 'In partnership with', essential: 'Essential answers', residence: 'Who can use it, by where they live', work: 'Work situation', healthNote: 'Health conditions, in their words', ageMin: 'Age from', ageMax: 'Age up to',
     referral: 'Referral needed, and who can make it', answers: 'Where the answers came from', venues: 'Places used by every activity',
     // Older names, for changes saved before November 2026.
     status: 'Status', activities: 'What it offers',
@@ -471,6 +471,7 @@
     if (k === 'projects' || k === 'activities') return projectWords(v) || '(none)';
     if (v == null || v === '' || (Array.isArray(v) && !v.length)) return k === 'healthFocus' ? 'No health requirement' : '(none)';
     if (k === 'residence') return LL.residenceWords(v);
+    if (k === 'essential') return list(v).map((x) => ({ residence: 'Where people live', work: 'Work situation', age: 'Age', health: 'Health' })[x] || x).join('; ');
     if (k === 'work') return v.needed === 'no' ? 'Any work situation' : LL.workWords(v);
     if (k === 'referral') return v.needed === 'no' ? 'No referral needed' : v.who === 'professional' ? 'Only from a professional' + (v.professionals ? ': ' + v.professionals : '') : 'Anyone can refer, including the person themselves';
     if (k === 'answers') return Object.entries(v).map(([f, a]) => (FIELD_LABEL[f] || f) + ': ' + (LL.LABELS[a.label] || a.label)).join('; ');

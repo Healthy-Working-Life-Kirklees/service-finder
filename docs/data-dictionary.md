@@ -102,6 +102,7 @@ Every scheme has every field below, except where it says "optional". An empty li
 | `whoFor` | text | A plain-English sentence describing who the scheme helps. |
 | `age` | text or `null` | The age range, as free text (for example `18+`, `16-25`, `Under 25`). `null` when the source doesn't say. |
 | `ageMin`, `ageMax` | whole numbers | Optional. The age range as numbers, from the new forms. `ageMax` is left out when there's no upper limit. |
+| `essential` | list | Optional. Which of the structured answers are essential, by name: `residence`, `work`, `age` (from `ageMin`/`ageMax`), `health` (from `healthFocus`). The AI treats an essential answer like a `gate` line. Only answers that are filled in count; an unknown answer never hides a service. |
 | `residence` | object | Optional. Who can use it by where they live (not where it meets): `scope` is `anyone`, `west-yorkshire`, `kirklees` or `parts`, with `areas` (the towns) for `parts`. Absent means unknown. |
 | `work` | object | Optional. Whether someone needs to be in a particular work situation: `needed` (`yes` or `no`), and for `yes` the `situations` (any of `unemployed`, `inactive`, `active`, `employed`, `self-employed`, `off-sick`, `at-risk`, `progress`, `neet`, `education`, `benefits`, `low-paid`, `other`), `benefits` (which ones, in words) and `detail` (anything else). Someone in any one of the situations can use it. Absent means unknown. |
 | `healthNote` | text | Optional. Conditions in the service's own words, when more specific than `healthFocus`. |

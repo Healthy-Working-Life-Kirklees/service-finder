@@ -109,6 +109,12 @@ function aiView(s, today) {
   // An answer marked unknown is left out, so the AI treats it as not stated rather than as a fact.
   const v = Object.fromEntries(Object.entries(s).filter(([k]) => !NOT_FOR_AI.has(k) && !(s.answers && s.answers[k] && s.answers[k].label === 'unknown')));
   v.open = LISTING.isShown(s, today);
+  // Essential answers: only the ones that are filled in (and not unknown) count.
+  if (Array.isArray(v.essential)) {
+    const has = { residence: v.residence, work: v.work && v.work.needed === 'yes' ? v.work : null, age: v.ageMin != null || v.ageMax != null ? true : null, health: (v.healthFocus || []).length ? true : null };
+    v.essential = v.essential.filter((k) => has[k]);
+    if (!v.essential.length) delete v.essential;
+  }
   // Verified: the organisation has checked its listing. Used to order services that fit about as well.
   if (LISTING.isVerified(s)) v.verified = true;
   if ((s.groups || []).length) v.forGroups = s.groups.map((g) => LISTING.GROUPS[g] || g);

@@ -63,6 +63,11 @@
         // The kept lines go back where they were, so nothing moves around.
         if (kept.length) { const keep = new Set([...list(now), ...kept]); now = [...list(s[k]).filter((l) => keep.has(l)), ...list(now).filter((l) => !list(s[k]).includes(l))]; }
       }
+      // On a grant project, the answers already marked essential stay essential (the programme's own rules).
+      if (k === 'essential' && F.LL.isGrantProject(s) && list(s.essential).some((x) => !list(now).includes(x))) {
+        kept = list(s.essential).filter((x) => !list(now).includes(x)).map((x) => F.words([x], 'essential'));
+        now = ['residence', 'work', 'age', 'health'].filter((x) => list(s.essential).includes(x) || list(now).includes(x));
+      }
       // On a grant project the health focus stays "any health condition or disability" (a funding rule).
       if (k === 'healthFocus' && F.LL.isGrantProject(s) && list(s.healthFocus).includes('any') && !list(now).includes('any')) {
         kept = ['Any health condition or disability'];
