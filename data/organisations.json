@@ -63,11 +63,10 @@
     },
     {
       "id": "c-k-careers",
-      "name": "C+K Careers"
-    },
-    {
-      "id": "c-k-careers-ltd",
-      "name": "C+K Careers Ltd"
+      "name": "C+K Careers",
+      "aliases": [
+        "C+K Careers Ltd"
+      ]
     },
     {
       "id": "calderdale-credit-union",
@@ -87,15 +86,11 @@
     },
     {
       "id": "carers-count",
-      "name": "Carers Count"
-    },
-    {
-      "id": "carers-count-cloverleaf-advocacy",
-      "name": "Carers Count (Cloverleaf Advocacy)"
-    },
-    {
-      "id": "carers-count-kirklees-delivered-by-cloverleaf-advo",
-      "name": "Carers Count Kirklees (delivered by Cloverleaf Advocacy)"
+      "name": "Carers Count",
+      "aliases": [
+        "Carers Count (Cloverleaf Advocacy)",
+        "Carers Count Kirklees (delivered by Cloverleaf Advocacy)"
+      ]
     },
     {
       "id": "carers-uk",
@@ -103,11 +98,10 @@
     },
     {
       "id": "change-grow-live",
-      "name": "Change Grow Live"
-    },
-    {
-      "id": "change-grow-live-cgl",
-      "name": "Change Grow Live (CGL)",
+      "name": "Change Grow Live",
+      "aliases": [
+        "Change Grow Live (CGL)"
+      ],
       "overview": "Commissioned drug and alcohol support service in Kirklees."
     },
     {
@@ -151,11 +145,10 @@
     },
     {
       "id": "cora-health",
-      "name": "Cora Health"
-    },
-    {
-      "id": "cora-health-formerly-connect-health",
-      "name": "Cora Health (formerly Connect Health)"
+      "name": "Cora Health",
+      "aliases": [
+        "Cora Health (formerly Connect Health)"
+      ]
     },
     {
       "id": "crosland-moor-clc",
@@ -298,12 +291,11 @@
       "name": "Kirklees Council (Homes & Neighbourhoods)"
     },
     {
-      "id": "kirklees-council-employment-and-skills-service",
-      "name": "Kirklees Council Employment & Skills Service"
-    },
-    {
       "id": "kirklees-council-employment-and-skills",
-      "name": "Kirklees Council Employment and Skills"
+      "name": "Kirklees Council Employment and Skills",
+      "aliases": [
+        "Kirklees Council Employment & Skills Service"
+      ]
     },
     {
       "id": "kirklees-council-learning-service",
@@ -505,6 +497,10 @@
       "name": "Shared Goods Charity"
     },
     {
+      "id": "shaw-trust",
+      "name": "Shaw Trust"
+    },
+    {
       "id": "shelter",
       "name": "Shelter"
     },
@@ -525,12 +521,11 @@
       "name": "South West Yorkshire Partnership NHS Foundation Trust"
     },
     {
-      "id": "south-west-yorkshire-partnership-nhs-foundatio-2",
-      "name": "South West Yorkshire Partnership NHS Foundation Trust (NHS Kirklees Talking Therapies)"
-    },
-    {
       "id": "south-west-yorkshire-partnership-nhs-ft",
-      "name": "South West Yorkshire Partnership NHS FT"
+      "name": "South West Yorkshire Partnership NHS FT",
+      "aliases": [
+        "South West Yorkshire Partnership NHS Foundation Trust (NHS Kirklees Talking Therapies)"
+      ]
     },
     {
       "id": "specialist-autism-services",
