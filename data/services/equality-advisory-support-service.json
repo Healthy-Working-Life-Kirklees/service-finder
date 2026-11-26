@@ -59,7 +59,7 @@
     "checkedUrl": "https://www.equalityadvisoryservice.com/app/contact-us",
     "evidence": "Confirmed by the team on 2026-11-18 (EASS site blocks automated reading): phone, contact form and hours.",
     "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

@@ -58,7 +58,7 @@
     "checkedUrl": "https://www.gov.uk/support-for-veterans/forces-employment-charity",
     "evidence": "Checked on 2026-11-17 against GOV.UK's veterans page (the charity's contact page blocks automated reading): phone, email and hours.",
     "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 17 Nov 2026)"
   },
   "listing": {
     "decision": "include",
