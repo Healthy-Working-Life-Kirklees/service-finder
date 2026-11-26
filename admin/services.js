@@ -33,6 +33,7 @@
   let choices = {}; // the allowed values for the edit form, from services-all.json
   let organisations = []; // every organisation record (data/organisations.json), from services-all.json
   let venues = []; // every venue record (data/venues.json), from services-all.json
+  let pilotOrgs = {}; // { <organisation id>: { by, t } } organisations taking part in the pilot (a switch on Organisations)
   let venueChanges = null; // { <venue id>: { changes, before, note, by, t } } waiting to be applied, once signed in
   let orgChanges = null; // { <organisation id>: { changes, before, note, by, t } } waiting to be applied, once signed in
   const editing = new Set(); // services whose edit form is open
@@ -584,6 +585,18 @@ Unless we've asked you to take part in the pilot, please don't use the Support F
 Thank you,
 `;
 
+  // Once a provider has replied, they can be invited to join the pilot (the email text is shared with the To do
+  // pages, in flow.js). Whether their organisation is in the pilot is a switch on its Organisations page.
+  function pilotInvite(s, r) {
+    const F = window.FLOW;
+    if (!F || !F.inviteText) return null;
+    const org = organisations.find((o) => o.name === s.organisation || (o.aliases || []).includes(s.organisation));
+    const on = org && pilotOrgs && pilotOrgs[org.id];
+    return el('p', { class: 'hint' }, on ? s.organisation + ' is in the pilot. ' : 'Invite them to join the pilot: ',
+      el('button', { type: 'button', class: 'btn secondary small', text: 'Copy a pilot invitation email', onclick: (ev) => copy(F.inviteText({ contact: r.name, service: s.name }), ev.currentTarget) }),
+      ' Attach the quick guide before sending.', org ? ' ' : '', org ? el('a', { href: 'organisation.html?id=' + encodeURIComponent(org.id), text: on ? 'Organisation page' : 'Mark them as in the pilot' }) : null);
+  }
+
   function providerPanel(x) {
     const s = x.s;
     const links = linksFor(s.id);
@@ -641,7 +654,8 @@ Thank you,
         // Once a reply has been dealt with, opening the form filled in with it would show its (older) values as if
         // they were current, so the button goes.
         handled ? null : el('div', { class: 'row-end' }, r.allCorrect ? recordChecked : keys.length ? review : null),
-        el('div', { class: 'row-end' }, removeBtn)));
+        el('div', { class: 'row-end' }, removeBtn),
+        pilotInvite(s, r)));
     }
 
     // Links already made.
@@ -1256,13 +1270,14 @@ Thank you,
     const msg = $('#signin-msg');
     msg.hidden = true;
     try {
-      const [d, e, nw, pl, og, vg] = await Promise.all([api('GET', '/log/decisions'), api('GET', '/log/edits'), api('GET', '/log/new'), api('GET', '/log/provider-links').catch(() => ({ links: [] })), api('GET', '/log/orgs').catch(() => ({ orgs: {} })), api('GET', '/log/venues').catch(() => ({ venues: {} }))]);
+      const [d, e, nw, pl, og, vg, pi] = await Promise.all([api('GET', '/log/decisions'), api('GET', '/log/edits'), api('GET', '/log/new'), api('GET', '/log/provider-links').catch(() => ({ links: [] })), api('GET', '/log/orgs').catch(() => ({ orgs: {} })), api('GET', '/log/venues').catch(() => ({ venues: {} })), api('GET', '/log/pilot').catch(() => ({ pilot: {} }))]);
       team = d.decisions || {};
       edits = e.edits || {};
       added = nw.added || {};
       plinks = list(pl.links);
       orgChanges = og.orgs || {};
       venueChanges = vg.venues || {};
+      pilotOrgs = pi.pilot || {};
       rebuild();
     } catch (e) {
       team = null;

@@ -1405,6 +1405,25 @@ r = await logCall('PUT', '/log/orgs/acas', { changes: { hwlFunded: true }, note:
 check('orgs: only name, overview, website or combining can be changed', r.status === 400 && /can't be changed/.test(r.body.error));
 r = await logCall('PUT', '/log/orgs/acas', { changes: { overview: 'Free advice on workplace rights.' }, note: '', by: 'PL' });
 check('orgs: needs a reason', r.status === 400);
+// ----- Which organisations are in the pilot (teamlog.js /log/pilot) -----
+r = await logCall('GET', '/log/pilot');
+check('pilot: no organisations to start', r.status === 200 && !Object.keys(r.body.pilot).length);
+r = await logCall('PUT', '/log/pilot/acas', { on: true, by: 'PL' });
+check('pilot: switching an organisation on records who and when', r.status === 200 && r.body.item.by === 'PL' && r.body.item.t);
+r = await logCall('PUT', '/log/pilot/acas', { on: true, by: 'LO' });
+check('pilot: switching on again keeps who first added it', r.status === 200 && r.body.item.by === 'PL');
+r = await logCall('GET', '/log/pilot');
+check('pilot: listed once switched on', r.status === 200 && r.body.pilot.acas && r.body.pilot.acas.by === 'PL');
+r = await logCall('PUT', '/log/pilot/acas', { on: 'yes', by: 'PL' });
+check('pilot: on must be true or false', r.status === 400);
+r = await logCall('PUT', '/log/pilot/acas', { on: false });
+check('pilot: needs a name or initials', r.status === 400);
+r = await logCall('PUT', '/log/pilot/Not_An_Id', { on: true, by: 'PL' });
+check('pilot: refuses an organisation id that isn\'t one', r.status === 400 || r.status === 404);
+r = await logCall('PUT', '/log/pilot/acas', { on: false, by: 'PL' });
+check('pilot: switching off removes it', r.status === 200 && r.body.item === null && !(store.mem ? [...store.mem.keys()].includes('pilot:acas') : false));
+r = await logCall('GET', '/log/pilot');
+check('pilot: gone from the list once switched off', r.status === 200 && !r.body.pilot.acas);
 r = await logCall('GET', '/log/orgs', null, { origin: null });
 check('orgs: the apply script (no Origin) can read them', r.status === 200 && r.body.orgs['proper-job-theatre-company-ltd']);
 {

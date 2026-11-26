@@ -15,25 +15,30 @@
 
   function chooser() {
     const box = el('input', { id: 'org-find', type: 'search', autocomplete: 'off' });
+    const onlyPilot = el('input', { id: 'org-pilot-only', type: 'checkbox' });
     const out = el('ul', { class: 'org-list-page' });
     const count = el('p', { class: 'count', role: 'status' });
     const draw = () => {
       const words = box.value.toLowerCase().split(/\s+/).filter(Boolean);
       const hits = S.organisations.filter((o) => words.every((w) => (o.name + ' ' + list(o.aliases).join(' ')).toLowerCase().includes(w)))
+        .filter((o) => !onlyPilot.checked || F.inPilot(o))
         .sort((a, b) => a.name.localeCompare(b.name, 'en-GB', { sensitivity: 'base' }));
       count.textContent = plural(hits.length, 'organisation', 'organisations');
       out.replaceChildren(...hits.map((o) => {
         const svcs = F.servicesOfOrg(o);
         const live = svcs.filter((s) => F.listingOf(s) === 'include').length;
         return el('li', {}, el('a', { href: '?id=' + encodeURIComponent(o.id) }, el('strong', { text: o.name }),
-          ' — ' + plural(svcs.length, 'service', 'services') + (svcs.length ? ', ' + live + ' live' : '') + (svcs.some((s) => s.hwlFunded) ? ', Healthy Working Life' : '')));
+          ' — ' + plural(svcs.length, 'service', 'services') + (svcs.length ? ', ' + live + ' live' : '') + (svcs.some((s) => s.hwlFunded) ? ', Healthy Working Life' : '')),
+          F.inPilot(o) ? ' ' : null, F.inPilot(o) ? el('span', { class: 'pill blue', text: 'In the pilot' }) : null);
       }));
     };
     box.addEventListener('input', draw);
+    onlyPilot.addEventListener('change', draw);
     page.replaceChildren(
       el('h1', { class: 'mt0', text: 'Organisations' }),
       el('p', { class: 'hint', text: 'Each organisation with everything it runs. Open one to see its services, projects, times, places and groups, where each is up to and what’s missing.' }),
-      el('div', { class: 'field' }, el('label', { for: 'org-find', text: 'Find an organisation' }), box), count, out);
+      el('div', { class: 'field' }, el('label', { for: 'org-find', text: 'Find an organisation' }), box),
+      el('p', {}, el('label', {}, onlyPilot, ' Only organisations in the pilot (' + S.organisations.filter(F.inPilot).length + ')')), count, out);
     draw();
   }
 
@@ -72,6 +77,41 @@
       el('p', { class: 'row-end' }, el('a', { class: 'btn secondary small', href: 'services.html#svc-' + encodeURIComponent(s.id), text: 'Edit or send a verify link' })));
   }
 
+  // Whether the organisation is taking part in the pilot (a switch, saved straight away for the whole team), and,
+  // for local organisations, an invitation email to copy. The name in it is the newest person at the organisation
+  // who replied to a review link, or was sent one.
+  function pilotPanel(o) {
+    const svcs = F.servicesOfOrg(o);
+    const msg = el('p', { class: 'msg', role: 'status', hidden: true });
+    const say = (text, kind) => { msg.className = 'msg ' + kind; msg.textContent = text; msg.hidden = false; };
+    const sw = el('input', { type: 'checkbox', id: 'pilot-switch', checked: F.inPilot(o) });
+    const who = () => {
+      const p = S.pilot[o.id];
+      return p ? 'Added to the pilot by ' + p.by + ' on ' + day(p.t) + '.' : 'Not in the pilot.';
+    };
+    const state = el('span', { class: 'hint', text: ' ' + who() });
+    sw.addEventListener('change', async () => {
+      const by = F.AUTH.by();
+      if (!by) { sw.checked = !sw.checked; return say('Please sign out and in again with your name or initials first.', 'err'); }
+      sw.disabled = true;
+      try {
+        const d = await F.api('PUT', '/log/pilot/' + encodeURIComponent(o.id), { on: sw.checked, by });
+        if (d.item) S.pilot[o.id] = d.item; else delete S.pilot[o.id];
+        state.textContent = ' ' + who();
+        msg.hidden = true;
+      } catch (err) { sw.checked = !sw.checked; say(err.message, 'err'); }
+      sw.disabled = false;
+    });
+    const people = svcs.flatMap((s) => F.linksFor(s.id).flatMap((l) => [...l.replies.map((r) => ({ name: r.name, t: r.t })), { name: l.contact, t: l.created }])).sort((a, b) => b.t.localeCompare(a.t));
+    const invite = F.isLocalOrg(o) ? el('button', { type: 'button', class: 'btn secondary small', text: 'Copy a pilot invitation email', onclick: (ev) => F.copy(F.inviteText({ contact: people[0] && people[0].name }), ev.currentTarget) }) : null;
+    return el('section', { class: 'org-head' },
+      el('p', { class: 'todo-kind mt0', text: 'Pilot' }),
+      el('p', { class: 'mt0' }, el('label', {}, sw, ' ', el('strong', { text: 'Taking part in the pilot' })), state),
+      invite ? el('p', { class: 'row-end' }, invite) : null,
+      invite ? el('p', { class: 'hint', text: 'Remember to attach the quick guide before sending.' + (people.length ? '' : ' Put the person’s name in place of [name].') }) : null,
+      msg);
+  }
+
   function show(o) {
     const svcs = F.servicesOfOrg(o).sort((a, b) => Number(b.hwlFunded) - Number(a.hwlFunded) || a.name.localeCompare(b.name));
     const pendingNew = Object.entries(S.added).filter(([id, a]) => !F.byId(id) && (a.service.organisation === o.name || list(o.aliases).includes(a.service.organisation)));
@@ -91,6 +131,7 @@
         el('p', { class: 'row-end' },
           el('a', { class: 'btn secondary small', href: 'services.html?orgs=' + encodeURIComponent(o.name), text: 'Edit organisation' }),
           el('a', { class: 'btn primary small', href: 'services.html?add=' + encodeURIComponent(o.name), text: 'Add a service' }))),
+      pilotPanel(o),
       ...svcs.map(serviceBox),
       ...F.partnerServicesOf(o).map((s) => el('article', { class: 'org-svc' },
         el('p', { class: 'todo-kind mt0', text: 'Delivered in partnership, led by ' + s.organisation }),

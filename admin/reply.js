@@ -18,6 +18,15 @@
   // Lists one item to a line, so a missing line is easy to spot.
   const shown = (v, k) => (k === 'projects' ? list(v).map(F.projectWords).join('\n') || '(none)' : Array.isArray(v) && k !== 'groups' && k !== 'venues' ? (v.length ? v.join('\n') : '(none)') : F.words(v, k));
 
+  // Once a partner has checked their details, they can be invited to join the pilot.
+  function invitePilot(s, r) {
+    const o = F.matchOrg(s.organisation);
+    const btn = el('button', { type: 'button', class: 'btn secondary small', text: 'Copy a pilot invitation email', onclick: (ev) => F.copy(F.inviteText({ contact: r.name, service: s.name }), ev.currentTarget) });
+    return el('p', { class: 'hint' }, F.inPilot(o) ? o.name + ' is already in the pilot. ' : 'Invite them to join the pilot: ', btn,
+      ' Attach the quick guide before sending.', o && !F.inPilot(o) ? ' Once they agree, switch on "Taking part in the pilot" on ' : '',
+      o && !F.inPilot(o) ? el('a', { href: 'organisation.html?id=' + encodeURIComponent(o.id), text: o.name + '’s page' }) : null, o && !F.inPilot(o) ? '.' : '');
+  }
+
   function draw() {
     const s = F.byId(id);
     if (!s) return page.replaceChildren(el('p', { class: 'msg err', text: 'That service was not found.' }));
@@ -35,6 +44,7 @@
       el('p', { class: 'steps', 'aria-label': 'Where this is up to' }, el('span', { text: 'Came in' }), '→', el('span', { class: handled ? '' : 'on', text: 'Checking' }), '→', el('span', { class: handled ? 'on' : '', text: handled ? 'Checked' : 'Live' })),
       handled ? el('p', { class: 'msg info', text: r.handled ? 'Dealt with by ' + r.handled.by + ' on ' + day(r.handled.t) + (r.handled.note ? ': ' + r.handled.note : '.') : 'The team has saved changes for this service since this reply.' }) : null,
       Object.keys(pending).length ? el('p', { class: 'msg info', text: 'There are other changes to ' + s.name + ' waiting to go live (' + e.by + '). They are kept: what you use here is added to them.' }) : null,
+      invitePilot(s, r),
     ];
     const note = r.note ? el('div', { class: 'change' }, el('h2', { text: 'Their note to the team' }), el('p', { class: 'mt0' }, el('em', { text: '"' + r.note + '"' }))) : null;
 
