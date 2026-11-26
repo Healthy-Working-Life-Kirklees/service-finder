@@ -520,13 +520,13 @@ if (unknown.size) out.push(`Changes for services that aren't in the data (rename
 console.log(out.join('\n'));
 
 // ---------- what was set aside, for the All services page ----------
-// kind: service (a service's edit or listing decision), new (a new service), org (an organisation), venue.
+// kind: service (a service's edit or listing decision: `of` says which), new (a new service), org (an organisation), venue.
 if (reportPath) {
   const plain = (t) => String(t || '').replace(/`/g, '');
   const setAside = [
-    ...blocked.map((b) => ({ kind: 'service', id: b.id, name: b.name, by: b.by, why: `chosen to go on the live list, but its details still say "${PLACEHOLDER}"` })),
-    ...conflicts.map((c) => ({ kind: 'service', id: c.id, name: c.name, by: c.by, why: 'someone changed the same details in the data since this edit was made (' + c.fields.join(', ') + '). Look at both, then edit it again' })),
-    ...invalid.map((c) => ({ kind: 'service', id: c.id, name: c.name, by: c.by, why: "the edit wouldn't pass the data check (" + c.errors.join('; ') + ')' })),
+    ...blocked.map((b) => ({ kind: 'service', of: 'decision', id: b.id, name: b.name, by: b.by, why: `chosen to go on the live list, but its details still say "${PLACEHOLDER}"` })),
+    ...conflicts.map((c) => ({ kind: 'service', of: 'edit', id: c.id, name: c.name, by: c.by, why: 'someone changed the same details in the data since this edit was made (' + c.fields.join(', ') + '). Look at both, then edit it again' })),
+    ...invalid.map((c) => ({ kind: 'service', of: 'edit', id: c.id, name: c.name, by: c.by, why: "the edit wouldn't pass the data check (" + c.errors.join('; ') + ')' })),
     ...newProblems.map((c) => ({ kind: 'new', id: c.id, name: c.name || c.id, by: c.by, why: plain(c.why) })),
     ...orgProblems.map((c) => ({ kind: 'org', id: c.id, name: c.name || c.id, by: c.by, why: plain(c.why) })),
     ...venueProblems.map((c) => ({ kind: 'venue', id: c.id, name: c.name || c.id, by: c.by, why: plain(c.why) })),

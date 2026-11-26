@@ -108,6 +108,16 @@
     if (!s) return 'pending';
     return t.decision === listingOf(s) ? 'applied' : 'pending';
   }
+  // Something the last run set aside is only still a problem while the change it was about is still waiting, unchanged:
+  // once the team discards it or saves it again, it drops off (a re-saved change is tried again at the next run).
+  // Older reports have no `of` on service items: the placeholder one is about a decision, the rest about edits.
+  function stillAside(a, at, st) {
+    const store = a.kind === 'new' ? st.added : a.kind === 'org' ? st.orgChanges : a.kind === 'venue' ? st.venueChanges
+      : (a.of || (/still say/.test(a.why || '') ? 'decision' : 'edit')) === 'decision' ? st.decisions : st.edits;
+    const c = store && store[a.id];
+    if (!c) return a.kind === 'service' && /isn't in the data any more/.test(a.why || '');
+    return !at || !c.t || c.t <= at;
+  }
   function orgPending(id) {
     const c = S.orgChanges[id];
     if (!c || !c.changes) return null;
@@ -287,7 +297,8 @@ Thank you,
       venueChanges: vg.venues || {}, feedback: list(fb.items), apply: ap,
     });
     const done = ap && ap.apply && ap.apply.status === 'completed';
-    S.aside = done && ap.report ? list(ap.report.setAside) : [];
+    const asideAt = done && ap.report ? ap.report.t || (ap.apply && ap.apply.updated) || '' : '';
+    S.aside = done && ap.report ? list(ap.report.setAside).filter((a) => stillAside(a, asideAt, S)) : [];
     return S;
   }
 
