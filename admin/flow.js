@@ -194,17 +194,30 @@
     return { reply: r, handled: Boolean(r && (r.handled || (e && e.t > r.t))), count: replies.length };
   }
 
-  const reminderText = (s, l) => `Subject: A reminder: please check your details on the Healthy Working Life Support Finder (${s.name})
+  const reminderText = (s, l) => `Subject: Reminder: please check your entry in the Kirklees Healthy Working Life Support Finder (${s.name})
 
 Hi ${l.contact},
 
-A quick reminder about the link I sent on ${day(l.created)} to check the details the Support Finder holds about ${s.name}. It takes about 5 minutes:
+A quick reminder to check the details we hold for ${s.name} in the Kirklees Healthy Working Life Support Finder. Work and health coaches will use these details to refer people to you, so we want to make sure they're right.
 
+It takes about 5 minutes:
+
+1. Open your private link (it's just for you, so please don't share it). You don't need to sign in.
 ${linkUrl(l)}
+2. Work through the three parts and change anything that's wrong or out of date.
+3. At the end of part 3, press "Send my changes", or "Everything is correct" if nothing needs changing. Nothing reaches us until you press one of these, and you'll see a message confirming it's been sent.
 
-At the bottom of that page, press "Everything is correct" if nothing needs changing, or change anything that's wrong or missing and press "Send my changes". The link works until ${day(l.expires)}.
+If you've started and come back on the same computer, your answers should still be there. The link works until ${day(l.expires)}.
 
-Thank you,
+If the link won't open
+The site is brand new, so some organisations' security software (such as Microsoft Defender) blocks it until it's been categorised. If you see a page saying it's blocked by your organisation:
+
+- The quickest fix is to open the link on your phone or a personal device that isn't on your work Wi-Fi.
+- Or ask your IT team to allow ${new URL(linkUrl(l)).hostname}. You can tell them it's the Healthy Working Life Support Finder, a directory of support services from the Healthy Working Life programme (West Yorkshire Health and Care Partnership / NHS West Yorkshire ICB). The domain is newly registered, so it may be listed as "uncategorised" or "newly registered". They can contact me if they have any questions.
+
+If your link has expired, just reply to this email and we'll send you a new one. Or reply with any changes and we'll update your entry for you.
+
+Thanks for your help.
 `;
 
   // ---------- suggested services (Suggest a service, in the feedback) ----------
