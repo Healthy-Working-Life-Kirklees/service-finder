@@ -1,10 +1,10 @@
 {
   "id": "workwell",
   "name": "WorkWell",
-  "organisation": "DWP/DHSC",
+  "organisation": "Kirklees Council Employment and Skills",
   "open": false,
   "hwlFunded": false,
-  "level": "national",
+  "level": "local",
   "audience": [
     "individual"
   ],
@@ -14,7 +14,7 @@
   ],
   "whoFor": "To be completed: the October 2026 research did not confirm who this is for.",
   "age": null,
-  "webpage": "https://www.gov.uk/government/news/new-64-million-plan-to-help-people-stay-in-work",
+  "webpage": null,
   "email": null,
   "phone": null,
   "social": [],
@@ -44,12 +44,12 @@
   ],
   "workExperience": "Not known",
   "notes": "Why it wasn't on the main list: West Yorkshire isn't a WorkWell pilot area. Team to check again w/c 30/12 (service check, 18 Nov 2026).",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-26",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 21",
     "foundVia": "Web research or directory review (October 2026)",
-    "evidence": "West Yorkshire isn't a WorkWell pilot area.",
+    "evidence": "Checked by PL on 2026-11-26: Removed links to national announcement",
     "confidence": "low",
     "checkedUrl": "https://www.gov.uk/government/news/new-64-million-plan-to-help-people-stay-in-work",
     "status": "Closed or not running (web research, October 2026)"
@@ -61,5 +61,8 @@
     "date": "2026-11-26",
     "expected": "Not announced for West Yorkshire",
     "checkFrom": "2026-12-30"
+  },
+  "residence": {
+    "scope": "kirklees"
   }
 }

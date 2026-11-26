@@ -423,11 +423,10 @@
     },
     {
       "id": "paddock-community-trust",
-      "name": "Paddock Community Trust"
-    },
-    {
-      "id": "paddock-community-trust-in-partnership-with-kirkle",
-      "name": "Paddock Community Trust, in partnership with Kirklees Council"
+      "name": "Paddock Community Trust",
+      "aliases": [
+        "Paddock Community Trust, in partnership with Kirklees Council"
+      ]
     },
     {
       "id": "papyrus",
@@ -518,12 +517,9 @@
     },
     {
       "id": "south-west-yorkshire-partnership-nhs-foundation-tr",
-      "name": "South West Yorkshire Partnership NHS Foundation Trust"
-    },
-    {
-      "id": "south-west-yorkshire-partnership-nhs-ft",
-      "name": "South West Yorkshire Partnership NHS FT",
+      "name": "South West Yorkshire Partnership NHS Foundation Trust",
       "aliases": [
+        "South West Yorkshire Partnership NHS FT",
         "South West Yorkshire Partnership NHS Foundation Trust (NHS Kirklees Talking Therapies)"
       ]
     },
@@ -549,7 +545,12 @@
     },
     {
       "id": "the-branch-rivertree-trust",
-      "name": "The Branch (Rivertree Trust)"
+      "name": "The Branch",
+      "aliases": [
+        "The Branch (Rivertree Trust)"
+      ],
+      "overview": "A grassroots organisation developed by passionate volunteers from the needs in the community. Our motivation is that everyone feels loved, connected and flourishes, both individually and together",
+      "website": "https://www.thebranch.uk/"
     },
     {
       "id": "the-howarth-foundation",
@@ -613,7 +614,14 @@
     },
     {
       "id": "west-yorkshire-combined-authority",
-      "name": "West Yorkshire Combined Authority"
+      "name": "West Yorkshire Combined Authority",
+      "aliases": [
+        "WYCA"
+      ]
+    },
+    {
+      "id": "west-yorkshire-fire-and-rescue",
+      "name": "West Yorkshire Fire and Rescue"
     },
     {
       "id": "west-yorkshire-fire-and-rescue-with-the-king-s-tru",
@@ -642,10 +650,6 @@
     {
       "id": "wy-health-and-care-partnership",
       "name": "WY Health & Care Partnership"
-    },
-    {
-      "id": "wyca",
-      "name": "WYCA"
     },
     {
       "id": "wyca-with-kirklees-council",

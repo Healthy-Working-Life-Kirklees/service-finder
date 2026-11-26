@@ -1,7 +1,7 @@
 {
   "id": "social-prescribing-kirklees",
   "name": "Social prescribing link workers and health coaches",
-  "organisation": "Kirklees Primary Care Networks / Kirklees Council",
+  "organisation": "Kirklees Council",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -24,9 +24,7 @@
   "areas": [
     "Kirklees-wide"
   ],
-  "eligibility": [
-    "Registered with a Kirklees GP practice"
-  ],
+  "eligibility": [],
   "exclusions": [],
   "gate": [
     "Is registered with a Kirklees GP"
@@ -51,18 +49,21 @@
   ],
   "workExperience": "No",
   "cost": "Free",
-  "lastUpdated": "2026-11-18",
+  "lastUpdated": "2026-11-26",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 31",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://www.kirklees.gov.uk/beta/health-and-well-being/personalised-care.aspx",
-    "evidence": "Old address redirects here; details match the page.",
+    "evidence": "Checked by PL on 2026-11-26: CHanged lead org to Kirklees Council",
     "confidence": "high",
     "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",
     "reason": "On the live list since the October 2026 import, before the development team review."
-  }
+  },
+  "partners": [
+    "Kirklees Primary Care Networks"
+  ]
 }
