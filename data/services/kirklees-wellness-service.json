@@ -74,7 +74,7 @@
     "checkedUrl": "https://kirkleeswellnessservice.co.uk/",
     "evidence": "Site loads without \"www\" (the www address has a certificate fault); adults 18+, one-to-one coaching.",
     "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 24 Nov 2026)"
   },
   "listing": {
     "decision": "include",
