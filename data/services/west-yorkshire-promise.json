@@ -43,18 +43,20 @@
   ],
   "workExperience": "Not known",
   "notes": "Why it wasn't on the main list: Announced June 2026; no sign-up route yet. Checked 17 Nov 2026: still a pledge to 14 to 24 year olds; no sign-up route found. Kept in review.",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-26",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 13",
     "foundVia": "Web research or directory review (October 2026)",
-    "evidence": "Announced June 2026; no sign-up route yet.",
+    "evidence": "Checked on 2026-11-26: still a commitment in WYCA's Region of Learning and Creativity strategy (announced 24 June 2026). No sign-up route for young people or referral route for coaches found.",
     "confidence": "low",
-    "checkedUrl": "https://www.westyorks-ca.gov.uk/news/every-young-person-in-west-yorkshire-to-be-guaranteed-work-experience-opportunities-as-mayor-acts-to-prevent-a-lost-generation/",
-    "status": "Not verified as running (web research, October 2026)"
+    "checkedUrl": "https://www.westyorks-ca.gov.uk/resources/region-of-learning-and-creativity-strategy/",
+    "status": "Announced, not yet running (checked against the provider's site, 26 Nov 2026)"
   },
   "listing": {
-    "decision": "review",
-    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+    "decision": "exclude",
+    "reason": "Exclude for now - add to 'Planned services' list",
+    "by": "PL",
+    "date": "2026-11-26"
   }
 }

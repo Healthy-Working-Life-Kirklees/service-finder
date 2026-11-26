@@ -42,18 +42,20 @@
   ],
   "workExperience": "Not known",
   "notes": "Why it wasn't on the main list: Moving to TEPs; no current courses or dates published. Checked 17 Nov 2026: WYCA is replacing Skills Bootcamps with Targeted Employment Programmes; no courses or dates published. Kept in review.",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-26",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 9",
     "foundVia": "Web research or directory review (October 2026)",
-    "evidence": "Moving to TEPs; no current courses or dates published.",
+    "evidence": "Checked on 2026-11-26: WYCA's adult training courses page lists no Skills Bootcamps and says they are being replaced by Targeted Employment Programmes (TEPs). FE Week (April 2026) reported WYCA phasing bootcamps out from April 2026.",
     "confidence": "low",
     "checkedUrl": "https://www.westyorks-ca.gov.uk/skills/for-adults/training-courses/",
-    "status": "Not verified as running (web research, October 2026)"
+    "status": "Being replaced by Targeted Employment Programmes (checked against the provider's site, 26 Nov 2026)"
   },
   "listing": {
-    "decision": "review",
-    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+    "decision": "exclude",
+    "reason": "Exclude for now - add to 'Planned services' list",
+    "by": "PL",
+    "date": "2026-11-26"
   }
 }
