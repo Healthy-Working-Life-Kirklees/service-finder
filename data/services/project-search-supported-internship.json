@@ -1,7 +1,7 @@
 {
   "id": "project-search-supported-internship",
   "name": "Project SEARCH supported internship",
-  "organisation": "Mid Yorkshire Teaching NHS Trust / Kirklees College / Kirklees Council",
+  "organisation": "Kirklees Council",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -81,18 +81,24 @@
   ],
   "workExperience": "Yes - year-long work placements",
   "cost": "Free",
-  "lastUpdated": "2026-11-18",
+  "lastUpdated": "2026-11-26",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 59",
     "foundVia": "Web research (14 Oct)",
-    "checkedUrl": "https://www.midyorks.nhs.uk/project-search",
-    "evidence": "18-24 with a learning disability at Dewsbury and Pinderfields; EHCP and phone not stated on the page.",
+    "checkedUrl": "https://www.kirklees.gov.uk/beta/preparing-for-adulthood/project-search.aspx",
+    "evidence": "Checked by PL on 2026-11-26: Updates partners",
     "confidence": "medium",
     "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",
     "reason": "On the live list since the October 2026 import, before the development team review."
-  }
+  },
+  "partners": [
+    "Kirklees College",
+    "Mid Yorkshire Teaching NHS Trust",
+    "C+K Careers",
+    "Job Centre Plus"
+  ]
 }

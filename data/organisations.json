@@ -180,11 +180,10 @@
     },
     {
       "id": "forces-employment-charity",
-      "name": "Forces Employment Charity"
-    },
-    {
-      "id": "forces-employment-charity-for-nhs-england",
-      "name": "Forces Employment Charity (for NHS England)"
+      "name": "Forces Employment Charity",
+      "aliases": [
+        "Forces Employment Charity (for NHS England)"
+      ]
     },
     {
       "id": "fresh-futures",
@@ -265,6 +264,10 @@
     {
       "id": "kirklees-active-leisure",
       "name": "Kirklees Active Leisure"
+    },
+    {
+      "id": "kirklees-better-outcomes-partnership-kbop",
+      "name": "Kirklees Better Outcomes Partnership (KBOP)"
     },
     {
       "id": "kirklees-citizens-advice-and-law-centre",

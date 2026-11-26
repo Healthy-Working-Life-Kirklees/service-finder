@@ -1,7 +1,7 @@
 {
   "id": "kbop",
   "name": "Kirklees Better Outcomes Partnership (KBOP)",
-  "organisation": "Bridges Outcomes Partnerships",
+  "organisation": "Kirklees Better Outcomes Partnership (KBOP)",
   "open": true,
   "hwlFunded": false,
   "level": "local",
@@ -11,7 +11,8 @@
   "categories": [
     "Housing",
     "Finding work",
-    "Staying in work"
+    "Staying in work",
+    "Benefits and money"
   ],
   "whoFor": "People in Kirklees at risk of homelessness.",
   "age": null,
@@ -25,9 +26,13 @@
   "areas": [
     "Kirklees-wide"
   ],
-  "eligibility": [],
+  "eligibility": [
+    "struggling with accommodation, or simply with living an independent life"
+  ],
   "exclusions": [],
-  "gate": [],
+  "gate": [
+    "struggling with accommodation, or simply with living an independent life"
+  ],
   "healthFocus": [],
   "referralRoutes": [
     "Referral form, returned to hello@kbop.org"
@@ -45,12 +50,12 @@
   ],
   "workExperience": "Not known",
   "notes": "Why it wasn't on the main list: Official site blocks fetching / footer 2018; job ads to Oct 2026 suggest it's running but referral rules unconfirmed; may be retendered. Directory now only describes its Dual Diagnosis team, added as 'Community Links Dual Diagnosis service'. 18 Nov 2026: details filled in from the provider's page; team to decide whether to include.",
-  "lastUpdated": "2026-11-18",
+  "lastUpdated": "2026-11-26",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 2",
     "foundVia": "Web research or directory review (October 2026)",
-    "evidence": "Provider site: floating support for people at risk of homelessness; referral form to hello@kbop.org. Phone from Horton Housing's HIPS page.",
+    "evidence": "Checked by PL on 2026-11-26: checked partners",
     "confidence": "medium",
     "checkedUrl": "https://www.kirkleesbetteroutcomespartnership.org/",
     "status": "Running (checked against the provider's site, 18 Nov 2026)"
@@ -58,5 +63,15 @@
   "listing": {
     "decision": "review",
     "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+  },
+  "partners": [
+    "Community Links (KBOP)",
+    "Horton Housing (part of KBOP)",
+    "Bridges Outcomes Partnerships",
+    "Womens Centre",
+    "Home Group"
+  ],
+  "residence": {
+    "scope": "kirklees"
   }
 }
