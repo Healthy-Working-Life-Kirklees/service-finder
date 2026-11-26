@@ -19,6 +19,9 @@
 // it into another organisation. They reach data/organisations.json the same way (scripts/apply-decisions.mjs).
 //
 // And which project end dates the morning reminder has already told the team about (reminders.js).
+//
+// And which organisations are taking part in the pilot: a switch on each organisation's page, kept here so it
+// changes straight away and never appears in the public data.
 
 import { teamLinks } from './providerlink.js';
 
@@ -209,6 +212,27 @@ export class LogStore {
       await s.delete(key);
       await s.put('orgCount', Math.max(0, ((await s.get('orgCount')) || 1) - 1));
       return Response.json({ id: body.id, deleted: true });
+    }
+
+    // ----- which organisations are taking part in the pilot (team-only, never in the public data) -----
+    if (url.pathname === '/pilot/list') {
+      const m = await s.list({ prefix: 'pilot:' });
+      const pilot = {};
+      for (const [k, v] of m) pilot[k.slice(6)] = v;
+      return Response.json({ pilot });
+    }
+
+    if (url.pathname === '/pilot/set') {
+      const key = 'pilot:' + body.id;
+      const prev = await s.get(key);
+      if (!body.on) {
+        if (prev) await s.delete(key);
+        return Response.json({ id: body.id, item: null });
+      }
+      if (!prev && (await s.list({ prefix: 'pilot:', limit: 1001 })).size >= 1000) return Response.json({ error: 'Too many organisations in the pilot.' }, { status: 400 });
+      const item = prev || { by: body.by, t: now };
+      if (!prev) await s.put(key, item);
+      return Response.json({ id: body.id, item });
     }
 
     // ----- venue changes (the same shape as organisation changes) -----
@@ -558,6 +582,20 @@ export async function handleLog(request, env, url, cors, checker) {
     const before = {};
     if (body.before && typeof body.before === 'object') for (const k of Object.keys(r.changes)) if (k in body.before) before[k] = body.before[k];
     const res = await call('/orgs/set', { id: o[1], changes: r.changes, before, note, by });
+    return json(res, res.error ? 400 : 200, cors);
+  }
+
+  // ----- which organisations are in the pilot: a switch on each organisation's page -----
+  if (request.method === 'GET' && path === '/log/pilot') {
+    return json(await call('/pilot/list'), 200, cors);
+  }
+  const pm = path.match(/^\/log\/pilot\/([a-z0-9-]{1,50})$/);
+  if (pm && request.method === 'PUT') {
+    if (!ID_RE.test(pm[1])) return json({ error: 'Unknown organisation.' }, 400, cors);
+    const by = clean(body.by, 40);
+    if (!by) return json({ error: 'Please give your name or initials.' }, 400, cors);
+    if (typeof body.on !== 'boolean') return json({ error: 'Say whether the organisation is in the pilot.' }, 400, cors);
+    const res = await call('/pilot/set', { id: pm[1], on: body.on, by });
     return json(res, res.error ? 400 : 200, cors);
   }
 

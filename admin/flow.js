@@ -196,17 +196,70 @@
     return { reply: r, handled: Boolean(r && (r.handled || (e && e.t > r.t))), count: replies.length };
   }
 
-  const reminderText = (s, l) => `Subject: A reminder: please check your details on the Healthy Working Life Support Finder (${s.name})
+  const reminderText = (s, l) => `Subject: Reminder: please check your entry in the Kirklees Healthy Working Life Support Finder (${s.name})
 
 Hi ${l.contact},
 
-A quick reminder about the link I sent on ${day(l.created)} to check the details the Support Finder holds about ${s.name}. It takes about 5 minutes:
+A quick reminder to check the details we hold for ${s.name} in the Kirklees Healthy Working Life Support Finder. Work and health coaches will use these details to refer people to you, so we want to make sure they're right.
 
+It takes about 5 minutes:
+
+1. Open your private link (it's just for you, so please don't share it). You don't need to sign in.
 ${linkUrl(l)}
+2. Work through the three parts and change anything that's wrong or out of date.
+3. At the end of part 3, press "Send my changes", or "Everything is correct" if nothing needs changing. Nothing reaches us until you press one of these, and you'll see a message confirming it's been sent.
 
-At the bottom of that page, press "Everything is correct" if nothing needs changing, or change anything that's wrong or missing and press "Send my changes". The link works until ${day(l.expires)}.
+If you've started and come back on the same computer, your answers should still be there. The link works until ${day(l.expires)}.
 
-Thank you,
+If the link won't open
+The site is brand new, so some organisations' security software (such as Microsoft Defender) blocks it until it's been categorised. If you see a page saying it's blocked by your organisation:
+
+- The quickest fix is to open the link on your phone or a personal device that isn't on your work Wi-Fi.
+- Or ask your IT team to allow ${new URL(linkUrl(l)).hostname}. You can tell them it's the Healthy Working Life Support Finder, a directory of support services from the Healthy Working Life programme (West Yorkshire Health and Care Partnership / NHS West Yorkshire ICB). The domain is newly registered, so it may be listed as "uncategorised" or "newly registered". They can contact me if they have any questions.
+
+If your link has expired, just reply to this email and we'll send you a new one. Or reply with any changes and we'll update your entry for you.
+
+Thanks for your help.
+`;
+
+  // ---------- inviting an organisation to join the pilot ----------
+  // The public finder's address, worked out from this page's, so it isn't written into the (public) repo.
+  const siteUrl = () => new URL('../', location.href).href;
+  // An organisation counts as local if it runs at least one local service.
+  const isLocalOrg = (o) => servicesOfOrg(o).some((s) => s.level === 'local');
+  const inPilot = (o) => Boolean(o && S.pilot && S.pilot[o.id]);
+  // The invitation email. With a service, it thanks them for checking it first (after they've replied to a review
+  // link). Kept compact: no blank lines inside lists or between a heading and its text, so it isn't long to scroll.
+  const inviteText = ({ contact, service } = {}) => `Subject: Would you like to help pilot the Kirklees Healthy Working Life Support Finder?
+
+Hi ${contact || '[name]'},
+
+${service ? `Thank you for checking your entry for ${service} in the Healthy Working Life Support Finder. It really helps to know the details are right.
+
+We'd now like to invite you and your team to join the pilot.` : `We'd like to invite you and your team to join the pilot of the Healthy Working Life Support Finder.`} The Support Finder is our new online tool for finding local and national services for the people you work with. Your experience of other services in Kirklees would make your feedback especially useful.
+
+You can open it here: ${siteUrl()}
+
+The attached one-page quick guide covers everything you need: how to search, how to use the printable directory (including printing pages for people to take home), and how to send us feedback.
+
+What we'd like you and your team to do:
+- Use it in your normal work, little and often. There's no deadline or set number of uses.
+- Never type names, addresses or anything else that could identify someone.
+- Always check with a service before making a referral.
+- Tell us what you find as you go, using the "Give pilot feedback" button at the top of the page. Good and bad are equally useful.
+
+Please don't share the link outside your team yet, as it's still a prototype.
+
+If the site won't open on your work computer
+The site is brand new, so some organisations' security software blocks it until it's been categorised. If that happens, please ask your IT team to allow ${new URL(siteUrl()).hostname}. It's the Healthy Working Life Support Finder, from the Healthy Working Life programme (West Yorkshire Health and Care Partnership / NHS West Yorkshire ICB). The domain is newly registered, so it may be listed as "uncategorised" or "newly registered". In the meantime, it should open on a phone that isn't on your work Wi-Fi.
+
+We'll review feedback regularly, update the tool as we go, and send you a short update every two weeks.
+
+Could you reply to let us know whether you'd like to take part, and who in your team will be using it? We're also happy to set up a Teams session to run through how it works and answer any questions. Any issues or questions, just reply to this email.
+
+Thanks again for your help.
+Best wishes,
+Phil & Lewis
 `;
 
   // ---------- suggested services (Suggest a service, in the feedback) ----------
@@ -278,15 +331,15 @@ Thank you,
   async function load() {
     const data = await getJson('services-all.json').catch(() => getJson('../services.json'));
     const opt = (p, empty) => api('GET', p).catch((e) => { if (e.status === 401) throw e; return empty; });
-    const [d, e, nw, pl, og, vg, fb, ap] = await Promise.all([
+    const [d, e, nw, pl, og, vg, fb, ap, pi] = await Promise.all([
       api('GET', '/log/decisions'), api('GET', '/log/edits'), api('GET', '/log/new'),
       opt('/log/provider-links', { links: [] }), opt('/log/orgs', { orgs: {} }), opt('/log/venues', { venues: {} }),
-      opt('/feedback/items', { items: [] }), opt('/log/apply/status', null),
+      opt('/feedback/items', { items: [] }), opt('/log/apply/status', null), opt('/log/pilot', { pilot: {} }),
     ]);
     Object.assign(S, {
       services: list(data.services), organisations: list(data.organisations), venues: list(data.venues), choices: data.choices || {},
       decisions: d.decisions || {}, edits: e.edits || {}, added: nw.added || {}, links: list(pl.links), orgChanges: og.orgs || {},
-      venueChanges: vg.venues || {}, feedback: list(fb.items), apply: ap,
+      venueChanges: vg.venues || {}, feedback: list(fb.items), apply: ap, pilot: pi.pilot || {},
     });
     const done = ap && ap.apply && ap.apply.status === 'completed';
     S.aside = done && ap.report ? list(ap.report.setAside) : [];
@@ -326,6 +379,6 @@ Thank you,
   window.FLOW = {
     API, AUTH, LL, S, el, list, plural, day, when, api, copy, norm, load, putLive, FIELD_LABEL, words, linked, projectWords, sessionWords, venueText,
     byId, listingOf, editState, decisionState, orgPending, venuePending, settleVenues,
-    linksFor, linkLive, linkUrl, newestReply, reminderText, isSuggestion, suggestionState, matchOrg, orgSimple, servicesOfOrg, partnerServicesOf, suggestionQuestions,
+    linksFor, linkLive, linkUrl, newestReply, reminderText, inviteText, isLocalOrg, inPilot, isSuggestion, suggestionState, matchOrg, orgSimple, servicesOfOrg, partnerServicesOf, suggestionQuestions,
   };
 })();

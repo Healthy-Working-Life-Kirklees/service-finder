@@ -61,7 +61,7 @@
     "checkedUrl": "https://www.mind.org.uk/information-support/helplines/",
     "evidence": "Checked against Mind's helplines page on 2026-11-17: Infoline and Legal Line, Mon to Fri 9 to 6. Welfare Benefits Line no longer listed; text service closed.",
     "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 17 Nov 2026)"
   },
   "listing": {
     "decision": "include",

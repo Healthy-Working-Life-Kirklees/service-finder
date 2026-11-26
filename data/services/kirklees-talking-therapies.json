@@ -68,7 +68,7 @@
     "checkedUrl": "https://www.kirklees-talkingtherapies.nhs.uk/contact-us/",
     "evidence": "Checked against the service's contact page on 2026-11-17: phone and email match. Folly Hall Mills not on the site; asking the service. Previous note: MECC Link lists an old IAPT number (01484 434625/6), ignore.",
     "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 17 Nov 2026)"
   },
   "listing": {
     "decision": "include",

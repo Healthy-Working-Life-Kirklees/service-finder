@@ -59,7 +59,7 @@
     "checkedUrl": "https://www.moneyhelper.org.uk/en",
     "evidence": "Confirmed by the team on 2026-11-18 (MoneyHelper's site blocks automated reading): phone and hours.",
     "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

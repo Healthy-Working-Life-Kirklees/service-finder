@@ -57,7 +57,7 @@
     "checkedUrl": "https://www.citizensadvice.org.uk/about-us/contact-us/contact-us/help-to-claim/",
     "evidence": "Checked against the provider's page on 2026-11-17: matches (0800 144 8 444 Mon-Fri 8-6, webchat).",
     "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",
