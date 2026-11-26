@@ -1,7 +1,7 @@
 {
   "id": "get-started-kings-trust-fire",
   "name": "Get Started with The King's Trust (WY Fire)",
-  "organisation": "West Yorkshire Fire and Rescue with The King's Trust",
+  "organisation": "West Yorkshire Fire and Rescue",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -57,18 +57,21 @@
   "workExperience": "No",
   "cost": "Free",
   "coachNotes": "Next course 7 to 11 December 2026 at Stanningley Fire Station, Leeds, with a taster day on 1 December.",
-  "lastUpdated": "2026-11-17",
+  "lastUpdated": "2026-11-26",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), row 69",
     "foundVia": "Web research (14 Oct)",
     "checkedUrl": "https://westyorksfire.gov.uk/get-started",
-    "evidence": "Checked against WY Fire's page on 2026-11-17: matches; next course 7 to 11 Dec 2026.",
+    "evidence": "Checked by PL on 2026-11-26: CHanged lead to WYFRS",
     "confidence": "high",
     "status": "Running (checked against the provider's site, 17 Nov 2026)"
   },
   "listing": {
     "decision": "include",
     "reason": "On the live list since the October 2026 import, before the development team review."
-  }
+  },
+  "partners": [
+    "The King's Trust"
+  ]
 }
