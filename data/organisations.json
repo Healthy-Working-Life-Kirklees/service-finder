@@ -18,7 +18,7 @@
     {
       "id": "age-uk-calderdale-and-kirklees",
       "name": "Age UK Calderdale & Kirklees",
-      "website": "https://www.ageuk.org.uk/calderdaleandkirklees/"
+      "website": "https://www.ageuk.org.uk/calderdaleandkirklees/about-us/"
     },
     {
       "id": "aim2learn",
@@ -128,7 +128,7 @@
     {
       "id": "chasing-the-stigma",
       "name": "Chasing the Stigma",
-      "website": "https://chasingthestigma.co.uk/"
+      "website": "https://www.chasingthestigma.co.uk/"
     },
     {
       "id": "christians-against-poverty",
@@ -424,7 +424,8 @@
       "name": "LS2Y",
       "aliases": [
         "LS2Y and Dalton Together"
-      ]
+      ],
+      "website": "https://ls2y.co.uk/"
     },
     {
       "id": "macmillan-cancer-support",
@@ -453,7 +454,8 @@
     },
     {
       "id": "mencap-in-kirklees",
-      "name": "Mencap in Kirklees"
+      "name": "Mencap in Kirklees",
+      "website": "https://mencapinkirklees.org.uk/"
     },
     {
       "id": "mental-health-innovations",
@@ -598,7 +600,8 @@
     },
     {
       "id": "shaping-care-in-kirklees-cic",
-      "name": "Shaping Care in Kirklees CIC"
+      "name": "Shaping Care in Kirklees CIC",
+      "website": "https://shapingcarekirklees.org/"
     },
     {
       "id": "shared-goods-charity",
