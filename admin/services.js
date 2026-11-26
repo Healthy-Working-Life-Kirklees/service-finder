@@ -1078,9 +1078,21 @@ Thank you,
   let applyAsked = 0; // when this page asked for a run, so an older run isn't mistaken for it
   // What the latest run set aside: changes it couldn't apply, and why ({ kind, id, name, by, why }, from the
   // workflow's report). They aren't counted as waiting, because applying again won't put them live until they're fixed.
-  let aside = [];
+  let asideAll = []; // as the run reported them; currentAside() leaves out the ones fixed since
   let asideAt = '';
-  const asideIds = (kinds) => new Set(aside.filter((a) => kinds.includes(a.kind)).map((a) => a.id));
+  // Something the last run set aside is only still a problem while the change it was about is still waiting, unchanged:
+  // once the team discards it or saves it again, it drops off (a re-saved change is tried again at the next run).
+  // Older reports have no `of` on service items: the placeholder one is about a decision, the rest about edits.
+  // (The same rule as stillAside in flow.js, for the To do list: change both together.)
+  function stillAside(a, at) {
+    const store = a.kind === 'new' ? added : a.kind === 'org' ? orgChanges : a.kind === 'venue' ? venueChanges
+      : (a.of || (/still say/.test(a.why || '') ? 'decision' : 'edit')) === 'decision' ? team : edits;
+    const c = store && store[a.id];
+    if (!c) return a.kind === 'service' && /isn't in the data any more/.test(a.why || '');
+    return !at || !c.t || c.t <= at;
+  }
+  const currentAside = () => (edits ? asideAll.filter((a) => stillAside(a, asideAt)) : asideAll);
+  const asideIds = (kinds) => new Set(currentAside().filter((a) => kinds.includes(a.kind)).map((a) => a.id));
   const hhmm = (iso) => {
     const d = new Date(iso);
     const time = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
@@ -1095,6 +1107,7 @@ Thank you,
     $('#apply-now').hidden = !(team && applyOn);
     $('#apply-hint').hidden = Boolean(team && applyOn);
     if (!team || !applyOn) return;
+    const aside = currentAside();
     const n = waiting();
     const skipOrg = asideIds(['org']);
     const skipVenue = asideIds(['venue']);
@@ -1110,6 +1123,7 @@ Thank you,
   const ASIDE_WHAT = { org: 'Organisation', venue: 'Venue', new: 'New service' };
   function showAside() {
     const box = $('#apply-aside');
+    const aside = currentAside();
     if (!aside.length) { box.hidden = true; box.replaceChildren(); return; }
     const where = (a) => {
       if (a.kind === 'org' || a.kind === 'venue') return el('button', { type: 'button', class: 'linklike', text: a.name, onclick: a.kind === 'org' ? openOrgs : openVenues });
@@ -1206,8 +1220,8 @@ Thank you,
     }
     applyOn = true;
     const done = st.apply && st.apply.status === 'completed';
-    aside = done && st.report ? list(st.report.setAside) : [];
-    asideAt = done && st.report ? st.apply.updated : '';
+    asideAt = done && st.report ? st.report.t || st.apply.updated : '';
+    asideAll = done && st.report ? list(st.report.setAside) : [];
     showApply();
     if (showRun(st)) { applyTimer = setTimeout(checkApply, 8000); return; }
     // A run this page started has finished: load the data and the team's changes again, so the counts are current.
@@ -1345,7 +1359,7 @@ Thank you,
   function signOut(message) {
     clearTimeout(applyTimer);
     applyAsked = 0;
-    aside = [];
+    asideAll = [];
     $('#apply-status').hidden = true;
     showAside();
     team = null;
