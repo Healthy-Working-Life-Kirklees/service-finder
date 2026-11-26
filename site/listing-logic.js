@@ -272,10 +272,9 @@
     });
   }
   // The funding rules of the Healthy Working Life grant projects: lives in Kirklees, economically inactive, right to
-  // work, and a health condition or disability. On a grant project, a partner's reply can't take one of these lines
-  // out: the team checks with the programme. A grant project is a Healthy Working Life service whose essential lines
-  // (gate) include the first three; there is no separate marker. Other Healthy Working Life services describe their
-  // own criteria, which a partner may correct, so they aren't covered.
+  // work, and a health condition or disability. Nothing is locked: when a partner's reply would take one of these
+  // lines out, the team is shown "Check this" and checks it with the organisation. A grant project is a Healthy
+  // Working Life service whose essential lines (gate) include the first three; there is no separate marker.
   const PROGRAMME_RULES = [/\blives? in kirklees\b/i, /economically inactive/i, /right to work/i, /health condition or disability/i];
   const isGrantProject = (service) => Boolean(service && service.hwlFunded && PROGRAMME_RULES.slice(0, 3).every((r) => (service.gate || []).some((l) => r.test(l))));
   function protectedLines(service) {

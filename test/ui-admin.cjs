@@ -1313,11 +1313,11 @@ async function worker(route) {
   await page.click('#page button:text-is("Copy a pilot invitation email")');
   const invite = await page.evaluate(() => window.__copied);
   check('reply: a pilot invitation can be copied, thanking them by name for checking the service', invite.startsWith('Subject: Would you like to help pilot') && invite.includes('Hi Sam,') && invite.includes('Thank you for checking your entry for Audio Boost') && invite.includes(ON + '/') && !/\n\n\n/.test(invite) && !/:\n\n- /.test(invite), invite.slice(0, 300));
-  check('reply: the Healthy Working Life rule is kept, the rest can be used', (await page.textContent('.change.blocked')).includes('Kept as it is: "Lives in Kirklees"'));
+  check('reply: taking out a grant funding rule is flagged to check, not locked', (await page.textContent('.change.blocked')).includes('Check this: it takes out "Lives in Kirklees"') && (await page.locator('.change.blocked input[value=use]').isChecked()));
   await page.click('.decide-bar button:text-is("Save as checked")');
   await page.waitForSelector('.msg.ok');
   const ed = edits['audio-boost'];
-  check('reply: saved as a checked edit, keeping the programme rule and using the rest', ed && ed.checked === true && ed.changes.phone === '01924 000001' && ed.changes.gate.includes('Lives in Kirklees') && !ed.changes.gate.includes('Aged 18 or over') && ed.note.includes('From Sam'), JSON.stringify(ed));
+  check('reply: saved as a checked edit, using their change as it is', ed && ed.checked === true && ed.changes.phone === '01924 000001' && !ed.changes.gate.includes('Lives in Kirklees') && !ed.changes.gate.includes('Aged 18 or over') && ed.note.includes('From Sam'), JSON.stringify(ed));
   await page.goto(ON + '/admin/todo.html');
   await page.waitForSelector('#todo .todo-sec');
   check('to do: the reply has moved to "ready to go live"', !(await page.textContent('#todo')).includes('3 changes from Sam') && (await page.textContent('.todo-ready')).includes('Audio Boost'));

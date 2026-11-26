@@ -1,6 +1,6 @@
 // Check a partner's reply (reply.html?id=<service id>): only the questions they changed, what we had next to what
-// they say, and for each one "Use this", "Change it first" or "Don't use". On a Healthy Working Life service, a
-// change that would take out one of the programme's own rules (LISTING.protectedLines) keeps those lines.
+// they say, and for each one "Use this", "Change it first" or "Don't use". On a grant project, a change that would
+// take out one of the funding rules (LISTING.protectedLines) is flagged for the team to check; nothing is locked.
 //
 // Saving puts the changes used into the service's edit (with any edit already waiting), marked as checked with the
 // provider, so it shows under "Ready to go live" on the To do list. "Change it first" opens the edit form on All
@@ -66,38 +66,26 @@
     // One card per change.
     const cards = keys.map((k, i) => {
       const before = r.before && k in r.before ? r.before[k] : s[k];
-      let now = r.changes[k];
-      let kept = [];
-      if ((k === 'gate' || k === 'eligibility') && prot.length) {
-        kept = prot.filter((l) => list(s[k]).includes(l) && !list(now).includes(l));
-        // The kept lines go back where they were, so nothing moves around.
-        if (kept.length) { const keep = new Set([...list(now), ...kept]); now = [...list(s[k]).filter((l) => keep.has(l)), ...list(now).filter((l) => !list(s[k]).includes(l))]; }
-      }
-      // On a grant project, the answers already marked essential stay essential (the programme's own rules).
-      if (k === 'essential' && F.LL.isGrantProject(s) && list(s.essential).some((x) => !list(now).includes(x))) {
-        kept = list(s.essential).filter((x) => !list(now).includes(x)).map((x) => F.words([x], 'essential'));
-        now = ['residence', 'work', 'age', 'health'].filter((x) => list(s.essential).includes(x) || list(now).includes(x));
-      }
-      // On a grant project the health focus stays "any health condition or disability" (a funding rule).
-      if (k === 'healthFocus' && F.LL.isGrantProject(s) && list(s.healthFocus).includes('any') && !list(now).includes('any')) {
-        kept = ['Any health condition or disability'];
-        now = s.healthFocus;
-      }
-      const nothingLeft = kept.length && F.norm(now) === F.norm(s[k]);
+      const now = r.changes[k];
+      // Not locked: on a grant project, a change that takes out one of the funding rules is only flagged, so the
+      // team checks it with the organisation. "Use this" uses the whole change.
+      const dropped = k === 'gate' || k === 'eligibility' ? prot.filter((l) => list(s[k]).includes(l) && !list(now).includes(l))
+        : k === 'healthFocus' && F.LL.isGrantProject(s) && list(s.healthFocus).includes('any') && !list(now).includes('any') ? ['Any health condition or disability']
+        : k === 'essential' && F.LL.isGrantProject(s) ? list(s.essential).filter((x) => !list(now).includes(x)).map((x) => F.words([x], 'essential')) : [];
       const moved = r.before && k in r.before && F.norm(s[k]) !== F.norm(r.before[k]);
       const name = 'ch-' + i;
       const opt = (v, text, on) => el('label', {}, el('input', { type: 'radio', name, value: v, checked: on }), text);
-      const choice = nothingLeft ? null : el('fieldset', { class: 'choice-row' }, el('legend', { text: 'What to do with this change' }),
-        opt('use', kept.length ? 'Use the rest of it' : 'Use this', true), opt('change', 'Change it first'), opt('skip', "Don't use"));
-      const card = el('section', { class: 'change' + (kept.length ? ' blocked' : '') },
+      const choice = el('fieldset', { class: 'choice-row' }, el('legend', { text: 'What to do with this change' }),
+        opt('use', 'Use this', true), opt('change', 'Change it first'), opt('skip', "Don't use"));
+      const card = el('section', { class: 'change' + (dropped.length ? ' blocked' : '') },
         el('h2', { text: F.FIELD_LABEL[k] || k }),
         el('div', { class: 'change-cols' }, el('div', { class: 'was' }, el('b', { text: 'We had' }), ...F.linked(shown(before, k))), el('div', { class: 'now' }, el('b', { text: 'They say' }), ...F.linked(shown(r.changes[k], k)))),
         moved ? el('p', { class: 'msg info' }, 'This has changed since they replied. It now says: ', ...F.linked(shown(s[k], k))) : null,
-        kept.length ? el('p', { class: 'kept' }, el('strong', { text: 'Kept as it is: ' }), kept.map((l) => '"' + l + '"').join(', ') + '. ' + (kept.length === 1 ? 'This is' : 'These are') + ' a funding rule for the Healthy Working Life grant projects, so a partner’s reply can’t take ' + (kept.length === 1 ? 'it' : 'them') + ' out. If they think it’s wrong, it’s a question for the programme team.' + (nothingLeft ? ' Nothing else changed here.' : '')) : null,
+        dropped.length ? el('p', { class: 'kept' }, el('strong', { text: 'Check this: ' }), 'it takes out ' + dropped.map((l) => '"' + l + '"').join(', ') + ', ' + (dropped.length === 1 ? 'a funding rule' : 'funding rules') + ' for the Healthy Working Life grant projects. Check with the organisation before you use it.') : null,
         choice);
       card._k = k;
       card._value = now;
-      card._choice = () => (nothingLeft ? 'skip' : card.querySelector('input:checked').value);
+      card._choice = () => card.querySelector('input:checked').value;
       return card;
     });
 
