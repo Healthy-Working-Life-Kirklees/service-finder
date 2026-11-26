@@ -2,52 +2,64 @@
   "organisations": [
     {
       "id": "able-futures-for-dwp",
-      "name": "Able Futures (for DWP)"
+      "name": "Able Futures (for DWP)",
+      "website": "https://able-futures.co.uk/"
     },
     {
       "id": "acas",
-      "name": "Acas"
+      "name": "Acas",
+      "website": "https://www.acas.org.uk/"
     },
     {
       "id": "age-uk",
-      "name": "Age UK"
+      "name": "Age UK",
+      "website": "https://www.ageuk.org.uk/"
     },
     {
       "id": "age-uk-calderdale-and-kirklees",
-      "name": "Age UK Calderdale & Kirklees"
+      "name": "Age UK Calderdale & Kirklees",
+      "website": "https://www.ageuk.org.uk/calderdaleandkirklees/"
     },
     {
       "id": "aim2learn",
-      "name": "Aim2Learn"
+      "name": "Aim2Learn",
+      "website": "https://aim2learn.org/"
     },
     {
       "id": "alcoholics-anonymous-gb",
-      "name": "Alcoholics Anonymous GB"
+      "name": "Alcoholics Anonymous GB",
+      "website": "https://www.alcoholics-anonymous.org.uk/"
     },
     {
       "id": "alzheimer-s-society",
-      "name": "Alzheimer's Society"
+      "name": "Alzheimer's Society",
+      "website": "https://www.alzheimers.org.uk/"
     },
     {
       "id": "andysmanclub",
-      "name": "ANDYSMANCLUB"
+      "name": "ANDYSMANCLUB",
+      "website": "https://andysmanclub.co.uk/"
     },
     {
       "id": "aspire-igen",
-      "name": "Aspire-igen"
+      "name": "Aspire-igen",
+      "website": "https://aspire-igen.com/"
     },
     {
       "id": "autism-plus",
-      "name": "Autism Plus"
+      "name": "Autism Plus",
+      "website": "https://autismplus.co.uk/"
     },
     {
       "id": "batley-multi-academy-trust",
-      "name": "Batley Multi Academy Trust"
+      "name": "Batley Multi Academy Trust",
+      "website": "https://www.batleymat.co.uk/"
     },
     {
       "id": "batley-sporting-foundation",
       "name": "Batley Sporting Foundation",
-      "overview": "Supporting the emotional and physical wellbeing of our local community. Creating opportunities for people of all ages and abilities to build confidence, improve health, develop skills and reach their full potential."
+      "overview": "Supporting the emotional and physical wellbeing of our local community. Creating opportunities for people of all ages and abilities to build confidence, improve health, develop skills and reach their full potential.",
+      "website": "https://www.batleysportingfoundation.org/"
     },
     {
       "id": "bridges-outcomes-partnerships",
@@ -55,22 +67,26 @@
     },
     {
       "id": "british-business-bank",
-      "name": "British Business Bank"
+      "name": "British Business Bank",
+      "website": "https://www.british-business-bank.co.uk/"
     },
     {
       "id": "business-disability-forum",
-      "name": "Business Disability Forum"
+      "name": "Business Disability Forum",
+      "website": "https://businessdisabilityforum.org.uk/"
     },
     {
       "id": "c-k-careers",
       "name": "C+K Careers",
       "aliases": [
         "C+K Careers Ltd"
-      ]
+      ],
+      "website": "https://www.ckcareers.co.uk/"
     },
     {
       "id": "calderdale-credit-union",
-      "name": "Calderdale Credit Union"
+      "name": "Calderdale Credit Union",
+      "website": "https://www.calderdalecreditunion.co.uk/"
     },
     {
       "id": "calderdale-kirklees-and-wakefield-councils",
@@ -78,11 +94,13 @@
     },
     {
       "id": "campaign-against-living-miserably",
-      "name": "Campaign Against Living Miserably"
+      "name": "Campaign Against Living Miserably",
+      "website": "https://www.thecalmzone.net/"
     },
     {
       "id": "cap-with-huddersfield-churches",
-      "name": "CAP with Huddersfield churches"
+      "name": "CAP with Huddersfield churches",
+      "website": "https://capuk.org/"
     },
     {
       "id": "carers-count",
@@ -90,11 +108,13 @@
       "aliases": [
         "Carers Count (Cloverleaf Advocacy)",
         "Carers Count Kirklees (delivered by Cloverleaf Advocacy)"
-      ]
+      ],
+      "website": "https://www.carerscount.org.uk/"
     },
     {
       "id": "carers-uk",
-      "name": "Carers UK"
+      "name": "Carers UK",
+      "website": "https://www.carersuk.org/"
     },
     {
       "id": "change-grow-live",
@@ -102,31 +122,38 @@
       "aliases": [
         "Change Grow Live (CGL)"
       ],
-      "overview": "Commissioned drug and alcohol support service in Kirklees."
+      "overview": "Commissioned drug and alcohol support service in Kirklees.",
+      "website": "https://www.changegrowlive.org/"
     },
     {
       "id": "chasing-the-stigma",
-      "name": "Chasing the Stigma"
+      "name": "Chasing the Stigma",
+      "website": "https://chasingthestigma.co.uk/"
     },
     {
       "id": "christians-against-poverty",
-      "name": "Christians Against Poverty"
+      "name": "Christians Against Poverty",
+      "website": "https://capuk.org/"
     },
     {
       "id": "cipd-trust",
-      "name": "CIPD Trust"
+      "name": "CIPD Trust",
+      "website": "https://www.cipd.org/en/about/cipd-trust/"
     },
     {
       "id": "citizens-advice",
-      "name": "Citizens Advice"
+      "name": "Citizens Advice",
+      "website": "https://www.citizensadvice.org.uk/"
     },
     {
       "id": "cloverleaf-advocacy",
-      "name": "Cloverleaf Advocacy"
+      "name": "Cloverleaf Advocacy",
+      "website": "https://cloverleaf-advocacy.co.uk/"
     },
     {
       "id": "combat-stress",
-      "name": "Combat Stress"
+      "name": "Combat Stress",
+      "website": "https://combatstress.org.uk/"
     },
     {
       "id": "community-links-kbop",
@@ -137,30 +164,36 @@
       "name": "Community Platform Together CIC",
       "aliases": [
         "Community Platform Together CIC and The Branch"
-      ]
+      ],
+      "website": "https://www.communityplatform.org.uk/"
     },
     {
       "id": "connect-housing",
-      "name": "Connect Housing"
+      "name": "Connect Housing",
+      "website": "https://www.connecthousing.org.uk/"
     },
     {
       "id": "cora-health",
       "name": "Cora Health",
       "aliases": [
         "Cora Health (formerly Connect Health)"
-      ]
+      ],
+      "website": "https://www.corahealth.co.uk/"
     },
     {
       "id": "crosland-moor-clc",
-      "name": "Crosland Moor CLC"
+      "name": "Crosland Moor CLC",
+      "website": "https://www.croslandmoorclc.org.uk/"
     },
     {
       "id": "department-for-education",
-      "name": "Department for Education"
+      "name": "Department for Education",
+      "website": "https://www.gov.uk/government/organisations/department-for-education"
     },
     {
       "id": "dwp",
-      "name": "DWP"
+      "name": "DWP",
+      "website": "https://www.gov.uk/government/organisations/department-for-work-pensions"
     },
     {
       "id": "dwp-dhsc",
@@ -168,114 +201,141 @@
     },
     {
       "id": "eass-government-funded",
-      "name": "EASS (government-funded)"
+      "name": "EASS (government-funded)",
+      "website": "https://www.equalityadvisoryservice.com/"
     },
     {
       "id": "eden-s-forest-cic",
-      "name": "Eden's Forest CIC"
+      "name": "Eden's Forest CIC",
+      "website": "https://www.edensforestcic.org/"
     },
     {
       "id": "evenbreak",
-      "name": "Evenbreak"
+      "name": "Evenbreak",
+      "website": "https://www.evenbreak.com/"
     },
     {
       "id": "forces-employment-charity",
       "name": "Forces Employment Charity",
       "aliases": [
         "Forces Employment Charity (for NHS England)"
-      ]
+      ],
+      "website": "https://www.forcesemployment.org.uk/"
     },
     {
       "id": "fresh-futures",
-      "name": "Fresh Futures"
+      "name": "Fresh Futures",
+      "website": "https://freshfutures.org.uk/"
     },
     {
       "id": "fusion-housing",
-      "name": "Fusion Housing"
+      "name": "Fusion Housing",
+      "website": "https://fusionhousing.org.uk/"
     },
     {
       "id": "gamcare",
-      "name": "GamCare"
+      "name": "GamCare",
+      "website": "https://www.gamcare.org.uk/"
     },
     {
       "id": "gamstop",
-      "name": "GAMSTOP"
+      "name": "GAMSTOP",
+      "website": "https://www.gamstop.co.uk/"
     },
     {
       "id": "good-things-foundation",
-      "name": "Good Things Foundation"
+      "name": "Good Things Foundation",
+      "website": "https://www.goodthingsfoundation.org/"
     },
     {
       "id": "growing-works",
-      "name": "Growing Works"
+      "name": "Growing Works",
+      "website": "https://www.growingworks.org.uk/"
     },
     {
       "id": "happymoments-cio",
-      "name": "HappyMOMents CIO"
+      "name": "HappyMOMents CIO",
+      "website": "https://www.happymoments.org.uk/"
     },
     {
       "id": "health-and-safety-executive",
-      "name": "Health and Safety Executive"
+      "name": "Health and Safety Executive",
+      "website": "https://www.hse.gov.uk/"
     },
     {
       "id": "hmpps-cfo-led-by-the-growth-company",
-      "name": "HMPPS CFO, led by The Growth Company"
+      "name": "HMPPS CFO, led by The Growth Company",
+      "website": "https://www.creatingfutureopportunities.gov.uk/"
     },
     {
       "id": "hoot-creative-arts",
-      "name": "hoot creative arts"
+      "name": "hoot creative arts",
+      "website": "https://www.hootcreativearts.co.uk/"
     },
     {
       "id": "horton-housing-part-of-kbop",
-      "name": "Horton Housing (part of KBOP)"
+      "name": "Horton Housing (part of KBOP)",
+      "website": "https://www.hortonhousing.co.uk/"
     },
     {
       "id": "huddersfield-elim-pentecostal-church",
-      "name": "Huddersfield Elim Pentecostal Church"
+      "name": "Huddersfield Elim Pentecostal Church",
+      "website": "https://www.huddelim.org.uk/"
     },
     {
       "id": "huddersfield-methodists",
-      "name": "Huddersfield Methodists"
+      "name": "Huddersfield Methodists",
+      "website": "http://www.huddersfieldmethodists.org.uk/"
     },
     {
       "id": "huddersfield-mission",
-      "name": "Huddersfield Mission"
+      "name": "Huddersfield Mission",
+      "website": "https://www.huddersfieldmission.org.uk/"
     },
     {
       "id": "huddersfield-town-foundation",
-      "name": "Huddersfield Town Foundation"
+      "name": "Huddersfield Town Foundation",
+      "website": "https://www.htafcfoundation.com/"
     },
     {
       "id": "iask",
-      "name": "IASK"
+      "name": "IASK",
+      "website": "https://i-ask.co.uk/"
     },
     {
       "id": "imperial-college-healthcare-nhs-trust",
-      "name": "Imperial College Healthcare NHS Trust"
+      "name": "Imperial College Healthcare NHS Trust",
+      "website": "https://www.imperial.nhs.uk/"
     },
     {
       "id": "imws",
-      "name": "IMWS"
+      "name": "IMWS",
+      "website": "https://www.imws.org.uk/"
     },
     {
       "id": "inspire-north",
-      "name": "Inspire North"
+      "name": "Inspire North",
+      "website": "https://www.inspirenorth.co.uk/"
     },
     {
       "id": "kirklees-active-leisure",
-      "name": "Kirklees Active Leisure"
+      "name": "Kirklees Active Leisure",
+      "website": "https://kal.org.uk/"
     },
     {
       "id": "kirklees-better-outcomes-partnership-kbop",
-      "name": "Kirklees Better Outcomes Partnership (KBOP)"
+      "name": "Kirklees Better Outcomes Partnership (KBOP)",
+      "website": "https://www.kirkleesbetteroutcomespartnership.org/"
     },
     {
       "id": "kirklees-citizens-advice-and-law-centre",
-      "name": "Kirklees Citizens Advice and Law Centre"
+      "name": "Kirklees Citizens Advice and Law Centre",
+      "website": "https://www.kcalc.org.uk/"
     },
     {
       "id": "kirklees-college",
-      "name": "Kirklees College"
+      "name": "Kirklees College",
+      "website": "https://www.kirkleescollege.ac.uk/"
     },
     {
       "id": "kirklees-council",
@@ -283,34 +343,41 @@
       "aliases": [
         "Kirklees Council with delivery by C+K Careers and Paddock Trust"
       ],
-      "notes": "Overview from the Employment Kirklees listing (about its delivery partners, so not used as the council's overview): C+K works to deliver a range of services designed to reduce the number of young people who are NEET and support adults into positive destinations.\nPaddock Trust services include employment support programmes, specialist mentoring, advice & guidance services,  well-being support & digital inclusion."
+      "notes": "Overview from the Employment Kirklees listing (about its delivery partners, so not used as the council's overview): C+K works to deliver a range of services designed to reduce the number of young people who are NEET and support adults into positive destinations.\nPaddock Trust services include employment support programmes, specialist mentoring, advice & guidance services,  well-being support & digital inclusion.",
+      "website": "https://www.kirklees.gov.uk/"
     },
     {
       "id": "kirklees-council-digital-inclusion",
-      "name": "Kirklees Council (Digital Inclusion)"
+      "name": "Kirklees Council (Digital Inclusion)",
+      "website": "https://www.kirklees.gov.uk/"
     },
     {
       "id": "kirklees-council-homes-and-neighbourhoods",
-      "name": "Kirklees Council (Homes & Neighbourhoods)"
+      "name": "Kirklees Council (Homes & Neighbourhoods)",
+      "website": "https://www.kirklees.gov.uk/"
     },
     {
       "id": "kirklees-council-employment-and-skills",
       "name": "Kirklees Council Employment and Skills",
       "aliases": [
         "Kirklees Council Employment & Skills Service"
-      ]
+      ],
+      "website": "https://www.kirklees.gov.uk/"
     },
     {
       "id": "kirklees-council-learning-service",
-      "name": "Kirklees Council Learning Service"
+      "name": "Kirklees Council Learning Service",
+      "website": "https://www.kirklees.gov.uk/"
     },
     {
       "id": "kirklees-council-libraries",
-      "name": "Kirklees Council Libraries"
+      "name": "Kirklees Council Libraries",
+      "website": "https://www.kirklees.gov.uk/"
     },
     {
       "id": "kirklees-in-recovery-cic",
-      "name": "Kirklees in Recovery CIC"
+      "name": "Kirklees in Recovery CIC",
+      "website": "https://kirkleesinrecovery.com/"
     },
     {
       "id": "kirklees-primary-care-networks-kirklees-council",
@@ -318,32 +385,39 @@
     },
     {
       "id": "kirklees-welcomes-via-kcalc",
-      "name": "Kirklees Welcomes (via KCALC)"
+      "name": "Kirklees Welcomes (via KCALC)",
+      "website": "https://www.kirkleeswelcomes.org.uk/"
     },
     {
       "id": "kooth-plc",
-      "name": "Kooth plc"
+      "name": "Kooth plc",
+      "website": "https://www.koothplc.com/"
     },
     {
       "id": "lawrence-batley-theatre",
-      "name": "Lawrence Batley Theatre"
+      "name": "Lawrence Batley Theatre",
+      "website": "https://www.thelbt.org/"
     },
     {
       "id": "leeds-and-york-partnership-nhs-ft",
-      "name": "Leeds and York Partnership NHS FT"
+      "name": "Leeds and York Partnership NHS FT",
+      "website": "https://www.leedsandyorkpft.nhs.uk/"
     },
     {
       "id": "leeds-mind",
-      "name": "Leeds Mind"
+      "name": "Leeds Mind",
+      "website": "https://www.leedsmind.org.uk/"
     },
     {
       "id": "locala-community-partnerships-cic",
       "name": "Locala Community Partnerships CIC",
-      "overview": "An independent not-for-profit health an wellbeing Social Enterprise CIC, with flexibility to tailor provision to local need, investing in Social Value initiatives benefitting people and planet."
+      "overview": "An independent not-for-profit health an wellbeing Social Enterprise CIC, with flexibility to tailor provision to local need, investing in Social Value initiatives benefitting people and planet.",
+      "website": "https://www.locala.org.uk/"
     },
     {
       "id": "locorum-ltd",
-      "name": "Locorum Ltd"
+      "name": "Locorum Ltd",
+      "website": "https://www.locorum.org.uk/"
     },
     {
       "id": "ls2y-and-dalton-together",
@@ -354,23 +428,28 @@
     },
     {
       "id": "macmillan-cancer-support",
-      "name": "Macmillan Cancer Support"
+      "name": "Macmillan Cancer Support",
+      "website": "https://www.macmillan.org.uk/"
     },
     {
       "id": "maternity-action",
-      "name": "Maternity Action"
+      "name": "Maternity Action",
+      "website": "https://maternityaction.org.uk/"
     },
     {
       "id": "maximus-uk-for-dwp",
-      "name": "Maximus UK (for DWP)"
+      "name": "Maximus UK (for DWP)",
+      "website": "https://www.maximusuk.co.uk/"
     },
     {
       "id": "men-walking-and-talking",
-      "name": "Men Walking and Talking"
+      "name": "Men Walking and Talking",
+      "website": "https://www.menwalkingandtalking.co.uk/"
     },
     {
       "id": "mencap",
-      "name": "Mencap"
+      "name": "Mencap",
+      "website": "https://www.mencap.org.uk/"
     },
     {
       "id": "mencap-in-kirklees",
@@ -378,11 +457,13 @@
     },
     {
       "id": "mental-health-innovations",
-      "name": "Mental Health Innovations"
+      "name": "Mental Health Innovations",
+      "website": "https://mentalhealthinnovations.org/"
     },
     {
       "id": "mental-health-uk",
-      "name": "Mental Health UK"
+      "name": "Mental Health UK",
+      "website": "https://mentalhealth-uk.org/"
     },
     {
       "id": "mid-yorkshire-teaching-nhs-trust-kirklees-college",
@@ -390,39 +471,48 @@
     },
     {
       "id": "migrant-help",
-      "name": "Migrant Help"
+      "name": "Migrant Help",
+      "website": "https://www.migranthelpuk.org/"
     },
     {
       "id": "migration-yorkshire",
-      "name": "Migration Yorkshire"
+      "name": "Migration Yorkshire",
+      "website": "https://www.migrationyorkshire.org.uk/"
     },
     {
       "id": "mind",
-      "name": "Mind"
+      "name": "Mind",
+      "website": "https://www.mind.org.uk/"
     },
     {
       "id": "money-advice-trust",
-      "name": "Money Advice Trust"
+      "name": "Money Advice Trust",
+      "website": "https://moneyadvicetrust.org/"
     },
     {
       "id": "money-and-pensions-service",
-      "name": "Money and Pensions Service"
+      "name": "Money and Pensions Service",
+      "website": "https://maps.org.uk/"
     },
     {
       "id": "nacro",
-      "name": "Nacro"
+      "name": "Nacro",
+      "website": "https://www.nacro.org.uk/"
     },
     {
       "id": "nhs",
-      "name": "NHS"
+      "name": "NHS",
+      "website": "https://www.nhs.uk/"
     },
     {
       "id": "northern-college-barnsley-college",
-      "name": "Northern College (Barnsley College)"
+      "name": "Northern College (Barnsley College)",
+      "website": "https://www.northern.ac.uk/"
     },
     {
       "id": "offploy",
-      "name": "Offploy"
+      "name": "Offploy",
+      "website": "https://www.offploy.org/"
     },
     {
       "id": "paddock-community-trust",
@@ -436,15 +526,18 @@
     },
     {
       "id": "papyrus",
-      "name": "Papyrus"
+      "name": "Papyrus",
+      "website": "https://www.papyrus-uk.org/"
     },
     {
       "id": "pay-and-employment-rights-service-yorkshire",
-      "name": "Pay & Employment Rights Service Yorkshire"
+      "name": "Pay & Employment Rights Service Yorkshire",
+      "website": "https://pers.org.uk/"
     },
     {
       "id": "peertalk",
-      "name": "PeerTalk"
+      "name": "PeerTalk",
+      "website": "https://peertalk.org.uk/"
     },
     {
       "id": "proper-job-theatre-company",
@@ -452,46 +545,56 @@
       "aliases": [
         "Proper Job Theatre Company Ltd",
         "Proper Job Theatre Company, with KLTV and Thread Republic"
-      ]
+      ],
+      "website": "https://www.properjob.org.uk/"
     },
     {
       "id": "ptsd-resolution",
-      "name": "PTSD Resolution"
+      "name": "PTSD Resolution",
+      "website": "https://ptsdresolution.org/"
     },
     {
       "id": "ravensthorpe-community-centre",
       "name": "Ravensthorpe Community Centre",
       "aliases": [
         "Ravensthorpe Community Centre (RCC) and Taleem Centre"
-      ]
+      ],
+      "website": "https://www.rccl.org/"
     },
     {
       "id": "refugee-council",
-      "name": "Refugee Council"
+      "name": "Refugee Council",
+      "website": "https://refugeecouncil.org.uk/"
     },
     {
       "id": "royal-british-legion-industries",
-      "name": "Royal British Legion Industries"
+      "name": "Royal British Legion Industries",
+      "website": "https://rbli.co.uk/"
     },
     {
       "id": "royal-voluntary-service",
-      "name": "Royal Voluntary Service"
+      "name": "Royal Voluntary Service",
+      "website": "https://www.royalvoluntaryservice.org.uk/"
     },
     {
       "id": "rural-veteran-hubs-kirklees",
-      "name": "Rural Veteran Hubs (Kirklees)"
+      "name": "Rural Veteran Hubs (Kirklees)",
+      "website": "https://www.rvhkirklees.org/"
     },
     {
       "id": "s2r",
-      "name": "S2R"
+      "name": "S2R",
+      "website": "https://www.s2r.org.uk/"
     },
     {
       "id": "samaritans",
-      "name": "Samaritans"
+      "name": "Samaritans",
+      "website": "https://www.samaritans.org/"
     },
     {
       "id": "scope",
-      "name": "Scope"
+      "name": "Scope",
+      "website": "https://www.scope.org.uk/"
     },
     {
       "id": "shaping-care-in-kirklees-cic",
@@ -503,15 +606,18 @@
     },
     {
       "id": "shaw-trust",
-      "name": "Shaw Trust"
+      "name": "Shaw Trust",
+      "website": "https://shawtrust.org.uk/"
     },
     {
       "id": "shelter",
-      "name": "Shelter"
+      "name": "Shelter",
+      "website": "https://england.shelter.org.uk/"
     },
     {
       "id": "smart-works",
-      "name": "Smart Works"
+      "name": "Smart Works",
+      "website": "https://smartworks.org.uk/"
     },
     {
       "id": "snacko-s-stanley-s-training-project",
@@ -524,7 +630,8 @@
     },
     {
       "id": "solace",
-      "name": "Solace"
+      "name": "Solace",
+      "website": "https://www.solace-uk.org.uk/"
     },
     {
       "id": "south-west-yorkshire-partnership-nhs-foundation-tr",
@@ -532,19 +639,23 @@
       "aliases": [
         "South West Yorkshire Partnership NHS FT",
         "South West Yorkshire Partnership NHS Foundation Trust (NHS Kirklees Talking Therapies)"
-      ]
+      ],
+      "website": "https://www.southwestyorkshire.nhs.uk/"
     },
     {
       "id": "specialist-autism-services",
-      "name": "Specialist Autism Services"
+      "name": "Specialist Autism Services",
+      "website": "http://www.specialistautismservices.org/"
     },
     {
       "id": "ssafa",
-      "name": "SSAFA"
+      "name": "SSAFA",
+      "website": "https://www.ssafa.org.uk/"
     },
     {
       "id": "stepchange-debt-charity",
-      "name": "StepChange Debt Charity"
+      "name": "StepChange Debt Charity",
+      "website": "https://www.stepchange.org/"
     },
     {
       "id": "tap-volunteer-group",
@@ -552,7 +663,8 @@
     },
     {
       "id": "tcd",
-      "name": "TCD"
+      "name": "TCD",
+      "website": "https://www.tcd-charity.co.uk/"
     },
     {
       "id": "the-branch-rivertree-trust",
@@ -565,63 +677,78 @@
     },
     {
       "id": "the-howarth-foundation",
-      "name": "The Howarth Foundation"
+      "name": "The Howarth Foundation",
+      "website": "https://howarthfoundation.org.uk/"
     },
     {
       "id": "the-king-s-trust",
-      "name": "The King's Trust"
+      "name": "The King's Trust",
+      "website": "https://www.kingstrust.org.uk/"
     },
     {
       "id": "the-poppy-factory",
-      "name": "The Poppy Factory"
+      "name": "The Poppy Factory",
+      "website": "https://www.poppyfactory.org/"
     },
     {
       "id": "the-welcome-centre",
-      "name": "The Welcome Centre"
+      "name": "The Welcome Centre",
+      "website": "https://www.thewelcomecentre.org/"
     },
     {
       "id": "third-sector-leaders-kirklees",
-      "name": "Third Sector Leaders Kirklees"
+      "name": "Third Sector Leaders Kirklees",
+      "website": "https://tslkirklees.org.uk/"
     },
     {
       "id": "timpson",
-      "name": "Timpson"
+      "name": "Timpson",
+      "website": "https://www.timpson.co.uk/"
     },
     {
       "id": "touchstone",
-      "name": "Touchstone"
+      "name": "Touchstone",
+      "website": "https://touchstonesupport.org.uk/"
     },
     {
       "id": "turn2us",
-      "name": "Turn2us"
+      "name": "Turn2us",
+      "website": "https://www.turn2us.org.uk/"
     },
     {
       "id": "uk-government",
-      "name": "UK Government"
+      "name": "UK Government",
+      "website": "https://www.gov.uk/"
     },
     {
       "id": "university-of-huddersfield",
-      "name": "University of Huddersfield"
+      "name": "University of Huddersfield",
+      "website": "https://www.hud.ac.uk/"
     },
     {
       "id": "unlock",
-      "name": "Unlock"
+      "name": "Unlock",
+      "website": "https://unlock.org.uk/"
     },
     {
       "id": "unwavering-warriors",
-      "name": "Unwavering Warriors"
+      "name": "Unwavering Warriors",
+      "website": "https://www.unwaveringwarriorsmentalhealthgroup.com/"
     },
     {
       "id": "versus-arthritis",
-      "name": "Versus Arthritis"
+      "name": "Versus Arthritis",
+      "website": "https://www.versusarthritis.org/"
     },
     {
       "id": "waythrough-formerly-richmond-fellowship",
-      "name": "Waythrough (formerly Richmond Fellowship)"
+      "name": "Waythrough (formerly Richmond Fellowship)",
+      "website": "https://www.waythrough.org.uk/"
     },
     {
       "id": "west-yorkshire-colleges-consortium",
-      "name": "West Yorkshire Colleges Consortium"
+      "name": "West Yorkshire Colleges Consortium",
+      "website": "https://www.westyorkshirecolleges.co.uk/"
     },
     {
       "id": "west-yorkshire-combined-authority",
@@ -629,11 +756,13 @@
       "aliases": [
         "WYCA",
         "West Yorkshire Metro / WYCA"
-      ]
+      ],
+      "website": "https://www.westyorks-ca.gov.uk/"
     },
     {
       "id": "west-yorkshire-fire-and-rescue",
-      "name": "West Yorkshire Fire and Rescue"
+      "name": "West Yorkshire Fire and Rescue",
+      "website": "https://westyorksfire.gov.uk/"
     },
     {
       "id": "west-yorkshire-fire-and-rescue-with-the-king-s-tru",
@@ -641,23 +770,28 @@
     },
     {
       "id": "womencentre",
-      "name": "WomenCentre"
+      "name": "WomenCentre",
+      "website": "https://www.womencentre.org.uk/"
     },
     {
       "id": "workers-educational-association",
-      "name": "Workers' Educational Association"
+      "name": "Workers' Educational Association",
+      "website": "https://www.wea.org.uk/"
     },
     {
       "id": "working-chance",
-      "name": "Working Chance"
+      "name": "Working Chance",
+      "website": "https://workingchance.org/"
     },
     {
       "id": "working-families",
-      "name": "Working Families"
+      "name": "Working Families",
+      "website": "https://workingfamilies.org.uk/"
     },
     {
       "id": "wy-health-and-care-partnership",
-      "name": "WY Health & Care Partnership"
+      "name": "WY Health & Care Partnership",
+      "website": "https://www.wypartnership.co.uk/"
     },
     {
       "id": "wyca-with-kirklees-council",
@@ -665,12 +799,14 @@
     },
     {
       "id": "y-and-h-public-health-network",
-      "name": "Y&H Public Health Network"
+      "name": "Y&H Public Health Network",
+      "website": "https://www.yhphnetwork.co.uk/"
     },
     {
       "id": "yorkshire-sound-women-network",
       "name": "Yorkshire Sound Women Network",
-      "overview": "YSWN is a Kirklees-based community interest working for gender equity in audio, by inspiring and enabling women and gender-diverse people to explore sound and music technology."
+      "overview": "YSWN is a Kirklees-based community interest working for gender equity in audio, by inspiring and enabling women and gender-diverse people to explore sound and music technology.",
+      "website": "https://yorkshiresoundwomen.com/"
     },
     {
       "id": "yorkshire-youth-and-music-and-umbrella-yoga",
@@ -678,15 +814,18 @@
       "overview": "YY&M uses music to improve young people’s lives across Yorkshire. Amongst our activities we run sessions in our Safe Space Studio in Huddersfield, giving young people the chance to explore music-making. Sessions are led by professional music leaders and shaped by each young person’s needs and ideas.",
       "aliases": [
         "Yorkshire Youth & Music and Umbrella Yoga"
-      ]
+      ],
+      "website": "https://www.yym.org.uk/"
     },
     {
       "id": "young-women-s-trust",
-      "name": "Young Women's Trust"
+      "name": "Young Women's Trust",
+      "website": "https://www.youngwomenstrust.org/"
     },
     {
       "id": "ywsg",
-      "name": "YWSG"
+      "name": "YWSG",
+      "website": "http://www.ywsg.org.uk/"
     }
   ]
 }
