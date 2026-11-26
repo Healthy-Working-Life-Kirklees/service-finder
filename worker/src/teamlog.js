@@ -4,7 +4,7 @@
 // secret TEAM_PASSCODE. If that secret is not set, every /log route returns 404, i.e. the feature is off.
 // Free text only: the page tells people not to enter personal or identifying details.
 //
-// The same store also holds the team's listing decisions (include, review or exclude) for each service, made on
+// The same store also holds the team's listing decisions (include, review, exclude or planned) for each service, made on
 // the All services page. A decision here doesn't change the live site by itself: scripts/apply-decisions.mjs
 // writes the decisions into data/services/<id>.json, in a pull request, and the live list follows the data.
 //
@@ -31,7 +31,8 @@ const TYPES = ['Issue', 'Action', 'Idea', 'Question'];
 const AREAS = ['Matching quality', 'Data accuracy', 'Wording and content', 'Safety', 'Technical', 'Process and governance', 'Other'];
 const PRIORITIES = ['High', 'Medium', 'Low'];
 const STATUSES = ['Open', 'In progress', 'Done', "Won't do"];
-const DECISIONS = ['include', 'review', 'exclude'];
+const DECISIONS = ['include', 'review', 'exclude', 'planned'];
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const ID_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const MAX_DECISIONS = 2000; // far more services than the data will hold; stops the store being filled with junk
 
@@ -127,8 +128,9 @@ export class LogStore {
       const key = 'dec:' + body.id;
       const prev = await s.get(key);
       if (!prev && ((await s.get('decCount')) || 0) >= MAX_DECISIONS) return Response.json({ error: 'Too many decisions stored.' }, { status: 400 });
-      const history = prev ? [...(prev.history || []), { decision: prev.decision, note: prev.note, by: prev.by, t: prev.t }].slice(-20) : [];
-      const item = { decision: body.decision, note: body.note, by: body.by, t: now, history };
+      const planned = (x) => (x.decision === 'planned' ? { expected: x.expected, ...(x.checkFrom ? { checkFrom: x.checkFrom } : {}) } : {});
+      const history = prev ? [...(prev.history || []), { decision: prev.decision, note: prev.note, by: prev.by, t: prev.t, ...planned(prev) }].slice(-20) : [];
+      const item = { decision: body.decision, note: body.note, by: body.by, t: now, ...planned(body), history };
       await s.put(key, item);
       if (!prev) await s.put('decCount', ((await s.get('decCount')) || 0) + 1);
       return Response.json({ id: body.id, item });
@@ -490,12 +492,17 @@ export async function handleLog(request, env, url, cors, checker) {
   const d = path.match(/^\/log\/decisions\/([a-z0-9-]{1,50})$/);
   if (request.method === 'PUT' && d) {
     if (!ID_RE.test(d[1])) return json({ error: 'Unknown service.' }, 400, cors);
-    if (!DECISIONS.includes(body.decision)) return json({ error: 'The decision must be include, review or exclude.' }, 400, cors);
+    if (!DECISIONS.includes(body.decision)) return json({ error: 'The decision must be include, review, exclude or planned.' }, 400, cors);
     const by = clean(body.by, 40);
     if (!by) return json({ error: 'Please give your name or initials.' }, 400, cors);
     const note = clean(body.note, 1000);
     if (body.decision !== 'include' && note.length < 3) return json({ error: 'Please say briefly why (at least 3 characters).' }, 400, cors);
-    const res = await call('/decisions/set', { id: d[1], decision: body.decision, note, by });
+    // Planned: announced or coming, not running yet. Needs when it's expected; a "check from" date is optional.
+    const expected = clean(body.expected, 60);
+    const checkFrom = DATE_RE.test(String(body.checkFrom || '')) && !Number.isNaN(Date.parse(body.checkFrom)) ? body.checkFrom : '';
+    if (body.decision === 'planned' && !expected) return json({ error: 'Please say when it\'s expected to start (for example "Spring 2027").' }, 400, cors);
+    if (body.checkFrom && !checkFrom) return json({ error: 'The "check from" date must be a real date.' }, 400, cors);
+    const res = await call('/decisions/set', { id: d[1], decision: body.decision, note, by, ...(body.decision === 'planned' ? { expected, checkFrom } : {}) });
     return json(res, res.error ? 400 : 200, cors);
   }
 

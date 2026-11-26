@@ -48,8 +48,9 @@
             <li><strong>Include on the live list</strong>: shown on the finder and given to the AI.</li>
             <li><strong>Needs further review</strong>: kept off the live list until someone checks it.</li>
             <li><strong>Exclude completely</strong>: kept off for good, for example closed, not in Kirklees, not a service, or a duplicate.</li>
+            <li><strong>Planned</strong>: announced or being planned, but not running yet. Kept off the live list. Say when it's expected to start, and optionally a day to start checking: from that day the morning email reminds the team to see whether it has started.</li>
           </ul>
-          Give a reason for further review or exclude, then save. You can change a decision later; earlier ones are kept.</li>
+          Give a reason for further review, exclude or planned, then save. You can change a decision later; earlier ones are kept.</li>
         <li><strong>Correct or complete details.</strong> "Edit details" opens a form with the service's details. Boxes still saying "To be completed" are highlighted: a service can't go live until they're filled in. Say what changed and why, and tick "I have checked these details are current" if you checked them with the provider or its website. Your changes show on the service, old and new, until they're applied, and can be discarded.</li>
         <li><strong>Add a missing service.</strong> "Add a service" (above the list) opens an empty form. Say where the service came from and why it should be added. The page warns you if it looks like one already listed. It then appears as "New: not yet in the data", and the team reviews, edits and decides on it like any other. A new service never goes live unless the team decides to include it.</li>
         <li><strong>Going live.</strong> Everything is saved for the team straight away, but the finder itself only changes when the team's changes are applied. Press <strong>Apply changes now</strong> (under the sign-in box): the changes are checked, and if they pass they go live on the finder, the AI and the printable directory in about 3 minutes. If the check fails, nothing goes live and the page says so. Until then you'll see "waiting to be applied". Changes that clash with something changed since, or that break the data rules, are held back and listed for Phil to sort out.</li>
@@ -96,6 +97,7 @@
             <option value="include">On the live list</option>
             <option value="review">Waiting for review</option>
             <option value="exclude">Excluded</option>
+            <option value="planned">Planned (not running yet)</option>
             <option value="new">New: not yet in the data</option>
           </select></div>
         <div><label for="f-decision">Team changes</label>
@@ -107,6 +109,7 @@
             <option value="team-include">Team chose: include</option>
             <option value="team-review">Team chose: further review</option>
             <option value="team-exclude">Team chose: exclude</option>
+            <option value="team-planned">Team chose: planned</option>
           </select></div>
         <div><label for="f-type">Type</label>
           <select id="f-type">

@@ -2,7 +2,7 @@
 // request: first changes to organisations (data/organisations.json: rename, overview, website, combine) and venues
 // (data/venues.json: rename, address, postcode, combine), then new
 // services the team has added (each becomes data/services/<id>.json), then edits to a service's details, then the
-// listing decisions (include, review or exclude). A new service starts as "review" and only goes on the live list
+// listing decisions (include, review, exclude or planned: announced or coming, not running yet). A new service starts as "review" and only goes on the live list
 // if the team has also decided to include it.
 //
 // Organisations: a service names its organisation. A name that isn't an organisation yet becomes a new one. An
@@ -35,7 +35,7 @@ import { fileURLToPath } from 'node:url';
 import Ajv2020 from 'ajv/dist/2020.js';
 
 const PLACEHOLDER = 'To be completed';
-const DECISIONS = ['include', 'review', 'exclude'];
+const DECISIONS = ['include', 'review', 'exclude', 'planned'];
 const WORD = { include: 'Include on the live list', review: 'Needs further review', exclude: 'Exclude completely' };
 const ID_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 // A check the provider made themselves, through a review or verify link: marked checkedWith 'provider' by the Admin
@@ -420,8 +420,10 @@ for (const [id, d] of Object.entries(decisions).sort(([a], [b]) => a.localeCompa
   const s = f.s;
   const date = String(d.t || '').slice(0, 10) || new Date().toISOString().slice(0, 10);
   const before = s.listing || {};
-  // Already applied: same decision, recorded on the same day by the same person.
-  if (before.decision === d.decision && before.date === date && before.by === d.by) {
+  // Planned services also say when they're expected, and optionally when to start checking.
+  const planned = d.decision === 'planned' ? { ...(d.expected ? { expected: String(d.expected).trim() } : {}), ...(d.checkFrom ? { checkFrom: d.checkFrom } : {}) } : {};
+  // Already applied: same decision (and dates), recorded on the same day by the same person.
+  if (before.decision === d.decision && before.date === date && before.by === d.by && (before.expected || '') === (planned.expected || '') && (before.checkFrom || '') === (planned.checkFrom || '')) {
     decisionsSame += 1;
     continue;
   }
@@ -434,9 +436,10 @@ for (const [id, d] of Object.entries(decisions).sort(([a], [b]) => a.localeCompa
     reason: (d.note || '').trim() || (d.decision === 'include' ? 'Included by the development team.' : 'Decided by the development team.'),
     by: String(d.by || 'Development team').trim(),
     date,
+    ...planned,
   };
   f.dirty = true;
-  changed.push({ id, name: s.name, from: before.decision, to: d.decision, by: s.listing.by, date, reason: s.listing.reason });
+  changed.push({ id, name: s.name, from: before.decision, to: d.decision, by: s.listing.by, date, reason: s.listing.reason + (planned.expected ? ` (expected ${planned.expected})` : '') });
 }
 
 if (!dryRun) {

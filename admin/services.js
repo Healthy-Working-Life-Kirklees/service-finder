@@ -1,6 +1,7 @@
 // All services: a searchable, filterable list of every scheme and service (services-all.json, which includes
 // those not on the live list), for the development team to check what's there, what's missing and what needs reviewing,
-// and to decide for each one: include it on the live list, give it further review, or exclude it completely.
+// and to decide for each one: include it on the live list, give it further review, exclude it completely, or mark it
+// planned (announced or coming, not running yet).
 //
 // The search and filters live in the address (for example services.html?listing=review), so a filtered view
 // can be shared as a link. Decisions are stored on the Worker with the team log, behind the team passcode,
@@ -78,8 +79,8 @@
   };
   const SELF = { yes: 'Can refer themselves', partly: 'Self-referral: partly', no: 'Needs a referral', tbc: 'Self-referral: to be confirmed' };
   const LEVEL = { local: 'Local', regional: 'Regional', national: 'National' };
-  const LISTING = { include: ['On the live list', 'ok'], review: ['Waiting for review', 'warn'], exclude: ['Excluded', 'bad'], new: ['New: not yet in the data', 'blue'] };
-  const CHOICE = { include: 'Include on the live list', review: 'Needs further review', exclude: 'Exclude completely' };
+  const LISTING = { include: ['On the live list', 'ok'], review: ['Waiting for review', 'warn'], exclude: ['Excluded', 'bad'], planned: ['Planned', 'blue'], new: ['New: not yet in the data', 'blue'] };
+  const CHOICE = { include: 'Include on the live list', review: 'Needs further review', exclude: 'Exclude completely', planned: 'Planned: announced or coming, not running yet' };
   const when = (iso) => {
     const d = new Date(iso);
     return isNaN(d) ? '' : d.toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -89,8 +90,13 @@
   function teamState(x) {
     const t = team && team[x.s.id];
     if (!t) return x.s.listing && x.s.listing.by ? 'applied' : 'undecided';
-    return t.decision === x.listing ? 'applied' : 'pending';
+    if (t.decision !== x.listing) return 'pending';
+    // A planned service's dates are part of the decision: changing them is a change to apply.
+    const L = x.s.listing || {};
+    return t.decision !== 'planned' || ((t.expected || '') === (L.expected || '') && (t.checkFrom || '') === (L.checkFrom || '')) ? 'applied' : 'pending';
   }
+  // "Spring 2027", or "Spring 2027; check from 1 Mar 2027", for a planned decision or listing.
+  const plannedText = (o) => (o && o.expected ? 'expected ' + o.expected + (o.checkFrom ? '; check from ' + fmt(o.checkFrom) : '') : '');
   // A change to a service's details: none, waiting to be applied, or already in the data.
   // Compares values whatever order an object's keys are in, treating empty as missing.
   const canon = (v) => {
@@ -248,7 +254,7 @@
     return words.every((w) => x.text.includes(w));
   }
 
-  const ORDER = { new: -1, review: 0, include: 1, exclude: 2 };
+  const ORDER = { new: -1, review: 0, include: 1, planned: 2, exclude: 3 };
   const SORTS = {
     listing: (a, b) => ORDER[a.listing] - ORDER[b.listing] || SORTS.name(a, b),
     name: (a, b) => a.s.name.localeCompare(b.s.name, 'en-GB', { sensitivity: 'base' }),
@@ -386,7 +392,7 @@
       el('h3', {}, el('a', { href: '#svc-' + s.id, class: 'anchor', text: s.name })),
       el('p', { class: 'org' }, el('a', { href: 'organisation.html?name=' + encodeURIComponent(s.organisation), text: s.organisation }), el('span', { class: 'id' }, el('code', { text: s.id }))),
       pills,
-      L.reason ? el('p', { class: 'listing', text: lText + ': ' + L.reason + (L.by ? ' (' + L.by + (L.date ? ', ' + fmt(L.date) : '') + ')' : '') }) : null,
+      L.reason ? el('p', { class: 'listing', text: lText + (x.listing === 'planned' ? ' (' + plannedText(L) + ')' : '') + ': ' + L.reason + (L.by ? ' (' + L.by + (L.date ? ', ' + fmt(L.date) : '') + ')' : '') }) : null,
       team ? decidePanel(x) : null,
       x.isNew ? el('div', { class: 'waiting' }, el('p', { class: 'mt0' }, el('strong', { text: 'New service waiting to be added' }), ' (last saved by ' + x.entry.by + ', ' + when(x.entry.t) + '): ' + x.entry.note),
         el('p', { class: 'hint', text: 'It becomes a file in the data, waiting for review, when the team\'s changes are next applied. If the team has decided to include it, it goes on the live list at the same time.' })) : null,
@@ -414,18 +420,28 @@
     const note = el('textarea', { rows: '2', maxlength: '1000', id: 'note-' + s.id, value: t ? t.note || '' : '' });
     const msg = el('p', { class: 'msg', role: 'status', hidden: true });
     const warn = el('p', { class: 'msg info', hidden: true, text: 'Its details still say "' + PLACEHOLDER + '". The decision will be saved, but it can\'t go on the live list until someone fills them in.' });
+    // Planned: when it's expected (words or a date), and the day the morning email starts reminding the team.
+    const cur = t && t.decision === 'planned' ? t : (s.listing && s.listing.decision === 'planned' ? s.listing : {});
+    const expected = el('input', { type: 'text', id: 'exp-' + s.id, maxlength: '60', value: cur.expected || '', placeholder: 'For example: Spring 2027, or 1 April 2027' });
+    const checkFrom = el('input', { type: 'date', id: 'chk-' + s.id, value: cur.checkFrom || '' });
+    const plannedBox = el('div', { class: 'planned-fields', hidden: !(t ? t.decision === 'planned' : x.listing === 'planned') },
+      el('label', { for: 'exp-' + s.id, text: 'Expected to start' }), expected,
+      el('label', { for: 'chk-' + s.id, text: 'Remind us to check from (optional)' }), checkFrom,
+      el('p', { class: 'hint', text: 'Planned services are never on the live list. From the "check from" day, the morning email asks the team to see whether it has started.' }));
     const radios = Object.keys(CHOICE).map((d) => el('label', {}, el('input', { type: 'radio', name, value: d, checked: t ? t.decision === d : false,
-      onchange: () => { warn.hidden = !(d === 'include' && x.incomplete); } }), CHOICE[d]));
+      onchange: () => { warn.hidden = !(d === 'include' && x.incomplete); plannedBox.hidden = d !== 'planned'; } }), CHOICE[d]));
     const save = el('button', { type: 'button', class: 'btn primary small', text: t ? 'Change decision' : 'Save decision', onclick: async () => {
       const picked = radios.map((l) => l.querySelector('input')).find((i) => i.checked);
       const by = $('#by').value.trim();
       const show = (text, kind) => { msg.className = 'msg ' + kind; msg.textContent = text; msg.hidden = false; };
-      if (!picked) return show('Choose include, further review or exclude.', 'err');
+      if (!picked) return show('Choose include, further review, exclude or planned.', 'err');
       if (!by) { $('#by').focus(); return show('Please put your name or initials at the top of the page first.', 'err'); }
       if (picked.value !== 'include' && note.value.trim().length < 3) { note.focus(); return show('Please say briefly why.', 'err'); }
+      if (picked.value === 'planned' && !expected.value.trim()) { expected.focus(); return show('Please say when it\'s expected to start.', 'err'); }
       save.disabled = true;
       try {
-        const d = await api('PUT', '/log/decisions/' + encodeURIComponent(s.id), { decision: picked.value, note: note.value.trim(), by });
+        const d = await api('PUT', '/log/decisions/' + encodeURIComponent(s.id), { decision: picked.value, note: note.value.trim(), by,
+          ...(picked.value === 'planned' ? { expected: expected.value.trim(), checkFrom: checkFrom.value || '' } : {}) });
         team[s.id] = d.item;
         refreshOne(x);
         summary();
@@ -441,14 +457,15 @@
     const history = t ? [{ decision: t.decision, note: t.note, by: t.by, t: t.t }, ...[...(t.history || [])].reverse()] : [];
     return el('fieldset', { class: 'decide' },
       el('legend', { text: 'Team decision' }),
-      t ? el('p', { class: 'current', text: 'Decided: ' + CHOICE[t.decision] + ' (' + (t.by || 'someone') + ', ' + when(t.t) + ').' + (teamTextApplied(x) ) }) : el('p', { class: 'current', text: 'Not yet decided by the team.' }),
+      t ? el('p', { class: 'current', text: 'Decided: ' + CHOICE[t.decision] + (t.decision === 'planned' ? ', ' + plannedText(t) : '') + ' (' + (t.by || 'someone') + ', ' + when(t.t) + ').' + (teamTextApplied(x) ) }) : el('p', { class: 'current', text: 'Not yet decided by the team.' }),
       el('div', { class: 'choices' }, radios),
       warn,
-      el('label', { class: 'note', for: 'note-' + s.id, text: 'Why (needed for further review or exclude)' }),
+      plannedBox,
+      el('label', { class: 'note', for: 'note-' + s.id, text: 'Why (needed for further review, exclude or planned)' }),
       note,
       el('div', { class: 'row-end' }, save, msg),
       history.length > 1 ? el('details', {}, el('summary', { text: 'Earlier decisions' }),
-        el('ul', { class: 'notes' }, history.slice(1).map((h) => el('li', {}, el('span', { class: 'when', text: when(h.t) + (h.by ? ' \u00b7 ' + h.by : '') }), CHOICE[h.decision] + (h.note ? ': ' + h.note : ''))))) : null
+        el('ul', { class: 'notes' }, history.slice(1).map((h) => el('li', {}, el('span', { class: 'when', text: when(h.t) + (h.by ? ' \u00b7 ' + h.by : '') }), CHOICE[h.decision] + (h.decision === 'planned' ? ' (' + plannedText(h) + ')' : '') + (h.note ? ': ' + h.note : ''))))) : null
     );
   }
   const teamTextApplied = (x) => (teamState(x) === 'applied' ? ' The finder already reflects this.' : ' Waiting to be applied to the finder.');
@@ -1404,6 +1421,7 @@ Thank you,
       [n((x) => x.listing === 'include'), 'on the live list', { listing: 'include' }],
       [n((x) => x.listing === 'review'), 'waiting for review', { listing: 'review' }],
       [n((x) => x.listing === 'exclude'), 'excluded', { listing: 'exclude' }],
+      [n((x) => x.listing === 'planned'), 'planned (not running yet)', { listing: 'planned' }],
       ...(team ? [
         [n((x) => teamState(x) === 'undecided'), 'not yet decided by the team', { decision: 'undecided' }],
         [n((x) => teamState(x) === 'pending'), 'decided, waiting to be applied', { decision: 'pending' }],

@@ -1,7 +1,8 @@
 // Combines data/meta.json and every data/services/<id>.json into two files:
 //
 //   data/services.json      the live list: only services whose "listing" decision is "include". The page, the
-//                           Worker (and so the AI) and the tests read this one.
+//                           Worker (and so the AI) and the tests read this one. It also has "planned": the name
+//                           and dates of each planned service, for the Worker's morning reminder email only.
 //   data/services-all.json  every service, whatever its decision, for the All services page in Admin.
 //
 // Each service names its organisation; the organisation's own details (its overview) are kept once, in
@@ -65,6 +66,10 @@ const choices = {
   level: P.level.enum, reviewCycle: P.reviewCycle.enum, audience: P.audience.items.enum, categories: P.categories.items.enum,
   areas: P.areas.items.enum, healthFocus: P.healthFocus.items.enum, selfReferral: P.selfReferral.properties.allowed.enum, groups: P.groups.items.enum,
 };
-fs.writeFileSync(out, JSON.stringify({ ...meta, count: live.length, choices, organisations: orgList, venues: liveVenues, services: live }, null, 2) + '\n');
+// Planned services (announced or coming, not running yet) are never on the live list. Only their name and dates go
+// in the live file, for the Worker's morning email to remind the team when it's time to check on them.
+const planned = services.filter((s) => s.listing && s.listing.decision === 'planned')
+  .map((s) => ({ id: s.id, name: s.name, organisation: s.organisation, expected: s.listing.expected, ...(s.listing.checkFrom ? { checkFrom: s.listing.checkFrom } : {}) }));
+fs.writeFileSync(out, JSON.stringify({ ...meta, count: live.length, choices, organisations: orgList, venues: liveVenues, planned, services: live }, null, 2) + '\n');
 fs.writeFileSync(outAll, JSON.stringify({ ...meta, count: services.length, choices, organisations: orgs, venues, services }, null, 2) + '\n');
 console.log(`Built data/services.json (${live.length} on the live list) and data/services-all.json (all ${services.length}).`);

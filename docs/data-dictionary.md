@@ -165,7 +165,9 @@ Every scheme has every field below, except where it says "optional". An empty li
 
 | Field | Type | What it is |
 |---|---|---|
-| `listing.decision` | text | `include` (on the live list: shown on the finder and given to the AI), `review` (needs further review, not live) or `exclude` (left out completely, not live). Only `include` reaches `services.json`. A service that still says "To be completed" anywhere can't be `include`. |
+| `listing.decision` | text | `include` (on the live list: shown on the finder and given to the AI), `review` (needs further review, not live), `exclude` (left out completely, not live) or `planned` (announced or being planned, not running yet; not live). Only `include` reaches `services.json` as a service; planned services are listed there only by name and dates, under `planned`, for the Worker's morning reminder email. A service that still says "To be completed" anywhere can't be `include`. |
+| `listing.expected` | text | Planned services only, and required for them: when it's expected to start, in words or as a date ("Spring 2027", "1 April 2027"). |
+| `listing.checkFrom` | date | Planned services only, optional: the day to start checking whether it has started. From that day the morning email lists it for the team, once per day set. |
 | `listing.reason` | text | Why. For the development team's decisions, the reason they gave. |
 | `listing.by` | text | Optional. Who made the decision (name or initials, as entered on the All services page). Absent for the starting values set when the service was added. |
 | `listing.date` | date | Optional. When the decision was made, as `YYYY-MM-DD`. |

@@ -544,6 +544,6 @@ FOLLOW-UP QUESTIONS LEFT: ${questionsLeft} (of ${MAX_QUESTIONS} across the whole
   // Each morning (the cron in wrangler.toml): emails the team about projects and sessions that end or close to
   // referrals in the next 30 days, with a ready-written message and a fresh review link to forward (reminders.js).
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(sendReminders(env, SERVICES, new Date().toISOString().slice(0, 10)));
+    ctx.waitUntil(sendReminders(env, SERVICES, new Date().toISOString().slice(0, 10), data.planned || []));
   },
 };

@@ -106,7 +106,10 @@
     const s = byId(id);
     if (!t) return 'none';
     if (!s) return 'pending';
-    return t.decision === listingOf(s) ? 'applied' : 'pending';
+    if (t.decision !== listingOf(s)) return 'pending';
+    // A planned service's dates are part of the decision (the same rule as teamState in services.js).
+    const L = s.listing || {};
+    return t.decision !== 'planned' || ((t.expected || '') === (L.expected || '') && (t.checkFrom || '') === (L.checkFrom || '')) ? 'applied' : 'pending';
   }
   // Something the last run set aside is only still a problem while the change it was about is still waiting, unchanged:
   // once the team discards it or saves it again, it drops off (a re-saved change is tried again at the next run).
