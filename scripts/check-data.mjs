@@ -104,7 +104,8 @@ try {
 const today = new Date().toISOString().slice(0, 10);
 const files = fs.readdirSync(dir).filter((f) => !f.startsWith('.'));
 const overdue = [];
-const decisions = { include: 0, review: 0, exclude: 0 };
+const decisions = { include: 0, review: 0, exclude: 0, planned: 0 };
+const plannedDue = [];
 const names = new Map();
 
 for (const f of files.sort()) {
@@ -151,6 +152,14 @@ for (const f of files.sort()) {
   if (s.whoFor.length > LIMITS.whoFor) overLimit.push(`${s.id}: who it's for ${s.whoFor.length} characters (limit ${LIMITS.whoFor})`);
   for (const p of s.projects) if (p.overview.length > LIMITS.projectOverview) overLimit.push(`${s.id}: "${p.name}" overview ${p.overview.length} characters (limit ${LIMITS.projectOverview})`);
   if (s.coachNotes && s.coachNotes.length > LIMITS.coachNotes) overLimit.push(`${s.id}: anything coaches should know ${s.coachNotes.length} characters (limit ${LIMITS.coachNotes})`);
+  // Planned services: announced or being planned, never live. They say when they're expected; checkFrom is the day
+  // the morning email starts reminding the team to see whether they've launched.
+  if (s.listing.decision === 'planned') {
+    if (!s.listing.expected) fail(rel, 'is planned but doesn\'t say when it\'s expected to start (listing.expected, for example "Spring 2027")');
+    if (s.listing.checkFrom && s.listing.checkFrom <= today) plannedDue.push(`${s.id} (check from ${s.listing.checkFrom})`);
+  } else if (s.listing.expected || s.listing.checkFrom) {
+    fail(rel, 'listing.expected and listing.checkFrom are only for planned services');
+  }
   decisions[s.listing.decision] += 1;
   const key = (s.name + ' | ' + s.organisation).toLowerCase();
   if (names.has(key)) fail(rel, `same name and organisation as ${names.get(key)}`);
@@ -166,8 +175,9 @@ const unusedVenues = [...venueIds].filter((v) => !venueUsed.has(v));
 if (unusedVenues.length) console.log(`Note: ${unusedVenues.length} venues are not used by any service: ${unusedVenues.join(', ')}`);
 if (overLimit.length) console.log(`Note: ${overLimit.length} texts are longer than the forms allow (kept as they are; shorten them when next checked):\n  ${overLimit.join('\n  ')}`);
 if (overdue.length) console.log(`Note: ${overdue.length} open entries on the live list are overdue for a check: ${overdue.join(', ')}`);
+if (plannedDue.length) console.log(`Note: ${plannedDue.length} planned services are due a check to see if they've started: ${plannedDue.join(', ')}`);
 if (errors.length) {
   console.error(`\n${errors.length} problem${errors.length === 1 ? '' : 's'} in the scheme data:\n  ` + errors.join('\n  '));
   process.exit(1);
 }
-console.log(`Checked ${files.length} scheme files: all fine. On the live list: ${decisions.include}. Waiting for review: ${decisions.review}. Excluded: ${decisions.exclude}.`);
+console.log(`Checked ${files.length} scheme files: all fine. On the live list: ${decisions.include}. Waiting for review: ${decisions.review}. Excluded: ${decisions.exclude}. Planned: ${decisions.planned}.`);

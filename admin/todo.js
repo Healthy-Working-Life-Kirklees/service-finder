@@ -88,7 +88,7 @@
       if (F.decisionState(id) !== 'pending' || skip.has('service:' + id) || skip.has('new:' + id)) continue;
       const d = S.decisions[id];
       const s = F.byId(id) || (S.added[id] && S.added[id].service) || { name: id };
-      out.push({ t: d.t, title: el('span', {}, el('strong', { text: s.name }), ': ' + ({ include: 'include on the live list', review: 'needs further review', exclude: 'exclude' }[d.decision]) + ' (' + d.by + ', ' + day(d.t) + ')'), href: svcHref(id) });
+      out.push({ t: d.t, title: el('span', {}, el('strong', { text: s.name }), ': ' + ({ include: 'include on the live list', review: 'needs further review', exclude: 'exclude', planned: 'planned' + (d.expected ? ', expected ' + d.expected : '') }[d.decision]) + ' (' + d.by + ', ' + day(d.t) + ')'), href: svcHref(id) });
     }
     for (const [id, a] of Object.entries(S.added)) {
       if (F.byId(id) || skip.has('new:' + id)) continue;

@@ -106,7 +106,10 @@
     const s = byId(id);
     if (!t) return 'none';
     if (!s) return 'pending';
-    return t.decision === listingOf(s) ? 'applied' : 'pending';
+    if (t.decision !== listingOf(s)) return 'pending';
+    // A planned service's dates are part of the decision (the same rule as teamState in services.js).
+    const L = s.listing || {};
+    return t.decision !== 'planned' || ((t.expected || '') === (L.expected || '') && (t.checkFrom || '') === (L.checkFrom || '')) ? 'applied' : 'pending';
   }
   function orgPending(id) {
     const c = S.orgChanges[id];

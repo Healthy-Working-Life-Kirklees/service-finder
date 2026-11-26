@@ -484,6 +484,14 @@ r = await logCall('GET', '/log/decisions', null, { origin: 'https://evil.example
 check('decisions: wrong Origin -> 403', r.status === 403);
 const pre3 = await worker.fetch(new Request('https://w/log/decisions/kbop', { method: 'OPTIONS', headers: { Origin: O } }), logEnv());
 check('decisions: preflight allows PUT', pre3.headers.get('Access-Control-Allow-Methods').includes('PUT'));
+r = await logCall('PUT', '/log/decisions/west-yorkshire-promise', { decision: 'planned', by: 'PL', note: 'Announced, no route yet' });
+check('decisions: planned needs when it is expected -> 400', r.status === 400 && /expected/.test(r.body.error), JSON.stringify(r.body));
+r = await logCall('PUT', '/log/decisions/west-yorkshire-promise', { decision: 'planned', by: 'PL', note: 'Announced, no route yet', expected: 'Spring 2027', checkFrom: '2027-31-01' });
+check('decisions: planned with a bad check-from date -> 400', r.status === 400);
+r = await logCall('PUT', '/log/decisions/west-yorkshire-promise', { decision: 'planned', by: 'PL', note: 'Announced, no route yet', expected: 'Spring 2027', checkFrom: '2027-03-01' });
+check('decisions: planned keeps when expected and the check-from day', r.status === 200 && r.body.item.decision === 'planned' && r.body.item.expected === 'Spring 2027' && r.body.item.checkFrom === '2027-03-01', JSON.stringify(r.body));
+r = await logCall('PUT', '/log/decisions/west-yorkshire-promise', { decision: 'exclude', by: 'PL', note: 'Dropped', expected: 'ignored' });
+check('decisions: other decisions carry no planned dates, and history keeps them', r.status === 200 && !('expected' in r.body.item) && r.body.item.history[0].expected === 'Spring 2027', JSON.stringify(r.body));
 
 // edits to a service's details
 r = await logCall('GET', '/log/edits');
@@ -1559,6 +1567,33 @@ check('venues: the apply script (no Origin) can read them', r.status === 200 && 
   res = await rem.sendReminders(remEnv({ SITE_URL: '' }), services, T);
   check('reminders: off without the email or site settings', !res.sent && res.reason === 'not set up');
   check('reminders: the Worker runs them each morning', typeof worker.scheduled === 'function');
+
+  // Planned services: listed once their check-from day has come, once per day set.
+  sentMail.length = 0;
+  const plans = [
+    { id: 'west-yorkshire-promise', name: 'West Yorkshire Promise', organisation: 'WYCA', expected: 'Spring 2027', checkFrom: '2026-11-09' },
+    { id: 'not-yet', name: 'Not Yet', organisation: 'Z', expected: '2027', checkFrom: '2027-01-01' },
+    { id: 'no-date', name: 'No Date', organisation: 'Z', expected: 'Some time' },
+  ];
+  res = await rem.sendReminders(remEnv(), [], T, plans);
+  const pm = sentMail[0];
+  check('reminders: planned services due a check are emailed, with a link to All services', res.sent && res.planned === 1 && /1 planned service to check/.test(pm.subject) && /West Yorkshire Promise \(WYCA\): expected Spring 2027\. https:\/\/site\.example\/admin\/services\.html\?q=west-yorkshire-promise/.test(pm.text), JSON.stringify(res) + (pm ? pm.subject + pm.text : ''));
+  check('reminders: not planned services before their day, or with no day', !/Not Yet|No Date/.test(pm.text));
+  res = await rem.sendReminders(remEnv(), [], '2026-11-10', plans);
+  check('reminders: a planned service is reminded about once per check-from day', !res.sent && sentMail.length === 1);
+  res = await rem.sendReminders(remEnv(), [], '2026-12-10', [{ ...plans[0], checkFrom: '2026-12-10' }]);
+  check('reminders: a later check-from day reminds again', res.sent && sentMail.length === 2);
+
+  // apply-decisions writes a planned decision with its dates
+  const pd = fs.mkdtempSync(path.join(os.tmpdir(), 'plan-'));
+  fs.copyFileSync(path.join(root, 'data/services/jobs-guarantee-18-21.json'), path.join(pd, 'jobs-guarantee-18-21.json'));
+  fs.copyFileSync(path.join(root, 'data/organisations.json'), path.join(pd, 'organisations.json'));
+  const pin = path.join(pd, 'decisions.json');
+  fs.writeFileSync(pin, JSON.stringify({ decisions: { 'jobs-guarantee-18-21': { decision: 'planned', note: 'Later phase', expected: 'Spring 2027', checkFrom: '2027-03-01', by: 'PL', t: '2026-11-26T10:00:00Z' } } }));
+  const pout = execFileSync(process.execPath, [path.join(root, 'scripts/apply-decisions.mjs'), '--input', pin, '--dir', pd], { encoding: 'utf8' });
+  const pl = JSON.parse(fs.readFileSync(path.join(pd, 'jobs-guarantee-18-21.json'), 'utf8')).listing;
+  check('apply: writes planned with when expected and the check-from day', pl.decision === 'planned' && pl.expected === 'Spring 2027' && pl.checkFrom === '2027-03-01' && pl.by === 'PL' && /expected Spring 2027/.test(pout), JSON.stringify(pl) + pout);
+  check('apply: planned again changes nothing', /0 listing decisions applied, 1 already up to date/.test(execFileSync(process.execPath, [path.join(root, 'scripts/apply-decisions.mjs'), '--input', pin, '--dir', pd], { encoding: 'utf8' })));
 }
 
 // ---------- "Apply changes now" (applynow.js) ----------

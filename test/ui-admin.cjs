@@ -713,7 +713,12 @@ async function worker(route) {
   await page.waitForSelector('#signed-in:not([hidden])');
   check('decide: signed in via the log passcode in this tab', (await page.textContent('#signed-in-text')).includes('0 decisions, 0 edited services and 0 new services'), await page.textContent('#signed-in-text'));
   await page.waitForSelector('.svc .decide');
-  check('decide: decision controls shown', (await page.locator('#svc-samaritans-helpline .decide input[type=radio]').count()) === 3);
+  check('decide: decision controls shown', (await page.locator('#svc-samaritans-helpline .decide input[type=radio]').count()) === 4);
+  check('decide: planned dates hidden until planned is chosen', !(await page.locator('#svc-samaritans-helpline .planned-fields').isVisible()));
+  await page.check('#svc-samaritans-helpline .decide input[value=planned]');
+  check('decide: choosing planned asks when it is expected', await page.locator('#exp-samaritans-helpline').isVisible() && await page.locator('#chk-samaritans-helpline').isVisible());
+  await page.check('#svc-samaritans-helpline .decide input[value=include]');
+  check('decide: and hides it again for another choice', !(await page.locator('#svc-samaritans-helpline .planned-fields').isVisible()));
   await page.fill('#by', '');
   await page.check('#svc-samaritans-helpline input[value=exclude]');
   await page.click('#svc-samaritans-helpline .decide button');
@@ -813,7 +818,7 @@ async function worker(route) {
   const ns = added['batley-job-club'].service;
   check('add: the new answers are saved: where they live, work situation, age and referral', JSON.stringify(ns.residence) === '{"scope":"parts","areas":["Batley"]}' && JSON.stringify(ns.work) === '{"needed":"yes","situations":["benefits"],"benefits":["Universal Credit, any"]}' && ns.ageMin === 18 && ns.ageMax === null && ns.age === '18+' && JSON.stringify(ns.referral) === '{"needed":"no"}' && ns.selfReferral.allowed === 'yes', JSON.stringify({ r: ns.residence, w: ns.work, a: [ns.ageMin, ns.ageMax, ns.age], rf: ns.referral, sr: ns.selfReferral }));
   check('add: listed as new, with the "new" filter on', (await page.locator('.svc').count()) === 1 && (await page.inputValue('#f-listing')) === 'new' && (await page.locator('#svc-batley-job-club .pill.blue', { hasText: 'New: not yet in the data' }).count()) === 1);
-  check('add: can be decided on like any other', (await page.locator('#svc-batley-job-club .decide input[type=radio]').count()) === 3);
+  check('add: can be decided on like any other', (await page.locator('#svc-batley-job-club .decide input[type=radio]').count()) === 4);
   await page.check('#svc-batley-job-club input[value=include]');
   await page.click('#svc-batley-job-club .decide button');
   await page.waitForSelector('#svc-batley-job-club .pill.blue >> text=waiting to be applied');

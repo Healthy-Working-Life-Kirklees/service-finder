@@ -53,9 +53,11 @@
     "status": "Being replaced by Targeted Employment Programmes (checked against the provider's site, 26 Nov 2026)"
   },
   "listing": {
-    "decision": "exclude",
-    "reason": "Exclude for now - add to 'Planned services' list",
+    "decision": "planned",
+    "reason": "Announced but not running yet (was: Exclude for now - add to 'Planned services' list)",
     "by": "PL",
-    "date": "2026-11-26"
+    "date": "2026-11-26",
+    "expected": "Not announced (TEPs are replacing bootcamps)",
+    "checkFrom": "2027-01-04"
   }
 }

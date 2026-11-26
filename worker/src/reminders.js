@@ -5,6 +5,10 @@
 // services page) and writes a ready-to-send email for the team to forward to the organisation. Nothing is sent to
 // the organisation from here: the team forwards it themselves, which keeps the relationship personal.
 //
+// It also lists planned services (announced or coming, not running yet) whose "check from" day has come, so the
+// team looks at whether they've started. Each is listed once per "check from" day: to be reminded again later, the
+// team sets a later day on All services.
+//
 // Each project or session date is only reminded about once (remembered in the team store, LogStore), so a day the
 // email isn't sent is caught up the next morning.
 //
@@ -43,7 +47,7 @@ export function draftEmail(s, items, link, longDate) {
   ].join('\n');
 }
 
-export async function sendReminders(env, services, today) {
+export async function sendReminders(env, services, today, planned = []) {
   try {
     const L = globalThis.LISTING;
     const to = String(env.FEEDBACK_EMAIL_TO || '').split(',').map((x) => x.trim()).filter(Boolean).slice(0, 10);
@@ -54,11 +58,14 @@ export async function sendReminders(env, services, today) {
     const call = async (path, payload) => (await stub.fetch('https://log' + path, { method: 'POST', body: JSON.stringify(payload || {}) })).json();
 
     const items = services.filter((s) => s.open === true).flatMap((s) => L.endingSoon(s, today));
-    if (!items.length) return { sent: false, reason: 'nothing due' };
+    const plans = (planned || []).filter((p) => p && p.id && p.checkFrom && p.checkFrom <= today);
+    if (!items.length && !plans.length) return { sent: false, reason: 'nothing due' };
     const key = (x) => [x.service.id, x.project.id, x.session ? x.session.id : '', x.kind, x.date].join('|');
-    const { unseen } = await call('/remind/check', { keys: items.map(key) });
+    const planKey = (p) => ['planned', p.id, p.checkFrom].join('|');
+    const { unseen } = await call('/remind/check', { keys: [...items.map(key), ...plans.map(planKey)] });
     const due = items.filter((x) => (unseen || []).includes(key(x)));
-    if (!due.length) return { sent: false, reason: 'already reminded' };
+    const plansDue = plans.filter((p) => (unseen || []).includes(planKey(p)));
+    if (!due.length && !plansDue.length) return { sent: false, reason: 'already reminded' };
 
     // One link and one draft email per service.
     const { links } = await call('/plinks/list');
@@ -87,26 +94,40 @@ export async function sendReminders(env, services, today) {
         ''
       );
     }
-    if (!parts.length) return { sent: false, reason: 'no links made' };
+    if (!parts.length && !plansDue.length) return { sent: false, reason: 'no links made' };
 
-    const n = byService.size;
+    const n = parts.length ? byService.size : 0;
+    const p = plansDue.length;
+    const subject = [
+      n ? `${n} service${n === 1 ? ' has' : 's have'} projects ending or closing to referrals soon` : '',
+      p ? `${p} planned service${p === 1 ? '' : 's'} to check` : '',
+    ].filter(Boolean).join('; ');
     await env.FEEDBACK_EMAIL.send({
       to: to.length === 1 ? to[0] : to,
       from: { email: env.FEEDBACK_EMAIL_FROM, name: 'HWL Support Finder' },
-      subject: `[Support Finder] ${n} service${n === 1 ? ' has' : 's have'} projects ending or closing to referrals soon`,
+      subject: `[Support Finder] ${subject.charAt(0).toUpperCase() + subject.slice(1)}`,
       text: [
-        'These projects or sessions end, or stop taking referrals, in the next 30 days. They stop showing in the Support Finder after that date.',
-        '',
-        'For each one, check with the organisation: forward the email below (adding their email address), or get in touch your own way. The link lets them update their listing; their reply comes back to All services for the team to check.',
-        '',
-        ...parts,
-        'All services in Admin also shows what is ending soon and what has closed.',
-        '',
+        ...(parts.length ? [
+          'These projects or sessions end, or stop taking referrals, in the next 30 days. They stop showing in the Support Finder after that date.',
+          '',
+          'For each one, check with the organisation: forward the email below (adding their email address), or get in touch your own way. The link lets them update their listing; their reply comes back to All services for the team to check.',
+          '',
+          ...parts,
+          'All services in Admin also shows what is ending soon and what has closed.',
+          '',
+        ] : []),
+        ...(plansDue.length ? [
+          'PLANNED SERVICES TO CHECK',
+          'These were announced or planned, and it is time to see whether they have started. If one has, fill in its details on All services and include it on the live list; if not, set a later "check from" day.',
+          '',
+          ...plansDue.map((x) => `- ${x.name} (${x.organisation}): expected ${x.expected}. ${site}admin/services.html?q=${encodeURIComponent(x.id)}`),
+          '',
+        ] : []),
         '— Sent automatically by the HWL Support Finder each morning.',
       ].join('\n'),
     });
-    await call('/remind/mark', { keys: due.map(key) });
-    return { sent: true, services: n, items: due.length };
+    await call('/remind/mark', { keys: [...(parts.length ? due.map(key) : []), ...plansDue.map(planKey)] });
+    return { sent: true, services: n, items: parts.length ? due.length : 0, planned: p };
   } catch {
     return { sent: false, reason: 'error' };
   }
