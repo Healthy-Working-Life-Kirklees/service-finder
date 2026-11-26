@@ -49,7 +49,7 @@ export function makeChecker(schema) {
   const EDITABLE = [
     ...Object.keys(TEXT), ...Object.keys(NULLABLE_TEXT), ...Object.keys(OPTIONAL_TEXT), ...Object.keys(ENUM), ...Object.keys(ENUM_LIST),
     ...Object.keys(TEXT_LIST), ...BOOL, 'webpage', 'email', 'selfReferral', 'projects', 'venues', 'logo', 'requiresMention',
-    'partners', 'ageMin', 'ageMax', 'residence', 'work', 'referral', 'answers',
+    'partners', 'ageMin', 'ageMax', 'residence', 'work', 'referral', 'answers', 'essential',
   ];
   // Fields a provider can't change: how the team sorts, reviews and maintains the data. (Where each answer came
   // from, "answers", is recorded by the team and the apply script.)
@@ -71,7 +71,7 @@ export function makeChecker(schema) {
     selfReferral: 'Self-referral', projects: 'Projects', hwlFunded: 'Healthy Working Life funded', mapLinks: 'Map buttons', logo: 'Logo', requiresMention: 'Only shown when mentioned',
     groups: "Who it's for (groups)", venues: 'Venues used by every project',
     partners: 'In partnership with', ageMin: 'Age from', ageMax: 'Age up to', residence: 'Who can use it, by where they live', work: 'Work situation', healthNote: 'Health conditions, in your words',
-    referral: 'Referral', answers: 'Where the answers came from',
+    referral: 'Referral', answers: 'Where the answers came from', essential: 'Essential answers',
   };
 
   const str = (v) => (typeof v === 'string' ? v.trim() : null);
@@ -273,6 +273,11 @@ export function makeChecker(schema) {
         if (v === null || v === '') { out[k] = null; continue; }
         if (!Number.isInteger(v) || v < 0 || v > 120) return { error: `${label} must be a whole number of years.` };
         out[k] = v;
+      } else if (k === 'essential') {
+        if (v === null) { out[k] = null; continue; }
+        const ESS = ['residence', 'work', 'age', 'health'];
+        if (!Array.isArray(v) || v.some((x) => !ESS.includes(x))) return { error: `${label}: please tick only the answers above.` };
+        out[k] = ESS.filter((x) => v.includes(x));
       } else if (k === 'residence') {
         if (v === null) { out[k] = null; continue; }
         if (!v || typeof v !== 'object' || !RESIDENCE.includes(v.scope)) return { error: `${label}: please choose one of the answers.` };

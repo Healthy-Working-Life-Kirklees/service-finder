@@ -488,6 +488,12 @@ async function worker(route) {
   await page.fill('#sg-name', 'Batley Job Club');
   await page.fill('#sg-whoFor', 'Anyone in Batley looking for work.');
   await page.locator('#sg-residence input[value=kirklees]').check();
+  const aboveRes = page.locator('.lf-above[data-ess=residence]');
+  check('service form: where people live shows in the eligibility, with its own "Essential" tick, unticked to start', await aboveRes.isVisible() && (await aboveRes.textContent()).includes('People living in Kirklees') && !(await aboveRes.locator('input[type=checkbox]').isChecked()));
+  await aboveRes.getByLabel('Essential').check();
+  await page.locator('#sg-residence input[value=west-yorkshire]').check();
+  await page.locator('#sg-residence input[value=kirklees]').check();
+  check('service form: the tick stays when the answer above is changed and the line redrawn', await page.locator('.lf-above[data-ess=residence] input[type=checkbox]').isChecked());
   const catBox = page.locator('#sg-categories');
   await catBox.getByLabel('Benefits and money', { exact: true }).check();
   check('service form: with one kind of support ticked, there is no "main one" question', !(await catBox.locator('.lf-main').isVisible()));
@@ -516,7 +522,7 @@ async function worker(route) {
   await page.locator('.pc-left button', { hasText: 'Send anyway' }).click();
   await page.waitForSelector('.lf-review');
   const rv = await page.locator('.lf-review').innerText();
-  check('service form: "Check your answers" shows what they told us, by part, before anything is sent', lastSent() === sentFoot2 && rv.includes('Part 1: The service and who can join') && rv.includes('People living in Kirklees') && rv.includes('Cost: Free') && rv.includes('Online') && rv.includes('Sam') && !(await page.locator('.lf-part').first().isVisible()), rv.slice(0, 600));
+  check('service form: "Check your answers" shows what they told us, by part, before anything is sent', lastSent() === sentFoot2 && rv.includes('Part 1: The service and who can join') && rv.includes('People living in Kirklees (essential)') && rv.includes('Cost: Free') && rv.includes('Online') && rv.includes('Sam') && !(await page.locator('.lf-part').first().isVisible()), rv.slice(0, 600));
   await page.locator('.lf-review-row', { hasText: 'Who can use it' }).first().locator('button', { hasText: 'Change' }).click().catch(() => page.locator('.lf-review-change button').first().click());
   check('service form: "Change" goes back to that question in the form', !(await page.locator('.lf-review').count()) && await page.locator('.lf-part:visible').count() === 1);
   await page.click('.lf-step[data-part="3"]');
@@ -526,7 +532,7 @@ async function worker(route) {
   await page.waitForSelector('.pc-thanks');
   const sentFull = lastSent();
   const fm = sentFull.missedService || {};
-  check('service form: sent to the team as a suggested service with the whole listing', sentFull.kind === 'gap' && sentFull.reasons.join() === 'missing-service' && fm.role === 'provider' && fm.name === 'Batley Job Club' && fm.organisation === 'Batley Community Trust' && fm.contactName === 'Sam' && fm.listing && fm.listing.whoFor === 'Anyone in Batley looking for work.' && JSON.stringify(fm.listing.residence) === '{"scope":"kirklees"}' && fm.listing.projects[0].overview === 'Weekly job club with CV help.' && fm.listing.webpage === 'https://www.example.org/job-club' && fm.listing.cost === 'Free' && fm.listing.categories.join() === 'Apprenticeships,Benefits and money' && !('cost' in fm.listing.projects[0]) && JSON.stringify(fm.listing.projects[0].sessions) === '[{"id":"tue","where":["Online"],"days":["tue"]}]' && fm.website === 'https://www.example.org/job-club', JSON.stringify(fm.listing && [fm.listing.cost, fm.listing.projects]));
+  check('service form: sent to the team as a suggested service with the whole listing', sentFull.kind === 'gap' && sentFull.reasons.join() === 'missing-service' && fm.role === 'provider' && fm.name === 'Batley Job Club' && fm.organisation === 'Batley Community Trust' && fm.contactName === 'Sam' && fm.listing && fm.listing.whoFor === 'Anyone in Batley looking for work.' && JSON.stringify(fm.listing.residence) === '{"scope":"kirklees"}' && fm.listing.projects[0].overview === 'Weekly job club with CV help.' && fm.listing.webpage === 'https://www.example.org/job-club' && fm.listing.cost === 'Free' && fm.listing.categories.join() === 'Apprenticeships,Benefits and money' && JSON.stringify(fm.listing.essential) === '["residence"]' && !('cost' in fm.listing.projects[0]) && JSON.stringify(fm.listing.projects[0].sessions) === '[{"id":"tue","where":["Online"],"days":["tue"]}]' && fm.website === 'https://www.example.org/job-club', JSON.stringify(fm.listing && [fm.listing.cost, fm.listing.projects]));
   check('service form: offers to add another service from the same organisation', await page.locator('.pc-thanks button', { hasText: 'Tell us about another service' }).isVisible());
   await page.goto(ON + '/');
   await sugBtn.waitFor();
@@ -764,7 +770,7 @@ async function worker(route) {
   await page.locator('#ed-new-service-work-benefits label:has-text("Universal Credit, any") input').check();
   await page.fill('#ed-new-service-agemin', '18+');
   check('add: age boxes take numbers only, and fill in the words for the card', (await page.inputValue('#ed-new-service-agemin')) === '18' && (await page.inputValue('#ed-new-service-age')) === '18+');
-  check('add: eligibility shows the answers from above', (await page.locator('#add-panel .lf-fromabove .lf-above').allTextContents()).join('|') === 'People living in BatleyFrom above|Work situation: Claiming Universal Credit, anyFrom above|Age: 18+From above', (await page.locator('#add-panel .lf-fromabove .lf-above').allTextContents()).join('|'));
+  check('add: eligibility shows the answers from above', (await page.locator('#add-panel .lf-fromabove .lf-above').allTextContents()).join('|') === 'People living in BatleyFrom above Essential|Work situation: Claiming Universal Credit, anyFrom above Essential|Age: 18+From above Essential', (await page.locator('#add-panel .lf-fromabove .lf-above').allTextContents()).join('|'));
   // How people get in: no referral needed, so the ways in are optional.
   await page.locator('#ed-new-service-referral input[value=no]').check();
   check('add: with no referral needed, the box asks how people sign up', (await page.textContent('#add-panel [data-key=referralRoutes] .lf-lab')) === 'How people sign up or book, if they need to' && !(await page.locator('#ed-new-service-referral-who').isVisible()));
@@ -1307,11 +1313,11 @@ async function worker(route) {
   await page.click('#page button:text-is("Copy a pilot invitation email")');
   const invite = await page.evaluate(() => window.__copied);
   check('reply: a pilot invitation can be copied, thanking them by name for checking the service', invite.startsWith('Subject: Would you like to help pilot') && invite.includes('Hi Sam,') && invite.includes('Thank you for checking your entry for Audio Boost') && invite.includes(ON + '/') && !/\n\n\n/.test(invite) && !/:\n\n- /.test(invite), invite.slice(0, 300));
-  check('reply: the Healthy Working Life rule is kept, the rest can be used', (await page.textContent('.change.blocked')).includes('Kept as it is: "Lives in Kirklees"'));
+  check('reply: taking out a grant funding rule is flagged to check, not locked', (await page.textContent('.change.blocked')).includes('Check this: it takes out "Lives in Kirklees"') && (await page.locator('.change.blocked input[value=use]').isChecked()));
   await page.click('.decide-bar button:text-is("Save as checked")');
   await page.waitForSelector('.msg.ok');
   const ed = edits['audio-boost'];
-  check('reply: saved as a checked edit, keeping the programme rule and using the rest', ed && ed.checked === true && ed.changes.phone === '01924 000001' && ed.changes.gate.includes('Lives in Kirklees') && !ed.changes.gate.includes('Aged 18 or over') && ed.note.includes('From Sam'), JSON.stringify(ed));
+  check('reply: saved as a checked edit, using their change as it is', ed && ed.checked === true && ed.changes.phone === '01924 000001' && !ed.changes.gate.includes('Lives in Kirklees') && !ed.changes.gate.includes('Aged 18 or over') && ed.note.includes('From Sam'), JSON.stringify(ed));
   await page.goto(ON + '/admin/todo.html');
   await page.waitForSelector('#todo .todo-sec');
   check('to do: the reply has moved to "ready to go live"', !(await page.textContent('#todo')).includes('3 changes from Sam') && (await page.textContent('.todo-ready')).includes('Audio Boost'));

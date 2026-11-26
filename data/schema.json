@@ -406,6 +406,12 @@
       "maximum": 120,
       "description": "Oldest age, as a number, when there is an upper limit."
     },
+    "essential": {
+      "description": "Which of the structured answers (where people live, work situation, age, health) are essential: someone who clearly doesn't meet one can't use the service. Only answers that are filled in count.",
+      "type": "array",
+      "items": { "enum": ["residence", "work", "age", "health"] },
+      "uniqueItems": true
+    },
     "residence": {
       "type": "object",
       "additionalProperties": false,

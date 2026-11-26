@@ -133,7 +133,7 @@
     gate: 'Essential (turned away without)', referralRoutes: 'How people get in', selfReferral: 'Can people refer themselves?', projects: 'What happens, where and when', workExperience: 'Work experience or volunteering',
     cost: 'Cost', languages: 'Languages and formats', coachNotes: 'Anything coaches should know', groups: "Who it's for (groups)", notes: 'Team notes', reviewCycle: 'Review cycle',
     hwlFunded: 'Healthy Working Life funded', mapLinks: 'Map buttons', logo: 'Logo', requiresMention: 'Only shown when mentioned',
-    partners: 'In partnership with', residence: 'Who can use it, by where they live', work: 'Work situation', healthNote: 'Health conditions, in their words', ageMin: 'Age from', ageMax: 'Age up to',
+    partners: 'In partnership with', essential: 'Essential answers', residence: 'Who can use it, by where they live', work: 'Work situation', healthNote: 'Health conditions, in their words', ageMin: 'Age from', ageMax: 'Age up to',
     referral: 'Referral needed, and who can make it', answers: 'Where the answers came from',
   };
   const SELF = { yes: 'Yes', partly: 'Partly', no: 'No, they need a referral', tbc: 'Not known yet' };
@@ -148,10 +148,12 @@
   function projectWords(p) {
     return (p.name || 'A project') + (list(p.sessions).length ? ': ' + p.sessions.map(sessionWords).join('; ') : '');
   }
+  const ESS_WORDS = { residence: 'Where people live', work: 'Work situation', age: 'Age', health: 'Health' };
   function words(v, k) {
     if (v == null || v === '' || (Array.isArray(v) && !v.length)) return '(none)';
     if (k === 'projects') return list(v).map(projectWords).join(' | ');
     if (k === 'groups') return LL.groupNames(v).join('; ');
+    if (k === 'essential') return list(v).map((x) => ESS_WORDS[x] || x).join('; ');
     if (k === 'venues') return list(v).map(venueText).join('; ');
     if (Array.isArray(v) && k !== 'healthFocus') return v.join('; ');
     if (k === 'residence' && typeof v === 'object') return LL.residenceWords(v);

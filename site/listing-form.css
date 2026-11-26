@@ -102,3 +102,6 @@
 @media (max-width: 640px) { .lf-review-row { grid-template-columns: 1fr auto; } .lf-review-row dt { grid-column: 1 / -1; } }
 .lf-review-gap { display: block; height: .4rem; }
 .lf-review .btn.small { min-height: 36px; padding: .2rem .8rem; }
+
+/* The answers from above in the eligibility box, with their own "Essential" tick */
+.lf .lf-above .lf-ess { margin-left: auto; }
