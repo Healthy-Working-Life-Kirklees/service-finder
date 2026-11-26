@@ -26,6 +26,7 @@ let usageSent = []; // anonymous usage events the page sent
 const decisions = {}; // listing decisions recorded on the All services page
 let applyStatus = null; // what GET /log/apply/status returns (null: "Apply changes now" is off)
 let providerLinks = []; // provider review links (GET /log/provider-links)
+const pilotOrgs = {}; // organisations in the pilot (GET/PUT /log/pilot)
 const edits = {}; // edits to details recorded on the All services page
 const added = {}; // new services added on the All services page
 const providerSent = [];
@@ -149,6 +150,13 @@ async function worker(route) {
     if (url.pathname === '/log/edits') return json({ edits });
     if (url.pathname === '/log/new') return json({ added });
     if (url.pathname === '/log/orgs') return json({ orgs });
+    if (url.pathname === '/log/pilot') return json({ pilot: pilotOrgs });
+    const pm = url.pathname.match(/^\/log\/pilot\/([a-z0-9-]+)$/);
+    if (pm && req.method() === 'PUT') {
+      const b = JSON.parse(req.postData());
+      if (b.on) pilotOrgs[pm[1]] = pilotOrgs[pm[1]] || { by: b.by, t: new Date().toISOString() }; else delete pilotOrgs[pm[1]];
+      return json({ id: pm[1], item: pilotOrgs[pm[1]] || null });
+    }
     if (url.pathname === '/log/venues') return json({ venues: venueEdits });
     const vm = url.pathname.match(/^\/log\/venues\/([a-z0-9-]+)$/);
     if (vm && req.method() === 'PUT') {
@@ -968,6 +976,9 @@ async function worker(route) {
   check('provider filter: replied', ids.length === 1 && ids[0] === 'acas-helpline', ids.join());
   ids = await shown('reply-waiting');
   check('provider filter: a reply the team hasn\'t dealt with yet', ids.length === 1 && ids[0] === 'acas-helpline', ids.join());
+  await page.click('#svc-acas-helpline summary');
+  await page.waitForSelector('#svc-acas-helpline .provider .reply');
+  check('all services: a provider\'s reply comes with a pilot invitation to copy', (await page.locator('#svc-acas-helpline .provider button:text-is("Copy a pilot invitation email")').count()) === 1);
   ids = await shown('not-sent');
   const liveNot = await shown('live-not-sent');
   check('provider filter: not sent leaves those two out, and live-not-sent is part of it', !ids.includes('my-way-forward') && !ids.includes('acas-helpline') && liveNot.length > 0 && liveNot.length < ids.length && liveNot.every((i) => ids.includes(i)), ids.length + ' / ' + liveNot.length);
@@ -1292,6 +1303,10 @@ async function worker(route) {
   await page.waitForSelector('.change');
   check('reply: one card per change, old and new', (await page.locator('.change').count()) >= 2 && (await page.textContent('#page')).includes('01924 000001'));
   check('reply: links in a change can be clicked (and open in a new tab)', (await page.getAttribute('.change .now a[href="https://example.org/apply-now"]', 'target')) === '_blank');
+  await page.evaluate(() => { window.__copied = ''; navigator.clipboard.writeText = async (t) => { window.__copied = t; }; });
+  await page.click('#page button:text-is("Copy a pilot invitation email")');
+  const invite = await page.evaluate(() => window.__copied);
+  check('reply: a pilot invitation can be copied, thanking them by name for checking the service', invite.startsWith('Subject: Would you like to help pilot') && invite.includes('Hi Sam,') && invite.includes('Thank you for checking your entry for Audio Boost') && invite.includes(ON + '/') && !/\n\n\n/.test(invite) && !/:\n\n- /.test(invite), invite.slice(0, 300));
   check('reply: the Healthy Working Life rule is kept, the rest can be used', (await page.textContent('.change.blocked')).includes('Kept as it is: "Lives in Kirklees"'));
   await page.click('.decide-bar button:text-is("Save as checked")');
   await page.waitForSelector('.msg.ok');
@@ -1361,7 +1376,25 @@ async function worker(route) {
   const orgText = await page.textContent('#page');
   check('organisation: shows its services with projects, and the Healthy Working Life marker only on the funded one', orgText.includes('TCD Healthy Futures') && orgText.includes("Luke's Lads") && orgText.includes('Project: Healthy Futures Programme') && (await page.locator('.org-head .pill.blue').count()) === 0);
   check('organisation: the waiting suggestion is shown under it', orgText.includes('Mental health support sessions'));
+  check('organisation: not in the pilot to start, with a pilot invitation to copy (it runs local services)', !(await page.isChecked('#pilot-switch')) && (await page.locator('.org-head button:text-is("Copy a pilot invitation email")').count()) === 1);
+  await page.check('#pilot-switch');
+  await page.waitForFunction(() => document.querySelector('.org-head').parentElement.textContent.includes('Added to the pilot by'));
+  check('organisation: the pilot switch is saved for the team, with who switched it on', Boolean(pilotOrgs.tcd && pilotOrgs.tcd.by));
+  await page.evaluate(() => { window.__copied = ''; navigator.clipboard.writeText = async (t) => { window.__copied = t; }; });
+  await page.click('.org-head button:text-is("Copy a pilot invitation email")');
+  const orgInvite = await page.evaluate(() => window.__copied);
+  check('organisation: the invitation has no service thank-you and a name to fill in when no one has been sent a link', orgInvite.includes('Hi [name],') && !orgInvite.includes('Thank you for checking') && orgInvite.includes('join the pilot'), orgInvite.slice(0, 200));
   check('organisation: "Add a service" adds it under this organisation', (await page.getAttribute('.org-head a:text-is("Add a service")', 'href')) === 'services.html?add=TCD');
+  await page.goto(ON + '/admin/organisation.html');
+  await page.waitForSelector('.org-list-page li');
+  check('organisations: the list marks who is in the pilot', (await page.locator('.org-list-page li', { hasText: 'TCD' }).first().textContent()).includes('In the pilot'));
+  await page.check('#org-pilot-only');
+  check('organisations: can show only those in the pilot', (await page.locator('.org-list-page li').count()) === 1);
+  await page.goto(ON + '/admin/organisation.html?id=tcd');
+  await page.waitForSelector('#pilot-switch');
+  await page.uncheck('#pilot-switch');
+  await page.waitForFunction(() => document.body.textContent.includes('Not in the pilot.'));
+  check('organisation: switching it off takes it out of the pilot', !pilotOrgs.tcd);
   providerLinks = [];
 
   // ---------- old /mvp/ addresses ----------
