@@ -1,7 +1,7 @@
 {
   "id": "connect-to-work-west-yorkshire",
-  "name": "Connect to Work (West Yorkshire / Kirklees)",
-  "organisation": "WYCA with Kirklees Council",
+  "name": "Connect to Work",
+  "organisation": "Shaw Trust",
   "open": true,
   "hwlFunded": false,
   "level": "regional",
@@ -40,28 +40,33 @@
   "projects": [
     {
       "id": "connect-to-work-west-yorkshire-kirklees",
-      "name": "Connect to Work (West Yorkshire / Kirklees)",
+      "name": "Connect to Work",
       "overview": "To be completed: the research found the service but did not confirm what it currently offers."
     }
   ],
   "workExperience": "Not known",
   "notes": "Why it wasn't on the main list: No public referral route. In Kirklees delivered mostly through REAL Employment (already listed); lead provider contract from Sep 2026. Team to check again w/c 30/12 (service check, 18 Nov 2026).",
-  "lastUpdated": "2026-10-14",
+  "lastUpdated": "2026-11-26",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees additional services spreadsheet v3 (October 2026), 'Not verified or closed' tab, row 3",
     "foundVia": "Web research or directory review (October 2026)",
-    "evidence": "No public referral route. In Kirklees delivered mostly through REAL Employment (already listed); lead provider contract from Sep 2026.",
+    "evidence": "Checked by PL on 2026-11-26: Provider announced bty WYCA",
     "confidence": "low",
     "checkedUrl": "https://www.westyorks-ca.gov.uk/governance/procurement/healthy-working-life-connect-to-work-market-engagement/",
     "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
-    "decision": "planned",
-    "reason": "Running in West Yorkshire since Sept 2026, but no public referral route yet; add when there is one",
+    "decision": "review",
+    "reason": "Service not live yet",
     "by": "PL",
-    "date": "2026-11-26",
-    "expected": "Referral route not published yet",
-    "checkFrom": "2026-12-30"
-  }
+    "date": "2026-11-26"
+  },
+  "residence": {
+    "scope": "west-yorkshire"
+  },
+  "essential": [
+    "residence",
+    "health"
+  ]
 }
