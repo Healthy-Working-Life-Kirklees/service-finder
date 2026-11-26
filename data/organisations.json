@@ -426,10 +426,13 @@
     },
     {
       "id": "paddock-community-trust",
-      "name": "Paddock Community Trust",
+      "name": "Paddock Trust",
       "aliases": [
-        "Paddock Community Trust, in partnership with Kirklees Council"
-      ]
+        "Paddock Community Trust, in partnership with Kirklees Council",
+        "Paddock Community Trust"
+      ],
+      "overview": "Paddock Trust is an award-winning charity which delivers support services across Kirklees targeted at the most disadvantaged.\nThe Trust delivers an extensive range of services, specialising in employment support throughout Kirklees working with partners in the public and voluntary sectors.",
+      "website": "https://www.paddocktrust.org.uk/"
     },
     {
       "id": "papyrus",
@@ -512,7 +515,12 @@
     },
     {
       "id": "snacko-s-stanley-s-training-project",
-      "name": "Snacko's / Stanley's Training Project"
+      "name": "Snacko's",
+      "aliases": [
+        "Snacko's / Stanley's Training Project"
+      ],
+      "overview": "We run a project in Heckmondwike Community centre that allows people that did not have the chance before to learn and share their skills.",
+      "website": "https://www.facebook.com/StanleysTrainingAndCatering/"
     },
     {
       "id": "solace",
@@ -619,7 +627,8 @@
       "id": "west-yorkshire-combined-authority",
       "name": "West Yorkshire Combined Authority",
       "aliases": [
-        "WYCA"
+        "WYCA",
+        "West Yorkshire Metro / WYCA"
       ]
     },
     {
@@ -629,10 +638,6 @@
     {
       "id": "west-yorkshire-fire-and-rescue-with-the-king-s-tru",
       "name": "West Yorkshire Fire and Rescue with The King's Trust"
-    },
-    {
-      "id": "west-yorkshire-metro-wyca",
-      "name": "West Yorkshire Metro / WYCA"
     },
     {
       "id": "womencentre",
