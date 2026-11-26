@@ -55,7 +55,11 @@
     "status": "Closed or not running (web research, October 2026)"
   },
   "listing": {
-    "decision": "review",
-    "reason": "Research found it closed or not running, and advised not listing it. Added so the development team can confirm."
+    "decision": "planned",
+    "reason": "West Yorkshire is not a WorkWell pilot area; add if a local service is announced",
+    "by": "PL",
+    "date": "2026-11-26",
+    "expected": "Not announced for West Yorkshire",
+    "checkFrom": "2026-12-30"
   }
 }

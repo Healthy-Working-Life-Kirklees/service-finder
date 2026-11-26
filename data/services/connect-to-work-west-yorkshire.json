@@ -57,7 +57,11 @@
     "status": "Not verified as running (web research, October 2026)"
   },
   "listing": {
-    "decision": "review",
-    "reason": "On the spreadsheet's 'Not verified or closed' tab. Not live until the details are checked and completed."
+    "decision": "planned",
+    "reason": "Running in West Yorkshire since Sept 2026, but no public referral route yet; add when there is one",
+    "by": "PL",
+    "date": "2026-11-26",
+    "expected": "Referral route not published yet",
+    "checkFrom": "2026-12-30"
   }
 }
