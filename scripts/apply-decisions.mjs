@@ -140,7 +140,13 @@ for (const [id, e] of Object.entries(orgEdits).sort(([a], [b]) => a.localeCompar
   const o = orgById(id);
   const c = e.changes;
   if (!o) {
-    if (c.mergeInto && orgById(c.mergeInto)) orgsSame += 1; // already combined by an earlier run
+    // Already combined by an earlier run, perhaps into an organisation that was itself combined later
+    // (A into B, then B into C): follow the chain. Or its old name is now another name of an organisation.
+    let to = c.mergeInto;
+    for (const seen = new Set(); to && !orgById(to) && !seen.has(to); ) { seen.add(to); to = orgEdits[to] && orgEdits[to].changes && orgEdits[to].changes.mergeInto; }
+    const oldName = e.before && e.before.name;
+    const keptAsAlias = oldName && orgs.some((x) => x.name === oldName || (x.aliases || []).includes(oldName));
+    if ((to && orgById(to)) || keptAsAlias) orgsSame += 1;
     else orgProblems.push({ id, by: e.by, why: "there's no organisation with this id (renamed or combined already?)" });
     continue;
   }
