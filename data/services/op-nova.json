@@ -90,7 +90,7 @@
     "checkedUrl": "https://www.forcesemployment.org.uk/programmes/op-nova/contact/",
     "evidence": "Confirmed by the team on 2026-11-18 from Op NOVA's contact page for England (blocks automated reading): phone and email.",
     "confidence": "medium",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",

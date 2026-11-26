@@ -72,7 +72,7 @@
     "checkedUrl": "https://www.solace-uk.org.uk/therapy/kirklees-and-calderdale",
     "evidence": "Checked against Solace's Kirklees and Calderdale page on 2026-11-18: over 17, professional referral only, phone and email match.",
     "confidence": "high",
-    "status": "Running (checked by web research, October 2026)"
+    "status": "Running (checked against the provider's site, 18 Nov 2026)"
   },
   "listing": {
     "decision": "include",
