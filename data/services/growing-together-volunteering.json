@@ -23,7 +23,10 @@
   "webpage": null,
   "email": "lisanewbold@ls2y.co.uk",
   "phone": "01484 516444",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/DaltonTogether",
+    "https://www.instagram.com/ls2y_community"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield"

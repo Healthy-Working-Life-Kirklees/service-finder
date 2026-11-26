@@ -17,7 +17,11 @@
   "webpage": "https://fusionhousing.org.uk/services/food-and-more-service/",
   "email": "Diversion@fusionhousing.org.uk",
   "phone": "01924 454770 (advice team); food referrals via LWP 01484 414782",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/FusionFoodBank",
+    "https://www.instagram.com/fusionfoodbank",
+    "https://x.com/fusionfoodbank"
+  ],
   "locations": [],
   "areas": [
     "Dewsbury",

@@ -21,7 +21,9 @@
   "webpage": null,
   "email": "shamim.ali@imws.org.uk",
   "phone": "01924 500555",
-  "social": [],
+  "social": [
+    "https://x.com/IMWS1"
+  ],
   "locations": [],
   "areas": [
     "Batley"

@@ -18,7 +18,10 @@
   "webpage": "https://www.hortonhousing.co.uk/services-we-offer/accommodation-services/accommodation-services-in-kirklees/hips-kirklees-horton-intervention-and-prevention-service/",
   "email": "hips@hortonhousing.co.uk",
   "phone": "01484 411870",
-  "social": [],
+  "social": [
+    "https://www.facebook.com/hortonhousingassociation",
+    "https://x.com/HortonHousing"
+  ],
   "locations": [],
   "areas": [
     "Huddersfield",
