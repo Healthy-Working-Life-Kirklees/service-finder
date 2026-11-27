@@ -1,21 +1,28 @@
 {
   "id": "ips-smi",
   "name": "Individual Placement and Support for Severe Mental Illness (SMI)",
-  "organisation": "South West Yorkshire Partnership NHS Foundation Trust",
+  "organisation": "South West Yorkshire Partnership Teaching NHS Foundation Trust (SWYPFT)",
   "logo": "swypft.webp",
   "open": true,
   "hwlFunded": true,
   "level": "local",
   "audience": [
-    "individual"
+    "individual",
+    "employer"
   ],
   "categories": [
+    "Finding work",
     "Mental health",
     "Staying in work",
-    "Finding work",
-    "Employment rights"
+    "Employment rights",
+    "Apprenticeships",
+    "Benefits and money",
+    "Disability & neurodiversity",
+    "Employers",
+    "Health linked to work",
+    "Self-employment"
   ],
-  "whoFor": "Adults in Kirklees with severe and complex mental health needs, under secondary care, who want to find or keep paid work.",
+  "whoFor": "Adults in Kirklees with severe and complex mental health needs who receive support from secondary mental health services. We primarily support people who are unemployed, with some limited support available for those off sick, struggling at work or seeking a different role to improve their wellbeing.",
   "age": "Adults",
   "webpage": "https://www.southwestyorkshire.nhs.uk/services/kirklees-individual-placement-and-support-ips-employment-service/",
   "email": "kirkleesipsservice@swyt.nhs.uk",
@@ -28,8 +35,8 @@
   ],
   "eligibility": [
     "Currently receiving support from secondary care mental health services (Core, Enhanced or Early Intervention in Psychosis teams)",
-    "Committed to remaining in or entering paid employment",
-    "In work and struggling, off sick, or in work and seeking a different role to improve wellbeing - or looking for work"
+    "Committed to entering or remaining in paid employment",
+    "Primarily those unemployed but limited capacity for those in work and struggling, off sick, or in work and seeking a different role to improve wellbeing"
   ],
   "exclusions": [
     "Mild to moderate mental health conditions",
@@ -38,10 +45,13 @@
     "Not currently under the care of secondary care mental health services"
   ],
   "gate": [
-    "Is receiving support from secondary care mental health services"
+    "Currently receiving support from secondary care mental health services (Core, Enhanced or Early Intervention in Psychosis teams)",
+    "Committed to entering or remaining in paid employment",
+    "Primarily those unemployed but limited capacity for those in work and struggling, off sick, or in work and seeking a different role to improve wellbeing"
   ],
   "healthFocus": [
-    "severe-mental-illness"
+    "severe-mental-illness",
+    "mental-health"
   ],
   "requiresMention": [
     "severe",
@@ -71,38 +81,141 @@
   ],
   "selfReferral": {
     "allowed": "yes",
-    "note": "Yes, via the online expression of interest form"
+    "note": "People can refer themselves."
   },
   "projects": [
     {
       "id": "work-retention-support-using-the-principles-of-ips",
-      "name": "Work retention support using the principles of IPS",
-      "overview": "Employment specialists work with community mental health services to explore interests, skills and goals, build an employment plan and address barriers. Rapid, intensive support from referral, support for both the person and their employer, help with disclosure and reasonable adjustments, and information about workplace rights.",
-      "duration": "Time-unlimited follow-along support for as long as the person wishes",
+      "name": "Individual Placement and Support for Severe and Complex Mental Illness",
+      "overview": "ndividuals will receive personalised support from an Employment Specialist to identify suitable work, search and apply for roles, prepare for interviews and engage with employers. Support can also include benefits advice, disclosure and workplace adjustments, with ongoing support for both the individual and their employer once in work.",
+      "runs": [
+        "appointment"
+      ],
+      "area": "Wherever the individual feels most comfortable, most typically within local community venues such as libraries, community centres as well as Trust host bases.",
+      "when": "Flexible, arranged with the individual",
+      "duration": "Time-unlimited support for as long as the person wishes and remains under the care of secondary mental health services",
       "sessions": [
         {
           "id": "folly-hall-mills",
-          "venue": "folly-hall-mills"
+          "venue": "folly-hall-mills",
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ]
         },
         {
           "id": "beckside-court",
-          "venue": "beckside-court"
+          "venue": "ravensleigh-resource-unit",
+          "days": [
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ]
         }
       ]
     }
   ],
-  "workExperience": "Yes",
+  "workExperience": "No",
   "notes": "Status before November 2026: Live - open to referrals",
-  "lastUpdated": "2026-11-18",
+  "lastUpdated": "2026-11-27",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
     "checkedUrl": "https://www.southwestyorkshire.nhs.uk/services/kirklees-individual-placement-and-support-ips-employment-service/",
-    "evidence": "Checked against SWYPFT's page on 2026-11-17: email, eligibility and referral routes match Pathways v2.1.",
-    "confidence": "high"
+    "evidence": "Checked by PL on 2026-11-27: From Richard Bates (partner) using a verify link, 27 Nov 2026. Used: Organisation, About the organisation, Who the service is for, Who can use it, by where they live, Health focus, Work situation, Who can use the service, Essential (turned away without), Essential answers, Who they work with, Categories, Referral needed, and who can make it, Can people refer themselves?, Languages and formats, Work experience or volunteering, Anything coaches should know, What happens, where and when, Cost.",
+    "confidence": "high",
+    "providerChecked": "2026-11-27"
   },
   "listing": {
     "decision": "include",
     "reason": "Healthy Working Life scheme, on the live list from the start."
+  },
+  "residence": {
+    "scope": "kirklees"
+  },
+  "work": {
+    "needed": "no"
+  },
+  "essential": [
+    "residence",
+    "health"
+  ],
+  "referral": {
+    "needed": "yes",
+    "who": "anyone"
+  },
+  "languages": "Interpreters available, leaflets can be made available in different languages",
+  "coachNotes": "If you are unsure whether a referral is suitable, please get in touch with the team. Simply email a brief outline of your query and your preferred contact details. We work closely with DWP colleagues, and some of our Employment Specialists regularly work from Jobcentres across Kirklees.",
+  "cost": "Free",
+  "answers": {
+    "organisation": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "whoFor": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "residence": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "healthFocus": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "work": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "eligibility": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "gate": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "essential": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "audience": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "categories": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "referral": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "languages": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "workExperience": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "coachNotes": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "projects": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "cost": {
+      "label": "changed",
+      "date": "2026-11-27"
+    }
   }
 }
