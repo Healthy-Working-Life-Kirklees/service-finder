@@ -20,8 +20,7 @@
   "email": "jade@batleysportingfoundation.org",
   "phone": "07584 569117",
   "social": [
-    "https://www.facebook.com/BatleySportingFoundation",
-    "https://x.com/BatleySPF"
+    "Batley sporting foundation"
   ],
   "locations": [],
   "areas": [
@@ -36,10 +35,8 @@
   ],
   "exclusions": [],
   "gate": [
-    "Aged 18 or over",
     "Lives in Kirklees",
     "Has the right to work in the UK",
-    "Has a health condition or disability",
     "Is economically inactive (not working and not looking for work)"
   ],
   "healthFocus": [
@@ -50,7 +47,7 @@
   ],
   "selfReferral": {
     "allowed": "yes",
-    "note": "Apply by contacting Jade and filling in the application form"
+    "note": "Apply by contacting hade and filling in the application form"
   },
   "projects": [
     {
@@ -82,11 +79,12 @@
   ],
   "workExperience": "Yes- we offer volunteer opportunities",
   "notes": "Status before November 2026: Live - grant-funded project (status not stated in the pathways document)",
-  "lastUpdated": "2026-11-23",
+  "lastUpdated": "2026-11-27",
   "reviewCycle": "Quarterly",
   "provenance": {
     "source": "Kirklees HWL Pathways Aug 26 v2.1 (draft 15 Sept 2026; grant-funded schemes added 12 Oct 2026)",
-    "evidence": "Checked by LO on 2026-11-23: Changed name from Hade to JAde"
+    "evidence": "Checked by PL on 2026-11-27: From Jade Wardell (partner) using a verify link, 18 Nov 2026. Used: About the organisation, Website, Social media, How people get in, Can people refer themselves?, Work experience or volunteering, Who it's for (groups), What happens, where and when, Venues used by every project, Anything coaches should know, Essential (turned away without).",
+    "providerChecked": "2026-11-27"
   },
   "listing": {
     "decision": "include",
@@ -102,5 +100,43 @@
   "venues": [
     "batley-sporting-foundation-community-gym"
   ],
-  "coachNotes": "We will be offering a drop in signup session on 3rd December for new sign ups. We are working with many economically inactive adults with our current groups. Referrals all made through Jade and in person."
+  "coachNotes": "We will be offering a drop in signup session on 3rd December for new sign ups. We are working with many economically inactive adults with our current groups. Referrals all made through Jade and in person.",
+  "answers": {
+    "webpage": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "social": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "referralRoutes": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "workExperience": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "groups": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "projects": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "venues": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "coachNotes": {
+      "label": "changed",
+      "date": "2026-11-27"
+    },
+    "gate": {
+      "label": "changed",
+      "date": "2026-11-27"
+    }
+  }
 }
