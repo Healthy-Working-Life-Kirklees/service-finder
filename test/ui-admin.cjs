@@ -951,7 +951,9 @@ async function worker(route) {
 
   // ---------- "Apply changes now": what the last run couldn't apply ----------
   // Luke's Lads is chosen for the live list (above) but its details still say "To be completed", so the run sets it aside.
-  const ranAt = new Date(Date.now() - 60000).toISOString();
+  // The run is "now": after the decision above, which it couldn't apply. (A fixed minute ago made this depend on how
+  // long the steps in between took: under a minute and the decision looked newer than the run, so wasn't shown.)
+  const ranAt = new Date().toISOString();
   const lastRun = { id: 9, status: 'completed', conclusion: 'success', created: ranAt, updated: ranAt, title: 'Apply team changes and put them live (from the All services page, TB)', url: 'https://github.com/run' };
   const waitingNow = async () => Number(((await page.textContent('#apply-pending')).match(/^(\d+) services? ha/) || [0, 0])[1]);
   applyStatus = { on: true, apply: lastRun, site: null, worker: null, report: { run: 9, setAside: [] } };
@@ -1303,9 +1305,11 @@ async function worker(route) {
   const todoText = await page.textContent('#todo');
   check('to do: "Ready to go live" comes first', (await page.locator('#todo .todo-sec h2').first().textContent()).startsWith('Ready to go live'));
   const checkSec = page.locator('#todo .todo-sec', { hasText: 'Check these: duplicates and partnerships' });
-  check('to do: possible duplicate organisations and partnerships are listed to check', (await checkSec.textContent()).includes('"Kirklees Council Employment & Skills Service" and "Kirklees Council Employment and Skills"') && (await checkSec.textContent()).includes('WYCA with Kirklees Council') && (await checkSec.textContent()).includes('"Paddock Trust" (a partner on Employment Kirklees)'), (await checkSec.textContent()).slice(0, 800));
+  // The real data changes as the team tidies organisations up, so check for one of each kind rather than particular names.
+  const checkText = await checkSec.textContent();
+  check('to do: possible duplicate organisations and partnerships are listed to check', ['Possible duplicate organisation', 'Possible partnership', 'Partner name to check'].every((k) => checkText.includes(k)), checkText.slice(0, 400));
   const nDupes = await checkSec.locator('.todo-item').count();
-  await checkSec.locator('.todo-item', { hasText: 'WYCA with Kirklees Council' }).locator('button:text-is("It’s one organisation")').click();
+  await checkSec.locator('.todo-item', { hasText: 'Possible partnership' }).first().locator('button:text-is("It’s one organisation")').click();
   check('to do: "It’s one organisation" takes it off the list', (await page.locator('#todo .todo-sec', { hasText: 'Check these' }).locator('.todo-item').count()) === nDupes - 1);
   check('to do: the partner reply is listed to check, with the Healthy Working Life rule flagged', todoText.includes('Audio Boost: 3 changes from Sam') && todoText.includes('remove a grant funding rule'), todoText.slice(0, 600));
   check('to do: the suggestion is listed, with things to ask', todoText.includes('Mental health support sessions, from TCD Mental Health Charity') && /\d+ things to ask/.test(todoText));
