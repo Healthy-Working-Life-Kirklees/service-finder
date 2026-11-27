@@ -225,10 +225,10 @@ ${linkUrl(l)}
 If you've started and come back on the same computer, your answers should still be there. The link works until ${day(l.expires)}.
 
 If the link won't open
-The site is brand new, so some organisations' security software (such as Microsoft Defender) blocks it until it's been categorised. If you see a page saying it's blocked by your organisation:
+The site is brand new, so some organisations' security software (such as Microsoft Defender) blocks it because it's not yet a known site. If you see a page saying it's blocked by your organisation:
 
 - The quickest fix is to open the link on your phone or a personal device that isn't on your work Wi-Fi.
-- Or ask your IT team to allow ${new URL(linkUrl(l)).hostname}. You can tell them it's the Healthy Working Life Support Finder, a directory of support services from the Healthy Working Life programme (West Yorkshire Health and Care Partnership / NHS West Yorkshire ICB). The domain is newly registered, so it may be listed as "uncategorised" or "newly registered". They can contact me if they have any questions.
+- Or ask your IT team to allow ${new URL(linkUrl(l)).hostname}. You can tell them it's the Healthy Working Life Support Finder, a directory of support services from the Healthy Working Life programme (West Yorkshire Health and Care Partnership / NHS West Yorkshire ICB). It's newly registered, so their security software may not know it yet. Other organisations' IT security teams have already checked the site and allowed it. They can contact me if they have any questions.
 
 If your link has expired, just reply to this email and we'll send you a new one. Or reply with any changes and we'll update your entry for you.
 
@@ -264,7 +264,7 @@ What we'd like you and your team to do:
 Please don't share the link outside your team yet, as it's still a prototype.
 
 If the site won't open on your work computer
-The site is brand new, so some organisations' security software blocks it until it's been categorised. If that happens, please ask your IT team to allow ${new URL(siteUrl()).hostname}. It's the Healthy Working Life Support Finder, from the Healthy Working Life programme (West Yorkshire Health and Care Partnership / NHS West Yorkshire ICB). The domain is newly registered, so it may be listed as "uncategorised" or "newly registered". In the meantime, it should open on a phone that isn't on your work Wi-Fi.
+The site is brand new, so some organisations' security software blocks it because it's not yet a known site. If that happens, please ask your IT team to allow ${new URL(siteUrl()).hostname}. It's the Healthy Working Life Support Finder, from the Healthy Working Life programme (West Yorkshire Health and Care Partnership / NHS West Yorkshire ICB). It's newly registered, so their security software may not know it yet. Other organisations' IT security teams have already checked the site and allowed it. In the meantime, it should open on a phone that isn't on your work Wi-Fi.
 
 We'll review feedback regularly, update the tool as we go, and send you a short update every two weeks.
 
