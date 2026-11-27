@@ -671,6 +671,16 @@
       "lng": -1.64609
     },
     {
+      "id": "ravensleigh-resource-unit",
+      "name": "Ravensleigh Resource Unit",
+      "address": "28 Oxford Road, Dewsbury",
+      "postcode": "WF13 4LL",
+      "ward": "Dewsbury West",
+      "wardCode": "E05016514",
+      "lat": 53.69553,
+      "lng": -1.64609
+    },
+    {
       "id": "ravensthorpe-community-centre",
       "name": "Ravensthorpe Community Centre",
       "address": "Ravensthorpe Community Centre, 24 Garden Street, Ravensthorpe, Dewsbury, WF13 3AR",
