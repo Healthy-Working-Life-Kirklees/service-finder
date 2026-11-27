@@ -638,18 +638,15 @@
       "website": "https://www.solace-uk.org.uk/"
     },
     {
-      "id": "south-west-yorkshire-partnership-nhs-foundation-tr",
-      "name": "South West Yorkshire Partnership NHS Foundation Trust",
+      "id": "south-west-yorkshire-partnership-teaching-nhs-foun",
+      "name": "South West Yorkshire Partnership Teaching NHS Foundation Trust (SWYPFT)",
+      "overview": "SWYPFT provides specialist mental health services. The SWYPFT Individual Placement and Support (IPS) services work alongside clinical teams and employers to provide personalised support, helping people with severe and complex mental illness find and sustain competitive paid employment.",
       "aliases": [
+        "South West Yorkshire Partnership NHS Foundation Trust",
         "South West Yorkshire Partnership NHS FT",
         "South West Yorkshire Partnership NHS Foundation Trust (NHS Kirklees Talking Therapies)"
       ],
       "website": "https://www.southwestyorkshire.nhs.uk/"
-    },
-    {
-      "id": "south-west-yorkshire-partnership-teaching-nhs-foun",
-      "name": "South West Yorkshire Partnership Teaching NHS Foundation Trust (SWYPFT)",
-      "overview": "SWYPFT provides specialist mental health services. The SWYPFT Individual Placement and Support (IPS) services work alongside clinical teams and employers to provide personalised support, helping people with severe and complex mental illness find and sustain competitive paid employment."
     },
     {
       "id": "specialist-autism-services",
